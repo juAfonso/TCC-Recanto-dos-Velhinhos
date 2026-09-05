@@ -144,9 +144,5 @@ Também pendentes:
 - **Trocar as credenciais de demonstração.** As senhas listadas acima existem apenas na
   camada mock. Elas **não podem** ser reaproveitadas no `db/seed.js` real nem chegar a
   produção.
-- **Corrigir o cabeçalho no mobile**: em telas de 375 px o logo colide com o menu e o botão
-  "Entrar" (Princípio V).
-- **Revisar a cor do botão "Fazer Doação"**, ainda em magenta da paleta antiga enquanto o
-  restante da identidade já é verde.
 - Adicionar as telas novas previstas no plano: `aviso-privacidade.html`,
   `solicitar-direitos.html`, `admin/pix.html` e `admin/solicitacoes-titular.html`.

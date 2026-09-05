@@ -236,11 +236,27 @@ button{ cursor:pointer; font-family:inherit; }
         padding:0 0 0 6%;
         min-width:0;
     }
+    /* .nav-actions é filho direto da .navbar, não do .menu retrátil. Dar-lhe
+       width:100% aqui espremia o logo contra o menu e o botão Entrar. Ele
+       precisa continuar compacto, alinhado à direita, antes do hambúrguer. */
+    .navbar{ gap:10px; }
+    .logo{ min-width:0; font-size:1.1rem; }
     .nav-actions{
-        width:100%;
-        padding:16px 6% 20px;
+        width:auto;
+        padding:0;
+        margin-left:auto;
+        order:2;
     }
-    .btn-login{ width:100%; text-align:center; }
+    .btn-login{ width:auto; padding:10px 18px; }
+    .menu-toggle{ order:3; }
+}
+
+@media(max-width:480px){
+    .logo{ font-size:.95rem; gap:8px; }
+    .logo .logo-mark{ height:38px; }
+    .logo .logo-sub{ font-size:.56rem; }
+    .btn-login{ padding:9px 14px; font-size:.82rem; }
+    .menu-toggle{ font-size:1.45rem; }
 }
 
 /* =========================================================
@@ -349,11 +365,14 @@ button{ cursor:pointer; font-family:inherit; }
     transition:.2s;
 }
 
+/* CTA de doação. Usa magenta, e não cyclamen, porque branco sobre #F28CAB
+   rende contraste de 2,3:1 — reprovado no Princípio II. Magenta dá 7,3:1 e
+   mantém o botão distinto do .btn-viridian, usado em todo o resto do site. */
 .btn-primary{
-    background:var(--cyclamen);
+    background:var(--magenta);
     color:white;
 }
-.btn-primary:hover{ background:#e46f92; }
+.btn-primary:hover{ background:#73303a; }
 
 .btn-secondary{
     border:2px solid white;

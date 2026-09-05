@@ -235,11 +235,7 @@ recente do spec.md, não esta lista resumida.
    doador + conferência manual.
 3. Fotos institucionais reais ainda precisam vir do Recanto (a imagem do hero
    é provisória, ver acima), cada uma com texto alternativo (Princípio II).
-4. **Bug de responsividade no cabeçalho:** em 375 px o logo colide com o menu
-   e o botão "Entrar". Afeta todas as telas e viola o Princípio V.
-5. O botão "Fazer Doação" está em magenta da paleta antiga, destoando da
-   identidade verde do restante.
-6. As credenciais de demonstração do `public/README.md` (`admin`/`admin123`
+4. As credenciais de demonstração do `public/README.md` (`admin`/`admin123`
    e as de autoatendimento) existem só na camada mock e **não podem**
    sobreviver ao `db/seed.js` real.
 

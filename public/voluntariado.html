@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seja Voluntário — Recanto dos Velhinhos</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-mark">🌿</span>
+            <span>Recanto dos Velhinhos<span class="logo-sub">Francisco Gonçalves Barbosa</span></span>
+        </a>
+        <button class="menu-toggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+        <ul class="menu">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="institucional.html">Institucional</a></li>
+            <li><a href="campanhas.html">Campanhas &amp; Eventos</a></li>
+            <li><a href="doacoes.html">Doações</a></li>
+            <li><a href="noticias.html">Notícias</a></li>
+            <li class="nav-dropdown">
+                <a href="#" class="active">Participar ▾</a>
+                <div class="nav-dropdown-panel">
+                    <a href="voluntariado.html">Seja voluntário</a>
+                    <a href="vagas.html">Trabalhe conosco</a>
+                    <a href="solicitar-evento.html">Propor evento/campanha</a>
+                    <a href="consultar-status.html">Consultar status de solicitação</a>
+                </div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="login.html" class="btn-login">Entrar</a>
+        </div>
+    </nav>
+</header>
+
+<section class="page-hero">
+    <span class="subtitle">PARTICIPE</span>
+    <h1>Seja Voluntário</h1>
+    <p>Doe seu tempo e talento para transformar o dia a dia dos nossos residentes. Todo cadastro passa por uma triagem da nossa equipe.</p>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div id="form-wrap">
+            <form class="form-shell" id="form-voluntario" novalidate>
+                <div class="alert alert-info">
+                    <span>ℹ️</span>
+                    <div>Seu cadastro entrará como <strong>pendente</strong> até ser avaliado por um funcionário. Você receberá um código de protocolo para acompanhar o status.</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="v-nome">Nome completo <span class="req">*</span></label>
+                    <input type="text" id="v-nome" autocomplete="name">
+                    <div class="form-error"></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="v-idade">Idade <span class="req">*</span></label>
+                        <input type="number" id="v-idade" min="14" max="110">
+                        <div class="form-hint">Menores de 18 anos precisam anexar autorização do responsável legal.</div>
+                        <div class="form-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="v-telefone">Telefone <span class="req">*</span></label>
+                        <input type="tel" id="v-telefone" placeholder="(00) 00000-0000">
+                        <div class="form-error"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="v-endereco">Endereço <span class="req">*</span></label>
+                    <input type="text" id="v-endereco" placeholder="Rua, número, bairro, cidade/UF">
+                    <div class="form-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="v-area">Área de interesse <span class="req">*</span></label>
+                    <select id="v-area">
+                        <option value="">Selecione...</option>
+                        <option>Atividades recreativas</option>
+                        <option>Oficinas de artesanato</option>
+                        <option>Leitura e contação de histórias</option>
+                        <option>Acompanhamento aos idosos</option>
+                        <option>Apoio em eventos e campanhas</option>
+                        <option>Manutenção predial</option>
+                        <option>Apoio administrativo</option>
+                    </select>
+                    <div class="form-error"></div>
+                </div>
+
+                <div class="form-group" id="grupo-autorizacao" style="display:none;">
+                    <label for="v-autorizacao">Autorização do responsável legal <span class="req">*</span></label>
+                    <input type="file" id="v-autorizacao" accept=".pdf,.jpg,.jpeg,.png">
+                    <div class="form-hint">Obrigatório para candidatos menores de 18 anos. Formatos aceitos: PDF, JPG ou PNG.</div>
+                    <div class="form-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-line">
+                        <input type="checkbox" id="v-termos">
+                        <span>Declaro que as informações fornecidas são verdadeiras e autorizo o uso dos meus dados para fins de triagem e contato pela instituição. <span class="req">*</span></span>
+                    </label>
+                    <div class="form-error"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-viridian">Enviar cadastro</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="result-wrap" style="display:none;">
+            <div class="form-shell narrow">
+                <div class="protocolo-box">
+                    <div style="font-size:2.2rem;">📨</div>
+                    <p style="font-weight:700;margin-top:8px;">Cadastro enviado com sucesso!</p>
+                    <p class="form-hint">Guarde o código abaixo para consultar o status a qualquer momento.</p>
+                    <div class="protocolo-code" id="protocolo-gerado"></div>
+                    <span class="badge badge-warning">Pendente de triagem</span>
+                </div>
+                <div class="form-actions" style="justify-content:center;margin-top:24px;">
+                    <a href="consultar-status.html" class="btn btn-outline">Consultar status</a>
+                    <a href="index.html" class="btn btn-viridian">Voltar ao início</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="footer-grid">
+        <div>
+            <div class="logo" style="color:#fff;margin-bottom:14px;">
+                <span class="logo-mark">🌿</span>
+                <span>Recanto dos Velhinhos<span class="logo-sub" style="color:#9fb0ac;">Francisco Gonçalves Barbosa</span></span>
+            </div>
+            <p>ILPI dedicada ao cuidado, respeito e dignidade dos nossos idosos em Pinheiral/RJ.</p>
+        </div>
+        <div>
+            <h4>Navegação</h4>
+            <a href="institucional.html">Institucional</a>
+            <a href="campanhas.html">Campanhas &amp; Eventos</a>
+            <a href="doacoes.html">Doações</a>
+            <a href="noticias.html">Notícias</a>
+        </div>
+        <div>
+            <h4>Participe</h4>
+            <a href="voluntariado.html">Seja voluntário</a>
+            <a href="vagas.html">Trabalhe conosco</a>
+            <a href="consultar-status.html">Consultar status</a>
+            <a href="login.html">Entrar</a>
+        </div>
+    </div>
+    <p class="footer-bottom">© 2026 Recanto dos Velhinhos Francisco Gonçalves Barbosa • Pinheiral/RJ • Todos os direitos reservados</p>
+</footer>
+
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/nav.js"></script>
+<script src="assets/js/page-voluntariado.js"></script>
+</body>
+</html>

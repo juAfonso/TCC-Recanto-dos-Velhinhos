@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notícias — Recanto dos Velhinhos</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-mark">🌿</span>
+            <span>Recanto dos Velhinhos<span class="logo-sub">Francisco Gonçalves Barbosa</span></span>
+        </a>
+        <button class="menu-toggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+        <ul class="menu">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="institucional.html">Institucional</a></li>
+            <li><a href="campanhas.html">Campanhas &amp; Eventos</a></li>
+            <li><a href="doacoes.html">Doações</a></li>
+            <li><a href="noticias.html" class="active">Notícias</a></li>
+            <li class="nav-dropdown">
+                <a href="#">Participar ▾</a>
+                <div class="nav-dropdown-panel">
+                    <a href="voluntariado.html">Seja voluntário</a>
+                    <a href="vagas.html">Trabalhe conosco</a>
+                    <a href="solicitar-evento.html">Propor evento/campanha</a>
+                    <a href="consultar-status.html">Consultar status de solicitação</a>
+                </div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="login.html" class="btn-login">Entrar</a>
+        </div>
+    </nav>
+</header>
+
+<section class="page-hero">
+    <span class="subtitle">FIQUE POR DENTRO</span>
+    <h1>Notícias e Atualizações</h1>
+    <p>Acompanhe as novidades, conquistas e momentos especiais do Recanto dos Velhinhos.</p>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="noticias-grid" id="noticias-grid">
+            <!-- preenchido via JS -->
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="footer-grid">
+        <div>
+            <div class="logo" style="color:#fff;margin-bottom:14px;">
+                <span class="logo-mark">🌿</span>
+                <span>Recanto dos Velhinhos<span class="logo-sub" style="color:#9fb0ac;">Francisco Gonçalves Barbosa</span></span>
+            </div>
+            <p>ILPI dedicada ao cuidado, respeito e dignidade dos nossos idosos em Pinheiral/RJ.</p>
+        </div>
+        <div>
+            <h4>Navegação</h4>
+            <a href="institucional.html">Institucional</a>
+            <a href="campanhas.html">Campanhas &amp; Eventos</a>
+            <a href="doacoes.html">Doações</a>
+            <a href="noticias.html">Notícias</a>
+        </div>
+        <div>
+            <h4>Participe</h4>
+            <a href="voluntariado.html">Seja voluntário</a>
+            <a href="vagas.html">Trabalhe conosco</a>
+            <a href="consultar-status.html">Consultar status</a>
+            <a href="login.html">Entrar</a>
+        </div>
+    </div>
+    <p class="footer-bottom">© 2026 Recanto dos Velhinhos Francisco Gonçalves Barbosa • Pinheiral/RJ • Todos os direitos reservados</p>
+</footer>
+
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/nav.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const db = DB.load();
+  const grid = document.getElementById('noticias-grid');
+  const noticias = [...db.noticias].sort((a, b) => new Date(b.dataPublicacao) - new Date(a.dataPublicacao));
+
+  grid.innerHTML = noticias.map(n => `
+    <div class="noticia-card">
+      <div class="noticia-thumb">📰</div>
+      <div class="body">
+        <h3>${n.titulo}</h3>
+        <p>${n.conteudo}</p>
+        <div class="meta">
+          <span>${Utils.formatDate(n.dataPublicacao)}</span>
+          ${n.syncStatus === 'nao_sincronizado' ? '<span class="badge badge-warning" title="A publicação no site ocorreu normalmente; a sincronização com a rede social não foi concluída.">Só no site</span>' : '<span class="badge badge-success">Também no Instagram</span>'}
+        </div>
+      </div>
+    </div>
+  `).join('') || '<div class="empty-state"><span class="icon">📭</span><p>Nenhuma notícia publicada ainda.</p></div>';
+});
+</script>
+</body>
+</html>

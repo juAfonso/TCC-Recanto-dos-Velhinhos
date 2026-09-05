@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Itens Necessários — Painel Administrativo</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <a href="dashboard.html" class="side-logo">
+            <span class="logo-mark">🌿</span>
+            <span>SAGE<br><small style="font-weight:400;font-size:.7rem;opacity:.7;">Painel Administrativo</small></span>
+        </a>
+        <nav class="admin-nav">
+            <a href="dashboard.html">📊 Visão Geral</a>
+            <div class="nav-section-label">Operação</div>
+            <a href="itens.html" class="active">📦 Itens Necessários</a>
+            <a href="campanhas.html">🎉 Campanhas &amp; Eventos</a>
+            <a href="doacoes.html">💸 Doações</a>
+            <a href="usuarios.html">👥 Usuários</a>
+            <div class="nav-section-label">Triagem</div>
+            <a href="triagem-voluntarios.html">🤝 Voluntários</a>
+            <a href="triagem-vagas.html">💼 Candidaturas a Vaga</a>
+            <a href="triagem-eventos.html">📅 Solicitações Externas</a>
+            <div class="nav-section-label">Comunicação</div>
+            <a href="noticias.html">📰 Notícias</a>
+        </nav>
+        <div class="side-foot">
+            <strong id="admin-session-name">Conta Administrativa</strong>
+            Acesso compartilhado da equipe
+            <button id="btn-admin-logout">Sair</button>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <div>
+                <span class="crumb">Painel Administrativo</span>
+                <h1>Itens Necessários</h1>
+            </div>
+            <button class="admin-menu-toggle" aria-label="Abrir menu">☰</button>
+            <button class="btn btn-viridian btn-sm" id="btn-novo-item">+ Novo item</button>
+        </div>
+
+        <div class="admin-content">
+            <div class="panel">
+                <div class="table-toolbar">
+                    <div class="search-box">
+                        <span>🔎</span>
+                        <input type="text" id="busca-item" placeholder="Buscar por nome do item...">
+                    </div>
+                    <div style="font-size:.8rem;color:var(--muted);">
+                        <span class="cell-flag">●</span> sem atualização há mais de 30 dias
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Item</th><th>Quantidade</th><th>Urgente</th><th>Status</th><th>Última atualização</th><th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="itens-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- MODAL: novo/editar item -->
+<div class="modal-overlay" id="modal-item">
+    <div class="modal">
+        <div class="modal-head">
+            <h3 id="modal-item-titulo">Novo item necessário</h3>
+            <button class="modal-close" data-close-modal="modal-item">✕</button>
+        </div>
+        <form id="form-item" novalidate>
+            <input type="hidden" id="item-id">
+            <div class="form-group">
+                <label for="item-nome">Nome do item <span class="req">*</span></label>
+                <input type="text" id="item-nome">
+                <div class="form-error"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="item-quantidade">Quantidade <span class="req">*</span></label>
+                    <input type="number" id="item-quantidade" min="0">
+                    <div class="form-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="item-unidade">Unidade <span class="req">*</span></label>
+                    <input type="text" id="item-unidade" placeholder="ex.: pacotes, unidades, kits">
+                    <div class="form-error"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="checkbox-line">
+                    <input type="checkbox" id="item-urgente">
+                    <span>Marcar como necessidade urgente</span>
+                </label>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" data-close-modal="modal-item">Cancelar</button>
+                <button type="submit" class="btn btn-viridian">Salvar item</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="../assets/js/utils.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/admin-guard.js"></script>
+<script src="../assets/js/admin-modal.js"></script>
+<script src="../assets/js/admin-itens.js"></script>
+</body>
+</html>

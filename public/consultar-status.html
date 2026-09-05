@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consultar Status — Recanto dos Velhinhos</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-mark">🌿</span>
+            <span>Recanto dos Velhinhos<span class="logo-sub">Francisco Gonçalves Barbosa</span></span>
+        </a>
+        <button class="menu-toggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+        <ul class="menu">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="institucional.html">Institucional</a></li>
+            <li><a href="campanhas.html">Campanhas &amp; Eventos</a></li>
+            <li><a href="doacoes.html">Doações</a></li>
+            <li><a href="noticias.html">Notícias</a></li>
+            <li class="nav-dropdown">
+                <a href="#" class="active">Participar ▾</a>
+                <div class="nav-dropdown-panel">
+                    <a href="voluntariado.html">Seja voluntário</a>
+                    <a href="vagas.html">Trabalhe conosco</a>
+                    <a href="solicitar-evento.html">Propor evento/campanha</a>
+                    <a href="consultar-status.html">Consultar status de solicitação</a>
+                </div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="login.html" class="btn-login">Entrar</a>
+        </div>
+    </nav>
+</header>
+
+<section class="page-hero">
+    <span class="subtitle">ACOMPANHAMENTO</span>
+    <h1>Consultar Status de Solicitação</h1>
+    <p>Informe o código de protocolo recebido no envio do seu cadastro de voluntário, candidatura a vaga ou solicitação de evento/campanha.</p>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="form-shell narrow">
+            <form id="form-consulta" novalidate>
+                <div class="form-group">
+                    <label for="protocolo-input">Código de protocolo <span class="req">*</span></label>
+                    <input type="text" id="protocolo-input" placeholder="Ex.: REC-7F3K-8M2Q" style="text-transform:uppercase;">
+                    <div class="form-error"></div>
+                </div>
+                <div class="form-actions" style="justify-content:center;">
+                    <button type="submit" class="btn btn-viridian btn-block">Consultar</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="resultado" style="max-width:520px;margin:26px auto 0;"></div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="footer-grid">
+        <div>
+            <div class="logo" style="color:#fff;margin-bottom:14px;">
+                <span class="logo-mark">🌿</span>
+                <span>Recanto dos Velhinhos<span class="logo-sub" style="color:#9fb0ac;">Francisco Gonçalves Barbosa</span></span>
+            </div>
+            <p>ILPI dedicada ao cuidado, respeito e dignidade dos nossos idosos em Pinheiral/RJ.</p>
+        </div>
+        <div>
+            <h4>Navegação</h4>
+            <a href="institucional.html">Institucional</a>
+            <a href="campanhas.html">Campanhas &amp; Eventos</a>
+            <a href="doacoes.html">Doações</a>
+            <a href="noticias.html">Notícias</a>
+        </div>
+        <div>
+            <h4>Participe</h4>
+            <a href="voluntariado.html">Seja voluntário</a>
+            <a href="vagas.html">Trabalhe conosco</a>
+            <a href="consultar-status.html">Consultar status</a>
+            <a href="login.html">Entrar</a>
+        </div>
+    </div>
+    <p class="footer-bottom">© 2026 Recanto dos Velhinhos Francisco Gonçalves Barbosa • Pinheiral/RJ • Todos os direitos reservados</p>
+</footer>
+
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/nav.js"></script>
+<script src="assets/js/page-consultar-status.js"></script>
+</body>
+</html>

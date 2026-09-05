@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triagem de Solicitações Externas — Painel Administrativo</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <a href="dashboard.html" class="side-logo">
+            <span class="logo-mark">🌿</span>
+            <span>SAGE<br><small style="font-weight:400;font-size:.7rem;opacity:.7;">Painel Administrativo</small></span>
+        </a>
+        <nav class="admin-nav">
+            <a href="dashboard.html">📊 Visão Geral</a>
+            <div class="nav-section-label">Operação</div>
+            <a href="itens.html">📦 Itens Necessários</a>
+            <a href="campanhas.html">🎉 Campanhas &amp; Eventos</a>
+            <a href="doacoes.html">💸 Doações</a>
+            <a href="usuarios.html">👥 Usuários</a>
+            <div class="nav-section-label">Triagem</div>
+            <a href="triagem-voluntarios.html">🤝 Voluntários</a>
+            <a href="triagem-vagas.html">💼 Candidaturas a Vaga</a>
+            <a href="triagem-eventos.html" class="active">📅 Solicitações Externas</a>
+            <div class="nav-section-label">Comunicação</div>
+            <a href="noticias.html">📰 Notícias</a>
+        </nav>
+        <div class="side-foot">
+            <strong id="admin-session-name">Conta Administrativa</strong>
+            Acesso compartilhado da equipe
+            <button id="btn-admin-logout">Sair</button>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <div>
+                <span class="crumb">Painel Administrativo · Triagem</span>
+                <h1>Solicitações Externas de Evento/Campanha</h1>
+            </div>
+            <button class="admin-menu-toggle" aria-label="Abrir menu">☰</button>
+        </div>
+
+        <div class="admin-content">
+            <div class="panel">
+                <div class="tabs-nav">
+                    <button class="tab-btn active" data-filtro="em_analise">Em análise</button>
+                    <button class="tab-btn" data-filtro="aprovada">Aprovadas</button>
+                    <button class="tab-btn" data-filtro="rejeitada">Rejeitadas</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>Protocolo</th><th>Contato</th><th>Tipo</th><th>Objetivo</th><th>Data pretendida</th><th>Status</th><th></th></tr>
+                        </thead>
+                        <tbody id="solicitacoes-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- MODAL: rejeitar (motivo obrigatório — FR-022) -->
+<div class="modal-overlay" id="modal-rejeitar">
+    <div class="modal">
+        <div class="modal-head">
+            <h3>Rejeitar solicitação externa</h3>
+            <button class="modal-close" data-close-modal="modal-rejeitar">✕</button>
+        </div>
+        <form id="form-rejeitar" novalidate>
+            <input type="hidden" id="rej-id">
+            <div class="alert alert-warning"><span>⚠️</span><div>Para solicitações externas, informar o motivo da rejeição é obrigatório (FR-022).</div></div>
+            <div class="form-group">
+                <label for="rej-motivo">Motivo da rejeição <span class="req">*</span></label>
+                <textarea id="rej-motivo" placeholder="Explique o motivo da rejeição..."></textarea>
+                <div class="form-error"></div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" data-close-modal="modal-rejeitar">Cancelar</button>
+                <button type="submit" class="btn btn-danger-outline">Confirmar rejeição</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="../assets/js/utils.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/admin-guard.js"></script>
+<script src="../assets/js/admin-modal.js"></script>
+<script src="../assets/js/admin-triagem-eventos.js"></script>
+</body>
+</html>

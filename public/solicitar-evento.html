@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propor Evento ou Campanha — Recanto dos Velhinhos</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-mark">🌿</span>
+            <span>Recanto dos Velhinhos<span class="logo-sub">Francisco Gonçalves Barbosa</span></span>
+        </a>
+        <button class="menu-toggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+        <ul class="menu">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="institucional.html">Institucional</a></li>
+            <li><a href="campanhas.html">Campanhas &amp; Eventos</a></li>
+            <li><a href="doacoes.html">Doações</a></li>
+            <li><a href="noticias.html">Notícias</a></li>
+            <li class="nav-dropdown">
+                <a href="#" class="active">Participar ▾</a>
+                <div class="nav-dropdown-panel">
+                    <a href="voluntariado.html">Seja voluntário</a>
+                    <a href="vagas.html">Trabalhe conosco</a>
+                    <a href="solicitar-evento.html">Propor evento/campanha</a>
+                    <a href="consultar-status.html">Consultar status de solicitação</a>
+                </div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="login.html" class="btn-login">Entrar</a>
+        </div>
+    </nav>
+</header>
+
+<section class="page-hero">
+    <span class="subtitle">PARCERIAS EXTERNAS</span>
+    <h1>Proponha um Evento ou Campanha</h1>
+    <p>Pessoas ou organizações externas podem propor eventos e campanhas para a instituição. Toda proposta passa por avaliação da nossa equipe.</p>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <div id="form-wrap">
+            <form class="form-shell" id="form-solicitacao" novalidate>
+                <div class="alert alert-info">
+                    <span>ℹ️</span>
+                    <div>Sua solicitação entrará como <strong>em análise</strong>. Se aprovada, o evento/campanha é publicado automaticamente no Portal Público.</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="se-nome">Nome / organização <span class="req">*</span></label>
+                        <input type="text" id="se-nome">
+                        <div class="form-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="se-tipo">Tipo <span class="req">*</span></label>
+                        <select id="se-tipo">
+                            <option value="">Selecione...</option>
+                            <option value="evento">Evento</option>
+                            <option value="campanha">Campanha</option>
+                        </select>
+                        <div class="form-error"></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="se-email">E-mail de contato <span class="req">*</span></label>
+                        <input type="email" id="se-email">
+                        <div class="form-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="se-telefone">Telefone de contato <span class="req">*</span></label>
+                        <input type="tel" id="se-telefone" placeholder="(00) 00000-0000">
+                        <div class="form-error"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="se-data">Data pretendida <span class="req">*</span></label>
+                    <input type="date" id="se-data">
+                    <div class="form-hint" id="se-data-hint"></div>
+                    <div class="form-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="se-objetivo">Objetivo <span class="req">*</span></label>
+                    <textarea id="se-objetivo" placeholder="Descreva o objetivo do evento ou campanha proposta..."></textarea>
+                    <div class="form-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="se-recursos">Recursos esperados <span class="req">*</span></label>
+                    <textarea id="se-recursos" placeholder="Ex.: espaço físico, apoio de voluntários, divulgação, equipamentos..."></textarea>
+                    <div class="form-error"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-viridian">Enviar solicitação</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="result-wrap" style="display:none;">
+            <div class="form-shell narrow">
+                <div class="protocolo-box">
+                    <div style="font-size:2.2rem;">📨</div>
+                    <p style="font-weight:700;margin-top:8px;">Solicitação enviada com sucesso!</p>
+                    <p class="form-hint">Guarde o código abaixo para consultar o status a qualquer momento.</p>
+                    <div class="protocolo-code" id="protocolo-gerado"></div>
+                    <span class="badge badge-warning">Em análise</span>
+                </div>
+                <div class="form-actions" style="justify-content:center;margin-top:24px;">
+                    <a href="consultar-status.html" class="btn btn-outline">Consultar status</a>
+                    <a href="index.html" class="btn btn-viridian">Voltar ao início</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="footer-grid">
+        <div>
+            <div class="logo" style="color:#fff;margin-bottom:14px;">
+                <span class="logo-mark">🌿</span>
+                <span>Recanto dos Velhinhos<span class="logo-sub" style="color:#9fb0ac;">Francisco Gonçalves Barbosa</span></span>
+            </div>
+            <p>ILPI dedicada ao cuidado, respeito e dignidade dos nossos idosos em Pinheiral/RJ.</p>
+        </div>
+        <div>
+            <h4>Navegação</h4>
+            <a href="institucional.html">Institucional</a>
+            <a href="campanhas.html">Campanhas &amp; Eventos</a>
+            <a href="doacoes.html">Doações</a>
+            <a href="noticias.html">Notícias</a>
+        </div>
+        <div>
+            <h4>Participe</h4>
+            <a href="voluntariado.html">Seja voluntário</a>
+            <a href="vagas.html">Trabalhe conosco</a>
+            <a href="consultar-status.html">Consultar status</a>
+            <a href="login.html">Entrar</a>
+        </div>
+    </div>
+    <p class="footer-bottom">© 2026 Recanto dos Velhinhos Francisco Gonçalves Barbosa • Pinheiral/RJ • Todos os direitos reservados</p>
+</footer>
+
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/nav.js"></script>
+<script src="assets/js/page-solicitar-evento.js"></script>
+</body>
+</html>

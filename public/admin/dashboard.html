@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Administrativo — Visão Geral</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <a href="dashboard.html" class="side-logo">
+            <span class="logo-mark">🌿</span>
+            <span>SAGE<br><small style="font-weight:400;font-size:.7rem;opacity:.7;">Painel Administrativo</small></span>
+        </a>
+        <nav class="admin-nav">
+            <a href="dashboard.html" class="active">📊 Visão Geral</a>
+            <div class="nav-section-label">Operação</div>
+            <a href="itens.html">📦 Itens Necessários</a>
+            <a href="campanhas.html">🎉 Campanhas &amp; Eventos</a>
+            <a href="doacoes.html">💸 Doações</a>
+            <a href="usuarios.html">👥 Usuários</a>
+            <div class="nav-section-label">Triagem</div>
+            <a href="triagem-voluntarios.html">🤝 Voluntários</a>
+            <a href="triagem-vagas.html">💼 Candidaturas a Vaga</a>
+            <a href="triagem-eventos.html">📅 Solicitações Externas</a>
+            <div class="nav-section-label">Comunicação</div>
+            <a href="noticias.html">📰 Notícias</a>
+        </nav>
+        <div class="side-foot">
+            <strong id="admin-session-name">Conta Administrativa</strong>
+            Acesso compartilhado da equipe
+            <button id="btn-admin-logout">Sair</button>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <div>
+                <span class="crumb">Painel Administrativo</span>
+                <h1>Visão Geral</h1>
+            </div>
+            <button class="admin-menu-toggle" aria-label="Abrir menu">☰</button>
+            <a href="../index.html" class="btn btn-outline btn-sm" target="_blank">Ver Portal Público ↗</a>
+        </div>
+
+        <div class="admin-content">
+
+            <div class="stat-grid" id="stat-grid"><!-- preenchido via JS --></div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h2>⚠️ Alertas prioritários</h2>
+                    <span class="panel-sub">Itens urgentes e pendências de triagem que precisam de atenção</span>
+                </div>
+                <div id="alertas-lista" class="activity-list"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h2>🕓 Atividade recente</h2>
+                    <span class="panel-sub">Registro de autoria e data/hora das últimas ações administrativas</span>
+                </div>
+                <div id="atividade-lista" class="activity-list"></div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script src="../assets/js/utils.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/admin-guard.js"></script>
+<script src="../assets/js/admin-dashboard.js"></script>
+</body>
+</html>

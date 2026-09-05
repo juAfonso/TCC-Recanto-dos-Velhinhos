@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doações — Recanto dos Velhinhos</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header>
+    <nav class="navbar">
+        <a href="index.html" class="logo">
+            <span class="logo-mark">🌿</span>
+            <span>Recanto dos Velhinhos<span class="logo-sub">Francisco Gonçalves Barbosa</span></span>
+        </a>
+        <button class="menu-toggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+        <ul class="menu">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="institucional.html">Institucional</a></li>
+            <li><a href="campanhas.html">Campanhas &amp; Eventos</a></li>
+            <li><a href="doacoes.html" class="active">Doações</a></li>
+            <li><a href="noticias.html">Notícias</a></li>
+            <li class="nav-dropdown">
+                <a href="#">Participar ▾</a>
+                <div class="nav-dropdown-panel">
+                    <a href="voluntariado.html">Seja voluntário</a>
+                    <a href="vagas.html">Trabalhe conosco</a>
+                    <a href="solicitar-evento.html">Propor evento/campanha</a>
+                    <a href="consultar-status.html">Consultar status de solicitação</a>
+                </div>
+            </li>
+        </ul>
+        <div class="nav-actions">
+            <a href="login.html" class="btn-login">Entrar</a>
+        </div>
+    </nav>
+</header>
+
+<section class="page-hero">
+    <span class="subtitle">AJUDE AGORA</span>
+    <h1>Faça sua doação</h1>
+    <p>Você pode contribuir com itens físicos (entregues pessoalmente na instituição) ou com uma doação financeira via Pix, processada em instantes.</p>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="titulo-section left">
+            <span>ITENS NECESSÁRIOS</span>
+            <h2>Necessidades prioritárias</h2>
+            <p class="lead">Estes itens podem ser entregues pessoalmente na instituição. Doações de itens físicos e dinheiro em espécie são sempre registradas manualmente pela nossa equipe.</p>
+        </div>
+        <div class="cards" id="itens-lista">
+            <!-- preenchido via JS -->
+        </div>
+    </div>
+</section>
+
+<section class="section section-soft">
+    <div class="container">
+
+        <div class="titulo-section">
+            <span>DOAÇÃO FINANCEIRA</span>
+            <h2>Contribua via Pix</h2>
+        </div>
+
+        <div class="stepper" id="donation-stepper">
+            <div class="step active" data-step="1"><span class="step-num">1</span><span class="label">Tipo de doação</span></div>
+            <div class="step" data-step="2"><span class="step-num">2</span><span class="label">Seus dados</span></div>
+            <div class="step" data-step="3"><span class="step-num">3</span><span class="label">Pagamento Pix</span></div>
+            <div class="step" data-step="4"><span class="step-num">4</span><span class="label">Comprovante</span></div>
+        </div>
+
+        <div class="form-shell">
+
+            <!-- STEP 1: tipo -->
+            <div class="donation-step" data-step="1">
+                <div class="form-group">
+                    <label>Como você prefere doar? <span class="req">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-card" id="card-espontanea">
+                            <input type="radio" name="tipoDoacao" value="espontanea" checked>
+                            <div>
+                                <strong>Doação espontânea</strong>
+                                <span class="desc">Sem se identificar. Rápida e anônima.</span>
+                            </div>
+                        </label>
+                        <label class="radio-card" id="card-associativa">
+                            <input type="radio" name="tipoDoacao" value="associativa">
+                            <div>
+                                <strong>Doação associativa</strong>
+                                <span class="desc">Informe seus dados e acompanhe seu histórico depois.</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="valorDoacao">Valor da doação (R$) <span class="req">*</span></label>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+                        <button type="button" class="btn btn-outline btn-sm valor-preset" data-valor="20">R$ 20</button>
+                        <button type="button" class="btn btn-outline btn-sm valor-preset" data-valor="50">R$ 50</button>
+                        <button type="button" class="btn btn-outline btn-sm valor-preset" data-valor="100">R$ 100</button>
+                        <button type="button" class="btn btn-outline btn-sm valor-preset" data-valor="200">R$ 200</button>
+                    </div>
+                    <input type="number" id="valorDoacao" min="5" step="1" placeholder="Ou digite outro valor">
+                    <div class="form-error"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-viridian" id="btn-step1-next">Continuar →</button>
+                </div>
+            </div>
+
+            <!-- STEP 2: dados (associativa) -->
+            <div class="donation-step" data-step="2" style="display:none;">
+                <div id="dados-associativos">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="doadorNome">Nome completo <span class="req">*</span></label>
+                            <input type="text" id="doadorNome">
+                            <div class="form-error"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="doadorCpf">CPF <span class="req">*</span></label>
+                            <input type="text" id="doadorCpf" placeholder="000.000.000-00">
+                            <div class="form-error"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="doadorEmail">E-mail <span class="req">*</span></label>
+                            <input type="email" id="doadorEmail">
+                            <div class="form-error"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="doadorTelefone">Telefone <span class="req">*</span></label>
+                            <input type="tel" id="doadorTelefone" placeholder="(00) 00000-0000">
+                            <div class="form-error"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="dados-espontanea-info" style="display:none;">
+                    <div class="alert alert-info"><span>ℹ️</span><div>Sua doação espontânea não exige nenhum dado de identificação. Basta confirmar o valor e prosseguir para o pagamento.</div></div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" id="btn-step2-back">← Voltar</button>
+                    <button type="button" class="btn btn-viridian" id="btn-step2-next">Gerar Pix →</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: pix -->
+            <div class="donation-step" data-step="3" style="display:none;">
+                <div style="text-align:center;">
+                    <p class="form-hint" style="font-size:.9rem;">Escaneie o QR code abaixo com o app do seu banco para concluir a doação de <strong id="valor-confirmacao"></strong>.</p>
+                    <div class="qr-box" id="qr-box"></div>
+                    <p class="form-hint">Código Pix copia-e-cola (simulado):</p>
+                    <div style="display:flex;gap:8px;max-width:420px;margin:0 auto 10px;">
+                        <input type="text" id="pixCode" readonly style="text-align:center;font-size:.78rem;">
+                        <button type="button" class="btn btn-outline btn-sm" id="btn-copy-pix">Copiar</button>
+                    </div>
+                    <div class="alert alert-warning" style="text-align:left;margin-top:20px;"><span>⏳</span><div>Sua doação foi registrada com status <strong>pendente</strong>. Assim que a API de pagamentos confirmar o Pix, o status muda automaticamente para <strong>confirmada</strong> — mesmo que você já tenha saído desta página.</div></div>
+                    <button type="button" class="btn btn-primary" id="btn-simular-pagamento" style="margin-top:10px;">Simular confirmação do pagamento</button>
+                    <p class="form-hint" style="margin-top:14px;">(Em produção, esta confirmação chega automaticamente da API de pagamentos de terceiros integrada ao sistema.)</p>
+                </div>
+            </div>
+
+            <!-- STEP 4: comprovante -->
+            <div class="donation-step" data-step="4" style="display:none;">
+                <div class="protocolo-box">
+                    <div style="font-size:2.2rem;">✅</div>
+                    <p style="font-weight:700;margin-top:8px;">Doação confirmada! Muito obrigado pelo seu carinho.</p>
+                    <div class="protocolo-code" id="comprovante-id"></div>
+                    <div class="info-grid" style="text-align:left;margin-top:20px;">
+                        <div class="info-field"><div class="info-label">Valor</div><div class="info-value" id="comp-valor"></div></div>
+                        <div class="info-field"><div class="info-label">Tipo</div><div class="info-value" id="comp-tipo"></div></div>
+                        <div class="info-field"><div class="info-label">Data</div><div class="info-value" id="comp-data"></div></div>
+                        <div class="info-field"><div class="info-label">Status</div><div class="info-value" id="comp-status"></div></div>
+                    </div>
+                </div>
+                <div class="form-actions" style="justify-content:center;margin-top:24px;">
+                    <a href="index.html" class="btn btn-outline">Voltar ao início</a>
+                    <button type="button" class="btn btn-viridian" id="btn-nova-doacao">Fazer outra doação</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="footer-grid">
+        <div>
+            <div class="logo" style="color:#fff;margin-bottom:14px;">
+                <span class="logo-mark">🌿</span>
+                <span>Recanto dos Velhinhos<span class="logo-sub" style="color:#9fb0ac;">Francisco Gonçalves Barbosa</span></span>
+            </div>
+            <p>ILPI dedicada ao cuidado, respeito e dignidade dos nossos idosos em Pinheiral/RJ.</p>
+        </div>
+        <div>
+            <h4>Navegação</h4>
+            <a href="institucional.html">Institucional</a>
+            <a href="campanhas.html">Campanhas &amp; Eventos</a>
+            <a href="doacoes.html">Doações</a>
+            <a href="noticias.html">Notícias</a>
+        </div>
+        <div>
+            <h4>Participe</h4>
+            <a href="voluntariado.html">Seja voluntário</a>
+            <a href="vagas.html">Trabalhe conosco</a>
+            <a href="consultar-status.html">Consultar status</a>
+            <a href="login.html">Entrar</a>
+        </div>
+    </div>
+    <p class="footer-bottom">© 2026 Recanto dos Velhinhos Francisco Gonçalves Barbosa • Pinheiral/RJ • Todos os direitos reservados</p>
+</footer>
+
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/nav.js"></script>
+<script src="assets/js/page-doacoes.js"></script>
+</body>
+</html>

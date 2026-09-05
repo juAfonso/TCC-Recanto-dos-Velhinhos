@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campanhas &amp; Eventos — Painel Administrativo</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <a href="dashboard.html" class="side-logo">
+            <span class="logo-mark">🌿</span>
+            <span>SAGE<br><small style="font-weight:400;font-size:.7rem;opacity:.7;">Painel Administrativo</small></span>
+        </a>
+        <nav class="admin-nav">
+            <a href="dashboard.html">📊 Visão Geral</a>
+            <div class="nav-section-label">Operação</div>
+            <a href="itens.html">📦 Itens Necessários</a>
+            <a href="campanhas.html" class="active">🎉 Campanhas &amp; Eventos</a>
+            <a href="doacoes.html">💸 Doações</a>
+            <a href="usuarios.html">👥 Usuários</a>
+            <div class="nav-section-label">Triagem</div>
+            <a href="triagem-voluntarios.html">🤝 Voluntários</a>
+            <a href="triagem-vagas.html">💼 Candidaturas a Vaga</a>
+            <a href="triagem-eventos.html">📅 Solicitações Externas</a>
+            <div class="nav-section-label">Comunicação</div>
+            <a href="noticias.html">📰 Notícias</a>
+        </nav>
+        <div class="side-foot">
+            <strong id="admin-session-name">Conta Administrativa</strong>
+            Acesso compartilhado da equipe
+            <button id="btn-admin-logout">Sair</button>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <div>
+                <span class="crumb">Painel Administrativo</span>
+                <h1>Campanhas &amp; Eventos</h1>
+            </div>
+            <button class="admin-menu-toggle" aria-label="Abrir menu">☰</button>
+            <button class="btn btn-viridian btn-sm" id="btn-nova-campanha">+ Nova campanha/evento</button>
+        </div>
+
+        <div class="admin-content">
+            <div class="panel">
+                <div class="table-toolbar">
+                    <div class="search-box">
+                        <span>🔎</span>
+                        <input type="text" id="busca-campanha" placeholder="Buscar por título...">
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr><th>Título</th><th>Data</th><th>Origem</th><th>Arrecadação</th><th>Status</th><th></th></tr>
+                        </thead>
+                        <tbody id="campanhas-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- MODAL: nova/editar campanha -->
+<div class="modal-overlay" id="modal-campanha">
+    <div class="modal">
+        <div class="modal-head">
+            <h3 id="modal-campanha-titulo">Nova campanha/evento</h3>
+            <button class="modal-close" data-close-modal="modal-campanha">✕</button>
+        </div>
+        <form id="form-campanha" novalidate>
+            <input type="hidden" id="camp-id">
+            <div class="form-group">
+                <label for="camp-titulo">Título <span class="req">*</span></label>
+                <input type="text" id="camp-titulo">
+                <div class="form-error"></div>
+            </div>
+            <div class="form-group">
+                <label for="camp-descricao">Descrição <span class="req">*</span></label>
+                <textarea id="camp-descricao"></textarea>
+                <div class="form-error"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="camp-data">Data <span class="req">*</span></label>
+                    <input type="date" id="camp-data">
+                    <div class="form-hint" id="camp-data-hint"></div>
+                    <div class="form-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="camp-meta">Meta de arrecadação (R$) <span class="req">*</span></label>
+                    <input type="number" id="camp-meta" min="0">
+                    <div class="form-error"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="camp-recursos">Recursos necessários <span class="req">*</span></label>
+                <textarea id="camp-recursos"></textarea>
+                <div class="form-error"></div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" data-close-modal="modal-campanha">Cancelar</button>
+                <button type="submit" class="btn btn-viridian">Salvar e publicar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="../assets/js/utils.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/admin-guard.js"></script>
+<script src="../assets/js/admin-modal.js"></script>
+<script src="../assets/js/admin-campanhas.js"></script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notícias — Painel Administrativo</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body>
+
+<div class="admin-shell">
+    <aside class="admin-sidebar">
+        <a href="dashboard.html" class="side-logo">
+            <span class="logo-mark">🌿</span>
+            <span>SAGE<br><small style="font-weight:400;font-size:.7rem;opacity:.7;">Painel Administrativo</small></span>
+        </a>
+        <nav class="admin-nav">
+            <a href="dashboard.html">📊 Visão Geral</a>
+            <div class="nav-section-label">Operação</div>
+            <a href="itens.html">📦 Itens Necessários</a>
+            <a href="campanhas.html">🎉 Campanhas &amp; Eventos</a>
+            <a href="doacoes.html">💸 Doações</a>
+            <a href="usuarios.html">👥 Usuários</a>
+            <div class="nav-section-label">Triagem</div>
+            <a href="triagem-voluntarios.html">🤝 Voluntários</a>
+            <a href="triagem-vagas.html">💼 Candidaturas a Vaga</a>
+            <a href="triagem-eventos.html">📅 Solicitações Externas</a>
+            <div class="nav-section-label">Comunicação</div>
+            <a href="noticias.html" class="active">📰 Notícias</a>
+        </nav>
+        <div class="side-foot">
+            <strong id="admin-session-name">Conta Administrativa</strong>
+            Acesso compartilhado da equipe
+            <button id="btn-admin-logout">Sair</button>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <div class="admin-topbar">
+            <div>
+                <span class="crumb">Painel Administrativo</span>
+                <h1>Divulgação Institucional</h1>
+            </div>
+            <button class="admin-menu-toggle" aria-label="Abrir menu">☰</button>
+            <button class="btn btn-viridian btn-sm" id="btn-nova-noticia">+ Publicar notícia</button>
+        </div>
+
+        <div class="admin-content">
+            <div class="panel">
+                <div class="panel-head">
+                    <h2>Notícias publicadas</h2>
+                    <span class="panel-sub">Cada publicação tenta sincronizar automaticamente com o Instagram integrado</span>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Título</th><th>Publicada em</th><th>Sincronização</th><th></th></tr></thead>
+                        <tbody id="noticias-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- MODAL: nova notícia -->
+<div class="modal-overlay" id="modal-noticia">
+    <div class="modal">
+        <div class="modal-head">
+            <h3>Publicar notícia</h3>
+            <button class="modal-close" data-close-modal="modal-noticia">✕</button>
+        </div>
+        <form id="form-noticia" novalidate>
+            <div class="form-group">
+                <label for="not-titulo">Título <span class="req">*</span></label>
+                <input type="text" id="not-titulo">
+                <div class="form-error"></div>
+            </div>
+            <div class="form-group">
+                <label for="not-conteudo">Conteúdo <span class="req">*</span></label>
+                <textarea id="not-conteudo" style="min-height:150px;"></textarea>
+                <div class="form-error"></div>
+            </div>
+            <div class="form-group">
+                <label class="checkbox-line">
+                    <input type="checkbox" id="not-sincronizar" checked>
+                    <span>Tentar sincronizar com o Instagram integrado ao publicar</span>
+                </label>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" data-close-modal="modal-noticia">Cancelar</button>
+                <button type="submit" class="btn btn-viridian">Publicar no Portal Público</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="../assets/js/utils.js"></script>
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/admin-guard.js"></script>
+<script src="../assets/js/admin-modal.js"></script>
+<script src="../assets/js/admin-noticias.js"></script>
+</body>
+</html>

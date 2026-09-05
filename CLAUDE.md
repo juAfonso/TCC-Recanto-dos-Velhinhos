@@ -74,12 +74,21 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   voluntariado, autoatendimento, consultar-status, solicitar-evento e uma
   pasta `admin/` separada. Ele será integrado ao projeto Spec Kit como base
   do plano técnico — não é descartável, é ponto de partida.
-  **Atenção (2026-09-04): o protótipo ainda NÃO está no repositório.** Ele
-  vive em `C:\Users\afons\Downloads\recanto-frontend\recanto-frontend` na
-  máquina da Julia — 21 páginas HTML, `assets/css/style.css` (design system,
-  1267 linhas) e 24 módulos JS com dados mock em `localStorage`. Copiar para
-  dentro do repo e commitar é pré-requisito da implementação. Cuidado: a
-  pasta tem ~9,6 MB por causa de `assets/video/hero-video.mp4`.
+  **Está no repositório em `public/` desde 2026-09-04.**
+- **Versão do front (atualizado em 2026-09-05):** vale a entregue como
+  `recanto-frontend-completo`, que substituiu a primeira versão. Ela traz
+  identidade visual verde, logo real (`assets/img/logo-icon.png`) usado no
+  cabeçalho de todas as telas, e ajustes em quase todas as páginas. A versão
+  anterior foi excluída do disco; se precisar dela por algum motivo, está
+  preservada no commit `dfaf3bc`.
+- **O vídeo do hero foi removido em 2026-09-05.** `assets/video/hero-video.mp4`
+  pesava 9,3 dos 9,6 MB do front. Foi trocado por `assets/img/hero.jpg`, um
+  quadro extraído do próprio vídeo, e a classe CSS passou de `.hero-video`
+  para `.hero-image`. Motivos: peso no repositório, consumo de dados móveis
+  e autoplay atrapalhando leitor de tela (Princípios II e V). **A imagem é
+  provisória** — é stock do modelo MANAS, não retrata o Recanto e mostra
+  bebida alcoólica, o que é inadequado para uma ILPI. Trocar por foto real
+  assim que a instituição fornecer.
 - **Se a operação exigir recursos além do plano gratuito no futuro** (mais
   tráfego, domínio próprio), migrar para um plano pago é decisão e custo da
   instituição — não uma obrigação de manutenção contínua do grupo depois da
@@ -222,11 +231,17 @@ recente do spec.md, não esta lista resumida.
    não o documento final. Lembrar que o CSU01 lá **substitui** a versão
    antiga, não se soma a ela.
 2. O protótipo em `public/` ainda tem `doacoes.html` e `admin/doacoes.html`
-   descrevendo o fluxo com API de pagamentos, e o `public/README.md` ainda
-   cita a stack abandonada (C#/MySQL) e as credenciais de demonstração
-   `admin`/`admin123` — que não podem sobreviver ao `db/seed.js` real.
-3. `assets/img` do protótipo está vazia: todas as fotos institucionais ainda
-   precisam vir do Recanto, cada uma com texto alternativo (Princípio II).
+   descrevendo o fluxo com API de pagamentos — precisam virar declaração do
+   doador + conferência manual.
+3. Fotos institucionais reais ainda precisam vir do Recanto (a imagem do hero
+   é provisória, ver acima), cada uma com texto alternativo (Princípio II).
+4. **Bug de responsividade no cabeçalho:** em 375 px o logo colide com o menu
+   e o botão "Entrar". Afeta todas as telas e viola o Princípio V.
+5. O botão "Fazer Doação" está em magenta da paleta antiga, destoando da
+   identidade verde do restante.
+6. As credenciais de demonstração do `public/README.md` (`admin`/`admin123`
+   e as de autoatendimento) existem só na camada mock e **não podem**
+   sobreviver ao `db/seed.js` real.
 
 ## Inegociável
 

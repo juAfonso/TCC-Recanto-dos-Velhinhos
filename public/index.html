@@ -12,7 +12,7 @@
 <header>
     <nav class="navbar">
         <a href="index.html" class="logo">
-            <span class="logo-mark">🌿</span>
+            <img src="assets/img/logo-icon.png" alt="Recanto dos Velhinhos Francisco Gonçalves Barbosa" class="logo-mark">
             <span>Recanto dos Velhinhos<span class="logo-sub">Francisco Gonçalves Barbosa</span></span>
         </a>
         <button class="menu-toggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
@@ -39,9 +39,7 @@
 </header>
 
 <section class="hero">
-    <video autoplay muted loop playsinline class="hero-video">
-        <source src="assets/video/hero-video.mp4" type="video/mp4">
-    </video>
+    <img src="assets/img/hero.jpg" alt="" class="hero-image" fetchpriority="high">
     <div class="overlay"></div>
     <div class="hero-content">
         <span class="subtitle">CUIDADO • RESPEITO • DIGNIDADE</span>
@@ -56,19 +54,25 @@
 
 <section class="beneficios">
     <div class="beneficio">
-        <span class="icon">💚</span>
-        <h3>Cuidado Humanizado</h3>
-        <p>Equipe preparada para oferecer atenção, respeito e acolhimento a cada residente.</p>
+        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="#8E3B46" class="bi bi-envelope-open-heart" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8.47 1.318a1 1 0 0 0-.94 0l-6 3.2A1 1 0 0 0 1 5.4v.817l3.235 1.94a2.8 2.8 0 0 0-.233 1.027L1 7.384v5.733l3.479-2.087q.224.414.558.83l-4.002 2.402A1 1 0 0 0 2 15h12a1 1 0 0 0 .965-.738l-4.002-2.401q.334-.418.558-.831L15 13.117V7.383l-3.002 1.801a2.8 2.8 0 0 0-.233-1.026L15 6.217V5.4a1 1 0 0 0-.53-.882zM7.06.435a2 2 0 0 1 1.882 0l6 3.2A2 2 0 0 1 16 5.4V14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V5.4a2 2 0 0 1 1.059-1.765zM8 7.993c1.664-1.711 5.825 1.283 0 5.132-5.825-3.85-1.664-6.843 0-5.132"/>
+</svg></span>
+        <h3>Apoie o Recanto</h3>
+        <p>Sua contribuição ajuda a garantir mais conforto, cuidado e qualidade de vida para nossos residentes.</p>
     </div>
     <div class="beneficio">
-        <span class="icon">🎨</span>
-        <h3>Atividades Diárias</h3>
-        <p>Exercícios, oficinas e atividades para estimular a convivência e o bem-estar.</p>
+        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="#8E3B46" class="bi bi-megaphone-fill" viewBox="0 0 16 16">
+  <path d="M13 2.5a1.5 1.5 0 0 1 3 0v11a1.5 1.5 0 0 1-3 0zm-1 .724c-2.067.95-4.539 1.481-7 1.656v6.237a25 25 0 0 1 1.088.085c2.053.204 4.038.668 5.912 1.56zm-8 7.841V4.934c-.68.027-1.399.043-2.008.053A2.02 2.02 0 0 0 0 7v2c0 1.106.896 1.996 1.994 2.009l.496.008a64 64 0 0 1 1.51.048m1.39 1.081q.428.032.85.078l.253 1.69a1 1 0 0 1-.983 1.187h-.548a1 1 0 0 1-.916-.599l-1.314-2.48a66 66 0 0 1 1.692.064q.491.026.966.06"/>
+</svg></span>
+        <h3>Faça Parte</h3>
+        <p>Divulgue o trabalho do Recanto e nos ajude a alcançar mais pessoas da comunidade.</p>
     </div>
     <div class="beneficio">
-        <span class="icon">🏡</span>
-        <h3>Ambiente Seguro</h3>
-        <p>Estrutura adaptada para garantir conforto, segurança e tranquilidade.</p>
+        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="#8E3B46" class="bi bi-suit-heart-fill" viewBox="0 0 16 16">
+  <path d="M4 1c2.21 0 4 1.755 4 3.92C8 2.755 9.79 1 12 1s4 1.755 4 3.92c0 3.263-3.234 4.414-7.608 9.608a.513.513 0 0 1-.784 0C3.234 9.334 0 8.183 0 4.92 0 2.755 1.79 1 4 1"/>
+</svg></span>
+        <h3>Transforme com sua Doação</h3>
+        <p>Cada doação, seja em dinheiro ou em produtos, contribui diretamente para as necessidades dos nossos residentes.</p>
     </div>
 </section>
 
@@ -116,16 +120,23 @@
     </div>
     <div class="contato-grid">
         <div>
-            <h3>Instagram 📷</h3>
+            <h3>Instagram <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
+  <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334"/>
+</svg></h3>
+            
             <a href="https://www.instagram.com/asilo_pinheiral" target="_blank" rel="noopener">@asilo_pinheiral</a>
         </div>
         <div>
-            <h3>Endereço 📍</h3>
+            <h3>Endereço <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt-fill" viewBox="0 0 16 16">
+  <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"/>
+</svg></h3>
             <p>R. Francisco Ribeiro de Abreu, 60</p>
             <p>Centro, Pinheiral - RJ, 27197-000</p>
         </div>
         <div>
-            <h3>Contato 📞</h3>
+            <h3>Contato <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-telephone-fill" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M1.885.511a1.745 1.745 0 0 1 2.61.163L6.29 2.98c.329.423.445.974.315 1.494l-.547 2.19a.68.68 0 0 0 .178.643l2.457 2.457a.68.68 0 0 0 .644.178l2.189-.547a1.75 1.75 0 0 1 1.494.315l2.306 1.794c.829.645.905 1.87.163 2.611l-1.034 1.034c-.74.74-1.846 1.065-2.877.702a18.6 18.6 0 0 1-7.01-4.42 18.6 18.6 0 0 1-4.42-7.009c-.362-1.03-.037-2.137.703-2.877z"/>
+</svg></h3>
             <p>(24) 3356-2801</p>
             <p>contato@recantodosvelhinhos.org.br</p>
         </div>
@@ -136,7 +147,7 @@
     <div class="footer-grid">
         <div>
             <div class="logo" style="color:#fff;margin-bottom:14px;">
-                <span class="logo-mark">🌿</span>
+                <img src="assets/img/logo-icon.png" alt="Recanto dos Velhinhos Francisco Gonçalves Barbosa" class="logo-mark">
                 <span>Recanto dos Velhinhos<span class="logo-sub" style="color:#9fb0ac;">Francisco Gonçalves Barbosa</span></span>
             </div>
             <p>ILPI dedicada ao cuidado, respeito e dignidade dos nossos idosos em Pinheiral/RJ.</p>

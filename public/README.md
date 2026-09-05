@@ -58,9 +58,17 @@ recanto-frontend/
     │   ├── utils.js                → Helpers (toasts, formatação, protocolo, badges)
     │   ├── nav.js / admin-guard.js / admin-modal.js → comportamento de UI
     │   └── page-*.js / admin-*.js  → lógica específica de cada tela
-    ├── video/hero-video.mp4       → Vídeo de fundo do hero (herdado do modelo MANAS)
     └── img/
+        ├── hero.jpg               → Imagem de fundo do hero
+        ├── logo-icon.png          → Logo usado no cabeçalho de todas as telas
+        └── instagram-icon.png     → Ícone do Instagram (ainda não referenciado)
 ```
+
+> O vídeo de fundo do hero (`assets/video/hero-video.mp4`, 9,3 MB, herdado do modelo MANAS)
+> foi substituído por uma imagem estática em 2026-09-05: pesava quase todo o repositório,
+> consumia dados móveis do visitante e o autoplay atrapalha leitores de tela
+> (Princípios II e V da constituição). A imagem atual é um quadro extraído do próprio
+> vídeo e **é provisória** — ver "Próximos passos".
 
 ## Identidade visual
 
@@ -118,6 +126,27 @@ location.reload();
 
 ## Próximos passos (fora do escopo deste front-end)
 
-Integração com backend real (API C#/MySQL conforme especificado no TCC),
-autenticação segura, upload real de arquivos, integração com API de pagamentos
-Pix e sincronização real com redes sociais.
+Substituir a camada mock (`assets/js/data.js`) por chamadas `fetch` às funções serverless
+em `/api`, com PostgreSQL no Neon e arquivos no Vercel Blob. Ver o plano técnico em
+`specs/001-portal-painel-ilpi/plan.md`.
+
+> **A stack NÃO é mais C#/MySQL.** Essa era a stack original do TCC, abandonada em favor de
+> Vercel + Neon/PostgreSQL. Versões antigas deste README diziam o contrário — se encontrar
+> essa menção em algum lugar, é sinal de arquivo desatualizado. Ver `CLAUDE.md`.
+
+Também pendentes:
+
+- **Substituir a imagem do hero** por uma foto real do Recanto. A atual é um quadro do vídeo
+  de stock herdado do modelo MANAS: não retrata a instituição e mostra bebida alcoólica, o
+  que é inadequado para uma ILPI.
+- **Preencher `assets/img` com fotos reais** da instituição, equipe e campanhas, cada uma com
+  texto alternativo descritivo (Princípio II).
+- **Trocar as credenciais de demonstração.** As senhas listadas acima existem apenas na
+  camada mock. Elas **não podem** ser reaproveitadas no `db/seed.js` real nem chegar a
+  produção.
+- **Corrigir o cabeçalho no mobile**: em telas de 375 px o logo colide com o menu e o botão
+  "Entrar" (Princípio V).
+- **Revisar a cor do botão "Fazer Doação"**, ainda em magenta da paleta antiga enquanto o
+  restante da identidade já é verde.
+- Adicionar as telas novas previstas no plano: `aviso-privacidade.html`,
+  `solicitar-direitos.html`, `admin/pix.html` e `admin/solicitacoes-titular.html`.

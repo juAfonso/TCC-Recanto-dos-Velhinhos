@@ -214,14 +214,19 @@ para FR-001–FR-059 (incluindo FR-007a e FR-049a), com as adições listadas em
 "Decisões já tomadas" — ao consultar requisito por número, usar a versão mais
 recente do spec.md, não esta lista resumida.
 
-**Pendências (2026-09-04):**
+**Pendências (atualizado em 2026-09-05):**
 
-1. O PRD e a seção 19 do documento do TCC ainda precisam incorporar o CSU11 e
-   os FRs de LGPD, seguindo o padrão de documentação de caso de uso definido
-   acima. O spec.md já está atualizado.
-2. O PRD, a seção 19 e o CSU01 precisam ser reescritos para o Pix estático
-   (declaração do doador + conferência manual). O spec.md e a constituição já
-   estão atualizados; o CSU01 aguarda ciência do orientador.
+1. O CSU01 reescrito (Pix estático) e o CSU11 novo (LGPD) já estão redigidos
+   no formato de caso de uso do TCC em `docs/casos-de-uso-tcc.md`. **Falta
+   colar no PRD e na seção 19** do documento do TCC — o arquivo é a redação,
+   não o documento final. Lembrar que o CSU01 lá **substitui** a versão
+   antiga, não se soma a ela.
+2. O protótipo em `public/` ainda tem `doacoes.html` e `admin/doacoes.html`
+   descrevendo o fluxo com API de pagamentos, e o `public/README.md` ainda
+   cita a stack abandonada (C#/MySQL) e as credenciais de demonstração
+   `admin`/`admin123` — que não podem sobreviver ao `db/seed.js` real.
+3. `assets/img` do protótipo está vazia: todas as fotos institucionais ainda
+   precisam vir do Recanto, cada uma com texto alternativo (Princípio II).
 
 ## Inegociável
 

@@ -32,7 +32,7 @@ declaração do doador conferida manualmente pela equipe.
 
 ## Technical Context
 
-**Language/Version**: JavaScript ES2022 — navegador (sem transpilação) e Node.js 20 nas funções
+**Language/Version**: JavaScript ES2022 — navegador (sem transpilação) e Node.js 24 LTS nas funções
 serverless.
 
 **Primary Dependencies**: deliberadamente mínimas (Princípio I). `@neondatabase/serverless` (driver
@@ -48,7 +48,7 @@ ORM, sem biblioteca de autenticação, sem build step.** Justificativas em `rese
 de doação), FR-045 (protocolo), FR-055 (anonimização) e FR-047 (controle de acesso). Demais telas
 verificadas manualmente pelos portões da constituição.
 
-**Target Platform**: Vercel (estático + funções serverless Node.js 20). Navegadores: versões mais
+**Target Platform**: Vercel (estático + funções serverless Node.js 24 LTS). Navegadores: versões mais
 recentes de Chrome, Firefox, Edge e Safari, desktop e mobile.
 
 **Project Type**: aplicação web — front-end estático + API serverless.
@@ -134,7 +134,7 @@ public/                          # front-end estático (do protótipo recanto-fr
     │   ├── auth.js · nav.js · utils.js
     │   ├── page-*.js · admin-*.js
     │   └── consentimento.js     # NOVO — FR-051/FR-052
-    ├── img/ · video/
+    └── img/                     # hero.jpg, logo-icon.png (sem vídeo — removido em 2026-09-05)
 
 api/                             # funções serverless (Vercel)
 ├── _lib/                        # módulos compartilhados, não são endpoints

@@ -11,7 +11,7 @@ Guia de execução e validação. Detalhes de modelo estão em `data-model.md`, 
 
 | Item | Observação |
 |---|---|
-| Node.js 20+ | runtime das funções serverless |
+| Node.js 24 LTS | runtime das funções serverless |
 | Conta Neon | projeto PostgreSQL criado, plano gratuito |
 | Conta Vercel | com Blob habilitado |
 | Vercel CLI | `npm i -g vercel` — roda as funções serverless localmente |

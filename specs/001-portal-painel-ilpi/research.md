@@ -11,7 +11,7 @@ A pergunta aplicada a cada item foi: *qual é a menor peça que resolve o requis
 ## D1 — Arquitetura da aplicação
 
 **Decisão**: páginas HTML/CSS/JS estáticas servidas pela Vercel + funções serverless em `/api`
-(Node.js 20). Sem framework de front-end, sem build step.
+(Node.js 24 LTS). Sem framework de front-end, sem build step.
 
 **Justificativa**: o protótipo `recanto-frontend` já entrega 21 telas e um design system de 1267
 linhas de CSS em HTML/CSS/JS puro. Migrar para React/Next.js jogaria fora o HTML dessas telas e
@@ -79,7 +79,7 @@ seria acesso sem verificação. Daí a indireção obrigatória pela função.
 `Secure`, `SameSite=Lax`. Senhas com `scrypt` do `node:crypto`, salt por usuário. Zero dependências
 externas.
 
-**Justificativa**: o Princípio I pede a menor solução que atenda ao requisito. O Node 20 já traz
+**Justificativa**: o Princípio I pede a menor solução que atenda ao requisito. O Node 24 já traz
 `scrypt` (função de derivação de chave resistente a força bruta, recomendada pelo OWASP) e HMAC.
 Adicionar `bcrypt` (compilação nativa, problemática em serverless), `jsonwebtoken` ou uma biblioteca
 de sessão inteira não resolveria nada que o runtime já não resolva.
@@ -149,7 +149,7 @@ deixar histórico versionado, contrariando a rastreabilidade que o Princípio II
 
 ## D8 — Estratégia de testes
 
-**Decisão**: `node:test` (runner nativo do Node 20) sobre as quatro regras críticas escolhidas pelo
+**Decisão**: `node:test` (runner nativo do Node 24) sobre as quatro regras críticas escolhidas pelo
 grupo: não-duplicação de confirmação de doação (FR-050), geração de protocolo (FR-045), anonimização
 (FR-055) e controle de acesso por perfil (FR-047). Demais telas verificadas manualmente pelos
 portões da constituição.

@@ -2,7 +2,7 @@
 
 **Feature**: `001-portal-painel-ilpi` · **Data**: 2026-09-04 · **Fase**: 1
 
-Funções serverless em `/api` na Vercel (Node.js 20). Todas as respostas são JSON UTF-8. Todo texto
+Funções serverless em `/api` na Vercel (Node.js 24 LTS). Todas as respostas são JSON UTF-8. Todo texto
 voltado ao usuário final vai em português do Brasil, sem jargão (Princípio I).
 
 ---

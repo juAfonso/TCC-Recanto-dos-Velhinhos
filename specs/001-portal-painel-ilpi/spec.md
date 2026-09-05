@@ -16,6 +16,7 @@
 - Q: Quando a API de pagamentos de terceiros está indisponível ou retorna erro ao tentar iniciar uma doação Pix (gerar QR code), o que o sistema deve fazer? → A: O sistema não cria o registro de doação; exibe uma mensagem de erro ao visitante e sugere tentar novamente em instantes.
 - Q: Se o envio automático do e-mail de confirmação (FR-049) falhar, o cadastro de voluntário/candidatura/solicitação já enviado deve ser mantido, ou a falha deve impedir/reverter o registro? → A: O registro é sempre mantido. O sistema tenta reenviar o e-mail automaticamente mais uma vez após um intervalo; se ainda assim falhar, o sistema registra a falha de envio internamente para que a equipe possa reenviar ou contatar manualmente.
 - Q: Qual o valor concreto da "janela razoável" de espera antes de uma doação Pix ser tratada como definitivamente pendente (aguardando conciliação manual)? → A: 15 minutos.
+- Q: O spec deve incluir requisitos explícitos de conformidade com a LGPD nesta versão, ou isso fica como responsabilidade da instituição fora do escopo do sistema? → A: Incluir LGPD nesta versão — consentimento explícito nos formulários públicos, aviso de privacidade, direitos do titular (acesso, correção, anonimização, revogação de consentimento) e política de retenção. FR-024 é reescrito para distinguir exclusão física (que permanece proibida) de anonimização a pedido do titular (permitida, preservando histórico e auditoria).
 
 ## User Scenarios & Testing (mandatory)
 
@@ -166,6 +167,24 @@ Um voluntário com cadastro pendente, um candidato a vaga, um solicitante de eve
 1. Given uma submissão ou doação foi enviada, When o solicitante informa o protocolo recebido, Then o sistema exibe o status atual correspondente.
 2. Given um protocolo informado não corresponde a nenhuma submissão ou doação existente, When a consulta é feita, Then o sistema informa que não encontrou nenhum registro, sem revelar dados de outras submissões.
 
+### User Story 11 - Exercício de Direitos do Titular de Dados (LGPD) (Priority: P2)
+
+Uma pessoa cujos dados pessoais estão no sistema (voluntário, candidato a vaga, doador associado ou solicitante externo) consulta o aviso de privacidade no Portal Público, e pode solicitar acesso aos seus próprios dados, correção, revogação do consentimento ou anonimização. A equipe administrativa recebe, avalia e atende essas solicitações pelo Painel Administrativo, e o titular acompanha o andamento pelo código de protocolo.
+
+**Why this priority**: A coleta de dados pessoais (CPF, endereço, dados de menores de idade, currículos) começa já nas User Stories 2, 4, 5 e 6 — sem consentimento registrado e sem canal de exercício de direitos, a operação real da instituição fica em desconformidade com a LGPD desde o primeiro cadastro. A captura de consentimento (FR-051/FR-052) não pode ser adiada: ela acompanha as próprias histórias que coletam dados. O fluxo de atendimento das solicitações do titular pode vir logo em seguida.
+
+**Independent Test**: Pode ser testado enviando um cadastro de voluntário sem aceitar o consentimento (deve ser bloqueado), depois com aceite (deve registrar data/hora e finalidade), e em seguida abrindo uma solicitação de anonimização por esse titular, verificando que a equipe consegue atendê-la, que os dados pessoais deixam de ser legíveis e que o histórico/auditoria do registro permanece íntegro.
+
+**Acceptance Scenarios**:
+
+1. Given um visitante preenche um formulário público que coleta dados pessoais (voluntário, candidatura, doação associativa ou solicitação externa), When ele tenta enviar sem aceitar explicitamente o aviso de privacidade, Then o sistema impede o envio e explica que o aceite é obrigatório.
+2. Given um visitante aceita o aviso de privacidade e envia o formulário, When o registro é criado, Then o sistema armazena o consentimento com data/hora, finalidade e versão do texto aceito.
+3. Given um titular quer exercer seus direitos, When ele acessa o Portal Público, Then encontra o aviso de privacidade e o canal de solicitação acessíveis sem login.
+4. Given um titular solicita anonimização dos seus dados, When a equipe atende a solicitação, Then os dados pessoais identificáveis daquele cadastro deixam de ser legíveis no sistema, enquanto o registro, seu histórico e a trilha de auditoria permanecem íntegros.
+5. Given um titular solicita anonimização mas possui doações confirmadas sujeitas a retenção legal/contábil, When a equipe avalia a solicitação, Then o sistema mantém os dados estritamente necessários à obrigação legal, anonimiza o restante, e o titular é informado do que foi retido e por quê.
+6. Given um voluntário ativo revoga seu consentimento, When a revogação é registrada, Then o sistema interrompe o uso dos dados para as finalidades revogadas e sinaliza o cadastro à equipe para as providências cabíveis, sem excluir fisicamente o registro.
+7. Given um titular abre uma solicitação de direitos, When ele conclui o envio, Then recebe um código de protocolo e pode consultar o status dessa solicitação sem login (FR-044).
+
 ## Edge Cases
 
 - Como o sistema trata uma tentativa de cadastro de voluntário menor de idade sem o anexo de autorização do responsável legal?
@@ -179,6 +198,9 @@ Um voluntário com cadastro pendente, um candidato a vaga, um solicitante de eve
 - O que acontece quando um voluntário ou doador associado esquece a senha da área de autoatendimento? → Resolvido via FR-046: redefinição por e-mail, sem intervenção de um funcionário.
 - Como o sistema evita que alguém descubra o status de submissões de outras pessoas tentando adivinhar ou testar códigos de protocolo?
 - O que acontece quando a confirmação de pagamento de uma doação Pix chega depois que o visitante já saiu da página, sem ver o comprovante em tempo real? → Resolvido via FR-045: o doador recebe um código de protocolo ao iniciar a doação e pode consultar o status e recuperar o comprovante posteriormente, independentemente de ter permanecido na página original.
+- O que acontece quando um titular pede anonimização mas seus dados são necessários ao cumprimento de obrigação legal (ex.: doações confirmadas sujeitas a prestação de contas)? → Resolvido via FR-055: o sistema retém apenas os dados estritamente necessários à obrigação legal, anonimiza o restante, e informa o titular sobre o que foi retido e por quê.
+- O que acontece com o cadastro de um voluntário ativo que revoga o consentimento? → Resolvido via FR-057: o uso dos dados para as finalidades revogadas é interrompido e o cadastro é sinalizado à equipe, sem exclusão física do registro (FR-024).
+- O que acontece com os dados pessoais de uma candidatura ou cadastro de voluntário rejeitado que ultrapassa o prazo de retenção definido? → Resolvido via FR-056: o sistema sinaliza o registro para anonimização ao fim do prazo de retenção, preservando dados estatísticos não identificáveis.
 
 ## Requirements (mandatory)
 
@@ -225,7 +247,7 @@ Um voluntário com cadastro pendente, um candidato a vaga, um solicitante de eve
 **Gestão de Usuários (Painel Administrativo)**
 
 - **FR-023**: O sistema DEVE permitir cadastro, consulta, alteração e inativação de usuários dos perfis funcionário, voluntário e doador associado, buscáveis por CPF ou e-mail.
-- **FR-024**: O sistema NÃO PODE permitir exclusão definitiva de nenhum usuário; inativação é a única forma de remoção de acesso.
+- **FR-024**: O sistema NÃO PODE permitir exclusão física (definitiva) do registro de nenhum usuário; a inativação é a única forma de remoção de acesso. Atender a um pedido de anonimização do titular (FR-055) NÃO configura exclusão física: os dados pessoais identificáveis deixam de ser legíveis, mas o registro, seu histórico e a trilha de auditoria permanecem íntegros.
 - **FR-025**: O sistema DEVE definir o nível de acesso de cada usuário autenticado de acordo com seu perfil (funcionário, voluntário, doador associado).
 
 **Gestão de Itens Necessários**
@@ -275,7 +297,7 @@ Um voluntário com cadastro pendente, um candidato a vaga, um solicitante de eve
 **Acompanhamento de Status pelo Público Externo**
 
 - **FR-043**: O sistema DEVE gerar um código de protocolo único para cada cadastro de voluntário, candidatura a vaga e solicitação de evento/campanha, exibido ao autor da submissão no momento do envio.
-- **FR-044**: O sistema DEVE permitir que qualquer pessoa consulte o status de uma submissão (cadastro de voluntário, candidatura a vaga, solicitação de evento/campanha ou doação) informando o código de protocolo recebido, sem necessidade de login, e sem exigir nem expor nenhum outro dado pessoal do solicitante nessa consulta.
+- **FR-044**: O sistema DEVE permitir que qualquer pessoa consulte o status de uma submissão (cadastro de voluntário, candidatura a vaga, solicitação de evento/campanha, doação ou solicitação de titular de dados — FR-059) informando o código de protocolo recebido, sem necessidade de login, e sem exigir nem expor nenhum outro dado pessoal do solicitante nessa consulta.
 
 **Rastreabilidade de Doações**
 
@@ -302,6 +324,18 @@ Um voluntário com cadastro pendente, um candidato a vaga, um solicitante de eve
 
 - **FR-050**: O sistema DEVE tratar de forma idempotente as notificações de confirmação de pagamento recebidas da API de pagamentos para uma mesma doação: se a doação já estiver com status confirmada, uma nova notificação para o mesmo protocolo/ID de transação NÃO PODE alterar o registro nem gerar novo comprovante.
 
+**Proteção de Dados Pessoais (LGPD)**
+
+- **FR-051**: O sistema DEVE exigir aceite explícito do aviso de privacidade em todo formulário público que colete dados pessoais (cadastro de voluntário, candidatura a vaga, doação associativa e solicitação externa de evento/campanha), impedindo o envio sem esse aceite. A doação espontânea, por não coletar dados de identificação (FR-005), está dispensada.
+- **FR-052**: O sistema DEVE registrar, junto a cada aceite de consentimento, a data/hora, a finalidade do tratamento e a versão do texto do aviso de privacidade aceito.
+- **FR-053**: O sistema DEVE disponibilizar publicamente, sem exigir login, um aviso de privacidade descrevendo quais dados são coletados, com que finalidade, por quanto tempo são retidos e por qual canal o titular exerce seus direitos.
+- **FR-054**: O sistema DEVE permitir que o titular solicite acesso aos seus próprios dados e a correção deles, tanto pela área de autoatendimento (FR-041), quando aplicável, quanto por um canal público de solicitação identificado por código de protocolo.
+- **FR-055**: O sistema DEVE permitir que a equipe administrativa atenda a um pedido de anonimização, tornando ilegíveis os dados pessoais identificáveis do titular sem excluir fisicamente o registro (FR-024) e preservando histórico e auditoria (FR-035). Quando parte dos dados for necessária ao cumprimento de obrigação legal ou regulatória, o sistema DEVE reter apenas esses dados, anonimizar o restante e permitir informar ao titular o que foi retido e por quê.
+- **FR-056**: O sistema DEVE aplicar prazos de retenção por categoria de dado (candidaturas e cadastros de voluntário rejeitados, anexos de currículo e autorização de responsável legal), sinalizando à equipe os registros que atingiram o fim do prazo para anonimização, preservando dados estatísticos não identificáveis.
+- **FR-057**: O sistema DEVE permitir que o titular revogue o consentimento previamente concedido, registrando a revogação, interrompendo o uso dos dados para as finalidades revogadas e sinalizando o cadastro à equipe administrativa, sem exclusão física do registro.
+- **FR-058**: O sistema DEVE tratar os dados de menores de idade (cadastro de voluntário e anexo de autorização do responsável legal) com acesso restrito a perfis autorizados e consentimento específico do responsável legal registrado no ato do cadastro.
+- **FR-059**: O sistema DEVE registrar toda solicitação de exercício de direitos do titular com código de protocolo, status e data, permitindo consulta pública do andamento pelo protocolo (FR-044) e acompanhamento das pendências pela equipe no Painel Administrativo.
+
 ## Key Entities
 
 - **Usuário**: pessoa com acesso ao sistema. Possui um ou mais perfis (funcionário, voluntário e/ou doador associado) associados ao mesmo CPF — uma pessoa pode acumular mais de um perfil simultaneamente (FR-048) —, dados de identificação (nome, CPF, e-mail, telefone) e status (ativo/inativo). Funcionários acessam o Painel Administrativo por conta(s) administrativa(s) compartilhada(s); voluntários aprovados e doadores associados possuem login próprio de autoatendimento restrito aos seus próprios dados, com redefinição de senha por e-mail (FR-046). O cadastro de voluntário carrega ainda um código de protocolo e um status de triagem (pendente/aprovado/rejeitado) até a efetivação como voluntário ativo.
@@ -312,6 +346,8 @@ Um voluntário com cadastro pendente, um candidato a vaga, um solicitante de eve
 - **Solicitação de Evento/Campanha Externa**: submissão de terceiros propondo um evento/campanha. Possui dados de contato, tipo, objetivo, data pretendida, recursos esperados, código de protocolo e status (em análise/aprovada/rejeitada, com motivo quando rejeitada).
 - **Notícia/Atualização Institucional**: conteúdo de divulgação publicado no Portal Público, com status de sincronização com redes sociais integradas.
 - **Autorização de Responsável Legal**: anexo vinculado ao cadastro de um voluntário menor de idade, acessível apenas a perfis autorizados.
+- **Registro de Consentimento**: comprovação do aceite do aviso de privacidade por um titular. Possui vínculo com a submissão/cadastro correspondente, data/hora do aceite, finalidade do tratamento, versão do texto aceito e status (vigente/revogado, com data da revogação quando aplicável).
+- **Solicitação de Titular de Dados**: pedido de exercício de direito previsto na LGPD (acesso, correção, anonimização ou revogação de consentimento). Possui tipo, dados de contato do solicitante, código de protocolo, status (em análise/atendida/recusada, com motivo quando recusada) e data.
 
 ## Success Criteria (mandatory)
 
@@ -330,6 +366,9 @@ Um voluntário com cadastro pendente, um candidato a vaga, um solicitante de eve
 - **SC-011**: Um solicitante externo consegue consultar o status atual da própria submissão usando o protocolo recebido, sem precisar contatar a equipe por telefone ou e-mail, em menos de 1 minuto.
 - **SC-012**: Um voluntário aprovado ou um doador associado consegue consultar seus próprios dados/histórico pela área de autoatendimento sem depender de a equipe administrativa levantar essa informação manualmente.
 - **SC-013**: O e-mail automático de confirmação de envio (FR-049) é entregue ao autor da submissão em até 5 minutos após o registro.
+- **SC-014**: 100% dos registros criados por formulários públicos que coletam dados pessoais possuem um consentimento associado, com data/hora, finalidade e versão do aviso de privacidade — verificável em qualquer auditoria de amostra.
+- **SC-015**: Uma solicitação de exercício de direito do titular (acesso, correção, anonimização ou revogação) é respondida ao solicitante em até 15 dias corridos a partir do registro.
+- **SC-016**: Após o atendimento de um pedido de anonimização, 0% dos dados pessoais identificáveis daquele titular permanecem legíveis nas telas e consultas do sistema, enquanto 100% dos registros de histórico e auditoria vinculados continuam existindo.
 
 ## Assumptions
 
@@ -344,4 +383,7 @@ Um voluntário com cadastro pendente, um candidato a vaga, um solicitante de eve
 - Voluntários aprovados e doadores associados usam autenticação própria padrão (login e senha, com redefinição de senha por e-mail — FR-046) para acessar sua área de autoatendimento restrita aos próprios dados.
 - O código de protocolo usado na consulta pública de status (FR-044) é gerado de forma não sequencial e não previsível, funcionando como único identificador necessário para a consulta, de modo a evitar que alguém descubra o status de submissões de terceiros por tentativa/adivinhação. O mesmo padrão de protocolo se aplica às doações (FR-045).
 - A hospedagem do sistema roda em plano gratuito (Vercel + Neon/PostgreSQL), o que implica ausência de domínio próprio, SLA ou suporte pago, e possível hibernação do banco de dados após período de inatividade (podendo afetar pontualmente o prazo do SC-001). Caso a operação exija recursos além do plano gratuito no futuro, a contratação de um plano superior é decisão e custo da instituição, fora da manutenção contínua do grupo.
+- A conformidade com a LGPD faz parte do escopo desta versão no que o sistema pode garantir tecnicamente: consentimento registrado, aviso de privacidade publicado, canal de exercício de direitos, anonimização e prazos de retenção (FR-051 a FR-059). Continuam sendo responsabilidade organizacional da instituição, fora do sistema: a designação do encarregado (DPO), a redação jurídica do texto do aviso de privacidade e a definição formal das bases legais e dos prazos de retenção por categoria — o sistema apenas aplica os prazos e textos que a instituição fornecer.
+- O prazo de resposta ao titular adotado no SC-015 (15 dias corridos) segue o parâmetro da LGPD para solicitações de acesso; prazos diferentes exigem nova validação com a instituição.
+- Doações espontâneas não coletam dados de identificação (FR-005) e, portanto, não geram registro de consentimento nem são alcançadas por pedidos de anonimização — não há titular identificável vinculado a elas.
 - Fica fora de escopo desta versão: cadastro/gestão completa de residentes, controle de consultas e exames, integração automática (sem intervenção humana) com redes sociais além da tentativa de sincronização na publicação, geração de conteúdo por IA, relatórios avançados/BI, aplicativo móvel nativo, gateway de pagamento próprio, integração com sistemas externos de saúde (CNES, prontuários) e módulo financeiro completo — conforme o Princípio VI da constituição do projeto.

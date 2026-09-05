@@ -50,8 +50,7 @@ restrito, motivo interno de negação de acesso.
 | `GET` | `/api/public/vagas` | vagas ativas (FR-016) |
 | `GET` | `/api/public/aviso-privacidade` | texto e versão vigentes (FR-053) |
 
-### Doação (CSU01) — **bloqueado até validação do orientador**
-
+### Doação (CSU01)
 `GET /api/public/pix` — dados para pagamento (FR-007).
 
 ```json
@@ -145,8 +144,7 @@ conta e a data (FR-035).
 
 `POST /api/admin/login` (FR-040) · `POST /api/admin/logout`
 
-### Conferência de doações (CSU01) — **bloqueado até validação do orientador**
-
+### Conferência de doações (CSU01)
 | Método | Rota | Notas |
 |---|---|---|
 | `GET` | `/api/admin/doacoes?status=pendente` | fila de conferência |

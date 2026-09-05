@@ -98,7 +98,7 @@ paralelo.
 ## Decisões já tomadas (e por quê)
 
 - **Doação só via Pix, com chave/QR code ESTÁTICOS e confirmação manual
-  (revertido em 2026-09-04 — pendente de ciência da orientação).** Esta
+  (revertido em 2026-09-04, ratificado em 2026-09-05).** Esta
   decisão **reverte** a decisão anterior descrita logo abaixo. A instituição
   cadastra sua chave Pix e a imagem do QR code no Painel Administrativo; o
   Portal Público apenas as exibe. O pagamento acontece no aplicativo do banco
@@ -112,22 +112,28 @@ paralelo.
   trabalho humano, e uma doação real cujo doador não declare nada no site
   simplesmente não aparece no sistema. Boleto e cartão continuam fora. Itens
   físicos e dinheiro vivo continuam tratados manualmente, fora do sistema.
-  **Atenção:** esta reversão exigiu emenda ao Princípio VII da constituição
-  (versão 2.0.0) e **ainda não passou pelo orientador** — o CSU01 não deve
-  ser implementado antes dessa validação, porque foi justamente o orientador
-  quem havia descartado esta rota.
+  Exigiu emenda ao Princípio VII da constituição (versão 2.0.0), **ratificada
+  em 2026-09-05**.
+- **Por que a objeção anterior do orientador não alcança esta decisão
+  (esclarecido em 2026-09-05).** Ponto importante, porque é o que distingue
+  esta reversão de uma desobediência à orientação. O orientador **não se opõe
+  a mudanças de rota**; ele objetou especificamente a adotar Pix estático
+  **tendo como única justificativa a ausência de custo** — e derrubou essa
+  justificativa mostrando que hospedagem e domínio de produção têm custo
+  assumido pela instituição de qualquer forma. Esse argumento dele continua
+  válido e não está sendo contestado. A justificativa desta decisão é outra:
+  elimina a **dependência externa** de a instituição abrir e ter aprovada uma
+  conta PJ em provedor de pagamentos, cujo prazo é controlado por terceiros e
+  colocaria o cronograma do TCC na mão da burocracia de um gateway. Custo
+  nunca foi o argumento aqui. Se alguém reabrir esse assunto, é este o
+  raciocínio a apresentar — não "sai mais barato".
 - ~~**Doação via Pix com API de pagamentos dinâmica.**~~ **Decisão anterior,
-  revertida em 2026-09-04 pelo item acima.** Registro do histórico: chegou a
-  se cogitar reduzir o CSU01 para chave Pix fixa/confirmação 100% manual,
-  motivado pela hipótese de custo zero permanente. O orientador esclareceu
-  que hospedagem/domínio de produção real têm custo assumido pela instituição
-  de qualquer forma, então essa hipótese caiu e o CSU01 foi mantido como
-  desenhado originalmente: API de terceiros gerando QR code, consulta
-  periódica de status e confirmação manual apenas como *fallback*. O
-  argumento do orientador continua de pé quanto ao custo de hospedagem; o que
-  mudou é que o grupo optou por não depender de contratação de provedor de
-  pagamentos nem de conta PJ. **É exatamente esse ponto que precisa ser
-  levado de volta a ele.**
+  revertida em 2026-09-04 pelos itens acima.** Registro do histórico: chegou
+  a se cogitar reduzir o CSU01 para chave Pix fixa/confirmação 100% manual,
+  motivado pela hipótese de custo zero permanente. Essa hipótese caiu, e na
+  ocasião o CSU01 foi mantido como desenhado originalmente: API de terceiros
+  gerando QR code, consulta periódica de status e confirmação manual apenas
+  como *fallback*.
 - **Toda declaração de doação gera um código de protocolo** (espontânea ou
   associativa), no mesmo padrão já usado para voluntariado/candidatura/
   solicitação externa — permite ao doador consultar o status e obter a
@@ -231,9 +237,10 @@ recente do spec.md, não esta lista resumida.
   decisão vigente (ver "Decisões já tomadas"). Se alguém propuser API de
   pagamentos partindo do spec antigo, é sinal de que está lendo uma versão
   desatualizada.
-- Não implementar o CSU01 enquanto o orientador não tomar ciência da reversão
-  para Pix estático — foi ele quem descartou essa rota antes, e a emenda ao
-  Princípio VII da constituição (2.0.0) está marcada como pendente por isso.
+- Não justificar o Pix estático por "custo zero" — essa justificativa
+  específica já foi derrubada pelo orientador e reabri-la reabre a discussão
+  toda. O argumento correto é a eliminação da dependência de conta PJ em
+  gateway (ver "Decisões já tomadas").
 - Não tratar a declaração do doador como confirmação de recebimento. Sem API,
   só um funcionário conferindo o extrato bancário pode confirmar uma doação.
 - Não assumir C#/MySQL em nenhum plano técnico novo — a stack de hospedagem

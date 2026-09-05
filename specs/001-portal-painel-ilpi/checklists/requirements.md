@@ -59,8 +59,14 @@
     adicionados; entidade Doação redesenhada e entidade Chave Pix Institucional adicionada; SC-001
     reescrito e SC-001a adicionado; SC-009 ajustado; Edge Cases e Assumptions atualizados) e
     `.specify/memory/constitution.md` (Princípio VII emendado, versão 1.0.0 → 2.0.0).
-  - **BLOQUEIO ATIVO:** a emenda ao Princípio VII está registrada como **proposta, pendente de ciência
-    da orientação**, porque foi o próprio orientador quem havia descartado a rota de Pix estático. O
-    CSU01 **não deve ser implementado** até essa validação. As demais histórias não estão bloqueadas.
-  - **Ainda desatualizados:** o PRD, a seção 19 do documento do TCC e o protótipo `recanto-frontend`
-    (telas `doacoes.html` e `admin/doacoes.html`) continuam descrevendo o fluxo com API de pagamentos.
+  - **Bloqueio levantado em 2026-09-05.** A emenda ao Princípio VII esteve um dia como proposta
+    pendente, porque a rota de Pix estático constava como descartada pelo orientador. Esclareceu-se
+    que a objeção dele era à justificativa de *custo zero* — que ele derrubou mostrando que
+    hospedagem e domínio têm custo assumido pela instituição de qualquer forma — e não à mudança de
+    rota em si. A justificativa desta decisão é outra (eliminar a dependência de conta PJ em gateway
+    e o risco de cronograma que ela traz), então não é alcançada por aquela objeção. Emenda
+    ratificada, nenhuma história bloqueada.
+  - **Ainda desatualizados:** o protótipo `recanto-frontend`, já importado para `public/`, tem as
+    telas `doacoes.html` e `admin/doacoes.html` descrevendo o fluxo com API de pagamentos, e seu
+    `README.md` ainda cita a stack abandonada (C#/MySQL). O PRD e a seção 19 do documento do TCC
+    recebem os casos de uso revisados via `docs/casos-de-uso-tcc.md`.

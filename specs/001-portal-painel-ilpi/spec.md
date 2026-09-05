@@ -20,10 +20,11 @@
 
 ### Session 2026-09-04 (2) — Reversão do CSU01 para Pix estático
 
-> Esta sessão **reverte** a decisão anterior do orientador, que havia descartado a rota de Pix
-> estático. A reversão foi solicitada pelo responsável pelo projeto e exigiu emenda ao Princípio
-> VII da constituição (versão 2.0.0, **pendente de ciência da orientação**). Enquanto essa ciência
-> não ocorrer, o CSU01 não deve ser implementado.
+> Esta sessão **reverte** a decisão anterior, que havia descartado a rota de Pix estático, e exigiu
+> emenda ao Princípio VII da constituição (versão 2.0.0, **ratificada em 2026-09-05**). Esclareceu-se
+> em 2026-09-05 que a objeção do orientador era à justificativa de *custo zero*, não à mudança de
+> rota em si; a justificativa desta decisão é outra — eliminar a dependência de conta PJ em provedor
+> de pagamentos — e portanto não é alcançada por aquela objeção.
 
 - Q: O CSU01 mantém a API de pagamentos dinâmica (QR code gerado por terceiros + confirmação automática) ou passa a usar Pix estático? → A: Pix estático. A instituição cadastra sua chave Pix e/ou a imagem do QR code no Painel Administrativo, e o Portal Público apenas os exibe. O sistema não integra nenhuma API de pagamentos, não gera cobrança dinâmica e não recebe webhook de confirmação. Motivação: eliminar a dependência de contratação de provedor e de conta PJ habilitada.
 - Q: Sem API, como a doação passa a existir dentro do sistema? → A: O doador paga no aplicativo do próprio banco e, em seguida, **declara** a doação no site (valor, data e, opcionalmente, anexo do comprovante bancário). O sistema registra a declaração com status pendente e emite código de protocolo. Um funcionário confere a entrada no extrato bancário da instituição e confirma (ou rejeita) a declaração no Painel Administrativo. A declaração do doador nunca equivale, por si só, a confirmação de recebimento.

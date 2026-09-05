@@ -58,10 +58,7 @@ Publique um item necessário no Painel → confirme que aparece em `doacoes.html
 recarregue a página pública → o item sumiu da lista.
 **Esperado**: conteúdo público espelha o painel, sem exigir login.
 
-### V2 — Declaração de doação e conferência manual (US2) — **BLOQUEADO**
-
-> Não executar até o orientador tomar ciência da reversão do CSU01 para Pix estático. Ver
-> `research.md` → D9.
+### V2 — Declaração de doação e conferência manual (US2)
 
 1. Painel → cadastre chave Pix e imagem do QR code.
 2. Portal → `doacoes.html` mostra a chave (com botão copiar) e o QR code.

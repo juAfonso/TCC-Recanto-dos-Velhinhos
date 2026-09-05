@@ -21,11 +21,12 @@ Duas decisões desta sessão moldam o plano: a inclusão da LGPD no escopo (CSU1
 CSU01 para Pix estático**, que removeu a integração com API de pagamentos e transformou a doação em
 declaração do doador conferida manualmente pela equipe.
 
-> ### ⚠️ Bloqueio ativo — CSU01
+> ### CSU01 — liberado em 2026-09-05
 > A reversão para Pix estático exigiu emenda ao Princípio VII da constituição (versão **2.0.0**),
-> registrada como **proposta, pendente de ciência da orientação** — foi o orientador quem havia
-> descartado essa rota anteriormente. **Nenhuma tarefa do CSU01 (User Story 2) deve ser
-> implementada até essa validação.** As outras dez histórias não estão bloqueadas e podem seguir.
+> **ratificada em 2026-09-05**. Esteve bloqueada por um dia porque a rota constava como descartada
+> pelo orientador; esclareceu-se que a objeção dele era à justificativa de *custo zero*, não à
+> mudança em si, e a justificativa desta decisão é outra — eliminar a dependência de conta PJ em
+> provedor de pagamentos. **Nenhuma história está bloqueada.**
 
 ---
 
@@ -83,11 +84,10 @@ dias, valor já usado pelo protótipo.
 | IV — Separação de contextos | ✅ Passa | Três zonas de API com autenticação distinta; autorização verificada no servidor a cada requisição; arquivos restritos servidos por função que checa permissão, nunca por URL pública de Blob. |
 | V — Responsividade | ✅ Passa | Portão obrigatório por tela pública; protótipo já é mobile-first. |
 | VI — Escopo fechado | ✅ Passa | O plano cobre exatamente os 11 CSUs. Nada de residentes, medicamentos, estoque ou IA. |
-| VII — Pix sem integração | ⚠️ **Passa sob condição** | O plano segue a versão **2.0.0** do princípio (Pix estático + conferência humana), mas essa versão está **pendente de ciência da orientação**. Enquanto isso, o CSU01 fica bloqueado para implementação. |
+| VII — Pix sem integração | ✅ Passa | O plano segue a versão **2.0.0** do princípio, ratificada em 2026-09-05: chave/QR code estáticos como conteúdo institucional, nenhuma integração de pagamento, e confirmação por ato humano conferido contra o extrato. |
 | VIII — Triagem humana | ✅ Passa | Nenhuma rota de aprovação automática ou em lote por critério calculado; rejeição exige motivo nas três filas; submissões nascem `pendente`. |
 
-**Resultado**: nenhum gate reprovado. O Princípio VII passa condicionalmente — não por violação do
-plano, mas porque a própria versão do princípio aguarda validação. Registrado em Complexity Tracking.
+**Resultado**: nenhum gate reprovado, nenhuma condição pendente.
 
 **Reavaliação pós-Fase 1**: o desenho de `data-model.md` e `contracts/api.md` não introduziu nenhuma
 abstração adicional nem nova dependência além das declaradas. Nenhum princípio mudou de situação.
@@ -184,10 +184,12 @@ Deriva das prioridades do spec e das dependências entre histórias. `/speckit-t
 5. **US11 (P2) — LGPD** — o consentimento (FR-051/FR-052) **acompanha** cada formulário das etapas
    anteriores e não deve ser adiado; só o fluxo de atendimento de direitos vem aqui.
 6. **US9, US10** — autoatendimento e consulta por protocolo.
-7. **US2 (P1) — CSU01 doação** — *bloqueada até validação do orientador*, apesar da prioridade P1.
 
-A US2 é P1 mas foi para o fim por bloqueio de governança, não por ordem técnica. Se a validação
-chegar antes, ela pode subir na ordem.
+**US2 (P1) — CSU01 doação**: liberada. Por ser P1 e por não depender de nenhuma outra história
+(precisa apenas da fundação e da tela de configuração da chave Pix), pode entrar logo após a etapa 1,
+em paralelo com a US1. Sem a integração de pagamento, o backend dela ficou pequeno: não há endpoint
+de webhook, verificação de assinatura nem job de polling — o volume está na tela de conferência do
+Painel e na regra de possível duplicata (FR-050).
 
 ---
 
@@ -195,7 +197,6 @@ chegar antes, ela pode subir na ordem.
 
 | Violação | Por que é necessária | Alternativa mais simples rejeitada porque |
 |---|---|---|
-| Princípio VII em versão pendente de validação (2.0.0) | O grupo decidiu remover a dependência de contratar provedor de pagamentos e de ter conta PJ habilitada, viabilizando a operação real sem custo nem vínculo contratual | Manter a API dinâmica (versão 1.0.0 do princípio) foi rejeitado pelo responsável pelo projeto. Mitigação: o CSU01 fica bloqueado até a orientação tomar ciência, em vez de ser implementado sobre um princípio ainda não ratificado |
 | Duas dependências npm (`@neondatabase/serverless`, `@vercel/blob`) | Pool TCP não sobrevive a função serverless, e a Vercel não tem disco persistente | `pg` puro esgota o limite de conexões do plano gratuito; salvar arquivo em disco local não persiste. Ver `research.md` D2 e D3 |
 
 Nenhuma outra complexidade a justificar: não há ORM, framework, camada de repositório, biblioteca de
@@ -212,4 +213,4 @@ autenticação nem passo de build.
 | `contracts/api.md` | 1 | ~40 endpoints em três zonas de acesso; 4 contratos sob teste |
 | `quickstart.md` | 1 | Setup, 10 cenários de validação, portões de qualidade |
 
-**Próximo comando**: `/speckit-tasks` — mas leia antes o bloqueio do CSU01 no topo deste arquivo.
+**Próximo comando**: `/speckit-tasks`.

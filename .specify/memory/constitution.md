@@ -5,12 +5,22 @@ Mudança de versão: 1.0.0 → 2.0.0
 Data: 2026-09-04
 Tipo de bump: MAJOR (redefinição incompatível do Princípio VII)
 
-STATUS DESTA EMENDA: PROPOSTA — PENDENTE DE CIÊNCIA DA ORIENTAÇÃO.
-A Governança exige que emendas sejam aprovadas pelo responsável pelo projeto "com ciência
-da orientação". A rota de Pix estático havia sido explicitamente avaliada e descartada pelo
-orientador em decisão anterior (registrada no CLAUDE.md). Esta emenda a reverte a pedido do
-responsável pelo projeto. Enquanto a orientação não tomar ciência, esta versão 2.0.0 NÃO
-deve ser tratada como ratificada, e nenhuma implementação do CSU01 deve ser iniciada.
+STATUS DESTA EMENDA: RATIFICADA em 2026-09-05.
+A Governança exige aprovação do responsável pelo projeto "com ciência da orientação".
+Esta emenda esteve registrada como proposta pendente entre 2026-09-04 e 2026-09-05, porque
+a rota de Pix estático constava como descartada pelo orientador. O responsável pelo projeto
+esclareceu em 2026-09-05 o alcance real daquela objeção: o orientador não se opõe a mudanças
+de rota em si — ele objetou especificamente a adotar Pix estático **tendo como única
+justificativa a ausência de custo**, hipótese que ele mesmo derrubou ao mostrar que
+hospedagem e domínio de produção têm custo assumido pela instituição de qualquer forma.
+
+A justificativa desta emenda é outra e não foi alcançada por aquela objeção: o que se elimina
+não é custo, e sim a **dependência externa** de a instituição abrir e ter aprovada uma conta
+PJ em provedor de pagamentos — dependência cujo prazo é controlado por terceiros e colocaria
+o cronograma do TCC nas mãos da burocracia de um gateway. O argumento do orientador sobre
+custo permanece válido e não é contestado aqui.
+
+Bloqueio de implementação do CSU01: LEVANTADO.
 
 Princípio alterado:
   - VII. "Pix como Único Meio de Doação Digital"
@@ -39,8 +49,7 @@ Impacto sobre trabalho já realizado:
 
 Princípios inalterados: I, II, III, IV, V, VI, VIII.
 
-TODOs pendentes:
-  - Obter ciência/validação da orientação antes de ratificar esta versão.
+TODOs pendentes: nenhum.
 -->
 
 # Constituição do Sistema Web do Recanto dos Velhinhos Francisco Gonçalves Barbosa
@@ -263,5 +272,4 @@ princípios. Violações identificadas DEVEM ser corrigidas antes da integraçã
 formalmente como exceção aprovada, com prazo de correção. Complexidade não justificada é
 motivo suficiente para reprovar uma entrega.
 
-**Version**: 2.0.0 (proposta — pendente de ciência da orientação, ver Sync Impact Report)
-| **Ratified**: 2026-08-12 | **Last Amended**: 2026-09-04
+**Version**: 2.0.0 | **Ratified**: 2026-08-12 | **Last Amended**: 2026-09-05

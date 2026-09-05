@@ -172,15 +172,17 @@ nativo evita instalar Vitest/Jest.
 funcionário confirma contra o extrato bancário.
 
 **Justificativa**: decisão do responsável pelo projeto em 2026-09-04, que exigiu emenda ao Princípio
-VII da constituição (versão 2.0.0). Elimina a dependência de contratar provedor de pagamentos e de
-ter conta PJ habilitada.
+VII da constituição (versão 2.0.0, ratificada em 2026-09-05). O que se elimina **não é custo** — é a
+dependência externa de a instituição abrir e ter aprovada uma conta PJ em provedor de pagamentos,
+cujo prazo é controlado por terceiros. Custo de hospedagem e domínio a instituição assume de
+qualquer forma, e esse ponto nunca foi contestado.
 
 **Alternativas consideradas**: API de pagamentos dinâmica (Mercado Pago, Efí, Asaas) — era o desenho
 anterior do spec, revertido. Ver `spec.md` → Clarifications → Session 2026-09-04 (2).
 
-> **BLOQUEIO**: a emenda está registrada como *proposta, pendente de ciência da orientação*, porque
-> foi o orientador quem havia descartado a rota de Pix estático. **O CSU01 não deve ser implementado
-> até essa validação.** As demais histórias não estão bloqueadas.
+**Cuidado ao defender esta decisão**: a justificativa de "custo zero" já foi avaliada e derrubada
+pelo orientador. Usar esse argumento reabre uma discussão encerrada. O argumento válido é a
+eliminação da dependência de gateway/conta PJ e do risco de cronograma que ela traz.
 
 **Implicação técnica notável**: sem webhook, o backend do CSU01 fica bem menor — não há endpoint
 público de callback, não há verificação de assinatura de webhook, não há job de polling. Em

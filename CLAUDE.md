@@ -49,6 +49,24 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
 - **Banco NoSQL descartado explicitamente pelo orientador** — não se encaixa
   no tipo de dado do SAGE (mais adequado a mídia/dados desestruturados); rota
   Firebase/Firestore está fora de cogitação.
+- **Arquitetura (decidida em 2026-09-04):** HTML/CSS/JS estáticos + funções
+  serverless em `/api` na Vercel. **Não** usar Next.js/React — a decisão foi
+  manter as páginas do protótipo praticamente como estão e trocar apenas a
+  camada mock (`assets/js/data.js`) por chamadas `fetch` à API. Justificativa
+  registrada no Princípio I (simplicidade) da constituição: sem build step e
+  sem curva de React para um time de 6 pessoas com prazo fixo. Custo aceito:
+  sem componentização, algum HTML repetido entre páginas.
+- **Upload de arquivos:** Vercel Blob, com URLs privadas/assinadas. Cobre
+  currículos, autorização de responsável legal de menores (FR-058) e o anexo
+  opcional de comprovante bancário (FR-010b). A Vercel não tem disco
+  persistente, então salvar em pasta local não é opção.
+- **Testes (decidido em 2026-09-04):** automatizados só nas regras críticas —
+  não-duplicação de confirmação de doação (FR-050), geração de protocolo,
+  anonimização (FR-055) e controle de acesso por perfil (FR-047). O restante
+  é verificado manualmente pelos portões da constituição (acessibilidade,
+  responsividade, dados, acesso).
+- **Sem API de pagamentos.** Ver a decisão de Pix estático em "Decisões já
+  tomadas" — nenhum provedor de pagamentos será contratado ou integrado.
 - **Fluxo de trabalho:** Spec Kit + Claude Code (VS Code), especificando e
   planejando a partir do PRD antes de implementar.
 - **Front-end:** já existe um protótipo estático (`recanto-frontend`) com as
@@ -56,6 +74,12 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   voluntariado, autoatendimento, consultar-status, solicitar-evento e uma
   pasta `admin/` separada. Ele será integrado ao projeto Spec Kit como base
   do plano técnico — não é descartável, é ponto de partida.
+  **Atenção (2026-09-04): o protótipo ainda NÃO está no repositório.** Ele
+  vive em `C:\Users\afons\Downloads\recanto-frontend\recanto-frontend` na
+  máquina da Julia — 21 páginas HTML, `assets/css/style.css` (design system,
+  1267 linhas) e 24 módulos JS com dados mock em `localStorage`. Copiar para
+  dentro do repo e commitar é pré-requisito da implementação. Cuidado: a
+  pasta tem ~9,6 MB por causa de `assets/video/hero-video.mp4`.
 - **Se a operação exigir recursos além do plano gratuito no futuro** (mais
   tráfego, domínio próprio), migrar para um plano pago é decisão e custo da
   instituição — não uma obrigação de manutenção contínua do grupo depois da
@@ -73,20 +97,42 @@ paralelo.
 
 ## Decisões já tomadas (e por quê)
 
-- **Doação só via Pix, com API de pagamentos dinâmica — não simplificada
-  para Pix estático.** Chegou a se cogitar reduzir o CSU01 para chave Pix
-  fixa/confirmação 100% manual, motivado pela hipótese de custo zero
-  permanente. O orientador esclareceu que hospedagem/domínio de produção real
-  têm custo assumido pela instituição de qualquer forma, então essa hipótese
-  caiu e o CSU01 foi mantido como desenhado originalmente: API de terceiros
-  gera QR code, o sistema consulta o status periodicamente, e há confirmação
-  manual pelo funcionário como *fallback* quando a automática não chega a
-  tempo. Boleto e cartão continuam fora do sistema. Itens físicos e dinheiro
-  vivo são tratados manualmente pela administração, fora do sistema.
-- **Toda doação gera um código de protocolo ao ser iniciada** (espontânea ou
+- **Doação só via Pix, com chave/QR code ESTÁTICOS e confirmação manual
+  (revertido em 2026-09-04 — pendente de ciência da orientação).** Esta
+  decisão **reverte** a decisão anterior descrita logo abaixo. A instituição
+  cadastra sua chave Pix e a imagem do QR code no Painel Administrativo; o
+  Portal Público apenas as exibe. O pagamento acontece no aplicativo do banco
+  do doador, fora do sistema. Depois de pagar, o doador **declara** a doação
+  no site (valor, data e, opcionalmente, anexo do comprovante bancário) e
+  recebe um protocolo; a declaração nasce **pendente** e só vira confirmada
+  quando um funcionário confere a entrada no extrato bancário e confirma no
+  Painel. Não há API de pagamentos, cobrança dinâmica nem webhook.
+  Motivação: eliminar a dependência de contratar provedor de pagamentos e de
+  ter conta PJ habilitada. Custo aceito conscientemente: a conciliação vira
+  trabalho humano, e uma doação real cujo doador não declare nada no site
+  simplesmente não aparece no sistema. Boleto e cartão continuam fora. Itens
+  físicos e dinheiro vivo continuam tratados manualmente, fora do sistema.
+  **Atenção:** esta reversão exigiu emenda ao Princípio VII da constituição
+  (versão 2.0.0) e **ainda não passou pelo orientador** — o CSU01 não deve
+  ser implementado antes dessa validação, porque foi justamente o orientador
+  quem havia descartado esta rota.
+- ~~**Doação via Pix com API de pagamentos dinâmica.**~~ **Decisão anterior,
+  revertida em 2026-09-04 pelo item acima.** Registro do histórico: chegou a
+  se cogitar reduzir o CSU01 para chave Pix fixa/confirmação 100% manual,
+  motivado pela hipótese de custo zero permanente. O orientador esclareceu
+  que hospedagem/domínio de produção real têm custo assumido pela instituição
+  de qualquer forma, então essa hipótese caiu e o CSU01 foi mantido como
+  desenhado originalmente: API de terceiros gerando QR code, consulta
+  periódica de status e confirmação manual apenas como *fallback*. O
+  argumento do orientador continua de pé quanto ao custo de hospedagem; o que
+  mudou é que o grupo optou por não depender de contratação de provedor de
+  pagamentos nem de conta PJ. **É exatamente esse ponto que precisa ser
+  levado de volta a ele.**
+- **Toda declaração de doação gera um código de protocolo** (espontânea ou
   associativa), no mesmo padrão já usado para voluntariado/candidatura/
-  solicitação externa — permite ao doador consultar o status e recuperar o
-  comprovante depois, mesmo tendo saído da página e mesmo sem se identificar.
+  solicitação externa — permite ao doador consultar o status e obter a
+  declaração de doação depois, mesmo tendo saído da página e mesmo sem se
+  identificar.
 - **Voluntários e candidatos a vaga passam por triagem/aprovação obrigatória**
   da administração antes de ficarem ativos. Não há autoaprovação. **Rejeição
   exige motivo registrado nas três triagens** (voluntário, candidatura,
@@ -121,11 +167,14 @@ paralelo.
 - **Falhas de serviços externos não derrubam o registro do usuário
   (2026-09-04).** Se o e-mail de confirmação falhar, o cadastro/candidatura/
   solicitação é mantido, o sistema tenta reenviar uma vez e, persistindo a
-  falha, registra internamente para reenvio manual (FR-049a). Já na doação, se
-  a API de pagamentos falhar ao gerar o QR code, **nenhum** registro de doação
-  é criado — o visitante recebe erro e tenta de novo (FR-007a). Confirmação de
-  pagamento duplicada é ignorada de forma idempotente (FR-050). Doação sem
-  confirmação em 15 minutos permanece pendente para conciliação manual.
+  falha, registra internamente para reenvio manual (FR-049a). Do lado da
+  doação, a reversão para Pix estático eliminou a dependência de API: se
+  nenhuma chave Pix estiver cadastrada, o fluxo de declaração simplesmente
+  não é oferecido (FR-007a). Uma doação já confirmada não pode ser confirmada
+  de novo, e declarações pendentes com valor/data próximos são sinalizadas ao
+  funcionário como possível duplicata (FR-050). Não existe mais janela de 15
+  minutos: toda declaração nasce pendente e assim fica até a conferência
+  humana.
 - **Acesso ao Painel Administrativo é por conta institucional compartilhada**,
   não por login individual por funcionário. Como consequência, **a auditoria
   registra qual conta institucional executou cada ação, não qual funcionário
@@ -159,9 +208,14 @@ para FR-001–FR-059 (incluindo FR-007a e FR-049a), com as adições listadas em
 "Decisões já tomadas" — ao consultar requisito por número, usar a versão mais
 recente do spec.md, não esta lista resumida.
 
-**Pendência:** o PRD e a seção 19 do documento do TCC ainda precisam
-incorporar o CSU11 e os FRs de LGPD, seguindo o padrão de documentação de
-caso de uso já definido acima. O spec.md já está atualizado.
+**Pendências (2026-09-04):**
+
+1. O PRD e a seção 19 do documento do TCC ainda precisam incorporar o CSU11 e
+   os FRs de LGPD, seguindo o padrão de documentação de caso de uso definido
+   acima. O spec.md já está atualizado.
+2. O PRD, a seção 19 e o CSU01 precisam ser reescritos para o Pix estático
+   (declaração do doador + conferência manual). O spec.md e a constituição já
+   estão atualizados; o CSU01 aguarda ciência do orientador.
 
 ## Inegociável
 
@@ -171,9 +225,17 @@ caso de uso já definido acima. O spec.md já está atualizado.
   explícita da equipe registrada aqui. Anonimização a pedido do titular
   (FR-055) **não** é exclusão física e é permitida — a linha do registro, o
   histórico e a auditoria continuam existindo.
-- Não simplificar novamente o CSU01 para Pix estático/confirmação 100%
-  manual sem uma nova decisão explícita — essa rota já foi avaliada e
-  descartada pelo orientador.
+- Não reintroduzir API de pagamentos/cobrança Pix dinâmica/webhook no CSU01
+  sem uma nova decisão explícita. **Esta regra inverteu de sinal em
+  2026-09-04:** antes ela proibia o Pix estático; agora o Pix estático é a
+  decisão vigente (ver "Decisões já tomadas"). Se alguém propuser API de
+  pagamentos partindo do spec antigo, é sinal de que está lendo uma versão
+  desatualizada.
+- Não implementar o CSU01 enquanto o orientador não tomar ciência da reversão
+  para Pix estático — foi ele quem descartou essa rota antes, e a emenda ao
+  Princípio VII da constituição (2.0.0) está marcada como pendente por isso.
+- Não tratar a declaração do doador como confirmação de recebimento. Sem API,
+  só um funcionário conferindo o extrato bancário pode confirmar uma doação.
 - Não assumir C#/MySQL em nenhum plano técnico novo — a stack de hospedagem
   e banco já está decidida (Vercel + Neon/PostgreSQL).
 

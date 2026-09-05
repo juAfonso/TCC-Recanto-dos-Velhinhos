@@ -12,11 +12,21 @@
 
 ### Session 2026-09-04
 
-- Q: Quando a API de pagamentos envia duas notificações confirmando a mesma doação Pix (webhook duplicado), como o sistema deve reagir? → A: O sistema identifica que a doação já está confirmada (por protocolo/ID da transação) e ignora silenciosamente a segunda notificação, sem alterar nada.
-- Q: Quando a API de pagamentos de terceiros está indisponível ou retorna erro ao tentar iniciar uma doação Pix (gerar QR code), o que o sistema deve fazer? → A: O sistema não cria o registro de doação; exibe uma mensagem de erro ao visitante e sugere tentar novamente em instantes.
+- Q: Quando a API de pagamentos envia duas notificações confirmando a mesma doação Pix (webhook duplicado), como o sistema deve reagir? → A: O sistema identifica que a doação já está confirmada (por protocolo/ID da transação) e ignora silenciosamente a segunda notificação, sem alterar nada. **[SUPERADA pela decisão de Pix estático — ver Session 2026-09-04 (2). Não há mais webhook.]**
+- Q: Quando a API de pagamentos de terceiros está indisponível ou retorna erro ao tentar iniciar uma doação Pix (gerar QR code), o que o sistema deve fazer? → A: O sistema não cria o registro de doação; exibe uma mensagem de erro ao visitante e sugere tentar novamente em instantes. **[SUPERADA pela decisão de Pix estático — ver Session 2026-09-04 (2). Não há mais API de pagamentos.]**
 - Q: Se o envio automático do e-mail de confirmação (FR-049) falhar, o cadastro de voluntário/candidatura/solicitação já enviado deve ser mantido, ou a falha deve impedir/reverter o registro? → A: O registro é sempre mantido. O sistema tenta reenviar o e-mail automaticamente mais uma vez após um intervalo; se ainda assim falhar, o sistema registra a falha de envio internamente para que a equipe possa reenviar ou contatar manualmente.
-- Q: Qual o valor concreto da "janela razoável" de espera antes de uma doação Pix ser tratada como definitivamente pendente (aguardando conciliação manual)? → A: 15 minutos.
+- Q: Qual o valor concreto da "janela razoável" de espera antes de uma doação Pix ser tratada como definitivamente pendente (aguardando conciliação manual)? → A: 15 minutos. **[SUPERADA pela decisão de Pix estático — ver Session 2026-09-04 (2). Sem confirmação automática, não há janela de espera: a doação declarada nasce pendente e assim permanece até a conferência humana.]**
 - Q: O spec deve incluir requisitos explícitos de conformidade com a LGPD nesta versão, ou isso fica como responsabilidade da instituição fora do escopo do sistema? → A: Incluir LGPD nesta versão — consentimento explícito nos formulários públicos, aviso de privacidade, direitos do titular (acesso, correção, anonimização, revogação de consentimento) e política de retenção. FR-024 é reescrito para distinguir exclusão física (que permanece proibida) de anonimização a pedido do titular (permitida, preservando histórico e auditoria).
+
+### Session 2026-09-04 (2) — Reversão do CSU01 para Pix estático
+
+> Esta sessão **reverte** a decisão anterior do orientador, que havia descartado a rota de Pix
+> estático. A reversão foi solicitada pelo responsável pelo projeto e exigiu emenda ao Princípio
+> VII da constituição (versão 2.0.0, **pendente de ciência da orientação**). Enquanto essa ciência
+> não ocorrer, o CSU01 não deve ser implementado.
+
+- Q: O CSU01 mantém a API de pagamentos dinâmica (QR code gerado por terceiros + confirmação automática) ou passa a usar Pix estático? → A: Pix estático. A instituição cadastra sua chave Pix e/ou a imagem do QR code no Painel Administrativo, e o Portal Público apenas os exibe. O sistema não integra nenhuma API de pagamentos, não gera cobrança dinâmica e não recebe webhook de confirmação. Motivação: eliminar a dependência de contratação de provedor e de conta PJ habilitada.
+- Q: Sem API, como a doação passa a existir dentro do sistema? → A: O doador paga no aplicativo do próprio banco e, em seguida, **declara** a doação no site (valor, data e, opcionalmente, anexo do comprovante bancário). O sistema registra a declaração com status pendente e emite código de protocolo. Um funcionário confere a entrada no extrato bancário da instituição e confirma (ou rejeita) a declaração no Painel Administrativo. A declaração do doador nunca equivale, por si só, a confirmação de recebimento.
 
 ## User Scenarios & Testing (mandatory)
 
@@ -36,20 +46,23 @@ Um visitante acessa o site sem precisar de login e encontra a página institucio
 
 ### User Story 2 - Doação Financeira via Pix (Priority: P1)
 
-Um visitante decide doar dinheiro. Ele escolhe entre doação espontânea (sem se identificar) ou doação associativa (informando seus dados), digita o valor, e o sistema gera um QR code/comprovante consultando uma API de pagamentos de terceiros compatível com Pix, exibindo antes disso um código de protocolo único que permite consultar o status e recuperar o comprovante posteriormente, mesmo sem identificação. Enquanto o visitante aguarda na tela, o sistema consulta periodicamente o status do pagamento diretamente na API; se a confirmação não ocorrer dentro do prazo, a doação permanece registrada como pendente e pode ser verificada manualmente depois.
+Um visitante decide doar dinheiro. A página de doação exibe a chave Pix e a imagem do QR code que a própria instituição cadastrou no Painel Administrativo, e ele faz o pagamento no aplicativo do seu banco — fora do sistema. Em seguida, se quiser que a doação seja reconhecida e acompanhada, ele **declara** a doação no site, escolhendo entre declaração espontânea (sem se identificar) ou associativa (informando seus dados), informando valor e data e, se desejar, anexando o comprovante do banco. O sistema registra a declaração com status pendente e devolve um código de protocolo único, que permite consultar o status e recuperar a declaração de doação depois, mesmo sem identificação. Um funcionário confere a entrada no extrato bancário da instituição e confirma ou rejeita a declaração no Painel Administrativo.
 
 **Why this priority**: É a principal fonte de sustentabilidade financeira digital da instituição e o motivo prático mais forte para o visitante retornar ao site.
 
-**Independent Test**: Pode ser testado de ponta a ponta simulando uma doação espontânea e uma associativa, confirmando a geração do protocolo, do QR code/comprovante e o registro correto da doação com o status esperado (confirmada ou pendente), incluindo a consulta posterior do status via protocolo.
+**Independent Test**: Pode ser testado de ponta a ponta cadastrando a chave Pix/QR code no Painel, verificando sua exibição no Portal Público, registrando uma declaração espontânea e uma associativa, confirmando a emissão do protocolo e o status inicial pendente, e então confirmando uma delas e rejeitando a outra no Painel, com consulta posterior do status via protocolo.
 
 **Acceptance Scenarios**:
 
-1. Given um visitante escolhe doação espontânea e informa um valor, When ele conclui o fluxo, Then recebe um código de protocolo, um QR code/comprovante Pix, e a doação é registrada sem exigir nenhum dado de identificação.
-2. Given um visitante escolhe doação associativa e informa seus dados, When ele conclui o fluxo, Then a doação é registrada e vinculada ao seu cadastro de doador.
-3. Given uma doação foi iniciada e o QR code foi gerado, When o sistema consulta o status do pagamento na API do provedor e ele confirma o recebimento, Then o status da doação muda de pendente para confirmada e um comprovante fica disponível em poucos segundos.
-4. Given uma doação está com status pendente, When o administrador aciona a verificação manual no painel, Then o sistema consulta a API do provedor e atualiza o status da doação conforme o retorno, sem duplicar registros.
-5. Given uma doação foi iniciada, When nenhuma confirmação é obtida dentro do prazo esperado, seja pela consulta automática, seja pela verificação manual do administrador, Then a doação permanece registrada com status pendente, sem ser perdida ou duplicada.
-6. Given uma doação espontânea foi iniciada e o visitante recebeu o código de protocolo, When ele sai da página antes da confirmação do pagamento e retorna posteriormente informando o protocolo, Then ele consegue consultar o status atualizado da doação e, se já confirmada, baixar o comprovante — sem precisar fornecer nenhum dado de identificação.
+1. Given a instituição cadastrou sua chave Pix e a imagem do QR code no Painel Administrativo, When um visitante acessa a página de doação, Then vê a chave (com opção de copiar) e o QR code, junto do aviso de que o pagamento é feito no aplicativo do próprio banco.
+2. Given a instituição ainda não cadastrou nenhuma chave Pix, When um visitante acessa a página de doação, Then o sistema informa que a doação digital está temporariamente indisponível e oferece o canal de contato da instituição, sem exibir campo de declaração.
+3. Given um visitante pagou e escolhe declarar a doação de forma espontânea, informando valor e data, When ele conclui o fluxo, Then recebe um código de protocolo, a declaração é registrada com status pendente, e nenhum dado de identificação é exigido.
+4. Given um visitante escolhe declarar a doação de forma associativa e informa seus dados, When ele conclui o fluxo, Then a declaração é registrada com status pendente e vinculada ao seu cadastro de doador.
+5. Given uma declaração de doação está pendente, When um funcionário confere a entrada correspondente no extrato bancário e a confirma no Painel Administrativo, Then o status muda para confirmada, a declaração de doação fica disponível ao doador, e a ação fica registrada na auditoria com autor e data.
+6. Given uma declaração de doação está pendente e o funcionário não localiza a entrada correspondente no extrato, When ele rejeita a declaração informando o motivo, Then o status muda para não localizada, o motivo fica registrado, e o registro é preservado sem exclusão física.
+7. Given uma declaração de doação foi registrada, When nenhum funcionário a conferiu ainda, Then ela permanece com status pendente por tempo indeterminado, sem ser descartada, e aparece na lista de pendências do Painel Administrativo.
+8. Given um visitante declarou uma doação espontânea e recebeu o código de protocolo, When ele sai da página e retorna posteriormente informando o protocolo, Then consegue consultar o status atualizado e, se já confirmada, obter a declaração de doação — sem precisar fornecer nenhum dado de identificação.
+9. Given um visitante está na tela de declaração de doação, When ele lê as instruções, Then o sistema deixa explícito que a declaração não confirma o recebimento e que a conferência é feita manualmente pela equipe.
 
 ### User Story 3 - Gestão de Itens Necessários e de Campanhas/Eventos (Priority: P2)
 
@@ -194,10 +207,12 @@ Uma pessoa cujos dados pessoais estão no sistema (voluntário, candidato a vaga
 - Como o sistema trata uma tentativa de acesso a uma funcionalidade do Painel Administrativo por um perfil sem permissão para aquela ação? → Resolvido via FR-047: o acesso é negado e a tentativa é registrada no histórico de auditoria.
 - O que acontece quando a mesma pessoa (mesmo CPF/e-mail) já está cadastrada como voluntária e depois é aprovada como funcionária pela mesma candidatura? → Resolvido via FR-048: o perfil de funcionário é adicionado ao cadastro existente, sem criar um registro duplicado.
 - Como o sistema trata a rejeição de um cadastro (voluntário, candidatura, solicitação de evento) sem que o funcionário informe um motivo, quando um motivo é obrigatório? → O sistema impede a conclusão da rejeição até que um motivo seja preenchido; motivo é obrigatório nas três triagens (FR-015, FR-019, FR-022).
-- O que acontece se a mesma doação for confirmada duas vezes pela API de pagamentos (notificação duplicada)? → Resolvido via FR-050: o sistema identifica a doação já confirmada pelo protocolo/ID da transação e ignora silenciosamente a segunda notificação, sem duplicar registro nem reprocessar o comprovante.
+- O que acontece se um funcionário tentar confirmar duas vezes a mesma declaração de doação, ou se o doador declarar duas vezes a mesma doação? → Resolvido via FR-050: uma doação já confirmada não pode ser confirmada de novo nem gerar nova declaração, e o sistema sinaliza ao funcionário declarações pendentes com valor e data próximos para que ele avalie se são duplicadas.
+- O que acontece quando um doador declara uma doação que nunca entrou na conta da instituição (engano ou má-fé)? → Resolvido via FR-008: o funcionário não localiza a entrada no extrato, marca a declaração como não localizada com o motivo registrado, e o registro é preservado sem exclusão física.
+- O que acontece com o anonimato da doação espontânea quando o doador anexa o comprovante do banco, que traz seu nome e CPF parcial? → Resolvido via FR-051: o aceite do aviso de privacidade passa a ser obrigatório nesse caso, e o sistema avisa antes do anexo que a doação deixa de ser anônima.
 - O que acontece quando um voluntário ou doador associado esquece a senha da área de autoatendimento? → Resolvido via FR-046: redefinição por e-mail, sem intervenção de um funcionário.
 - Como o sistema evita que alguém descubra o status de submissões de outras pessoas tentando adivinhar ou testar códigos de protocolo?
-- O que acontece quando a confirmação de pagamento de uma doação Pix chega depois que o visitante já saiu da página, sem ver o comprovante em tempo real? → Resolvido via FR-045: o doador recebe um código de protocolo ao iniciar a doação e pode consultar o status e recuperar o comprovante posteriormente, independentemente de ter permanecido na página original.
+- O que acontece quando a conferência da doação pela equipe só ocorre depois que o visitante já saiu da página? → Resolvido via FR-045: o doador recebe um código de protocolo ao declarar a doação e pode consultar o status e obter a declaração de doação posteriormente, independentemente de ter permanecido na página original. Esse é o caso normal com Pix estático, não a exceção.
 - O que acontece quando um titular pede anonimização mas seus dados são necessários ao cumprimento de obrigação legal (ex.: doações confirmadas sujeitas a prestação de contas)? → Resolvido via FR-055: o sistema retém apenas os dados estritamente necessários à obrigação legal, anonimiza o restante, e informa o titular sobre o que foi retido e por quê.
 - O que acontece com o cadastro de um voluntário ativo que revoga o consentimento? → Resolvido via FR-057: o uso dos dados para as finalidades revogadas é interrompido e o cadastro é sinalizado à equipe, sem exclusão física do registro (FR-024).
 - O que acontece com os dados pessoais de uma candidatura ou cadastro de voluntário rejeitado que ultrapassa o prazo de retenção definido? → Resolvido via FR-056: o sistema sinaliza o registro para anonimização ao fim do prazo de retenção, preservando dados estatísticos não identificáveis.
@@ -215,13 +230,15 @@ Uma pessoa cujos dados pessoais estão no sistema (voluntário, candidato a vaga
 
 **Doação Financeira via Pix**
 
-- **FR-005**: O sistema DEVE permitir doação financeira espontânea, sem exigir nenhum dado de identificação do doador.
-- **FR-006**: O sistema DEVE permitir doação financeira associativa, coletando os dados de identificação do doador e vinculando a doação ao seu cadastro.
-- **FR-007**: O sistema DEVE gerar um QR code e comprovante Pix por meio de uma API de pagamentos de terceiros para cada doação financeira iniciada.
-- **FR-007a**: Quando a API de pagamentos de terceiros estiver indisponível ou retornar erro ao gerar o QR code, o sistema NÃO PODE registrar a doação; DEVE exibir uma mensagem de erro ao visitante e sugerir nova tentativa.
-- **FR-008**: O sistema DEVE registrar a doação com status pendente até a confirmação do pagamento pela API de pagamentos, e atualizar o status para confirmada assim que a confirmação chegar.
+- **FR-005**: O sistema DEVE permitir declaração de doação financeira espontânea, sem exigir nenhum dado de identificação do doador.
+- **FR-006**: O sistema DEVE permitir declaração de doação financeira associativa, coletando os dados de identificação do doador e vinculando a doação ao seu cadastro.
+- **FR-007**: O sistema DEVE permitir que a equipe administrativa cadastre e atualize a chave Pix e a imagem do QR code da instituição, e DEVE exibi-las publicamente na página de doação, com opção de copiar a chave. O sistema NÃO PODE integrar API de pagamentos, gerar cobrança Pix dinâmica nem receber notificação automática de confirmação.
+- **FR-007a**: Quando nenhuma chave Pix estiver cadastrada, o sistema NÃO PODE oferecer o fluxo de declaração de doação; DEVE informar que a doação digital está temporariamente indisponível e exibir o canal de contato da instituição.
+- **FR-008**: O sistema DEVE registrar toda declaração de doação com status pendente, e DEVE permitir que um funcionário autorizado a confirme ou a marque como não localizada após conferência no extrato bancário da instituição, registrando autor, data e — na marcação como não localizada — o motivo. A declaração do doador NÃO PODE, por si só, alterar o status para confirmada.
 - **FR-009**: O sistema NÃO PODE registrar doações de itens físicos ou de dinheiro vivo digitalmente; esses casos permanecem exclusivamente como registro físico da instituição.
-- **FR-010**: O sistema DEVE disponibilizar o comprovante da doação ao doador em poucos segundos após a confirmação do pagamento, tanto na tela em que a doação foi iniciada quanto por meio de consulta posterior usando o código de protocolo (FR-045).
+- **FR-010**: O sistema DEVE disponibilizar ao doador uma declaração de doação assim que a doação for confirmada por um funcionário, acessível por meio de consulta posterior usando o código de protocolo (FR-045). O sistema NÃO PODE emitir essa declaração enquanto a doação estiver pendente ou não localizada.
+- **FR-010a**: O sistema DEVE deixar explícito ao doador, na tela de declaração, que o pagamento ocorre no aplicativo do próprio banco, que a declaração não confirma o recebimento, e que a conferência é feita manualmente pela equipe.
+- **FR-010b**: O sistema DEVE permitir que o doador anexe opcionalmente o comprovante bancário à declaração, e DEVE restringir o acesso a esse anexo a perfis autorizados, nunca o expondo no Portal Público.
 
 **Cadastro de Voluntários**
 
@@ -274,7 +291,7 @@ Uma pessoa cujos dados pessoais estão no sistema (voluntário, candidato a vaga
 
 **Painel de Indicadores**
 
-- **FR-036**: O sistema DEVE exibir, no Painel Administrativo, uma visão consolidada com indicadores e alertas prioritários, incluindo ao menos itens necessários mais urgentes e cadastros pendentes de triagem.
+- **FR-036**: O sistema DEVE exibir, no Painel Administrativo, uma visão consolidada com indicadores e alertas prioritários, incluindo ao menos itens necessários mais urgentes, cadastros pendentes de triagem e declarações de doação pendentes de conferência (FR-008).
 
 **Edição e Correção de Dados**
 
@@ -301,7 +318,7 @@ Uma pessoa cujos dados pessoais estão no sistema (voluntário, candidato a vaga
 
 **Rastreabilidade de Doações**
 
-- **FR-045**: O sistema DEVE gerar um código de protocolo único para toda doação (espontânea ou associativa) no momento em que ela é iniciada, exibido ao doador antes da geração do QR code Pix, permitindo consulta posterior do status e do comprovante sem exigir nenhum dado de identificação.
+- **FR-045**: O sistema DEVE gerar um código de protocolo único para toda declaração de doação (espontânea ou associativa) no momento em que ela é registrada, exibido ao doador na conclusão do fluxo, permitindo consulta posterior do status e da declaração de doação sem exigir nenhum dado de identificação.
 
 **Segurança de Acesso ao Autoatendimento**
 
@@ -320,13 +337,13 @@ Uma pessoa cujos dados pessoais estão no sistema (voluntário, candidato a vaga
 - **FR-049**: O sistema DEVE enviar automaticamente um e-mail de confirmação ao autor de todo cadastro de voluntário, candidatura a vaga ou solicitação de evento/campanha externa, no momento do envio, contendo o código de protocolo (FR-043) e informando que a análise pode levar alguns dias.
 - **FR-049a**: O registro de um cadastro de voluntário, candidatura a vaga ou solicitação de evento/campanha NÃO PODE depender do sucesso do envio do e-mail de confirmação (FR-049); o registro é mantido mesmo se o envio falhar. Em caso de falha, o sistema DEVE tentar reenviar automaticamente o e-mail uma vez após um intervalo; se a nova tentativa também falhar, o sistema DEVE registrar a falha de envio internamente para permitir reenvio ou contato manual pela equipe.
 
-**Idempotência de Confirmação de Pagamento**
+**Integridade da Confirmação de Doação**
 
-- **FR-050**: O sistema DEVE tratar de forma idempotente as notificações de confirmação de pagamento recebidas da API de pagamentos para uma mesma doação: se a doação já estiver com status confirmada, uma nova notificação para o mesmo protocolo/ID de transação NÃO PODE alterar o registro nem gerar novo comprovante.
+- **FR-050**: O sistema DEVE impedir que uma mesma declaração de doação seja confirmada mais de uma vez: se a doação já estiver com status confirmada, uma nova tentativa de confirmação NÃO PODE alterar o registro nem emitir nova declaração de doação. O sistema DEVE também sinalizar ao funcionário, na conferência, declarações pendentes com mesmo valor e data próximos entre si, para que ele avalie se são doações distintas ou uma declaração duplicada pelo mesmo doador.
 
 **Proteção de Dados Pessoais (LGPD)**
 
-- **FR-051**: O sistema DEVE exigir aceite explícito do aviso de privacidade em todo formulário público que colete dados pessoais (cadastro de voluntário, candidatura a vaga, doação associativa e solicitação externa de evento/campanha), impedindo o envio sem esse aceite. A doação espontânea, por não coletar dados de identificação (FR-005), está dispensada.
+- **FR-051**: O sistema DEVE exigir aceite explícito do aviso de privacidade em todo formulário público que colete dados pessoais (cadastro de voluntário, candidatura a vaga, declaração de doação associativa e solicitação externa de evento/campanha), impedindo o envio sem esse aceite. A declaração de doação espontânea, por não coletar dados de identificação (FR-005), está dispensada — **exceto** quando o doador optar por anexar o comprovante bancário (FR-010b), que contém dados pessoais do pagador: nesse caso o aceite passa a ser obrigatório e o sistema DEVE avisar, antes do anexo, que a doação deixa de ser anônima.
 - **FR-052**: O sistema DEVE registrar, junto a cada aceite de consentimento, a data/hora, a finalidade do tratamento e a versão do texto do aviso de privacidade aceito.
 - **FR-053**: O sistema DEVE disponibilizar publicamente, sem exigir login, um aviso de privacidade descrevendo quais dados são coletados, com que finalidade, por quanto tempo são retidos e por qual canal o titular exerce seus direitos.
 - **FR-054**: O sistema DEVE permitir que o titular solicite acesso aos seus próprios dados e a correção deles, tanto pela área de autoatendimento (FR-041), quando aplicável, quanto por um canal público de solicitação identificado por código de protocolo.
@@ -339,7 +356,8 @@ Uma pessoa cujos dados pessoais estão no sistema (voluntário, candidato a vaga
 ## Key Entities
 
 - **Usuário**: pessoa com acesso ao sistema. Possui um ou mais perfis (funcionário, voluntário e/ou doador associado) associados ao mesmo CPF — uma pessoa pode acumular mais de um perfil simultaneamente (FR-048) —, dados de identificação (nome, CPF, e-mail, telefone) e status (ativo/inativo). Funcionários acessam o Painel Administrativo por conta(s) administrativa(s) compartilhada(s); voluntários aprovados e doadores associados possuem login próprio de autoatendimento restrito aos seus próprios dados, com redefinição de senha por e-mail (FR-046). O cadastro de voluntário carrega ainda um código de protocolo e um status de triagem (pendente/aprovado/rejeitado) até a efetivação como voluntário ativo.
-- **Doação**: registro de uma contribuição financeira via Pix. Possui valor, tipo (espontânea ou associativa), status (pendente/confirmada), vínculo opcional com um doador associado, código de protocolo (FR-045) e data.
+- **Doação**: registro da declaração de uma contribuição financeira feita via Pix fora do sistema. Possui valor e data informados pelo doador, tipo (espontânea ou associativa), status (pendente/confirmada/não localizada, com motivo quando não localizada), anexo opcional do comprovante bancário (FR-010b, de acesso restrito), vínculo opcional com um doador associado, código de protocolo (FR-045), data do registro e — quando conferida — autor e data da conferência.
+- **Chave Pix Institucional**: dado de configuração cadastrado pela equipe administrativa e exibido publicamente na página de doação. Possui a chave Pix, a imagem do QR code, e autor e data da última atualização. Não é credencial de acesso e não dá ao sistema nenhum poder sobre a conta bancária da instituição.
 - **Item Necessário**: necessidade prioritária de doação (item físico ou valor). Possui nome, quantidade/valor necessário, data da última atualização e status (ativo/suprido).
 - **Campanha/Evento**: iniciativa institucional. Possui data, descrição, recursos necessários, origem (cadastro interno ou solicitação externa aprovada) e status (ativo/encerrado).
 - **Candidatura a Vaga**: submissão de candidato a emprego. Possui cargo pretendido, dados pessoais, currículo anexado ou descrição textual de experiência, código de protocolo e status (em análise/aprovada/rejeitada, com motivo quando rejeitada).
@@ -353,7 +371,8 @@ Uma pessoa cujos dados pessoais estão no sistema (voluntário, candidato a vaga
 
 ### Measurable Outcomes
 
-- **SC-001**: O comprovante de uma doação Pix fica disponível ao doador em até 10 segundos após a confirmação do pagamento, em condições normais de operação (ressalvado o efeito pontual de hibernação do banco de dados em caso de inatividade prolongada, conforme registrado em Assumptions).
+- **SC-001**: A declaração de doação fica disponível ao doador, pela consulta por protocolo, imediatamente após um funcionário confirmar a doação no Painel Administrativo — o tempo total percebido pelo doador depende da rotina de conferência da equipe (SC-001a), não do sistema.
+- **SC-001a**: A equipe administrativa consegue conferir e confirmar uma declaração de doação pendente contra o extrato bancário em menos de 2 minutos por declaração, e a instituição se compromete a fazer essa conferência ao menos uma vez por dia útil.
 - **SC-002**: Uma atualização em um item necessário (cadastro, quantidade ou baixa) aparece refletida no Portal Público em até 1 minuto após o registro.
 - **SC-003**: 100% das campanhas, eventos e necessidades vigentes são exibidos corretamente no Portal Público sem exigir login, em qualquer teste de acesso público.
 - **SC-004**: Em testes de controle de acesso, 0% dos dados pessoais de candidatos, voluntários e doadores ficam visíveis a perfis não autorizados.
@@ -361,7 +380,7 @@ Uma pessoa cujos dados pessoais estão no sistema (voluntário, candidato a vaga
 - **SC-006**: 100% das campanhas/eventos aprovados no Painel Administrativo aparecem no Portal Público sem nenhuma ação manual adicional.
 - **SC-007**: A equipe de triagem recebe notificação de um novo cadastro de voluntário em até 5 minutos após a submissão.
 - **SC-008**: 100% dos dados cadastrados no sistema podem ser localizados e corrigidos posteriormente pela equipe administrativa.
-- **SC-009**: Um visitante consegue concluir uma doação espontânea via Pix, do início ao recebimento do QR code, em menos de 2 minutos.
+- **SC-009**: Um visitante consegue localizar a chave Pix/QR code e concluir a declaração de uma doação espontânea, do acesso à página até o recebimento do protocolo, em menos de 2 minutos (sem contar o tempo do pagamento no aplicativo do banco).
 - **SC-010**: A equipe administrativa consegue publicar ou atualizar uma necessidade de doação no Portal Público em menos de 5 minutos, sem depender de planilhas ou publicações manuais em redes sociais.
 - **SC-011**: Um solicitante externo consegue consultar o status atual da própria submissão usando o protocolo recebido, sem precisar contatar a equipe por telefone ou e-mail, em menos de 1 minuto.
 - **SC-012**: Um voluntário aprovado ou um doador associado consegue consultar seus próprios dados/histórico pela área de autoatendimento sem depender de a equipe administrativa levantar essa informação manualmente.
@@ -377,7 +396,8 @@ Uma pessoa cujos dados pessoais estão no sistema (voluntário, candidato a vaga
 - A lista de cargos disponíveis para candidatura (limpeza, cuidador, enfermagem, cozinha) é fixa nesta versão; alterá-la exige nova validação de escopo.
 - A maioridade civil brasileira (18 anos) é o critério usado para exigir ou dispensar o anexo de autorização do responsável legal no cadastro de voluntário.
 - Anexos (currículo, autorização de responsável legal) aceitam formatos comuns de documento e imagem, com tamanho máximo razoável definido tecnicamente na fase de planejamento.
-- Quando a confirmação de pagamento de uma doação Pix não chega dentro de uma janela de 15 minutos após o início da doação, a doação permanece com status pendente, disponível para consulta e conciliação manual pela equipe, sem ser descartada; o doador pode acompanhar essa mudança de status posteriormente por meio do código de protocolo (FR-045), independentemente de ter permanecido na página original.
+- Não existe janela de espera automática: como não há API de pagamentos, toda declaração de doação nasce pendente e assim permanece até a conferência humana contra o extrato bancário (FR-008), sem ser descartada. O doador acompanha a mudança de status por meio do código de protocolo (FR-045), independentemente de ter permanecido na página original.
+- O sistema não integra nenhuma API de pagamentos e não tem acesso à conta bancária da instituição. A chave Pix e o QR code são conteúdo institucional cadastrado pela equipe (FR-007); a conciliação entre o extrato bancário e as declarações de doação é trabalho humano, conforme o Princípio VII da constituição (versão 2.0.0). Consequência aceita conscientemente: a confirmação de uma doação depende da rotina da equipe, e uma doação real cujo doador não declare nada no site não aparece no sistema.
 - Toda a equipe de funcionários com acesso ao Painel Administrativo pode visualizar a fila de triagem pendente; a notificação de novo cadastro/candidatura/solicitação chega a esse grupo, não a uma pessoa específica pré-configurada.
 - Devido ao pequeno número de pessoas na administração, o acesso de funcionários ao Painel Administrativo é feito por uma conta administrativa (ou um pequeno número de contas) compartilhada entre a equipe, e não por credencial individual gerada por funcionário; a aprovação de uma candidatura efetiva apenas o registro cadastral do novo funcionário, sem provisionar acesso individual ao sistema. Como consequência, o registro de auditoria (FR-035) identifica a conta institucional utilizada em cada ação, não o funcionário individual que a executou.
 - Voluntários aprovados e doadores associados usam autenticação própria padrão (login e senha, com redefinição de senha por e-mail — FR-046) para acessar sua área de autoatendimento restrita aos próprios dados.

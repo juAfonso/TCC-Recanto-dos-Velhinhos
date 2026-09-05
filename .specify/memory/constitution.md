@@ -1,32 +1,46 @@
 <!--
 Sync Impact Report
 ==================
-Mudança de versão: (nenhuma / template não preenchido) → 1.0.0
-Tipo de bump: MAJOR (ratificação inicial — primeira definição completa de governança)
+Mudança de versão: 1.0.0 → 2.0.0
+Data: 2026-09-04
+Tipo de bump: MAJOR (redefinição incompatível do Princípio VII)
 
-Princípios definidos (novos):
-  - I. Simplicidade Acima de Sofisticação
-  - II. Acessibilidade como Requisito de Qualidade
-  - III. Integridade e Rastreabilidade de Dados
-  - IV. Separação Clara de Contextos e Proteção de Dados Pessoais
-  - V. Responsividade Obrigatória e Compatibilidade entre Navegadores
-  - VI. Escopo Fechado da Versão Intermediária
-  - VII. Pix como Único Meio de Doação Digital
-  - VIII. Triagem Humana Obrigatória em Cadastros Externos
+STATUS DESTA EMENDA: PROPOSTA — PENDENTE DE CIÊNCIA DA ORIENTAÇÃO.
+A Governança exige que emendas sejam aprovadas pelo responsável pelo projeto "com ciência
+da orientação". A rota de Pix estático havia sido explicitamente avaliada e descartada pelo
+orientador em decisão anterior (registrada no CLAUDE.md). Esta emenda a reverte a pedido do
+responsável pelo projeto. Enquanto a orientação não tomar ciência, esta versão 2.0.0 NÃO
+deve ser tratada como ratificada, e nenhuma implementação do CSU01 deve ser iniciada.
 
-Seções adicionadas:
-  - Restrições de Escopo e Conformidade (SECTION_2)
-  - Fluxo de Desenvolvimento e Portões de Qualidade (SECTION_3)
-  - Governança
+Princípio alterado:
+  - VII. "Pix como Único Meio de Doação Digital"
+      → "Pix como Único Meio de Doação Digital, sem Custódia nem Integração de Pagamento"
+    Antes: doações DEVEM ser processadas via API de pagamentos de terceiros compatível com Pix.
+    Depois: doações usam chave Pix/QR code estáticos cadastrados pela instituição; o sistema
+    NÃO integra API de pagamentos; o doador declara a doação e um humano confirma contra o
+    extrato bancário.
 
-Seções removidas: nenhuma (placeholders do template substituídos)
+Justificativa: eliminar a dependência de contratação de provedor de pagamentos e de conta PJ
+habilitada, viabilizando a operação real da instituição sem custo nem vínculo contratual.
+Custo aceito: a conciliação passa a ser trabalho humano e a confirmação deixa de ser
+automática.
 
-Notas:
-  - O template padrão previa 5 princípios; o projeto adotou 8 conforme entrada explícita
-    do responsável. Estrutura de cabeçalhos do template preservada.
-  - Nenhum token entre colchetes permanece no documento.
+Seções alteradas:
+  - Restrições de Escopo e Conformidade → "Integrações externas" não inclui mais API de
+    pagamentos; passa a listar e-mail transacional e armazenamento de arquivos.
 
-TODOs pendentes: nenhum
+Impacto sobre trabalho já realizado:
+  - spec.md: reescritos FR-007, FR-007a, FR-008, FR-010, FR-045, FR-050, SC-001 e SC-009;
+    User Story 2 e a entidade Doação redesenhadas; Assumptions e Edge Cases ajustados.
+  - CLAUDE.md: decisão de 2026-09-04 registrada, revertendo a decisão anterior do orientador.
+  - Protótipo recanto-frontend: a tela de doação e a de gestão de doações precisam refletir
+    o novo fluxo (declaração + confirmação manual), já próximo do que o mock simula.
+  - Nenhum código de aplicação foi escrito ainda — o impacto é integralmente documental.
+
+Princípios inalterados: I, II, III, IV, V, VI, VIII.
+
+TODOs pendentes:
+  - Obter ciência/validação da orientação antes de ratificar esta versão.
 -->
 
 # Constituição do Sistema Web do Recanto dos Velhinhos Francisco Gonçalves Barbosa
@@ -145,21 +159,35 @@ levada ao responsável antes de qualquer implementação.
 Justificativa: o projeto é um TCC com prazo fixo; escopo aberto é o principal risco de
 não entrega.
 
-### VII. Pix como Único Meio de Doação Digital
+### VII. Pix como Único Meio de Doação Digital, sem Custódia nem Integração de Pagamento
 
-Doações financeiras DEVEM ser processadas exclusivamente via API de pagamentos de terceiros
-compatível com Pix.
+Doações financeiras DEVEM ser realizadas exclusivamente via Pix, por meio de chave Pix e/ou
+imagem de QR code fornecidas pela própria instituição e cadastradas como conteúdo
+institucional no Painel Administrativo. O sistema NÃO integra API de pagamentos.
 
 Regras não negociáveis:
 
 - Nenhum outro meio de pagamento digital pode ser implementado.
-- O sistema NÃO PODE armazenar dados de cartão nem credenciais de pagamento.
+- O sistema NÃO PODE armazenar dados de cartão, credenciais de pagamento ou credenciais
+  bancárias da instituição.
+- O sistema NÃO PODE integrar API de pagamentos de terceiros, gerar cobrança Pix dinâmica,
+  nem receber notificação automática (webhook) de confirmação de pagamento.
+- O pagamento ocorre inteiramente fora do sistema, no aplicativo bancário do doador. O
+  sistema registra apenas a **declaração** do doador de que doou; essa declaração NUNCA
+  equivale a confirmação de recebimento.
+- A confirmação de uma doação é ato humano de perfil autorizado, conferido contra o extrato
+  bancário da instituição, e fica registrada com autor e data (Princípios III e VIII).
 - Doações de itens físicos ou de dinheiro vivo NUNCA são registradas digitalmente; seu
   registro é exclusivamente físico, feito pela instituição.
-- Telas que mencionem doação DEVEM deixar clara essa distinção ao doador.
+- Telas que mencionem doação DEVEM deixar claras ao doador ambas as distinções: que o
+  pagamento acontece no banco dele, e que a declaração fica pendente até conferência humana.
 
-Justificativa: manter o sistema fora do fluxo de dinheiro vivo e de dados de cartão elimina
-responsabilidade de custódia financeira que a instituição não tem estrutura para assumir.
+Justificativa: manter o sistema fora do fluxo de dinheiro vivo, de dados de cartão e de
+credenciais bancárias elimina responsabilidade de custódia financeira que a instituição não
+tem estrutura para assumir. A ausência de integração de pagamento remove também a dependência
+de contratação de provedor e de conta PJ habilitada, viabilizando a operação real da
+instituição sem custo nem vínculo contratual — ao preço de tornar a conciliação um trabalho
+humano, aceito conscientemente.
 
 ### VIII. Triagem Humana Obrigatória em Cadastros Externos
 
@@ -190,8 +218,9 @@ essa decisão é humana e indelegável.
 - **Segurança mínima**: autenticação no Painel Administrativo, autorização verificada no
   servidor, senhas nunca armazenadas em texto claro.
 - **Idioma**: toda interface de usuário DEVE estar em português do Brasil.
-- **Integrações externas**: limitadas à API de pagamentos compatível com Pix. Qualquer outra
-  integração exige validação prévia (Princípio VI).
+- **Integrações externas**: limitadas ao envio de e-mail transacional e ao armazenamento de
+  arquivos enviados pelo público. Não há integração com API de pagamentos (Princípio VII).
+  Qualquer outra integração exige validação prévia (Princípio VI).
 
 ## Fluxo de Desenvolvimento e Portões de Qualidade
 
@@ -234,4 +263,5 @@ princípios. Violações identificadas DEVEM ser corrigidas antes da integraçã
 formalmente como exceção aprovada, com prazo de correção. Complexidade não justificada é
 motivo suficiente para reprovar uma entrega.
 
-**Version**: 1.0.0 | **Ratified**: 2026-08-12 | **Last Amended**: 2026-08-12
+**Version**: 2.0.0 (proposta — pendente de ciência da orientação, ver Sync Impact Report)
+| **Ratified**: 2026-08-12 | **Last Amended**: 2026-09-04

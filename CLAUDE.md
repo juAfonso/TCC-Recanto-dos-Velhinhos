@@ -67,6 +67,13 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   responsividade, dados, acesso).
 - **Sem API de pagamentos.** Ver a decisão de Pix estático em "Decisões já
   tomadas" — nenhum provedor de pagamentos será contratado ou integrado.
+- **Runtime:** Node.js **24 LTS** (24.19.0), instalado em 2026-09-05 via
+  `winget install OpenJS.NodeJS.LTS`. O plano dizia Node 20, que já chegou ao
+  fim de vida — foi corrigido. Verificado que os três recursos nativos que
+  sustentam a decisão de quase não usar dependências funcionam: `fetch`
+  (e-mail), `scrypt` do `node:crypto` (senha) e `node:test` (testes).
+  **Quem for programar precisa instalar o Node na própria máquina** — não
+  basta estar na máquina de uma pessoa.
 - **Fluxo de trabalho:** Spec Kit + Claude Code (VS Code), especificando e
   planejando a partir do PRD antes de implementar.
 - **Front-end:** já existe um protótipo estático (`recanto-frontend`) com as
@@ -190,6 +197,16 @@ paralelo.
   funcionário como possível duplicata (FR-050). Não existe mais janela de 15
   minutos: toda declaração nasce pendente e assim fica até a conferência
   humana.
+- **A chave Pix do Recanto é o CNPJ da instituição (confirmado 2026-09-05).**
+  Bom caso: CNPJ é dado público de pessoa jurídica, então exibi-lo no Portal
+  não levanta questão de LGPD, e ainda mostra ao doador que ele paga para a
+  instituição e não para uma pessoa física. Se algum dia trocarem por CPF ou
+  telefone pessoal, **parar e reavaliar** — aí passaria a ser exposição de
+  dado pessoal num projeto que colocou a LGPD no escopo, além de o dinheiro
+  cair em conta de pessoa física, o que atrapalha a prestação de contas.
+  **A chave não fica no repositório.** É cadastrada pela equipe no Painel
+  (`admin/pix.html`, FR-007) e vive na tabela `chave_pix_institucional`.
+  Nunca escrever a chave no código nem em arquivo versionado.
 - **Acesso ao Painel Administrativo é por conta institucional compartilhada**,
   não por login individual por funcionário. Como consequência, **a auditoria
   registra qual conta institucional executou cada ação, não qual funcionário

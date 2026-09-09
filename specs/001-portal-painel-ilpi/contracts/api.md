@@ -79,12 +79,18 @@ front-end então **não** oferece o formulário de declaração e mostra o canal
 
 | Método | Rota | Regras |
 |---|---|---|
-| `POST` | `/api/public/voluntarios` | menor de idade exige `autorizacaoArquivoId` (FR-014); consentimento obrigatório |
-| `POST` | `/api/public/candidaturas` | exige currículo em arquivo **ou** texto (FR-018); consentimento obrigatório |
+| `POST` | `/api/public/voluntarios` | menor de idade exige `autorizacaoArquivoId` (FR-012); consentimento obrigatório |
+| `POST` | `/api/public/candidaturas` | exige currículo em arquivo **ou** texto (FR-017); consentimento obrigatório |
 | `POST` | `/api/public/solicitacoes-evento` | consentimento obrigatório |
 
-Todas respondem `201` com `{ "protocolo": "…", "status": "pendente" }` e disparam o e-mail do
-FR-049. **A falha do e-mail não desfaz o registro nem altera a resposta** (FR-049a).
+Todas respondem `201` com `{ "protocolo": "…", "status": "pendente" }` (FR-013, FR-018, FR-021) e
+disparam o e-mail de confirmação ao autor do FR-049. **A falha do e-mail não desfaz o registro nem
+altera a resposta** (FR-049a).
+
+**Notificação à equipe de triagem (FR-014)**: além do e-mail ao autor, um novo cadastro de
+voluntário precisa notificar quem faz a triagem. O painel já lista pendências (FR-036), mas isso é
+*pull*, não notificação. Enquanto a equipe não definir se quer e-mail para a conta institucional a
+cada submissão, o FR-036 atende parcialmente — decisão pendente, ver `plan.md`.
 
 ### Consulta de status (CSU10)
 

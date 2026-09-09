@@ -83,7 +83,7 @@ Submissão pública com triagem obrigatória (Princípio VIII, FR-011 a FR-015).
 | `nome`, `email`, `telefone`, `cpf` | `text` | anonimizáveis |
 | `data_nascimento` | `date` | define se é menor de idade |
 | `menor_de_idade` | `boolean` | derivado na submissão |
-| `autorizacao_blob_id` | `uuid` FK NULL → `arquivo` | obrigatório se menor (FR-014, FR-058) |
+| `autorizacao_blob_id` | `uuid` FK NULL → `arquivo` | obrigatório se menor (FR-012, FR-058) |
 | `disponibilidade`, `areas_interesse` | `text` | |
 | `status` | `text` | `pendente` \| `aprovado` \| `rejeitado` |
 | `motivo_rejeicao` | `text` NULL | **obrigatório** quando `rejeitado` |
@@ -110,7 +110,7 @@ rejeitado` (exige motivo). Nunca automático (FR-034).
 | `motivo_rejeicao` | `text` NULL | obrigatório quando `rejeitado` |
 | `triado_por`, `triado_em` | | |
 
-**Validação**: pelo menos um entre `curriculo_blob_id` e `curriculo_texto` (FR-018).
+**Validação**: pelo menos um entre `curriculo_blob_id` e `curriculo_texto` (FR-017).
 **Na aprovação**: se o CPF já existir em `usuario`, adiciona o perfil `funcionario` à linha
 existente em vez de criar outra (FR-048).
 

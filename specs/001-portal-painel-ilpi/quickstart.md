@@ -84,7 +84,7 @@ Envie cadastro de voluntário, candidatura e solicitação de evento.
 Rejeite cada um **sem** motivo → recusado nas três filas. Rejeite com motivo → registrado.
 **Esperado**: nenhum caminho aprova automaticamente (Princípio VIII).
 
-### V5 — Voluntário menor de idade (FR-014, FR-058)
+### V5 — Voluntário menor de idade (FR-012, FR-058)
 
 Cadastre voluntário com data de nascimento de menor, sem anexar autorização.
 **Esperado**: bloqueado. Com anexo: aceito, e o arquivo só é acessível a perfil autorizado — tente

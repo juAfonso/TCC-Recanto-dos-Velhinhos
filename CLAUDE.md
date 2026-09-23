@@ -218,6 +218,28 @@ paralelo.
      Fica como configuração editável, nunca constante no código.
   3. **FR-030 — conflito de data é aviso, não bloqueio.** Confirmação do que o
      spec já previa: o funcionário decide, porque só ele conhece o contexto.
+- **Manual de entrega do Painel Administrativo (decidido em 2026-09-23).**
+  Será produzido um guia para a **equipe do Recanto**, cobrindo a operação do
+  Painel. Três definições que evitam redebater isso depois:
+  1. **É documento separado, entregue à instituição — não é página dentro do
+     site.** Por isso **não** altera o escopo dos 11 CSUs e não exige mudança
+     no PRD. Se alguém propuser criar `ajuda.html` no Portal, aí sim vira
+     funcionalidade nova e cai na regra do "Inegociável".
+  2. **É escrito depois do sistema construído**, contra as telas reais.
+     Escrever antes produziria manual de telas que ainda vão mudar.
+  3. **Não cobre o Portal Público.** Se o doador ou o voluntário precisar de
+     manual para usar o site, o problema é da tela e se corrige na tela — é
+     o que o Princípio I exige e o que o FR-010a já faz na doação. O manual
+     existe para o Painel porque o grupo entrega e sai, e ninguém do Recanto
+     recebe treinamento.
+  Deve cobrir, no mínimo: entrar no Painel com a conta compartilhada; as três
+  triagens com motivo obrigatório na rejeição; a conferência de doação contra
+  o extrato (a rotina mais nova para eles); cadastro da chave Pix; itens
+  necessários; campanhas; notícias; usuários (inativar, nunca excluir);
+  atendimento de pedido de LGPD. E uma seção sobre **o que o sistema não
+  faz** — não enxerga a conta bancária, não aprova ninguém sozinho e não
+  apaga cadastro —, porque expectativa errada da instituição é tão cara
+  quanto funcionalidade faltando.
 - **Acesso ao Painel Administrativo é por conta institucional compartilhada**,
   não por login individual por funcionário. Como consequência, **a auditoria
   registra qual conta institucional executou cada ação, não qual funcionário

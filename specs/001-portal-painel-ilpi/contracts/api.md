@@ -173,6 +173,8 @@ Mesmo formato para as três filas — `voluntarios`, `candidaturas`, `solicitaco
 | `POST` | `/api/admin/{fila}/:id/rejeitar` |
 
 - `rejeitar` exige `motivo` nas **três** filas; sem ele, `422 MOTIVO_OBRIGATORIO`.
+- `aprovar` e `rejeitar` disparam e-mail ao **autor da submissão** com o resultado da triagem, incluindo
+  o motivo na rejeição (FR-049b). A falha no envio não reverte nem altera a decisão já registrada.
 - Não existe rota de aprovação automática ou em lote por critério calculado (Princípio VIII,
   FR-034).
 - `candidaturas/:id/aprovar`: se o CPF já existir em `usuario`, adiciona o perfil `funcionario` ao

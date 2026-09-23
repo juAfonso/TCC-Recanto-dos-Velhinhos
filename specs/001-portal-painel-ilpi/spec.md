@@ -344,6 +344,7 @@ Uma pessoa cujos dados pessoais estão no sistema (voluntário, candidato a vaga
 
 - **FR-049**: O sistema DEVE enviar automaticamente um e-mail de confirmação ao autor de todo cadastro de voluntário, candidatura a vaga ou solicitação de evento/campanha externa, no momento do envio, contendo o código de protocolo (FR-043) e informando que a análise pode levar alguns dias.
 - **FR-049a**: O registro de um cadastro de voluntário, candidatura a vaga ou solicitação de evento/campanha NÃO PODE depender do sucesso do envio do e-mail de confirmação (FR-049); o registro é mantido mesmo se o envio falhar. Em caso de falha, o sistema DEVE tentar reenviar automaticamente o e-mail uma vez após um intervalo; se a nova tentativa também falhar, o sistema DEVE registrar a falha de envio internamente para permitir reenvio ou contato manual pela equipe.
+- **FR-049b**: O sistema DEVE enviar automaticamente um e-mail ao autor da submissão quando a triagem for concluída (FR-015, FR-019, FR-022), informando se foi aprovada ou rejeitada e, na rejeição, o motivo registrado. Decisão de 2026-09-23: até então o autor só descobria o resultado consultando o protocolo, o que é passivo demais para quem se voluntariou e ficou aguardando. Aplica-se a mesma regra de resiliência do FR-049a — a falha no envio NÃO PODE reverter nem alterar a decisão de triagem já registrada.
 
 **Integridade da Confirmação de Doação**
 

@@ -29,6 +29,12 @@
 - Q: O CSU01 mantém a API de pagamentos dinâmica (QR code gerado por terceiros + confirmação automática) ou passa a usar Pix estático? → A: Pix estático. A instituição cadastra sua chave Pix e/ou a imagem do QR code no Painel Administrativo, e o Portal Público apenas os exibe. O sistema não integra nenhuma API de pagamentos, não gera cobrança dinâmica e não recebe webhook de confirmação. Motivação: eliminar a dependência de contratação de provedor e de conta PJ habilitada.
 - Q: Sem API, como a doação passa a existir dentro do sistema? → A: O doador paga no aplicativo do próprio banco e, em seguida, **declara** a doação no site (valor, data e, opcionalmente, anexo do comprovante bancário). O sistema registra a declaração com status pendente e emite código de protocolo. Um funcionário confere a entrada no extrato bancário da instituição e confirma (ou rejeita) a declaração no Painel Administrativo. A declaração do doador nunca equivale, por si só, a confirmação de recebimento.
 
+### Session 2026-09-23 — Decisões da equipe (não dependem da instituição)
+
+- Q: O FR-014 exige notificar a equipe de triagem a cada novo cadastro de voluntário. Isso será e-mail à conta institucional ou apenas o alerta no Painel Administrativo? → A: Apenas o alerta no painel. Não há envio ativo de e-mail à equipe. Consequência aceita conscientemente: uma submissão aguarda até que alguém abra o painel; isso é compatível com o aviso de "a análise pode levar alguns dias" que o autor já recebe (FR-049). O e-mail ao **autor** da submissão continua existindo normalmente.
+- Q: Qual o valor concreto do "período prolongado" sem atualização de item necessário (FR-028)? → A: 30 dias, valor que o protótipo já usava. Fica como configuração editável, não como constante no código.
+- Q: O conflito de data ao cadastrar campanha/evento (FR-030) é aviso ou bloqueio? → A: Aviso. Confirmação do que o spec já previa — o funcionário pode prosseguir com a data conflitante, porque só ele conhece o contexto.
+
 ## User Scenarios & Testing (mandatory)
 
 ### User Story 1 - Portal Público Informativo (Priority: P1)
@@ -246,7 +252,7 @@ Uma pessoa cujos dados pessoais estão no sistema (voluntário, candidato a vaga
 - **FR-011**: O sistema DEVE permitir que qualquer visitante se cadastre como voluntário informando nome, endereço, telefone, e-mail, idade e área de interesse.
 - **FR-012**: O sistema DEVE exigir anexo de autorização do responsável legal quando o cadastrando for menor de idade, e impedir o envio do cadastro sem esse anexo.
 - **FR-013**: O sistema DEVE registrar todo novo cadastro de voluntário com status pendente até triagem por um funcionário.
-- **FR-014**: O sistema DEVE notificar a equipe responsável pela triagem sempre que um novo cadastro de voluntário for submetido.
+- **FR-014**: O sistema DEVE sinalizar todo novo cadastro de voluntário submetido na visão consolidada do Painel Administrativo (FR-036), onde a equipe responsável pela triagem o encontra. A sinalização é por consulta ao painel, NÃO por envio ativo de e-mail à equipe — decisão de 2026-09-23. Consequência aceita: uma submissão permanece aguardando até que alguém abra o painel, o que é compatível com o aviso de que a análise pode levar alguns dias, já enviado ao autor (FR-049).
 - **FR-015**: O sistema DEVE permitir que um funcionário aprove ou rejeite um cadastro de voluntário pendente, exigindo um motivo registrado junto ao status em caso de rejeição, e preservando o registro em ambos os casos.
 
 **Candidatura a Vaga de Emprego**
@@ -272,12 +278,12 @@ Uma pessoa cujos dados pessoais estão no sistema (voluntário, candidato a vaga
 
 - **FR-026**: O sistema DEVE permitir que um funcionário cadastre, busque por nome e atualize a quantidade de itens necessários.
 - **FR-027**: O sistema DEVE permitir dar baixa em um item quando ele for suprido, removendo-o automaticamente da listagem pública sem excluir seu registro histórico.
-- **FR-028**: O sistema DEVE sinalizar, no Painel Administrativo, itens necessários que não recebem atualização de quantidade por um período prolongado.
+- **FR-028**: O sistema DEVE sinalizar, no Painel Administrativo, itens necessários que não recebem atualização de quantidade há **30 dias ou mais** (valor definido em 2026-09-23). O prazo DEVE ser armazenado como configuração editável pela equipe, não como constante no código, para permitir ajuste sem nova publicação do sistema.
 
 **Gestão de Campanhas e Eventos**
 
 - **FR-029**: O sistema DEVE permitir que um funcionário cadastre campanhas/eventos com data, descrição e recursos necessários.
-- **FR-030**: O sistema DEVE verificar disponibilidade de data ao cadastrar uma campanha/evento e avisar o funcionário em caso de conflito com outro evento já confirmado.
+- **FR-030**: O sistema DEVE verificar disponibilidade de data ao cadastrar uma campanha/evento e avisar o funcionário em caso de conflito com outro evento já confirmado. O aviso é **sinalização, nunca bloqueio**: confirmado em 2026-09-23 que o funcionário pode prosseguir com a data conflitante se assim decidir, porque só ele conhece o contexto (por exemplo, dois eventos pequenos que cabem no mesmo dia).
 - **FR-031**: O sistema DEVE publicar automaticamente no Portal Público toda campanha/evento confirmado no Painel Administrativo, sem etapa manual adicional.
 
 **Divulgação Institucional**

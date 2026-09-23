@@ -245,7 +245,7 @@ Pares chave/valor editáveis pela equipe, para não exigir redeploy (research D1
 
 | Chave | Uso |
 |---|---|
-| `item_periodo_prolongado_dias` | FR-028 — partida sugerida: 30 |
+| `item_periodo_prolongado_dias` | FR-028 — **30** (definido em 2026-09-23) |
 | `retencao_<categoria>_dias` | FR-056 — **sem default**, aguarda definição da instituição |
 | `aviso_privacidade_versao` | versão corrente para FR-052 |
 

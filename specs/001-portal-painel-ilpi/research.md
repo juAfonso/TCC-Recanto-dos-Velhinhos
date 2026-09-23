@@ -198,7 +198,7 @@ em tabela, não como constante no código, para que a equipe possa ajustá-los s
 
 | Requisito | O que falta | Sugestão de partida |
 |---|---|---|
-| FR-028 | "período prolongado" sem atualização de item necessário | 30 dias (é o valor que o protótipo já usa) |
+| FR-028 | ~~"período prolongado" sem atualização de item necessário~~ | **Fechado em 2026-09-23: 30 dias.** Continua como configuração editável, não constante |
 | FR-056 | prazos de retenção por categoria de dado | a definir com a instituição — não há default seguro |
 
 **NEEDS CLARIFICATION (institucional, não técnico)**: o FR-056 não tem valor sugerido de propósito.

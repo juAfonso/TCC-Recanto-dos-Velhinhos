@@ -207,6 +207,17 @@ paralelo.
   **A chave não fica no repositório.** É cadastrada pela equipe no Painel
   (`admin/pix.html`, FR-007) e vive na tabela `chave_pix_institucional`.
   Nunca escrever a chave no código nem em arquivo versionado.
+- **Três decisões de equipe fechadas em 2026-09-23** (não dependiam da
+  instituição, estavam só esperando o grupo decidir):
+  1. **FR-014 — a equipe de triagem não recebe e-mail.** Nova submissão de
+     voluntário aparece só como pendência no painel (FR-036). Consequência
+     aceita: a submissão aguarda até alguém abrir o painel — compatível com o
+     aviso de "a análise pode levar alguns dias" que o autor já recebe. O
+     e-mail do FR-049 continua indo para o **autor**, não para a equipe.
+  2. **FR-028 — 30 dias** para sinalizar item necessário sem atualização.
+     Fica como configuração editável, nunca constante no código.
+  3. **FR-030 — conflito de data é aviso, não bloqueio.** Confirmação do que o
+     spec já previa: o funcionário decide, porque só ele conhece o contexto.
 - **Acesso ao Painel Administrativo é por conta institucional compartilhada**,
   não por login individual por funcionário. Como consequência, **a auditoria
   registra qual conta institucional executou cada ação, não qual funcionário

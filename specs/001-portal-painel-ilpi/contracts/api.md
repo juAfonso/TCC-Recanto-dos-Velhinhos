@@ -87,10 +87,10 @@ Todas respondem `201` com `{ "protocolo": "…", "status": "pendente" }` (FR-013
 disparam o e-mail de confirmação ao autor do FR-049. **A falha do e-mail não desfaz o registro nem
 altera a resposta** (FR-049a).
 
-**Notificação à equipe de triagem (FR-014)**: além do e-mail ao autor, um novo cadastro de
-voluntário precisa notificar quem faz a triagem. O painel já lista pendências (FR-036), mas isso é
-*pull*, não notificação. Enquanto a equipe não definir se quer e-mail para a conta institucional a
-cada submissão, o FR-036 atende parcialmente — decisão pendente, ver `plan.md`.
+**Notificação à equipe de triagem (FR-014)**: resolvida em 2026-09-23 — **não há envio de e-mail à
+equipe**. A sinalização de nova submissão acontece apenas em `GET /api/admin/dashboard` (FR-036),
+que lista os cadastros pendentes de triagem. Nenhum endpoint dispara e-mail para a conta
+institucional. O e-mail do FR-049 continua indo só para o **autor** da submissão.
 
 ### Consulta de status (CSU10)
 

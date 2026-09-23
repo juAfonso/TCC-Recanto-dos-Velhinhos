@@ -70,3 +70,12 @@
     telas `doacoes.html` e `admin/doacoes.html` descrevendo o fluxo com API de pagamentos, e seu
     `README.md` ainda cita a stack abandonada (C#/MySQL). O PRD e a seção 19 do documento do TCC
     recebem os casos de uso revisados via `docs/casos-de-uso-tcc.md`.
+- **2026-09-23 — Três decisões de equipe fechadas.** Eram as pendências que não dependiam da
+  instituição e estavam apenas aguardando o grupo decidir: (a) FR-014, a equipe de triagem é
+  sinalizada apenas pelo painel, sem envio de e-mail; (b) FR-028, o período prolongado sem
+  atualização de item necessário é de 30 dias, armazenado como configuração editável; (c) FR-030,
+  conflito de data em campanha/evento é aviso e não bloqueio — confirmação do que já constava.
+  FR-014, FR-028 e FR-030 foram reescritos no `spec.md` para deixar as decisões explícitas no texto
+  do requisito, e não apenas no log.
+  - **Única pendência de configuração restante:** os prazos de retenção por categoria de dado
+    (FR-056), que dependem de definição jurídica da instituição.

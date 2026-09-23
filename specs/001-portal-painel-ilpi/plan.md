@@ -64,16 +64,12 @@ banco Neon após inatividade (cold start na primeira requisição). Mobile-first
 **Scale/Scope**: uma ILPI em Pinheiral/RJ. ~15 tabelas, ~40 endpoints, 21 telas. Ordem de grandeza:
 centenas de usuários cadastrados, dezenas de doações por mês.
 
-**NEEDS CLARIFICATION (FR-014 — notificação da equipe de triagem)**: o FR-014 exige notificar quem
-faz a triagem a cada novo cadastro de voluntário. O painel de indicadores (FR-036) mostra as
-pendências, mas exige que alguém abra o painel — é *pull*, não notificação. Falta a equipe decidir
-se quer também um e-mail à conta institucional a cada submissão. Descoberto na revisão de 2026-09-09.
-
 **NEEDS CLARIFICATION (institucional, não técnico)**: os prazos de retenção por categoria de dado
 (FR-056) não têm valor definido e não recebem default de propósito — é decisão jurídica da
 instituição. Até haver definição, o sistema armazena o prazo como configuração e apenas **sinaliza**
-registros vencidos, sem anonimizar automaticamente. O "período prolongado" do FR-028 parte de 30
-dias, valor já usado pelo protótipo.
+registros vencidos, sem anonimizar automaticamente. **É a última pendência que bloqueia valor de
+configuração**; as três decisões de equipe que estavam abertas foram fechadas em 2026-09-23 (FR-014
+sem e-mail à equipe, FR-028 em 30 dias, FR-030 como aviso).
 
 ---
 

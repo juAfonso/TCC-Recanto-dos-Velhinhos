@@ -67,6 +67,32 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   responsividade, dados, acesso).
 - **Sem API de pagamentos.** Ver a decisão de Pix estático em "Decisões já
   tomadas" — nenhum provedor de pagamentos será contratado ou integrado.
+- **E-mail: SMTP do Gmail institucional, via `nodemailer` (decidido em
+  2026-09-23).** A instituição confirmou que **não tem domínio próprio e não
+  quer registrar um**. Isso inverteu a decisão anterior, que era Resend via
+  `fetch`. Motivo: sem domínio, um provedor terceiro enviando como
+  `algo@gmail.com` não passa na verificação DMARC — o gmail.com não autoriza
+  terceiros a enviar em seu nome — e a mensagem vira spam. Pelo SMTP do
+  próprio Gmail é o Google que entrega, e autentica. Gratuito, limite de ~500
+  mensagens/dia contra um uso esperado de 20 a 50 por **mês**.
+  **Atenção — a justificativa antiga do `research.md` dizia o contrário**
+  ("SMTP direto tem entregabilidade pior sem domínio"). Está errada e foi
+  corrigida. Se alguém reabrir esse assunto partindo dela, está lendo versão
+  desatualizada.
+  Três riscos registrados: é zona cinzenta nos termos do Google; a conta
+  precisa ser **institucional e não pessoal** (se for o Gmail de alguém que
+  sai da instituição, o envio para); e a senha de aplicativo é credencial —
+  vai em variável de ambiente, nunca no repositório. Plano B, se o Google
+  bloquear: Brevo/SendGrid enviando de subdomínio do próprio provedor.
+- **É a terceira dependência npm do projeto**, quebrando a regra de duas. O
+  Princípio I exige justificativa escrita para cada uma, e ela está no
+  `research.md` D5: escrever SMTP à mão sobre `node:tls` custaria mais do que
+  a dependência economiza.
+- **O protocolo é o canal primário; o e-mail é complementar.** Sem domínio,
+  há risco real de spam — e cair em spam é **pior que falhar**, porque a
+  falha de envio o sistema detecta e sinaliza (FR-049a), enquanto a entrega
+  no spam é silenciosa. A interface deve dizer "anote este código", não
+  "enviamos um e-mail".
 - **Runtime:** Node.js **24 LTS** (24.19.0), instalado em 2026-09-05 via
   `winget install OpenJS.NodeJS.LTS`. O plano dizia Node 20, que já chegou ao
   fim de vida — foi corrigido. Verificado que os três recursos nativos que

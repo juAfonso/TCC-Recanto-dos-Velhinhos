@@ -98,19 +98,47 @@ O cookie deve carregar qual contexto está ativo, e a verificação de perfil ro
 
 ## D5 — Envio de e-mail transacional
 
-**Decisão**: Resend, chamado por `fetch` direto à API REST, sem SDK.
+**Decisão (revista em 2026-09-23)**: SMTP do Gmail institucional do Recanto, via `nodemailer`, com
+senha de aplicativo. **Terceira dependência npm do projeto**, aceita conscientemente.
 
-**Justificativa**: o plano gratuito cobre folgadamente o volume esperado (FR-049 dispara e-mail por
-submissão pública — dezenas por mês, não milhares). Chamar a API REST com `fetch` evita mais uma
-dependência npm, coerente com o Princípio I.
+**Justificativa**: em 2026-09-23 a instituição confirmou que **não possui domínio próprio e não
+pretende registrar um**. Isso inverte a conclusão anterior desta decisão. Sem domínio, um provedor
+terceiro (Resend, SendGrid, Brevo) enviando como `algo@gmail.com` não consegue autenticar-se: o
+gmail.com publica SPF/DKIM e não autoriza terceiros a enviar em seu nome, de modo que a mensagem
+falha no alinhamento DMARC e é classificada como spam ou rejeitada. Enviar pelo SMTP do próprio
+Gmail resolve isso porque **é o Google que entrega**, com autenticação íntegra.
 
-**Alternativas consideradas**: SendGrid e Brevo atendem igualmente; a escolha é reversível porque o
-envio fica isolado atrás de um único módulo (`api/_lib/email.js`). SMTP direto (Nodemailer) foi
-rejeitado por exigir dependência e por entregabilidade pior sem domínio próprio.
+Limite da conta gratuita: ~500 mensagens/dia. O volume esperado é de 20 a 50 por **mês** (FR-049,
+FR-049b e FR-046) — três ordens de grandeza de folga. Custo: **zero**, em qualquer cenário.
 
-**Restrição conhecida**: sem domínio próprio (plano gratuito da Vercel), o remetente fica em um
-domínio de teste do provedor, o que aumenta a chance de cair em spam. Isso reforça a necessidade do
-FR-049a (o registro nunca depende do sucesso do e-mail) e do fallback de contato manual.
+**A justificativa anterior estava errada e fica registrada para não ser repetida**: dizia que SMTP
+direto teria "entregabilidade pior sem domínio próprio". É o contrário. Sem domínio, o SMTP do
+provedor do endereço é a única rota que autentica corretamente.
+
+**Alternativas consideradas**:
+- *Resend* (decisão anterior): o domínio de teste só entrega para o dono da conta — inútil para
+  escrever a voluntários. Com domínio verificado seria a melhor opção, mas não há domínio.
+- *Brevo / SendGrid com remetente avulso verificado*: tecnicamente permitido, porém é exatamente a
+  combinação que falha no DMARC descrita acima.
+- *Brevo / SendGrid enviando de um subdomínio do próprio provedor*: autentica corretamente, mas o
+  remetente não é o Recanto, o que confunde quem recebe e quebra a resposta. Fica como **plano B**
+  caso o Google bloqueie a conta.
+
+**Justificativa da terceira dependência (exigida pelo Princípio I)**: escrever SMTP sobre
+`node:tls` à mão é viável, mas envolve negociação STARTTLS, autenticação e codificação MIME —
+complexidade desproporcional e propensa a erro, em um time que precisa entregar em 11 semanas. O
+`nodemailer` é maduro e resolve isso. A alternativa de não usar biblioteca custaria mais do que a
+dependência economiza.
+
+**Restrições conhecidas, todas registradas**:
+- **Zona cinzenta nos termos do Google**: envio automatizado não é o uso previsto de conta comum.
+  Improvável gerar problema neste volume, mas é risco real e o plano B acima existe por isso.
+- **A conta precisa ser institucional, nunca pessoal.** Se for o Gmail de um funcionário e ele sair
+  da instituição, o envio para de funcionar.
+- **A senha de aplicativo é credencial**: vai em variável de ambiente, jamais no repositório.
+- **Cair em spam é pior que falhar.** Falha o sistema detecta e sinaliza (FR-049a); entrega no spam
+  é silenciosa. Por isso o **protocolo é o canal primário** de acompanhamento e o e-mail é
+  complementar — a interface deve dizer "anote este código", não "enviamos um e-mail".
 
 ---
 

@@ -35,11 +35,13 @@ declaração do doador conferida manualmente pela equipe.
 **Language/Version**: JavaScript ES2022 — navegador (sem transpilação) e Node.js 24 LTS nas funções
 serverless.
 
-**Primary Dependencies**: deliberadamente mínimas (Princípio I). `@neondatabase/serverless` (driver
-HTTP, porque pool TCP não sobrevive a função efêmera) e `@vercel/blob` (upload de arquivos). Tudo
-mais usa o runtime: `node:crypto` para hash de senha (`scrypt`) e assinatura de cookie (HMAC),
-`fetch` nativo para o envio de e-mail, `node:test` para os testes. **Sem framework de front-end, sem
-ORM, sem biblioteca de autenticação, sem build step.** Justificativas em `research.md`.
+**Primary Dependencies**: deliberadamente mínimas (Princípio I). São **três**:
+`@neondatabase/serverless` (driver HTTP, porque pool TCP não sobrevive a função efêmera),
+`@vercel/blob` (upload de arquivos) e `nodemailer` (SMTP do Gmail institucional — ver research D5;
+sem domínio próprio, é a única rota que autentica corretamente). Tudo mais usa o runtime:
+`node:crypto` para hash de senha (`scrypt`) e assinatura de cookie (HMAC), e `node:test` para os
+testes. **Sem framework de front-end, sem ORM, sem biblioteca de autenticação, sem build step.**
+Justificativas em `research.md`.
 
 **Storage**: Neon (PostgreSQL) para dados relacionais; Vercel Blob para arquivos enviados
 (currículos, autorização de menor, comprovante bancário, imagem do QR code Pix).
@@ -200,6 +202,7 @@ Painel e na regra de possível duplicata (FR-050).
 | Violação | Por que é necessária | Alternativa mais simples rejeitada porque |
 |---|---|---|
 | Duas dependências npm (`@neondatabase/serverless`, `@vercel/blob`) | Pool TCP não sobrevive a função serverless, e a Vercel não tem disco persistente | `pg` puro esgota o limite de conexões do plano gratuito; salvar arquivo em disco local não persiste. Ver `research.md` D2 e D3 |
+| Terceira dependência npm (`nodemailer`), adicionada em 2026-09-23 | A instituição não tem domínio próprio e não pretende registrar. Sem domínio, provedor terceiro enviando como `@gmail.com` falha no DMARC e cai em spam; o SMTP do próprio Gmail é a única rota que autentica | Escrever SMTP sobre `node:tls` à mão exigiria negociação STARTTLS, autenticação e codificação MIME — complexidade desproporcional e propensa a erro em um time com 11 semanas. Ver `research.md` D5 |
 
 Nenhuma outra complexidade a justificar: não há ORM, framework, camada de repositório, biblioteca de
 autenticação nem passo de build.

@@ -23,11 +23,16 @@ Guia de execução e validação. Detalhes de modelo estão em `data-model.md`, 
 DATABASE_URL=postgresql://…            # Neon
 BLOB_READ_WRITE_TOKEN=…                # Vercel Blob
 SESSION_SECRET=…                       # HMAC do cookie de sessão
-RESEND_API_KEY=…                       # e-mail transacional
+GMAIL_USER=…@gmail.com                 # conta institucional do Recanto
+GMAIL_APP_PASSWORD=…                   # senha de aplicativo de 16 caracteres
 ```
 
 `.gitignore` já cobre `.env`. Confira antes do primeiro commit que nenhuma dessas chaves entrou no
 repositório.
+
+> **A senha de aplicativo não é a senha da conta.** É gerada nas configurações do Google, exige
+> verificação em duas etapas ativada, e dá a quem a possui o poder de enviar e-mail em nome da
+> instituição. Trate como credencial real. Se vazar, revogue pelo painel da conta Google.
 
 ---
 

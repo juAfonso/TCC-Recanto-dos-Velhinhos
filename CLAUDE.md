@@ -218,28 +218,33 @@ paralelo.
      Fica como configuração editável, nunca constante no código.
   3. **FR-030 — conflito de data é aviso, não bloqueio.** Confirmação do que o
      spec já previa: o funcionário decide, porque só ele conhece o contexto.
-- **Manual de entrega do Painel Administrativo (decidido em 2026-09-23).**
-  Será produzido um guia para a **equipe do Recanto**, cobrindo a operação do
-  Painel. Três definições que evitam redebater isso depois:
-  1. **É documento separado, entregue à instituição — não é página dentro do
-     site.** Por isso **não** altera o escopo dos 11 CSUs e não exige mudança
-     no PRD. Se alguém propuser criar `ajuda.html` no Portal, aí sim vira
-     funcionalidade nova e cai na regra do "Inegociável".
-  2. **É escrito depois do sistema construído**, contra as telas reais.
-     Escrever antes produziria manual de telas que ainda vão mudar.
-  3. **Não cobre o Portal Público.** Se o doador ou o voluntário precisar de
-     manual para usar o site, o problema é da tela e se corrige na tela — é
-     o que o Princípio I exige e o que o FR-010a já faz na doação. O manual
-     existe para o Painel porque o grupo entrega e sai, e ninguém do Recanto
-     recebe treinamento.
-  Deve cobrir, no mínimo: entrar no Painel com a conta compartilhada; as três
-  triagens com motivo obrigatório na rejeição; a conferência de doação contra
-  o extrato (a rotina mais nova para eles); cadastro da chave Pix; itens
-  necessários; campanhas; notícias; usuários (inativar, nunca excluir);
-  atendimento de pedido de LGPD. E uma seção sobre **o que o sistema não
-  faz** — não enxerga a conta bancária, não aprova ninguém sozinho e não
-  apaga cadastro —, porque expectativa errada da instituição é tão cara
-  quanto funcionalidade faltando.
+- **Área de ajuda DENTRO do Painel Administrativo (decidido em 2026-09-23).**
+  Não é documento entregue à parte: é **tela do sistema**, em `admin/`
+  (FR-060, FR-060a), somada a ajuda contextual nas telas menos
+  autoexplicativas (FR-061). Motivo da escolha: documento entregue se perde,
+  desatualiza no computador de alguém e não alcança quem entrar na
+  instituição daqui a três anos; a página no Painel está sempre à mão de quem
+  opera.
+  **Esta decisão ampliou o escopo** e por isso o PRD precisa ser atualizado —
+  é a regra do "Inegociável" sendo cumprida, não contornada.
+  Três definições que evitam redebater:
+  1. **Entrou como requisitos (FR-060, FR-060a, FR-061), não como CSU12.**
+     Tela de ajuda não é caso de uso de negócio — não há ator atingindo um
+     objetivo institucional. Criar um décimo segundo CSU obrigaria a
+     renumerar e reescrever "11 casos de uso" em todo o documento do TCC sem
+     ganho nenhum de clareza. **Continuam sendo 11 CSUs.**
+  2. **É escrita depois do sistema construído**, contra as telas reais.
+     Escrever antes produziria ajuda de telas que ainda vão mudar.
+  3. **Cobre só o Painel, não o Portal Público.** Se o doador ou o voluntário
+     precisar de ajuda para usar o site, o problema é da tela e se corrige na
+     tela — é o que o Princípio I exige e o que o FR-010a já faz na doação.
+     A ajuda existe para o Painel porque o grupo entrega e sai, e ninguém do
+     Recanto recebe treinamento.
+  O FR-060a exige uma seção sobre **o que o sistema não faz** — não enxerga a
+  conta bancária, não confirma doação sozinho, não aprova ninguém sem ação
+  humana e não apaga cadastro. Expectativa errada da equipe quebra a operação
+  tanto quanto funcionalidade faltando: se acharem que a doação confirma
+  sozinha, ninguém vai conferir o extrato.
 - **Acesso ao Painel Administrativo é por conta institucional compartilhada**,
   não por login individual por funcionário. Como consequência, **a auditoria
   registra qual conta institucional executou cada ação, não qual funcionário

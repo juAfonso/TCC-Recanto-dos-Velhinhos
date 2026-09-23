@@ -127,7 +127,8 @@ public/                          # front-end estático (do protótipo recanto-fr
 │   ├── doacoes.html · usuarios.html
 │   ├── triagem-voluntarios.html · triagem-vagas.html · triagem-eventos.html
 │   ├── pix.html                 # NOVO — FR-007
-│   └── solicitacoes-titular.html # NOVO — CSU11 / FR-059
+│   ├── solicitacoes-titular.html # NOVO — CSU11 / FR-059
+│   └── ajuda.html               # NOVO — FR-060/FR-060a (estática, sem endpoint)
 └── assets/
     ├── css/style.css            # design system existente
     ├── js/

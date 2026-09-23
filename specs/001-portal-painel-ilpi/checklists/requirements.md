@@ -79,3 +79,14 @@
   do requisito, e não apenas no log.
   - **Única pendência de configuração restante:** os prazos de retenção por categoria de dado
     (FR-056), que dependem de definição jurídica da instituição.
+- **2026-09-23 — Ampliação de escopo: área de ajuda dentro do Painel.** O grupo decidiu que o guia
+  de uso da equipe do Recanto será uma tela do sistema (`admin/ajuda.html`), e não um documento
+  entregue à parte, porque documento se perde e não alcança quem entrar na instituição depois.
+  Adicionados FR-060, FR-060a (seção "o que o sistema não faz") e FR-061 (ajuda contextual nas telas
+  de conferência de doação, rejeição com motivo e anonimização).
+  - **Registrado como requisitos, não como CSU12:** tela de ajuda não é caso de uso de negócio, e um
+    décimo segundo CSU obrigaria a renumerar "11 casos de uso" em todo o documento sem ganho de
+    clareza. **Continuam sendo 11 CSUs.**
+  - **Pendência aberta por esta decisão:** o PRD precisa registrar a ampliação, conforme a regra do
+    `CLAUDE.md`. O `spec.md`, o `plan.md` e os contratos já estão atualizados.
+  - Sem impacto em contratos de API: a página é estática e a ajuda contextual é texto de tela.

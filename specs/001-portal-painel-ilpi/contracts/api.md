@@ -198,6 +198,12 @@ bloqueia (FR-030). Publicação de notícia nunca falha por erro de sincronizaç
 | `GET` | `/api/admin/auditoria` | histórico (FR-035) |
 | `GET` | `/api/admin/dashboard` | indicadores e pendências (FR-036) |
 
+### Ajuda do Painel (FR-060, FR-060a, FR-061)
+
+**Nenhum endpoint.** A área de ajuda é uma página estática (`public/admin/ajuda.html`) e a ajuda
+contextual do FR-061 é texto nas próprias telas. Não há dado a ler nem a gravar, então não existe
+rota de API — registrar isso aqui evita que alguém invente um `/api/admin/ajuda` desnecessário.
+
 ### Direitos do titular (CSU11)
 
 | Método | Rota | Notas |

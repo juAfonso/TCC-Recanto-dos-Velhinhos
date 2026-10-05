@@ -131,7 +131,8 @@ sistema nenhum poder sobre a conta bancária.
 | `id` | `uuid` PK | |
 | `chave` | `text` | exibida com opção de copiar |
 | `tipo_chave` | `text` | `cpf` \| `cnpj` \| `email` \| `telefone` \| `aleatoria` |
-| `qrcode_blob_id` | `uuid` FK NULL → `arquivo` | imagem, **acesso público** (exceção deliberada) |
+| `nome_recebedor` | `text` | vai no BR Code; o front-end corta em 25 caracteres e tira acentos |
+| `cidade` | `text` | vai no BR Code; o front-end corta em 15 caracteres e tira acentos |
 | `ativa` | `boolean` | se não houver ativa → FR-007a |
 | `atualizado_por`, `atualizado_em` | | |
 
@@ -183,15 +184,14 @@ no site (FR-033).
 ### `arquivo`
 
 Ponteiro para o objeto no Vercel Blob. Nenhuma URL de Blob é exposta diretamente ao Portal Público
-(exceto o QR code) — o download passa por função que checa autorização (research D3).
+— o download passa por função que checa autorização (research D3).
 
 | Campo | Tipo | Notas |
 |---|---|---|
 | `id` | `uuid` PK | |
 | `blob_url` | `text` | URL interna do Vercel Blob |
 | `nome_original`, `mime_type`, `tamanho_bytes` | | |
-| `visibilidade` | `text` | `publico` (só QR code) \| `restrito` |
-| `categoria` | `text` | `curriculo` \| `autorizacao_menor` \| `comprovante_doacao` \| `qrcode_pix` |
+| `categoria` | `text` | `curriculo` \| `autorizacao_menor` \| `comprovante_doacao` |
 | `enviado_em` | `timestamptz` | base para a retenção do FR-056 |
 | `removido_em` | `timestamptz` NULL | anonimização remove o objeto no Blob e marca a linha |
 
@@ -259,7 +259,7 @@ usuario 1─N doacao (associativa)
 usuario 0─1 cadastro_voluntario (após aprovação)
 vaga    1─N candidatura_vaga
 arquivo 1─1 { cadastro_voluntario.autorizacao | candidatura.curriculo
-            | doacao.comprovante | chave_pix.qrcode }
+            | doacao.comprovante }
 registro_consentimento N─1 (submissão polimórfica)
 registro_auditoria → append-only, sem FK obrigatória
 ```

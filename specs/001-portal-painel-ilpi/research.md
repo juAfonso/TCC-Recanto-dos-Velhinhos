@@ -195,8 +195,10 @@ nativo evita instalar Vitest/Jest.
 
 ## D9 — Doação com Pix estático
 
-**Decisão**: a chave Pix e a imagem do QR code são conteúdo institucional cadastrado no Painel
-(entidade Chave Pix Institucional). Nenhuma integração de pagamento. O doador declara a doação e um
+**Decisão**: a chave Pix é conteúdo institucional cadastrado no Painel (entidade Chave Pix
+Institucional), junto com o nome do recebedor e a cidade. Desde 2026-10-03 o QR code não é mais uma
+imagem enviada pela equipe: o navegador do doador gera o BR Code de um Pix estático com o valor
+escolhido (ver "QR code gerado no navegador", abaixo). Nenhuma integração de pagamento. O doador declara a doação e um
 funcionário confirma contra o extrato bancário.
 
 **Justificativa**: decisão do responsável pelo projeto em 2026-09-04, que exigiu emenda ao Princípio
@@ -216,6 +218,35 @@ eliminação da dependência de gateway/conta PJ e do risco de cronograma que el
 público de callback, não há verificação de assinatura de webhook, não há job de polling. Em
 compensação, entra a tela de conferência no Painel e a regra de detecção de possível duplicata
 (FR-050).
+
+### QR code gerado no navegador (2026-10-03)
+
+**Decisão**: o Portal monta o BR Code (padrão EMV QRCPS-MPM do Banco Central, o mesmo texto do
+"Pix copia e cola") com chave, nome do recebedor, cidade e o **valor escolhido pelo doador**, e o
+desenha como QR code. Tudo no navegador, em `public/assets/js/pix.js`; nenhuma chamada a servidor
+além da leitura da chave pública (`GET /api/public/pix`). O identificador da transação vai como
+`***`, o padrão para Pix estático sem identificador.
+
+**Justificativa**: o doador não precisa digitar o valor no app do banco, o que reduz erro de
+digitação e, com ele, divergência entre extrato e declaração na conferência manual. Também elimina
+o upload de uma imagem que podia ficar desatualizada em relação à chave cadastrada.
+
+**Por que não fere o Princípio VII nem a D9**: "Pix dinâmico" é o QR cujo conteúdo é uma URL
+hospedada por um provedor de pagamentos (PSP). O QR gerado aqui é estático — o valor é um campo
+opcional do próprio padrão estático — e não envolve provedor, conta PJ em gateway nem webhook. O
+valor embutido não confirma nada: a confirmação continua sendo a conferência humana do extrato.
+
+**Dependência de front-end**: `qrcode-generator` 1.4.4 (Kazuhiko Arase, licença MIT), copiada para
+`public/assets/vendor/qrcode.js`. Não é dependência npm e não entra em build — é um arquivo estático
+servido junto com as páginas, sem CDN em tempo de execução. **Justificativa (Princípio I)**: montar
+o texto do BR Code e o CRC16 são cerca de 60 linhas e foram escritos à mão; já codificar um QR code
+(Reed-Solomon, máscaras, posicionamento de módulos) seria escrever à mão algo que essa biblioteca
+madura resolve, com risco real de gerar um QR que algum banco não lê.
+
+**Risco registrado**: cada aplicativo de banco é exigente com o formato (nome com até 25
+caracteres e sem acento, cidade com até 15, tamanhos de campo exatos). O CRC foi conferido contra o
+exemplo do manual do BR Code, mas o código **precisa ser testado com a chave real em vários
+aplicativos de banco** antes de entrar em operação.
 
 ---
 

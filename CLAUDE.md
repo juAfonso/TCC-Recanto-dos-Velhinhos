@@ -1,6 +1,6 @@
 # SAGE — Memória do Projeto
 
-> Última atualização: 2026-09-04
+> Última atualização: 2026-10-04
 > TCC do IFRJ Campus Pinheiral — sistema web para a ILPI "Recanto dos Velhinhos
 > Francisco Gonçalves Barbosa". Repositório: `TCC-Recanto-dos-Velhinhos`
 > (GitHub, usuário juAfonso).
@@ -56,9 +56,12 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   registrada no Princípio I (simplicidade) da constituição: sem build step e
   sem curva de React para um time de 6 pessoas com prazo fixo. Custo aceito:
   sem componentização, algum HTML repetido entre páginas.
-- **Upload de arquivos:** Vercel Blob, com URLs privadas/assinadas. Cobre
-  currículos, autorização de responsável legal de menores (FR-058) e o anexo
-  opcional de comprovante bancário (FR-010b). A Vercel não tem disco
+- **Upload de arquivos:** Vercel Blob. Cobre currículos (URLs privadas/
+  assinadas) e a imagem de cada notícia (pública, FR-032b). O anexo de
+  comprovante bancário (FR-010b) **saiu em 2026-10-04**. A
+  autorização de responsável legal de menores **saiu do Blob em 2026-10-03**:
+  passou a ser entregue em papel na sede (ver "Alinhamento com o texto do
+  TCC"). A Vercel não tem disco
   persistente, então salvar em pasta local não é opção.
 - **Testes (decidido em 2026-09-04):** automatizados só nas regras críticas —
   não-duplicação de confirmação de doação (FR-050), geração de protocolo,
@@ -142,20 +145,62 @@ paralelo.
 - **Doação só via Pix, com chave/QR code ESTÁTICOS e confirmação manual
   (revertido em 2026-09-04, ratificado em 2026-09-05).** Esta
   decisão **reverte** a decisão anterior descrita logo abaixo. A instituição
-  cadastra sua chave Pix e a imagem do QR code no Painel Administrativo; o
-  Portal Público apenas as exibe. O pagamento acontece no aplicativo do banco
+  cadastra sua chave Pix no Painel Administrativo e o Portal Público gera o
+  QR code a partir dela (ver item seguinte, de 2026-10-03). O pagamento acontece no aplicativo do banco
   do doador, fora do sistema. Depois de pagar, o doador **declara** a doação
-  no site (valor, data e, opcionalmente, anexo do comprovante bancário) e
-  recebe um protocolo; a declaração nasce **pendente** e só vira confirmada
+  no site e ~~recebe um protocolo~~ (desde 2026-10-04: só clica em "Já fiz
+  o Pix", sem protocolo nem anexo — ver item de 2026-10-04); a declaração
+  nasce **pendente** e só vira confirmada
   quando um funcionário confere a entrada no extrato bancário e confirma no
   Painel. Não há API de pagamentos, cobrança dinâmica nem webhook.
   Motivação: eliminar a dependência de contratar provedor de pagamentos e de
   ter conta PJ habilitada. Custo aceito conscientemente: a conciliação vira
   trabalho humano, e uma doação real cujo doador não declare nada no site
   simplesmente não aparece no sistema. Boleto e cartão continuam fora. Itens
-  físicos e dinheiro vivo continuam tratados manualmente, fora do sistema.
+  físicos, dinheiro vivo, depósito e transferência bancária continuam tratados
+  manualmente, fora do sistema (ver item de 2026-10-03 abaixo).
   Exigiu emenda ao Princípio VII da constituição (versão 2.0.0), **ratificada
   em 2026-09-05**.
+- **Só Pix entra no sistema; depósito, transferência e pagamento na sede ficam
+  fora (decidido em 2026-10-03).** O histórico do Recanto mostra que
+  associados pagam na sede, por depósito ou por Pix. O SAGE registra apenas
+  declarações de Pix. Contribuições pagas de outra forma são controladas pela
+  secretaria, fora do sistema, como já acontecia com dinheiro vivo. Uma
+  declaração cuja entrada no extrato seja depósito ou TED, e não Pix, **não é
+  confirmada**: o funcionário a marca como não localizada, com o motivo padrão
+  oferecido como opção (FR-008a; motivo opcional desde 2026-10-04). Consequências aceitas: o histórico do doador associado (CSU09) e
+  os totais do Painel mostram só o que veio por Pix e foi declarado no site —
+  **não são a arrecadação da instituição** e não servem como prestação de
+  contas. Incluir depósito foi avaliado e descartado: exigiria emendar o
+  Princípio VII ("exclusivamente via Pix"), renomear o CSU01, e piora a
+  conferência (depósito em dinheiro no caixa costuma chegar ao extrato sem
+  nome do pagador), sem resolver quem paga na sede. Mantidos os três status
+  da doação; o "não localizada" do caso de depósito é explicado pelo motivo
+  padrão, sem quarto status. Se alguém propuser registrar depósito "porque
+  aparece no extrato", é reabrir esta decisão.
+- **O Portal gera o QR code Pix com o valor escolhido (aprovado pelo grupo,
+  registrado em 2026-10-03).** Substitui a imagem de QR code enviada pela
+  equipe. O doador escolhe R$ 10, 20, 50 ou 100, ou digita outro valor
+  (mínimo R$ 1 — era R$ 5, reduzido no mesmo dia pelo alinhamento com o texto
+  do TCC), e o navegador monta o BR Code (padrão do Banco Central, o
+  mesmo texto do "copia e cola") e desenha o QR (`public/assets/js/pix.js`).
+  O Painel guarda só chave, nome do recebedor e cidade. Motivo: o doador não
+  digita o valor no banco, então há menos divergência entre extrato e
+  declaração na conferência. **Continua sendo Pix estático** — "Pix dinâmico"
+  é o QR que aponta para URL de um provedor de pagamentos, e esse segue
+  proibido. O valor no QR não confirma nada; a conferência humana do extrato
+  continua obrigatória. Desenhar o QR usa `qrcode-generator` (MIT), copiado
+  para `public/assets/vendor/` — não é dependência npm, justificativa no
+  `research.md` D9. **Antes de operar, testar com a chave real em vários
+  aplicativos de banco.** O mock em `data.js` usa uma chave fictícia em
+  domínio `.invalid`, de propósito: o banco lê o QR e diz "chave não
+  encontrada", sem risco de pagar a terceiro. A chave real entra pela tela
+  `admin/pix.html` (criada em 2026-10-03), que valida o CNPJ, avisa quando o
+  tipo é CPF/telefone e mostra um QR de teste de R$ 10 para conferir no app
+  do banco. **Enquanto o front usar a camada mock**, o que for salvo nessa
+  tela fica só no navegador de quem salvou; visitantes continuam vendo a
+  chave de teste. Para valer em produção, falta `/api/admin/pix` gravando na
+  tabela `chave_pix_institucional`.
 - **Por que a objeção anterior do orientador não alcança esta decisão
   (esclarecido em 2026-09-05).** Ponto importante, porque é o que distingue
   esta reversão de uma desobediência à orientação. O orientador **não se opõe
@@ -176,15 +221,14 @@ paralelo.
   ocasião o CSU01 foi mantido como desenhado originalmente: API de terceiros
   gerando QR code, consulta periódica de status e confirmação manual apenas
   como *fallback*.
-- **Toda declaração de doação gera um código de protocolo** (espontânea ou
-  associativa), no mesmo padrão já usado para voluntariado/candidatura/
-  solicitação externa — permite ao doador consultar o status e obter a
-  declaração de doação depois, mesmo tendo saído da página e mesmo sem se
-  identificar.
+- ~~**Toda declaração de doação gera um código de protocolo.**~~ **Revertido
+  em 2026-10-04** (ver "Doação sem protocolo" abaixo). O protocolo continua
+  existindo para voluntariado, candidatura e solicitação externa.
 - **Voluntários e candidatos a vaga passam por triagem/aprovação obrigatória**
-  da administração antes de ficarem ativos. Não há autoaprovação. **Rejeição
-  exige motivo registrado nas três triagens** (voluntário, candidatura,
-  solicitação externa) — não só na solicitação externa, como estava antes.
+  da administração antes de ficarem ativos. Não há autoaprovação.
+  ~~Rejeição exige motivo registrado nas três triagens.~~ **Revertido em
+  2026-10-03: o motivo da rejeição é opcional nas três triagens** (ver
+  "Alinhamento com o texto do TCC").
 - **Pessoa que já é voluntária e tem candidatura a vaga aprovada acumula o
   perfil de funcionário no mesmo cadastro** (mesmo CPF), em vez de gerar um
   usuário duplicado.
@@ -205,13 +249,107 @@ paralelo.
   menores e currículos, a operação real ficaria em desconformidade desde o
   primeiro cadastro. O que o sistema passa a garantir: consentimento
   explícito registrado nos formulários públicos (com data/hora, finalidade e
-  versão do aviso), aviso de privacidade público, canal de exercício de
-  direitos por protocolo, anonimização, revogação de consentimento e prazos
-  de retenção (FR-051 a FR-059, CSU11/User Story 11 do spec.md). Continua
+  versão do aviso), aviso de privacidade público, anonimização, registro de
+  revogação de consentimento e prazos de retenção (FR-051 a FR-058,
+  CSU11/User Story 11 do spec.md). ~~Canal de exercício de direitos por
+  protocolo~~ — **revertido em 2026-10-03**: os pedidos do titular chegam por
+  contato com a instituição, fora do sistema (ver "Alinhamento com o texto do
+  TCC"). Continua
   fora do sistema, como responsabilidade organizacional da instituição: a
   designação do encarregado (DPO), a redação jurídica do aviso de privacidade
   e a definição formal das bases legais e dos prazos de retenção — o sistema
   apenas aplica os textos e prazos que a instituição fornecer.
+- **Retenção de dados de não aprovados: 6 meses (decidido em 2026-09-30).**
+  Vale para candidaturas e cadastros de voluntário não aprovados, com
+  currículo e demais anexos, contados da conclusão da triagem (FR-056). A
+  LGPD **não fixa prazo em dias**: exige eliminar ou anonimizar quando a
+  finalidade acaba (arts. 6º, 15 e 16). Se alguém disser "a lei manda guardar
+  X meses", está errado. O prazo é escolha nossa dentro desse critério.
+  Descartado o "banco de currículos" de 12 meses com consentimento
+  específico: um prazo único é mais simples de explicar e de operar. O prazo
+  fica como configuração editável, nunca como constante no código.
+  **A instituição não foi consultada à parte.** Na conversa com a Andresa
+  ficou claro que ninguém no Recanto domina LGPD, então o grupo redige o
+  rascunho do aviso de privacidade, já com os 6 meses, e a instituição
+  aprova. É essa aprovação que torna o texto e o prazo formalmente dela.
+- **Alinhamento com o texto do TCC revisado pelo grupo (2026-10-03).** O
+  grupo revisou as seções 8, 11, 12, 19.1 e 19.2 do documento do TCC, e o
+  spec foi alinhado a elas (Session 2026-10-03 (2) do spec.md). Texto
+  corrigido para colar no documento: `docs/texto-tcc-revisado.md`. Decisões:
+  1. **[Reversão] Motivo da rejeição é opcional** nas três triagens. Quando
+     não há motivo, o e-mail de resultado (FR-049b) diz só "não aprovado".
+  2. **Triagem com etapa de entrevista.** Voluntário e candidato passam por
+     pendente → chamado para entrevista → aprovado ou rejeitado. Só a
+     aprovação final ativa o voluntário ou cria o funcionário — antes, o texto
+     efetivava como funcionário quem ainda nem tinha sido entrevistado.
+  3. **Inativar não apaga dados.** Inativação só tira o acesso e pode ser
+     desfeita; dado pessoal só some por anonimização (FR-055) ou pelo prazo
+     dos não aprovados (FR-056). O sistema não oferece "excluir usuário".
+  4. **[Reversão] Pedidos do titular (LGPD) ficam fora do sistema**, pelo
+     contato informado no aviso de privacidade. O funcionário confere a
+     identidade e executa no Painel só correção, anonimização e registro de
+     revogação. Saíram o FR-059 e a entidade "Solicitação de Titular".
+     Custo aceito: não há registro dos pedidos em si, só das ações tomadas.
+  5. **[Reversão] Mínimo da doação: R$ 1** (era R$ 5). Já aplicado em
+     `doacoes.html` e `page-doacoes.js`.
+  6. **Retenção continua contando da conclusão da triagem** (o texto do TCC
+     dizia "do envio"; corrigido no texto, não no spec).
+  7. **[Reversão] Autorização do responsável legal do menor é entregue em
+     papel na sede.** O cadastro fica com "autorização pendente" e não pode
+     ser aprovado até um funcionário marcar "recebida". O sistema oferece uma
+     página pronta para impressão (window.print, sem biblioteca nova) com os
+     dados preenchidos. Nenhum documento de menor fica no Blob.
+  8. **[Reversão] Autoatendimento é só do doador associado.**
+  9. **[Reversão] Solicitação externa aprovada não publica na hora.** Vai
+     para "aprovada — aguardando contato"; o evento só é publicado quando o
+     funcionário o confirma, depois de combinar com o solicitante.
+  10. **Conta automática do doador associado** só é ativada por link de
+      definição de senha enviado ao e-mail (impede criar conta em nome de
+      outra pessoa).
+  11. **FR-033 (sincronização com redes sociais) removido** — já conflitava
+      com o Princípio VI da constituição.
+  12. Cadastro de voluntário passa a coletar os dados do termo de adesão da
+      Lei 9.608/1998, mais data de nascimento (sem ela, a regra do menor não
+      funciona). Campo fora do termo de adesão da instituição não deve ser
+      coletado.
+  Nenhuma dessas mudanças exigiu emenda à constituição.
+- **Doação sem protocolo e ajustes vindos do protótipo (2026-10-04).**
+  Decisões do grupo, registradas na Session 2026-10-04 do spec.md:
+  1. **[Reversão] Doação não gera protocolo.** O doador só clica em "Já fiz
+     o Pix"; o sistema registra a declaração pendente com o valor do QR code
+     e a data/hora do clique. O funcionário confere no extrato por valor e
+     data/hora e, na associativa, também pelo nome (critério auxiliar: o
+     doador pode ter pago da conta de outra pessoa). Saíram o FR-045 e a
+     doação da consulta por protocolo. Custo aceito: o doador espontâneo
+     não acompanha o status de nada.
+  2. **Não há recibo nem declaração de doação.** A confirmação fica
+     registrada no Painel (data e conta). A doação associativa só aparece
+     no autoatendimento depois de confirmada; pendente ou não localizada não
+     aparece para o doador. Saiu o FR-010.
+  3. **[Reversão] Anexo do comprovante bancário removido** (FR-010b).
+  4. **Cadastro de doador associado só junto com a primeira doação**
+     associativa; nas seguintes, ele entra no autoatendimento e doa sem
+     redigitar dados. Identificar só por CPF foi descartado (qualquer um
+     atribuiria doações a outra pessoa e o formulário revelaria CPFs
+     cadastrados).
+  5. **Meta em dinheiro de campanha é opcional**, e o valor arrecadado é
+     informado à mão pela equipe. Doação Pix não é ligada a campanha, então
+     o sistema não tem como calcular "X% arrecadado".
+  6. **Notícia: editar, despublicar e uma imagem** com texto alternativo
+     obrigatório. "Excluir notícia" virou despublicar, para não emendar o
+     Princípio III.
+  7. **Candidatura pede CPF e data de nascimento** (não idade). Sem CPF, o
+     FR-048 não funcionava — o protótipo mostrava CPF zerado ao admin.
+  8. **Solicitação externa pede o nome do evento.** Telefone só aceita
+     número brasileiro válido, com máscara. Todo dado coletado tem de
+     aparecer ao funcionário na consulta, não só na edição (FR-037a).
+  9. **[Reversão] Motivo de "não localizada" é opcional** na conferência
+     da doação (FR-008), como já é na rejeição das triagens. O motivo padrão
+     de depósito/transferência (FR-008a) virou opção pronta na tela.
+  10. **Doador que paga e não clica em "Já fiz o Pix"** não aparece no
+      sistema; o Pix fica com a secretaria, como pagamento na sede. Agora
+      explícito como Fluxo de Exceção H do CSU01. A página avisa que sem o
+      clique a doação não é registrada.
 - **Falhas de serviços externos não derrubam o registro do usuário
   (2026-09-04).** Se o e-mail de confirmação falhar, o cadastro/candidatura/
   solicitação é mantido, o sistema tenta reenviar uma vez e, persistindo a
@@ -278,8 +416,11 @@ paralelo.
   isso foi aceito conscientemente, não é lacuna.
 - **Tentativa de acesso a uma funcionalidade fora do nível de permissão do
   perfil é negada e registrada** no histórico de auditoria.
-- **Autoatendimento de voluntário/doador associado permite redefinição de
-  senha por e-mail**, sem depender de um funcionário.
+- **Autoatendimento do doador associado permite redefinição de senha por
+  e-mail**, sem depender de um funcionário. **Desde 2026-10-03 o voluntário
+  não tem autoatendimento** — acompanha a triagem pelo protocolo e pelos
+  e-mails. O nome do CSU09 ("Autoatendimento de Voluntário/Doador") precisa
+  ser ajustado no PRD para "Autoatendimento do Doador Associado".
 - **Padrão de documentação dos casos de uso:** Código/Nome, Sumário, Ator
   Principal/Secundário, Pré-condições, Fluxo (colunas Ator/Sistema),
   Pós-condições — mesmo formato das seções 19.1/19.2 (Histórias de Usuário +
@@ -300,7 +441,8 @@ Exercício de Direitos do Titular (LGPD)** — adicionado em 2026-09-04, ver
 
 Esses 11 são o recorte de alto nível do PRD. O detalhamento em
 FRs/cenários de aceitação (spec.md e seção 19) já passou de FR-001–FR-044
-para FR-001–FR-059 (incluindo FR-007a e FR-049a), com as adições listadas em
+para FR-001–FR-061 (com subitens como FR-007a e FR-049a; FR-033 e FR-059
+removidos em 2026-10-03, números reservados), com as adições listadas em
 "Decisões já tomadas" — ao consultar requisito por número, usar a versão mais
 recente do spec.md, não esta lista resumida.
 
@@ -319,6 +461,23 @@ recente do spec.md, não esta lista resumida.
 4. As credenciais de demonstração do `public/README.md` (`admin`/`admin123`
    e as de autoatendimento) existem só na camada mock e **não podem**
    sobreviver ao `db/seed.js` real.
+5. **(2026-10-03)** O alinhamento com o texto do TCC mudou o spec, mas
+   `plan.md`, `data-model.md`, `contracts/api.md` e `quickstart.md` ainda
+   descrevem o desenho anterior (motivo obrigatório, anexo de autorização,
+   autoatendimento de voluntário, tabela de solicitação do titular, sync com
+   redes sociais). Rodar `/speckit-plan` de novo antes de implementar essas
+   partes. O protótipo também precisa acompanhar (triagens com etapa de
+   entrevista, autoatendimento sem voluntário, página de autorização para
+   imprimir).
+6. **(2026-10-04)** Correções do protótipo apontadas na revisão do grupo,
+   já refletidas no spec e ainda não feitas no front: doação sem protocolo
+   e sem anexo (o grupo vai refazer o fluxo, incluindo tirar o botão que
+   simula a confirmação); meta opcional e valor arrecadado manual nas
+   campanhas; nome do evento na solicitação externa; máscara de telefone em
+   todos os formulários e telefone visível ao admin fora da edição; editar,
+   despublicar e imagem em notícias; CPF e data de nascimento na
+   candidatura. Depende do back: abrir anexos e ler a descrição inteira no
+   Painel.
 
 ## Inegociável
 

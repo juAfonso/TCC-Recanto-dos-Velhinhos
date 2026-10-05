@@ -819,19 +819,14 @@ legend{ font-weight:700; margin-bottom:14px; font-size:1rem; color:var(--viridia
 }
 
 .qr-box{
-    width:200px; height:200px;
+    width:220px; max-width:100%;
     margin:20px auto;
     border-radius:var(--radius-md);
     border:1.5px solid var(--line);
-    display:grid;
-    grid-template-columns:repeat(6,1fr);
-    grid-template-rows:repeat(6,1fr);
-    padding:14px;
-    gap:4px;
+    padding:8px;
     background:#fff;
 }
-.qr-box span{ background:var(--ink); border-radius:2px; }
-.qr-box span.off{ background:transparent; }
+.qr-box svg{ display:block; width:100%; height:auto; }
 
 /* =========================================================
    TABS

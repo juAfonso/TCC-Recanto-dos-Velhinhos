@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const valor = Number(document.getElementById('valorDoacao').value);
     Utils.clearFieldError(valorGroup);
 
-    if (!valor || valor < 5) {
-      Utils.setFieldError(valorGroup, 'Informe um valor válido (mínimo R$ 5).');
+    if (!valor || valor < 1) {
+      Utils.setFieldError(valorGroup, 'Informe um valor válido (mínimo R$ 1).');
       return;
     }
 
@@ -106,23 +106,14 @@ document.addEventListener('DOMContentLoaded', () => {
     goToStep(3);
   });
 
-  /* Gera QR simulado + registra doação como pendente (FR-007, FR-008) */
+  /* Gera o QR Pix estático com o valor escolhido + registra doação como pendente (FR-007, FR-008) */
   function generatePixStep() {
-    document.getElementById('valor-confirmacao').textContent = Utils.formatCurrency(donationDraft.valor);
+    const valorFmt = Utils.formatCurrency(donationDraft.valor);
+    document.getElementById('valor-confirmacao').textContent = valorFmt;
 
-    // QR "simulado": grade pseudo-aleatória determinística
-    const qrBox = document.getElementById('qr-box');
-    let seed = donationDraft.valor * 37 + Date.now();
-    let html = '';
-    for (let i = 0; i < 36; i++) {
-      seed = (seed * 9301 + 49297) % 233280;
-      const on = (seed / 233280) > 0.42;
-      html += `<span class="${on ? '' : 'off'}"></span>`;
-    }
-    qrBox.innerHTML = html;
-
-    document.getElementById('pixCode').value =
-      `00020126580014BR.GOV.BCB.PIX0136recanto-${Utils.generateId('pix')}5204000053039865406${donationDraft.valor.toFixed(2)}5802BR5920RECANTO VELHINHOS6009PINHEIRAL`;
+    const codigo = Pix.payload({ ...DB.load().pix, valor: donationDraft.valor });
+    Pix.renderQR(document.getElementById('qr-box'), codigo, `QR code Pix para doação de ${valorFmt}`);
+    document.getElementById('pixCode').value = codigo;
 
     // Registra a doação com status pendente
     const freshDb = DB.load();

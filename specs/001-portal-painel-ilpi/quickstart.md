@@ -65,8 +65,10 @@ recarregue a página pública → o item sumiu da lista.
 
 ### V2 — Declaração de doação e conferência manual (US2)
 
-1. Painel → cadastre chave Pix e imagem do QR code.
-2. Portal → `doacoes.html` mostra a chave (com botão copiar) e o QR code.
+1. Painel → cadastre chave Pix, nome do recebedor e cidade.
+2. Portal → `doacoes.html` → escolha R$ 10 (ou digite outro valor ≥ R$ 1). **Esperado**: QR code e
+   código copia e cola gerados; lido no app do banco, o pagamento abre com a chave da instituição e
+   o valor escolhido. Valor abaixo de R$ 1 é recusado. Repita em pelo menos três bancos diferentes.
 3. Declare uma doação espontânea (valor + data). **Esperado**: protocolo `DOA-…`, status `pendente`,
    aviso claro de que a declaração não confirma o recebimento.
 4. Painel → fila de conferência → confirme a doação. **Esperado**: status `confirmada`, declaração

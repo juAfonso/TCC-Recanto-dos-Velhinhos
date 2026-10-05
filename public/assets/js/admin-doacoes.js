@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('doacoes-stats').innerHTML = `
       <div class="stat-card">
-        <span class="stat-label">Total confirmado</span>
+        <span class="stat-label">Total confirmado via Pix</span>
         <span class="stat-value">${Utils.formatCurrency(total)}</span>
       </div>
       <div class="stat-card">

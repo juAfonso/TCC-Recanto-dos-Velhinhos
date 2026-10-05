@@ -88,7 +88,13 @@ const DB = (() => {
         { id: 'a2', acao: 'Aprovação de candidatura a vaga', autor: 'Conta Administrativa', detalhe: 'Patrícia Gomes Farias efetivada como funcionária (Enfermagem).', dataHora: daysAgo(80) },
         { id: 'a3', acao: 'Baixa de item necessário', autor: 'Conta Administrativa', detalhe: 'Cadeira de rodas marcada como suprida.', dataHora: daysAgo(20) },
         { id: 'a4', acao: 'Rejeição de solicitação externa', autor: 'Conta Administrativa', detalhe: 'Grupo Voluntário Esperança — motivo: conflito de data.', dataHora: daysAgo(125) }
-      ]
+      ],
+
+      /* ---------------- CHAVE PIX INSTITUCIONAL (FR-007) ----------------
+         Chave FICTÍCIA: o domínio .invalid não existe, então o app do banco
+         lê o QR e responde "chave não encontrada" — nenhum dinheiro sai.
+         A chave real (CNPJ) é cadastrada no Painel e nunca entra no repositório. */
+      pix: { chave: 'pix-de-teste@exemplo.invalid', tipoChave: 'email', nomeRecebedor: 'Recanto dos Velhinhos', cidade: 'Pinheiral' }
     };
   }
 
@@ -100,7 +106,11 @@ const DB = (() => {
         localStorage.setItem(DB_KEY, JSON.stringify(initial));
         return initial;
       }
-      return JSON.parse(raw);
+      // Bancos salvos antes de uma coleção existir recebem a coleção do seed
+      const db = JSON.parse(raw);
+      const initial = seed();
+      Object.keys(initial).forEach(k => { if (!(k in db)) db[k] = initial[k]; });
+      return db;
     } catch (e) {
       console.error('Falha ao carregar banco simulado, recriando seed.', e);
       const initial = seed();

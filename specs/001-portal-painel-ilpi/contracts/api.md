@@ -54,8 +54,11 @@ restrito, motivo interno de negação de acesso.
 `GET /api/public/pix` — dados para pagamento (FR-007).
 
 ```json
-{ "disponivel": true, "chave": "12.345.678/0001-90", "tipoChave": "cnpj", "qrcodeUrl": "https://…" }
+{ "disponivel": true, "chave": "12.345.678/0001-90", "tipoChave": "cnpj", "nomeRecebedor": "Recanto dos Velhinhos", "cidade": "Pinheiral" }
 ```
+
+O front-end monta o BR Code e o QR code com esses dados e o valor escolhido pelo doador
+(`public/assets/js/pix.js`, research D9). A API não recebe o valor e não gera QR code.
 
 Sem chave ativa cadastrada, responde `200` com `{ "disponivel": false, "contato": "…" }`. O
 front-end então **não** oferece o formulário de declaração e mostra o canal de contato (FR-007a).
@@ -157,7 +160,7 @@ conta e a data (FR-035).
 | `GET` | `/api/admin/doacoes/:id` | inclui `possiveisDuplicatas[]` (FR-050) e link do comprovante |
 | `POST` | `/api/admin/doacoes/:id/confirmar` | `409 DOACAO_JA_CONFIRMADA` se já estiver confirmada |
 | `POST` | `/api/admin/doacoes/:id/nao-localizar` | exige `motivo`; `422` sem ele |
-| `GET/PUT` | `/api/admin/pix` | cadastra/atualiza chave e QR code (FR-007) |
+| `GET/PUT` | `/api/admin/pix` | cadastra/atualiza chave, nome do recebedor e cidade (FR-007) |
 
 `confirmar` é idempotente por design: a segunda chamada não altera o registro nem emite nova
 declaração de doação (FR-050).

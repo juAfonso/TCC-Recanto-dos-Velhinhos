@@ -41,10 +41,13 @@ serverless.
 sem domínio próprio, é a única rota que autentica corretamente). Tudo mais usa o runtime:
 `node:crypto` para hash de senha (`scrypt`) e assinatura de cookie (HMAC), e `node:test` para os
 testes. **Sem framework de front-end, sem ORM, sem biblioteca de autenticação, sem build step.**
+No front-end há um único arquivo de terceiros, `qrcode-generator` (MIT), copiado para
+`public/assets/vendor/` para desenhar o QR code Pix — não é dependência npm (research D9, 2026-10-03).
 Justificativas em `research.md`.
 
 **Storage**: Neon (PostgreSQL) para dados relacionais; Vercel Blob para arquivos enviados
-(currículos, autorização de menor, comprovante bancário, imagem do QR code Pix).
+(currículos, autorização de menor, comprovante bancário). O QR code Pix não é armazenado: é gerado
+no navegador a partir da chave (FR-007, decisão de 2026-10-03).
 
 **Testing**: `node:test`, restrito a quatro regras críticas — FR-050 (não-duplicação de confirmação
 de doação), FR-045 (protocolo), FR-055 (anonimização) e FR-047 (controle de acesso). Demais telas
@@ -203,6 +206,7 @@ Painel e na regra de possível duplicata (FR-050).
 |---|---|---|
 | Duas dependências npm (`@neondatabase/serverless`, `@vercel/blob`) | Pool TCP não sobrevive a função serverless, e a Vercel não tem disco persistente | `pg` puro esgota o limite de conexões do plano gratuito; salvar arquivo em disco local não persiste. Ver `research.md` D2 e D3 |
 | Terceira dependência npm (`nodemailer`), adicionada em 2026-09-23 | A instituição não tem domínio próprio e não pretende registrar. Sem domínio, provedor terceiro enviando como `@gmail.com` falha no DMARC e cai em spam; o SMTP do próprio Gmail é a única rota que autentica | Escrever SMTP sobre `node:tls` à mão exigiria negociação STARTTLS, autenticação e codificação MIME — complexidade desproporcional e propensa a erro em um time com 11 semanas. Ver `research.md` D5 |
+| Arquivo de terceiros no front-end (`qrcode-generator`, MIT), adicionado em 2026-10-03 | O Portal gera o QR code Pix estático com o valor escolhido pelo doador (FR-007) | Codificar QR code à mão (Reed-Solomon, máscaras) é complexo e arrisca gerar QR que algum banco não lê. Copiado para `public/assets/vendor/`, sem npm, sem build e sem CDN. Ver `research.md` D9 |
 
 Nenhuma outra complexidade a justificar: não há ORM, framework, camada de repositório, biblioteca de
 autenticação nem passo de build.

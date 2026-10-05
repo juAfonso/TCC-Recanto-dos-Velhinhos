@@ -448,11 +448,14 @@ recente do spec.md, não esta lista resumida.
 
 **Pendências (atualizado em 2026-09-05):**
 
-1. O CSU01 reescrito (Pix estático) e o CSU11 novo (LGPD) já estão redigidos
-   no formato de caso de uso do TCC em `docs/casos-de-uso-tcc.md`. **Falta
-   colar no PRD e na seção 19** do documento do TCC — o arquivo é a redação,
-   não o documento final. Lembrar que o CSU01 lá **substitui** a versão
-   antiga, não se soma a ela.
+1. **(Atualizado em 2026-10-05)** Os **11 casos de uso** estão revisados em
+   `docs/casos-de-uso-tcc.md`, no layout do `SAGE_Casos_de_Uso.docx` do grupo
+   e alinhados às decisões de 03 e 04/10. Regra adotada na revisão: o fluxo
+   principal termina quando o sistema registra a submissão; decisões humanas
+   com mais de um resultado (aprovar, rejeitar, chamar para entrevista,
+   confirmar, não localizar) são fluxos alternativos; validações e erros são
+   fluxos de exceção, nunca "caso inválido, retorna" dentro do principal.
+   **Falta colar no PRD e na seção 19** do documento do TCC.
 2. O protótipo em `public/` ainda tem `doacoes.html` e `admin/doacoes.html`
    descrevendo o fluxo com API de pagamentos — precisam virar declaração do
    doador + conferência manual.

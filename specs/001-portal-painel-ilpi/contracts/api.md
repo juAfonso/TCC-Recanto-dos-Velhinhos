@@ -149,7 +149,7 @@ Comuns às três:
 ### Painel
 
 `POST /api/admin/login` `{ identificador, senha }` → cookie `ctx = admin` · `POST /api/admin/logout` ·
-`GET /api/admin/sessao` → `{ identificador }` ou `401` (usado pelas telas do Painel para conferir o login).
+`GET /api/admin/sessao` → `{ identificador }` ou `401` (usado pelas telas do Painel para conferir o login; **não** passa por `exigirAdmin` nem grava `acesso.negado`, porque abrir o Painel sem login é o caminho normal até a tela de login).
 Cinco falhas em 15 min por IP e conta → `429` (D13).
 
 ### Doador associado (CSU09)

@@ -51,7 +51,7 @@ tem login (FR-025). Uma pessoa = uma linha, identificada pelo CPF (FR-048).
 | `anonimizado_em` | `timestamptz` NULL | |
 | `criado_em`, `atualizado_em` | `timestamptz` | |
 
-**Índices**: `cpf` UNIQUE; `lower(email)` UNIQUE **parcial** `WHERE anonimizado_em IS NULL`.
+**Índices**: `cpf` e `lower(email)` UNIQUE **parciais** `WHERE anonimizado_em IS NULL` — depois da anonimização todos viram `[anonimizado]` e não podem colidir (ajuste da implementação, 2026-10-06).
 
 ### `papel`
 
@@ -443,7 +443,7 @@ registro_auditoria, historico_alteracao → sem FK obrigatória
 ## Índices que importam
 
 - `UNIQUE` em todo `protocolo` — chave da consulta pública.
-- `pessoa.cpf` UNIQUE; `lower(pessoa.email)` UNIQUE parcial.
+- `pessoa.cpf` e `lower(pessoa.email)` UNIQUE parciais (só não anonimizados).
 - Índice único parcial de papel ativo exclusivo (D14).
 - `doacao (status, declarada_em)` — fila de conferência e duplicatas.
 - `item_necessario (status, prioridade, quantidade_atualizada_em)`.

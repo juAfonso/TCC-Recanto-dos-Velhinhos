@@ -1,15 +1,17 @@
 /* =========================================================
-   auth.js — autenticação simulada (sem backend)
+   auth.js — autenticação
 
-   - Painel Administrativo: conta administrativa compartilhada
-     (FR-040), sem login individual por funcionário.
-   - Autoatendimento: login próprio de voluntários aprovados
-     e doadores associados (FR-041), restrito aos próprios dados.
+   - Painel Administrativo: conta institucional compartilhada (FR-040),
+     com sessão em cookie assinado pelo servidor. Quem decide se a pessoa
+     está logada é sempre o servidor (/api/admin/sessao), nunca o navegador.
+   - Autoatendimento do doador associado (FR-041): AINDA SIMULADO sobre o
+     data.js, até a história US9 ligar estas funções à API.
+
+   O sessionStorage guarda só uma "lembrança" para exibição (nome na tela,
+   autor no histórico simulado do data.js). Não dá acesso a nada.
    ========================================================= */
 
 const SESSION_KEY = 'sage_session_v1';
-
-const ADMIN_ACCOUNT = { usuario: 'admin', senha: 'admin123', nome: 'Conta Administrativa' };
 
 const Auth = (() => {
 
@@ -30,13 +32,33 @@ const Auth = (() => {
     sessionStorage.removeItem(SESSION_KEY);
   }
 
-  function loginAdmin(usuario, senha) {
-    if (usuario === ADMIN_ACCOUNT.usuario && senha === ADMIN_ACCOUNT.senha) {
-      setSession({ tipo: 'admin', nome: ADMIN_ACCOUNT.nome, usuario });
-      return true;
-    }
-    return false;
+  /* ---------- Painel (servidor) ---------- */
+
+  // Lança ApiErro se usuário/senha estiverem errados (a tela mostra a mensagem).
+  async function loginAdmin(identificador, senha, form) {
+    const resposta = await Api.post('/api/admin/login', { identificador, senha }, { form });
+    setSession({ tipo: 'admin', nome: resposta.identificador });
+    return resposta;
   }
+
+  async function logoutAdmin() {
+    try { await Api.post('/api/admin/logout', {}, { semRedirecionar: true }); } catch (e) { /* sai mesmo assim */ }
+    logout();
+  }
+
+  // Devolve o identificador da conta logada ou null.
+  async function verificarAdmin() {
+    try {
+      const { identificador } = await Api.get('/api/admin/sessao', { semRedirecionar: true });
+      setSession({ tipo: 'admin', nome: identificador });
+      return identificador;
+    } catch (e) {
+      if (getSession()?.tipo === 'admin') logout();
+      return null;
+    }
+  }
+
+  /* ---------- Autoatendimento (simulado — US9) ---------- */
 
   function loginAutoatendimento(email, senha) {
     const db = DB.load();
@@ -51,16 +73,6 @@ const Auth = (() => {
       return usuario;
     }
     return null;
-  }
-
-  /* Protege páginas do Painel Administrativo */
-  function requireAdmin() {
-    const s = getSession();
-    if (!s || s.tipo !== 'admin') {
-      window.location.href = computeLoginPath();
-      return null;
-    }
-    return s;
   }
 
   /* Protege a área de autoatendimento */
@@ -79,5 +91,9 @@ const Auth = (() => {
     return inAdmin ? '../login.html' : 'login.html';
   }
 
-  return { getSession, setSession, logout, loginAdmin, loginAutoatendimento, requireAdmin, requireAutoatendimento, computeLoginPath };
+  return {
+    getSession, setSession, logout,
+    loginAdmin, logoutAdmin, verificarAdmin,
+    loginAutoatendimento, requireAutoatendimento, computeLoginPath
+  };
 })();

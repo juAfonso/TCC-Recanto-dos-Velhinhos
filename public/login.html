@@ -30,21 +30,17 @@
                 <form id="form-admin-login" novalidate>
                     <div class="form-group">
                         <label for="admin-user">Usuário <span class="req">*</span></label>
-                        <input type="text" id="admin-user" autocomplete="username">
+                        <input type="text" id="admin-user" data-campo="identificador" autocomplete="username">
                         <div class="form-error"></div>
                     </div>
                     <div class="form-group">
                         <label for="admin-pass">Senha <span class="req">*</span></label>
-                        <input type="password" id="admin-pass" autocomplete="current-password">
+                        <input type="password" id="admin-pass" data-campo="senha" autocomplete="current-password">
                         <div class="form-error"></div>
                     </div>
                     <button type="submit" class="btn btn-viridian btn-block">Entrar no Painel</button>
                 </form>
-                <div class="demo-creds">
-                    <strong>Conta administrativa (demonstração)</strong><br>
-                    Usuário: <strong>admin</strong> · Senha: <strong>admin123</strong><br>
-                    Conforme FR-040, o acesso de funcionários ao Painel ocorre por conta compartilhada, sem login individual.
-                </div>
+                <p class="form-hint" style="margin-top:14px;">O acesso ao Painel é feito pela conta institucional do Recanto, compartilhada pela equipe.</p>
             </div>
 
             <div class="tab-panel" data-tab="auto">
@@ -76,6 +72,7 @@
 
 <script src="assets/js/utils.js"></script>
 <script src="assets/js/data.js"></script>
+<script src="assets/js/api.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/page-login.js"></script>
 </body>

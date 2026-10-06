@@ -106,6 +106,13 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | 1. No passo 3 do fluxo alternativo 03, tenta confirmar uma doação já confirmada anteriormente. | |
 | | 2. Identifica que o status já é confirmada, recusa a operação e não altera o registro. O caso de uso se encerra. |
 
+## Fluxo Exceção 10 – Associativa sem login com CPF ou e-mail já cadastrado
+
+| Ator (doador) | Sistema |
+|---|---|
+| 1. No passo 3 do fluxo alternativo 01, sem estar autenticado, informa CPF ou e-mail que já pertence a um doador associado. | |
+| | 2. Não gera o QR code nem registra cadastro ou declaração e exibe a mesma mensagem neutra que exibiria a qualquer visitante: se já é associado, entre no autoatendimento (CSU09) ou faça a doação espontânea. Não revela se o CPF ou o e-mail está cadastrado. O caso de uso se encerra. |
+
 ## Pós-condições
 
 - **Fluxo principal:** A declaração de doação está registrada com status pendente, com valor e data/hora, aguardando a conferência do funcionário.
@@ -118,6 +125,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 - **Fluxo Exceção 07 – Dados do doador associado inválidos ou sem aceite:** Nenhum cadastro nem declaração foi registrado.
 - **Fluxo Exceção 08 – Doador paga e não clica em "Já fiz o Pix":** A doação não consta no sistema; por isso os totais do Painel não representam a arrecadação da instituição.
 - **Fluxo Exceção 09 – Tentativa de confirmação em duplicidade:** O registro permaneceu inalterado.
+- **Fluxo Exceção 10 – Associativa sem login com CPF ou e-mail já cadastrado:** Nenhum QR code foi gerado e nenhum cadastro nem declaração foi registrado; o visitante não ficou sabendo se o CPF ou o e-mail está cadastrado.
 
 ---
 
@@ -126,7 +134,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU02 |
 |---|---|
 | Nome | Manter Campanhas e Eventos |
-| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para cadastrar, alterar e encerrar eventos e campanhas institucionais, que são publicados automaticamente no Portal Público, onde o visitante os consulta sem login. Evento e campanha são tipos diferentes, cadastrados na mesma tela: o evento tem data e recursos necessários descritos em texto, e só ele passa pelo aviso de conflito de data; a campanha tem período de arrecadação, os recursos a arrecadar (dinheiro ou itens) e meta em dinheiro opcional, com valor arrecadado informado pela equipe, porque as doações via Pix não são vinculadas a campanhas. |
+| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para cadastrar, alterar e encerrar eventos e campanhas institucionais — o encerramento também acontece automaticamente quando a data do evento ou o período da campanha passa —, que são publicados automaticamente no Portal Público, onde o visitante os consulta sem login. Evento e campanha são tipos diferentes, cadastrados na mesma tela: o evento tem data e recursos necessários descritos em texto, e só ele passa pelo aviso de conflito de data; a campanha tem período de arrecadação, os recursos a arrecadar (dinheiro ou itens) e meta em dinheiro opcional, com valor arrecadado informado pela equipe, porque as doações via Pix não são vinculadas a campanhas. |
 | Ator Principal | Funcionário |
 | Ator Secundário | Visitante |
 | Pré-condições | Funcionário deve estar autenticado no Painel Administrativo pela conta institucional. |
@@ -176,17 +184,24 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. No passo 3 do fluxo principal, escolhe encerrar um evento ou uma campanha ativa. | |
+| 1. No passo 3 do fluxo principal, escolhe encerrar um evento ou uma campanha ativa, a qualquer momento, inclusive antes da data do evento ou do fim do período da campanha. | |
 | | 2. Altera o status para encerrado, remove-o da listagem pública sem excluir o registro e registra a conta e a data. O caso de uso se encerra. |
 
-## Fluxo Exceção 06 – Dados inválidos ou data passada
+## Fluxo Alternativo 06 – Encerramento automático por data
+
+| Ator (sistema) | Sistema |
+|---|---|
+| | 1. Ao começar o dia seguinte à data de um evento ativo, ou ao fim do período de uma campanha ativa, altera o status para encerrado, sem ação do funcionário. |
+| | 2. Remove-o da listagem pública sem excluir o registro e registra na auditoria a ação "encerrado automaticamente", com o próprio sistema como autor, e a data/hora. O Portal já não exibe o que passou da data, mesmo antes de o status mudar. O caso de uso se encerra. |
+
+## Fluxo Exceção 07 – Dados inválidos ou data passada
 
 | Ator (funcionário) | Sistema |
 |---|---|
 | 1. No passo 3 do fluxo principal, no passo 1 do fluxo alternativo 02 ou no passo 3 do fluxo alternativo 03, deixa campo obrigatório em branco, cadastra campanha sem nenhum recurso, informa meta negativa ou informa no cadastro uma data que já passou. | |
 | | 2. Não grava, indica cada campo a corrigir e retorna ao passo em que os dados foram informados. |
 
-## Fluxo Exceção 07 – Encerrar o que já está encerrado
+## Fluxo Exceção 08 – Encerrar o que já está encerrado
 
 | Ator (funcionário) | Sistema |
 |---|---|
@@ -201,8 +216,9 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 - **Fluxo Alternativo 03 – Alterar evento ou campanha:** Os dados foram modificados e o histórico da alteração foi preservado.
 - **Fluxo Alternativo 04 – Atualizar valor arrecadado:** O Portal Público exibe o progresso da campanha com o valor informado pela equipe.
 - **Fluxo Alternativo 05 – Encerrar evento ou campanha:** O evento ou a campanha saiu da listagem pública e seu registro histórico permanece.
-- **Fluxo Exceção 06 – Dados inválidos ou data passada:** Nenhuma alteração foi gravada.
-- **Fluxo Exceção 07 – Encerrar o que já está encerrado:** O registro permaneceu inalterado.
+- **Fluxo Alternativo 06 – Encerramento automático por data:** O evento ou a campanha vencido consta como encerrado, fora da listagem pública, com o sistema como autor na auditoria.
+- **Fluxo Exceção 07 – Dados inválidos ou data passada:** Nenhuma alteração foi gravada.
+- **Fluxo Exceção 08 – Encerrar o que já está encerrado:** O registro permaneceu inalterado.
 
 ---
 
@@ -437,7 +453,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| | 1. Seis meses após o fluxo alternativo 05 (prazo configurável), sinaliza o cadastro rejeitado à equipe para anonimização. |
+| | 1. Seis meses após o fluxo alternativo 05, ou após o encerramento a pedido do titular por revogação do consentimento (CSU11), com prazo configurável, sinaliza o cadastro à equipe para anonimização. |
 | 2. Executa a anonimização do cadastro sinalizado. | |
 | | 3. Torna ilegíveis os dados pessoais, preservando o registro, o histórico, a auditoria e dados estatísticos não identificáveis, e registra a conta e a data (CSU11). O caso de uso se encerra. |
 
@@ -484,7 +500,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 - **Fluxo Alternativo 03 – Aprovar após entrevista:** A pessoa está cadastrada como voluntária ativa e a aprovação consta na auditoria.
 - **Fluxo Alternativo 04 – Registrar recebimento da autorização:** A autorização consta como recebida e o cadastro do menor pode ser aprovado.
 - **Fluxo Alternativo 05 – Rejeitar cadastro:** O cadastro consta como rejeitado e o registro foi preservado.
-- **Fluxo Alternativo 06 – Fim do prazo de retenção:** O cadastro rejeitado foi anonimizado ao fim do prazo de retenção.
+- **Fluxo Alternativo 06 – Fim do prazo de retenção:** O cadastro rejeitado ou encerrado a pedido do titular foi anonimizado ao fim do prazo de retenção.
 - **Fluxo Exceção 07 – Dados inválidos:** Nenhum cadastro foi registrado.
 - **Fluxo Exceção 08 – Aprovação de menor sem autorização recebida:** O cadastro permaneceu sem aprovação.
 - **Fluxo Exceção 09 – Pessoa que já é funcionária:** O cadastro permaneceu sem aprovação.
@@ -546,9 +562,9 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| | 1. Seis meses após o fluxo alternativo 04 (prazo configurável), sinaliza a candidatura rejeitada à equipe para anonimização. |
-| 2. Executa a anonimização da candidatura sinalizada. | |
-| | 3. Torna ilegíveis os dados pessoais, remove o currículo anexado, preserva o registro, o histórico, a auditoria e dados estatísticos não identificáveis, e registra a conta e a data (CSU11). O caso de uso se encerra. |
+| | 1. Com prazo configurável de seis meses, sinaliza à equipe para anonimização: a candidatura inteira, seis meses após o fluxo alternativo 04 ou após o encerramento a pedido do titular por revogação do consentimento (CSU11); ou só o currículo, seis meses após a efetivação como funcionário (fluxos alternativos 02 e 03), porque a finalidade do currículo — a seleção — acabou. |
+| 2. Executa a anonimização sinalizada. | |
+| | 3. Na candidatura rejeitada ou encerrada, torna ilegíveis os dados pessoais e remove o currículo; na aprovada, remove só o currículo (arquivo ou descrição), mantendo o cadastro de funcionário. Em ambos, preserva o registro, o histórico, a auditoria e dados estatísticos não identificáveis, e registra a conta e a data (CSU11). O caso de uso se encerra. |
 
 ## Fluxo Exceção 06 – Dados inválidos
 
@@ -585,7 +601,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 - **Fluxo Alternativo 02 – Aprovar após entrevista:** O candidato está efetivado como funcionário, sem credencial individual, e a aprovação consta na auditoria.
 - **Fluxo Alternativo 03 – Candidato já cadastrado como voluntário:** A pessoa é funcionária no mesmo cadastro, sem duplicação; o papel de voluntário foi encerrado e seu histórico permanece.
 - **Fluxo Alternativo 04 – Rejeitar candidatura:** A candidatura consta como rejeitada e o registro foi preservado.
-- **Fluxo Alternativo 05 – Fim do prazo de retenção:** A candidatura rejeitada foi anonimizada, com o currículo, ao fim do prazo de retenção.
+- **Fluxo Alternativo 05 – Fim do prazo de retenção:** A candidatura rejeitada ou encerrada foi anonimizada, com o currículo; ou, na aprovada, só o currículo foi removido e o cadastro de funcionário permanece.
 - **Fluxo Exceção 06 – Dados inválidos:** Nenhuma candidatura foi registrada.
 - **Fluxo Exceção 07 – Candidatura sem currículo:** Nenhuma candidatura foi registrada.
 - **Fluxo Exceção 08 – Envio sem aceite do aviso de privacidade:** Nenhuma candidatura foi registrada.
@@ -609,7 +625,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 |---|---|
 | 1. Acessa a tela de itens necessários do Painel Administrativo. | |
 | | 2. Lista os itens, ativos e supridos, com quantidade, prioridade e data da última atualização, sinaliza os itens sem atualização de quantidade há 30 dias ou mais (prazo configurável) e oferece as opções cadastrar, buscar e atualizar quantidade e dar baixa. |
-| 3. Escolhe cadastrar e informa nome, quantidade e prioridade do novo item. | |
+| 3. Escolhe cadastrar e informa nome, quantidade, unidade de medida e prioridade (alta, média ou baixa) do novo item. | |
 | | 4. Grava o item como ativo, publica-o automaticamente na listagem pública e registra a conta e a data. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 01 – Buscar e atualizar quantidade
@@ -685,21 +701,29 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | 1. A partir do passo 2 do fluxo principal ou depois do fluxo alternativo 01, rejeita a solicitação, informando o motivo, se quiser. | |
 | | 2. Altera o status para rejeitada, sem gerar evento nem campanha, preserva o registro e, quando informado, o motivo, registra a conta e a data e envia e-mail com o resultado. O caso de uso se encerra. |
 
-## Fluxo Exceção 04 – Dados inválidos
+## Fluxo Alternativo 04 – Fim do prazo de retenção
+
+| Ator (funcionário) | Sistema |
+|---|---|
+| | 1. Seis meses após o fluxo alternativo 03, ou após o encerramento a pedido do titular por revogação do consentimento (CSU11), com prazo configurável, sinaliza a solicitação à equipe para anonimização. |
+| 2. Executa a anonimização da solicitação sinalizada. | |
+| | 3. Torna ilegíveis os dados pessoais do solicitante, preservando o registro, o histórico, a auditoria e dados estatísticos não identificáveis, e registra a conta e a data (CSU11). O caso de uso se encerra. |
+
+## Fluxo Exceção 05 – Dados inválidos
 
 | Ator (solicitante) | Sistema |
 |---|---|
 | 1. No passo 1 do fluxo principal, envia a solicitação sem escolher entre evento e campanha, com campo obrigatório em branco ou com telefone, e-mail ou data inválidos. | |
 | | 2. Impede o envio, indica cada campo a corrigir e retorna ao passo 1 do fluxo principal. |
 
-## Fluxo Exceção 05 – Envio sem aceite do aviso de privacidade
+## Fluxo Exceção 06 – Envio sem aceite do aviso de privacidade
 
 | Ator (solicitante) | Sistema |
 |---|---|
 | 1. No passo 1 do fluxo principal, tenta enviar a solicitação sem aceitar o aviso de privacidade. | |
 | | 2. Impede o envio, explica que o aceite é obrigatório e retorna ao passo 1 do fluxo principal. |
 
-## Fluxo Exceção 06 – Falha no envio de e-mail
+## Fluxo Exceção 07 – Falha no envio de e-mail
 
 | Ator (autor da submissão) | Sistema |
 |---|---|
@@ -712,9 +736,10 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 - **Fluxo Alternativo 01 – Aprovar solicitação:** A solicitação consta como aprovada — aguardando contato; nada foi publicado.
 - **Fluxo Alternativo 02 – Confirmar proposta após contato:** O evento ou a campanha foi gerado a partir da solicitação e está publicado no Portal Público.
 - **Fluxo Alternativo 03 – Rejeitar solicitação:** A solicitação consta como rejeitada e o registro foi preservado.
-- **Fluxo Exceção 04 – Dados inválidos:** Nenhuma solicitação foi registrada.
-- **Fluxo Exceção 05 – Envio sem aceite do aviso de privacidade:** Nenhuma solicitação foi registrada.
-- **Fluxo Exceção 06 – Falha no envio de e-mail:** O registro permanece e a falha de envio está sinalizada à equipe.
+- **Fluxo Alternativo 04 – Fim do prazo de retenção:** A solicitação rejeitada ou encerrada a pedido do titular foi anonimizada ao fim do prazo de retenção.
+- **Fluxo Exceção 05 – Dados inválidos:** Nenhuma solicitação foi registrada.
+- **Fluxo Exceção 06 – Envio sem aceite do aviso de privacidade:** Nenhuma solicitação foi registrada.
+- **Fluxo Exceção 07 – Falha no envio de e-mail:** O registro permanece e a falha de envio está sinalizada à equipe.
 
 ---
 
@@ -829,7 +854,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU11 |
 |---|---|
 | Nome | Exercício de Direitos do Titular de Dados (LGPD) |
-| Sumário | Este caso de uso descreve como o titular de dados pessoais exerce os direitos previstos na LGPD — anonimização, correção, acesso e revogação do consentimento. Os pedidos são feitos fora do sistema, pelo contato da instituição informado no aviso de privacidade; o funcionário confere a identidade de quem pede e executa no Painel Administrativo o que depende do sistema. O consentimento é registrado nos próprios formulários de coleta (CSU01, CSU05, CSU06 e CSU08), e a anonimização por fim do prazo de retenção está nos CSU05 e CSU06. |
+| Sumário | Este caso de uso descreve como o titular de dados pessoais exerce os direitos previstos na LGPD — anonimização, correção, acesso e revogação do consentimento. Os pedidos são feitos fora do sistema, pelo contato da instituição informado no aviso de privacidade; o funcionário confere a identidade de quem pede e executa no Painel Administrativo o que depende do sistema. O consentimento é registrado nos próprios formulários de coleta (CSU01, CSU05, CSU06 e CSU08), e a anonimização por fim do prazo de retenção está nos CSU05, CSU06 e CSU08. Revogar o consentimento e anonimizar são pedidos distintos: a revogação interrompe o tratamento, mas não apaga os dados. |
 | Ator Principal | Titular dos dados |
 | Ator Secundário | Funcionário |
 | Pré-condições | O aviso de privacidade deve estar publicado, com identificação de versão e o contato para exercício de direitos. Devem existir dados pessoais do titular no sistema. |
@@ -840,9 +865,9 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 |---|---|
 | 1. Consulta o aviso de privacidade no Portal Público, sem login, e, pelo contato informado nele, pede à instituição a anonimização dos seus dados (fora do sistema). | |
 | 2. (Funcionário) Confere a identidade do titular, fora do sistema, e localiza o cadastro no Painel Administrativo. | |
-| | 3. Exibe os registros vinculados ao titular e sinaliza os dados sujeitos a retenção por obrigação legal, como doações confirmadas. |
+| | 3. Exibe os registros vinculados ao titular e, se ele é doador associado, as doações confirmadas, que serão mantidas sem nenhum dado pessoal. |
 | 4. (Funcionário) Executa a anonimização. | |
-| | 5. Torna ilegíveis os dados pessoais identificáveis, remove os arquivos restritos vinculados, preserva o registro, o histórico e a auditoria sem exclusão física, e registra a conta e a data. |
+| | 5. Torna ilegíveis os dados pessoais identificáveis, remove os arquivos restritos vinculados, preserva o registro, o histórico e a auditoria sem exclusão física, e registra a conta e a data. As doações confirmadas permanecem só com valor, data/hora, tipo e status, vinculadas a "doador anonimizado", sem justificativa de retenção. |
 | 6. (Funcionário) Informa o titular, pelo mesmo contato, que o pedido foi atendido. O caso de uso se encerra. | |
 
 ## Fluxo Alternativo 01 – Correção de dados
@@ -867,7 +892,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 |---|---|
 | 1. No passo 1 do fluxo principal, pede a revogação do consentimento em vez da anonimização. | |
 | 2. (Funcionário) Executa o passo 2 do fluxo principal e registra a revogação no Painel. | |
-| | 3. Altera o status do consentimento para revogado, com data e conta, e interrompe o uso dos dados para as finalidades revogadas, sem exclusão física do registro. O caso de uso se encerra. |
+| | 3. Altera o status do consentimento para revogado, com data e conta, e aplica o efeito conforme o que ele cobre: submissão ainda em triagem (cadastro de voluntário, candidatura ou solicitação externa) passa a "encerrada a pedido do titular", sai da fila de triagem e entra no prazo de retenção (CSU05, CSU06, CSU08); voluntário ativo é inativado; doador associado tem a conta inativada e deixa de poder vincular novas doações, mantidas as já confirmadas. Não anonimiza nem exclui o registro; se o titular também quiser os dados apagados, é o fluxo principal. O caso de uso se encerra. |
 
 ## Fluxo Exceção 04 – Identidade do titular não comprovada
 
@@ -880,16 +905,16 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. No passo 3 do fluxo principal, constata que parte dos dados é necessária ao cumprimento de obrigação legal, como doações confirmadas sujeitas a prestação de contas. | |
+| 1. No passo 3 do fluxo principal, constata que parte dos dados de um cadastro é necessária ao cumprimento de obrigação legal ou regulatória. Não se aplica às doações confirmadas, que já são mantidas sem dado pessoal (passo 5). | |
 | | 2. Permite reter exclusivamente esses dados e anonimizar os demais, exigindo o registro da justificativa da retenção. |
 | 3. Registra a justificativa e executa a anonimização dos demais dados. | |
 | | 4. Armazena a justificativa, procede conforme o passo 5 do fluxo principal e retorna ao passo 6, em que o funcionário informa ao titular o que foi retido e por quê. |
 
 ## Pós-condições
 
-- **Fluxo principal:** Os dados pessoais identificáveis do titular deixaram de ser legíveis, enquanto o registro, o histórico e a trilha de auditoria permanecem íntegros.
+- **Fluxo principal:** Os dados pessoais identificáveis do titular deixaram de ser legíveis, enquanto o registro, o histórico, a trilha de auditoria e as doações confirmadas — vinculadas a "doador anonimizado" — permanecem íntegros.
 - **Fluxo Alternativo 01 – Correção de dados:** O dado foi corrigido e o histórico da alteração foi preservado.
 - **Fluxo Alternativo 02 – Acesso aos dados:** O titular recebeu os seus dados.
-- **Fluxo Alternativo 03 – Revogação de consentimento:** O consentimento consta como revogado e o uso dos dados para as finalidades revogadas está interrompido.
+- **Fluxo Alternativo 03 – Revogação de consentimento:** O consentimento consta como revogado; a submissão em triagem está encerrada a pedido do titular, o voluntário está inativo ou a conta do doador associado está inativa; os dados não foram anonimizados.
 - **Fluxo Exceção 04 – Identidade do titular não comprovada:** Nenhum dado foi alterado.
 - **Fluxo Exceção 05 – Dados sujeitos a obrigação legal:** Os dados retidos possuem justificativa registrada, comunicada ao titular.

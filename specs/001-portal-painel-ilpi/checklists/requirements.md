@@ -14,7 +14,7 @@
 ## Requirement Completeness
 
 - [x] No [NEEDS CLARIFICATION] markers remain
-- [x] Requirements are testable and unambiguous
+- [ ] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic (no implementation details)
 - [x] All acceptance scenarios are defined
@@ -90,3 +90,25 @@
   - **Pendência aberta por esta decisão:** o PRD precisa registrar a ampliação, conforme a regra do
     `CLAUDE.md`. O `spec.md`, o `plan.md` e os contratos já estão atualizados.
   - Sem impacto em contratos de API: a página é estática e a ajuda contextual é texto de tela.
+- **2026-10-05 — Revalidação depois das sessões de 03, 04 e 05/10.** As notas acima de 2026-08-13 e
+  2026-09-04 citam decisões revertidas depois (autoatendimento de voluntário, janela de 15 minutos,
+  entidade Solicitação de Titular de Dados, FR-059). Valem como histórico, não como estado atual.
+  A pendência dos prazos de retenção foi fechada em 2026-09-30 (6 meses, FR-056).
+  - **Revisão de consistência (Session 2026-10-05 (2) do spec):** texto corrigido onde ainda refletia
+    decisões revertidas (SC-006, SC-007, FR-038, FR-058, títulos de seção, status "confirmada" da
+    solicitação externa); campos do doador associado, da candidatura e do contato da solicitação
+    trazidos dos casos de uso e do protótipo; prioridade alta/média/baixa no Item Necessário (decisão nova do grupo); entidades
+    Recurso, Registro de Auditoria, Falha de Envio de E-mail e Configuração adicionadas.
+  - **Itens do checklist que voltam a ficar em aberto até o `/speckit-clarify`:** "Requirements are
+    testable and unambiguous" e "Edge cases are identified". Ainda faltam decisões do grupo sobre:
+    associativa com CPF/e-mail já cadastrado sem login; validade e reenvio dos links de senha;
+    efeito concreto da revogação de consentimento (FR-057); retenção de solicitação externa
+    rejeitada, de currículo de aprovado e de doador inativo (FR-056); quais dados de doação a
+    anonimização retém por obrigação legal (FR-055); encerramento de evento/campanha vencido;
+    e quem edita a página institucional (FR-001).
+  - **`/speckit-clarify` de 2026-10-05 (Session 2026-10-05 (3) do spec):** cinco dessas decisões
+    foram tomadas (FR-006b, FR-057, FR-056, FR-055, FR-029c) e aplicadas também em
+    `docs/casos-de-uso-tcc.md` (CSU01, CSU02, CSU05, CSU06, CSU08 e CSU11). "Edge cases are
+    identified" voltou a passar. Continuam abertas: validade e reenvio dos links de senha
+    (detalhe técnico, fica para o `/speckit-plan`) e quem edita a página institucional (FR-001),
+    que mantém "Requirements are testable and unambiguous" desmarcado.

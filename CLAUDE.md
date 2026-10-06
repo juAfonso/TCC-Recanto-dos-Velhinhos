@@ -1,6 +1,6 @@
 # SAGE — Memória do Projeto
 
-> Última atualização: 2026-10-04
+> Última atualização: 2026-10-05
 > TCC do IFRJ Campus Pinheiral — sistema web para a ILPI "Recanto dos Velhinhos
 > Francisco Gonçalves Barbosa". Repositório: `TCC-Recanto-dos-Velhinhos`
 > (GitHub, usuário juAfonso).
@@ -373,6 +373,37 @@ paralelo.
      doador. O DER está versionado em `docs/der-conceitual-recanto.drawio`.
   Pendente no DER: explicar no texto que a Restrição 1 (todo mundo tem um
   papel) vale para a união das duas especializações parciais.
+- **Prioridade do item necessário: alta, média ou baixa (decidido em
+  2026-10-05).** O CSU07 falava em "prioridade" sem valores, e o protótipo
+  usava só "urgente sim/não". Os de prioridade alta são os "itens mais
+  urgentes" do Painel (FR-036); o Portal lista os ativos da alta para a baixa
+  (FR-003, FR-026). Na mesma revisão de consistência (Session 2026-10-05 (2)
+  do spec.md), os dados de contato da solicitação externa — nome da pessoa
+  ou organização, e-mail e telefone — foram trazidos do protótipo e
+  conferidos pelo grupo.
+- **Cinco decisões do `/speckit-clarify` (2026-10-05)**, Session 2026-10-05
+  (3) do spec.md:
+  1. **Associativa com CPF/e-mail já cadastrado, sem login** (FR-006b):
+     mensagem neutra pedindo login, nada é registrado e o QR não é gerado.
+     O formulário não revela quem é associado.
+  2. **Revogação de consentimento tem efeito por papel** (FR-057), sem
+     anonimizar: submissão em triagem vira "encerrada a pedido do titular";
+     voluntário ativo é inativado; doador associado tem a conta inativada.
+     Anonimizar é outro pedido (FR-055).
+  3. **Retenção de 6 meses para tudo cuja finalidade acabou** (FR-056):
+     inclui solicitação externa rejeitada/encerrada e o currículo de quem
+     foi aprovado (6 meses após a efetivação, só o currículo). **Doador
+     associado inativo não tem prazo automático** — só anonimiza a pedido.
+  4. **Anonimização de doador com doações confirmadas** (FR-055): ficam só
+     valor, data/hora, tipo e status, ligados a "doador anonimizado". Nenhum
+     dado pessoal é retido — quem pagou já consta do extrato bancário.
+  5. **Evento/campanha vencido é encerrado automaticamente** (FR-029c), com
+     o sistema como autor na auditoria; o funcionário continua podendo
+     encerrar antes. O Portal esconde o que venceu mesmo antes de o status
+     mudar, porque a tarefa agendada da Vercel gratuita roda só uma vez
+     por dia.
+  Ficaram para depois: validade e reenvio dos links de senha (vai para o
+  plano) e quem edita a página institucional (FR-001).
 - **Falhas de serviços externos não derrubam o registro do usuário
   (2026-09-04).** Se o e-mail de confirmação falhar, o cadastro/candidatura/
   solicitação é mantido, o sistema tenta reenviar uma vez e, persistindo a
@@ -503,7 +534,9 @@ recente do spec.md, não esta lista resumida.
    todos os formulários e telefone visível ao admin fora da edição; editar,
    despublicar e imagem em notícias; CPF e data de nascimento na
    candidatura. Depende do back: abrir anexos e ler a descrição inteira no
-   Painel.
+   Painel. **(2026-10-05)** Trocar a caixa "urgente" de `admin/itens.html`
+   pela escolha de prioridade alta/média/baixa, e ordenar por ela no Painel,
+   na home e em `doacoes.html`.
 
 ## Inegociável
 

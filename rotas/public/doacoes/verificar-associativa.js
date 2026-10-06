@@ -14,7 +14,7 @@ export const POST = rota(async (request) => {
   }
   const { cpf, email } = await lerJson(request);
   const falha = v.conferir({ cpf: v.cpf(cpf), email: v.email(email) });
-  if (falha) falhar(400, 'DADOS_INVALIDOS', falha.mensagem, falha.campos);
+  if (falha) falhar(400, 'DADOS_INVALIDOS', falha.mensagem, falha.campos, falha.mensagens);
 
   const { bloqueado } = await verificarAssociativa({ cpf, email });
   return json(bloqueado ? { podeSeguir: false, mensagem: MENSAGEM_NEUTRA } : { podeSeguir: true });

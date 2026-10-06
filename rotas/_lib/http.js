@@ -2,11 +2,12 @@
 // Toda resposta leva `Cache-Control: no-store` (SC-002 e dado pessoal no Painel).
 
 export class ErroHttp extends Error {
-  constructor(status, codigo, mensagem, campos) {
+  constructor(status, codigo, mensagem, campos, mensagens) {
     super(mensagem);
     this.status = status;
     this.codigo = codigo;
     this.campos = campos;
+    this.mensagens = mensagens;
   }
 }
 
@@ -21,15 +22,17 @@ export function json(dados, status = 200, cabecalhos = {}) {
   });
 }
 
-export function erro(status, codigo, mensagem, campos) {
+// `mensagens` (opcional): { campo: mensagem } — cada campo com o seu próprio texto ao lado.
+export function erro(status, codigo, mensagem, campos, mensagens) {
   const corpo = { codigo, mensagem };
   if (campos?.length) corpo.campos = campos;
+  if (mensagens && Object.keys(mensagens).length > 1) corpo.mensagens = mensagens;
   return json({ erro: corpo }, status);
 }
 
 // Interrompe a rota com um erro; `rota()` transforma em resposta.
-export function falhar(status, codigo, mensagem, campos) {
-  throw new ErroHttp(status, codigo, mensagem, campos);
+export function falhar(status, codigo, mensagem, campos, mensagens) {
+  throw new ErroHttp(status, codigo, mensagem, campos, mensagens);
 }
 
 export async function lerJson(request) {
@@ -68,7 +71,7 @@ export function rota(handler) {
     try {
       return await handler(request, ...resto);
     } catch (e) {
-      if (e instanceof ErroHttp) return erro(e.status, e.codigo, e.message, e.campos);
+      if (e instanceof ErroHttp) return erro(e.status, e.codigo, e.message, e.campos, e.mensagens);
       if (e instanceof Response) return e;
       console.error(e);
       return erro(500, 'ERRO_INTERNO', 'Algo deu errado do nosso lado. Tente de novo em alguns minutos.');

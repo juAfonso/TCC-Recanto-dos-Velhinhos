@@ -124,6 +124,14 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
      máquina de quem programa, com `npm run seed -- --demo`) e `teste`
      (apagada e recriada a cada `npm test`). Nunca rodar `--demo` na `main`:
      o seed marca cada banco como `demo` ou `producao` e recusa misturar.
+     **Incidente de 2026-10-06:** a `main` recém-migrada (ainda sem marca)
+     recebeu um `seed --demo` de algum computador cuja `DATABASE_URL`
+     apontava para ela — com a senha de demonstração, que está no repositório.
+     Como não havia dado real, a `main` foi zerada e recriada. Desde então,
+     `npm run migrate -- --producao` (com `DATABASE_URL_PRODUCAO`) **marca o
+     banco como produção já na criação das tabelas**, e o seed recusa `--demo`
+     se a `DATABASE_URL` for igual à `DATABASE_URL_PRODUCAO`. **A URL da `main`
+     não deve estar no `.env.local` de ninguém como `DATABASE_URL`.**
   2. **`npm run dev` no lugar do `vercel dev`.** Um servidor pequeno em
      `scripts/dev.js`, sem dependência, serve `public/` e as funções de
      `api/` como a Vercel. Motivo: o Vercel CLI exige instalação global e

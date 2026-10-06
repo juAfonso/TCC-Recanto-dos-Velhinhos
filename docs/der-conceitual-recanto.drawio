@@ -1,55 +1,58 @@
 <mxfile host="app.diagrams.net">
   <diagram id="der-conceitual" name="DER conceitual">
-    <mxGraphModel dx="736" dy="445" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1654" math="0" shadow="0">
+    <mxGraphModel dx="3443" dy="2829" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1500" pageHeight="1654" background="light-dark(#ffffff, #121212)" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="candidato" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Candidato" vertex="1">
+        <mxCell id="JFs-XTWGKr2-vQ83BuD7-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;fillColor=none;" value="" vertex="1">
+          <mxGeometry height="1516" width="1615" x="-80" y="-70" as="geometry" />
+        </mxCell>
+        <mxCell id="candidato" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Candidato" vertex="1">
           <mxGeometry height="50" width="160" x="270" y="40" as="geometry" />
         </mxCell>
-        <mxCell id="cand_func" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Cand_Funcionario" vertex="1">
+        <mxCell id="cand_func" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Cand_Funcionario" vertex="1">
           <mxGeometry height="50" width="160" x="100" y="190" as="geometry" />
         </mxCell>
-        <mxCell id="cand_vol" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Cand_Voluntario" vertex="1">
+        <mxCell id="cand_vol" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Cand_Voluntario" vertex="1">
           <mxGeometry height="50" width="160" x="440" y="190" as="geometry" />
         </mxCell>
-        <mxCell id="funcionario" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Funcionario" vertex="1">
+        <mxCell id="funcionario" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Funcionario" vertex="1">
           <mxGeometry height="50" width="160" x="100" y="410" as="geometry" />
         </mxCell>
-        <mxCell id="voluntario" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Voluntario" vertex="1">
+        <mxCell id="voluntario" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Voluntario" vertex="1">
           <mxGeometry height="50" width="160" x="440" y="410" as="geometry" />
         </mxCell>
-        <mxCell id="doacao" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Doacao" vertex="1">
+        <mxCell id="doacao" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Doacao" vertex="1">
           <mxGeometry height="50" width="160" x="760" y="190" as="geometry" />
         </mxCell>
-        <mxCell id="doador" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Doador_Associado" vertex="1">
+        <mxCell id="doador" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Doador_Associado" vertex="1">
           <mxGeometry height="50" width="160" x="760" y="410" as="geometry" />
         </mxCell>
-        <mxCell id="pessoa" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Pessoa" vertex="1">
+        <mxCell id="pessoa" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Pessoa" vertex="1">
           <mxGeometry height="50" width="160" x="520" y="590" as="geometry" />
         </mxCell>
-        <mxCell id="recurso" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Recurso" vertex="1">
+        <mxCell id="recurso" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Recurso" vertex="1">
           <mxGeometry height="50" width="160" x="990" y="720" as="geometry" />
         </mxCell>
-        <mxCell id="campanha" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Campanha" vertex="1">
+        <mxCell id="campanha" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Campanha" vertex="1">
           <mxGeometry height="50" width="160" x="560" y="720" as="geometry" />
         </mxCell>
-        <mxCell id="solicitacao" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Solicitacao" vertex="1">
+        <mxCell id="solicitacao" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Solicitacao" vertex="1">
           <mxGeometry height="50" width="160" x="330" y="1080" as="geometry" />
         </mxCell>
-        <mxCell id="evento" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Evento" vertex="1">
+        <mxCell id="evento" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Evento" vertex="1">
           <mxGeometry height="50" width="160" x="100" y="720" as="geometry" />
         </mxCell>
-        <mxCell id="item_necessario" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Item_Necessario" vertex="1">
+        <mxCell id="item_necessario" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Item_Necessario" vertex="1">
           <mxGeometry height="50" width="160" x="100" y="1200" as="geometry" />
         </mxCell>
-        <mxCell id="noticia" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Noticia" vertex="1">
+        <mxCell id="noticia" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Noticia" vertex="1">
           <mxGeometry height="50" width="160" x="320" y="1200" as="geometry" />
         </mxCell>
-        <mxCell id="solic_evento" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Solic_Evento" vertex="1">
+        <mxCell id="solic_evento" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Solic_Evento" vertex="1">
           <mxGeometry height="50" width="160" x="100" y="930" as="geometry" />
         </mxCell>
-        <mxCell id="solic_campanha" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Solic_Campanha" vertex="1">
+        <mxCell id="solic_campanha" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Solic_Campanha" vertex="1">
           <mxGeometry height="50" width="160" x="560" y="930" as="geometry" />
         </mxCell>
         <mxCell id="t_solic" parent="1" style="triangle;direction=south;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#5F5E5A;" value="" vertex="1">
@@ -67,22 +70,22 @@
         <mxCell id="e_t_solic" edge="1" parent="1" source="t_solic" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#5F5E5A;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="solicitacao">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="efetivacao" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Efetivacao" vertex="1">
+        <mxCell id="efetivacao" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=light-dark(#E1D5E7,#211B25);strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Efetivacao" vertex="1">
           <mxGeometry height="70" width="120" x="120" y="290" as="geometry" />
         </mxCell>
-        <mxCell id="admissao" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Admissao" vertex="1">
+        <mxCell id="admissao" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=light-dark(#E1D5E7,#211B25);strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Admissao" vertex="1">
           <mxGeometry height="70" width="120" x="460" y="290" as="geometry" />
         </mxCell>
-        <mxCell id="doa" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Doa" vertex="1">
+        <mxCell id="doa" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=light-dark(#E1D5E7,#211B25);strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Doa" vertex="1">
           <mxGeometry height="70" width="120" x="780" y="290" as="geometry" />
         </mxCell>
-        <mxCell id="arrecada" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Arrecada" vertex="1">
+        <mxCell id="arrecada" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=light-dark(#E1D5E7,#211B25);strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Arrecada" vertex="1">
           <mxGeometry height="70" width="120" x="800" y="710" as="geometry" />
         </mxCell>
-        <mxCell id="gera_campanha" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Gera_Campanha" vertex="1">
+        <mxCell id="gera_campanha" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=light-dark(#E1D5E7,#211B25);strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Gera_Campanha" vertex="1">
           <mxGeometry height="80" width="150" x="565" y="815" as="geometry" />
         </mxCell>
-        <mxCell id="gera_evento" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Gera_Evento" vertex="1">
+        <mxCell id="gera_evento" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=light-dark(#E1D5E7,#211B25);strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Gera_Evento" vertex="1">
           <mxGeometry height="80" width="150" x="105" y="815" as="geometry" />
         </mxCell>
         <mxCell id="t_candidato" parent="1" style="triangle;direction=north;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#5F5E5A;" value="" vertex="1">
@@ -163,16 +166,16 @@
         <mxCell id="r_ge_sol" edge="1" parent="1" source="gera_evento" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#5F5E5A;labelBackgroundColor=#FFFFFF;" target="solic_evento" value="(0,1)">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="consentimento" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#EEEDFE;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Consentimento" vertex="1">
+        <mxCell id="consentimento" parent="1" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fillColor=#E1D5E7;strokeColor=#534AB7;fontColor=#26215C;fontStyle=1;" value="Consentimento" vertex="1">
           <mxGeometry height="50" width="160" x="1250" y="560" as="geometry" />
         </mxCell>
-        <mxCell id="aceite_cand" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Aceite_Candidato" vertex="1">
+        <mxCell id="aceite_cand" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=light-dark(#E1D5E7,#211B25);strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Aceite_Candidato" vertex="1">
           <mxGeometry height="80" width="150" x="1255" y="25" as="geometry" />
         </mxCell>
-        <mxCell id="aceite_doador" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Aceite_Doador" vertex="1">
+        <mxCell id="aceite_doador" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=light-dark(#E1D5E7,#211B25);strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Aceite_Doador" vertex="1">
           <mxGeometry height="80" width="150" x="985" y="395" as="geometry" />
         </mxCell>
-        <mxCell id="aceite_solic" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F1EFE8;strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Aceite_Solicitacao" vertex="1">
+        <mxCell id="aceite_solic" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=light-dark(#E1D5E7,#211B25);strokeColor=#5F5E5A;fontColor=#2C2C2A;" value="Aceite_Solicitacao" vertex="1">
           <mxGeometry height="80" width="150" x="1255" y="1260" as="geometry" />
         </mxCell>
         <mxCell id="r_cand_ac" edge="1" parent="1" source="candidato" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=none;strokeColor=#5F5E5A;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="aceite_cand" value="(0,1)">
@@ -200,6 +203,9 @@
         </mxCell>
         <mxCell id="restricoes" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fillColor=#FFFFFF;strokeColor=#888780;fontColor=#2C2C2A;" value="&lt;b&gt;Restrições de integridade&lt;/b&gt;&lt;br&gt;&lt;br&gt;1. Toda Pessoa tem pelo menos um papel: funcionário, voluntário ou doador associado.&lt;br&gt;&lt;br&gt;2. Funcionário e voluntário são papéis exclusivos. Na Efetivação de quem já é voluntário, o registro de voluntário é encerrado (não apagado).&lt;br&gt;&lt;br&gt;3. Doação espontânea não tem doador associado.&lt;br&gt;&lt;br&gt;4. Todo Consentimento pertence a exatamente uma submissão: Candidato, Solicitacao ou Doador_Associado. O doador associado tem um consentimento por versão do aviso de privacidade aceita." vertex="1">
           <mxGeometry height="250" width="320" x="760" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="observacoes" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fillColor=#FFFFFF;strokeColor=#888780;fontColor=#2C2C2A;" value="&lt;b&gt;Observação&lt;/b&gt;&lt;br&gt;&lt;br&gt;Cand_Funcionario e Cand_Voluntario representam só as submissões públicas com triagem. Funcionário e voluntário também podem ser cadastrados direto no Painel, sem passar por elas; por isso a Admissão e a Efetivação são (0,1) do lado do candidato. O registro de origem &quot;Painel&quot; que guarda o termo de adesão do voluntário (FR-023) é detalhe de implementação, não uma candidatura." vertex="1">
+          <mxGeometry height="150" width="320" x="760" y="1250" as="geometry" />
         </mxCell>
         <mxCell id="legenda" parent="1" style="rounded=0;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=10;fillColor=#FFFFFF;strokeColor=#888780;fontColor=#2C2C2A;" value="&lt;b&gt;Legenda&lt;/b&gt;&lt;br&gt;(mín,máx): cardinalidade da entidade na ponta da linha&lt;br&gt;t = total · p = parcial · x = exclusiva" vertex="1">
           <mxGeometry height="80" width="320" x="760" y="1150" as="geometry" />

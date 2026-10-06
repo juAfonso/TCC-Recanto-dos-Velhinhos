@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Autorização do responsável — Recanto dos Velhinhos</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/impressao.css">
+</head>
+<body>
+
+<div class="acoes-tela">
+    <button type="button" class="btn btn-viridian" id="btn-imprimir">Imprimir ou salvar em PDF</button>
+    <button type="button" class="btn btn-outline" onclick="history.length > 1 ? history.back() : window.close()">Voltar</button>
+</div>
+<div class="alert alert-info aviso-tela"><span aria-hidden="true">ℹ️</span><div>
+    Imprima esta página (ou salve em PDF), peça ao responsável para preencher e assinar, e <b>entregue na sede do Recanto</b>.
+    O cadastro só pode ser aprovado depois que a equipe receber a autorização. Nada desta página é enviado pela internet.
+</div></div>
+
+<main class="termo">
+    <p id="sem-dados" hidden>Não encontramos os dados do cadastro neste navegador. Se você já enviou o cadastro, peça à equipe do Recanto para reimprimir a autorização.</p>
+    <div id="conteudo" hidden>
+        <h1>Autorização do responsável legal para serviço voluntário</h1>
+        <p class="rotulo">Recanto dos Velhinhos Francisco Gonçalves Barbosa — Pinheiral/RJ · Protocolo <b id="t-protocolo"></b></p>
+
+        <h2>Dados do(a) voluntário(a) menor de idade</h2>
+        <dl id="t-dados"></dl>
+
+        <h2>Autorização</h2>
+        <p>
+            Eu, responsável legal pelo(a) menor identificado(a) acima, <b>autorizo</b> que ele(a) preste serviço
+            voluntário no Recanto dos Velhinhos Francisco Gonçalves Barbosa, nos termos da Lei nº 9.608/1998,
+            sem remuneração e sem vínculo empregatício, no tipo de serviço e nas condições informados acima,
+            podendo esta autorização ser revogada a qualquer momento.
+        </p>
+
+        <h2>Dados do(a) responsável legal (preencher à mão)</h2>
+        <div class="rotulo">Nome completo</div><div class="linha"></div>
+        <div class="assinaturas" style="margin-top:0;">
+            <div><div class="rotulo">RG ou CPF</div><div class="linha"></div></div>
+            <div><div class="rotulo">Parentesco ou vínculo</div><div class="linha"></div></div>
+        </div>
+        <div class="rotulo">Telefone</div><div class="linha"></div>
+
+        <div class="assinaturas">
+            <div><div class="linha"></div><div class="rotulo">Assinatura do(a) responsável legal</div></div>
+            <div><div class="linha"></div><div class="rotulo">Local e data</div></div>
+        </div>
+
+        <p class="rotulo" style="margin-top:28px;">
+            Entregar na sede: R. Francisco Ribeiro de Abreu, 60 — Centro, Pinheiral/RJ, 27197-000.
+            Uso interno — recebido por: ______________________ em ____/____/______
+        </p>
+    </div>
+</main>
+
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/impressao-voluntario.js"></script>
+<script src="assets/js/page-autorizacao-menor.js"></script>
+</body>
+</html>

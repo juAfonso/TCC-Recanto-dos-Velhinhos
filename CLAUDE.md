@@ -460,6 +460,17 @@ Passo a passo de comandos e validação em
      doador. O DER está versionado em `docs/der-conceitual-recanto.drawio`.
   Pendente no DER: explicar no texto que a Restrição 1 (todo mundo tem um
   papel) vale para a união das duas especializações parciais.
+- **Formulário de voluntário (decidido em 2026-10-06, fase 6).** Obrigatórios:
+  identificação, endereço, contato e tipo de serviço; escolaridade, profissão,
+  objetivos e dias/horários são opcionais (a equipe completa na entrevista).
+  Tipo de serviço por lista + "Outro". **Sem idade mínima**: todo menor entra
+  com autorização do responsável pendente, entregue em papel na sede.
+  Session 2026-10-06 (3) do spec.md.
+- **Termo de adesão para imprimir (decidido em 2026-10-06, FR-012a).** Todo
+  voluntário imprime o termo da Lei 9.608 já preenchido logo após o envio;
+  o menor também a autorização do responsável. A equipe imprime o termo de
+  qualquer cadastro pelo Painel. **Ampliou o CSU05**: falta levar ao PRD e à
+  seção 19 do TCC. Session 2026-10-06 (4) do spec.md.
 - **Prioridade do item necessário: alta, média ou baixa (decidido em
   2026-10-05).** O CSU07 falava em "prioridade" sem valores, e o protótipo
   usava só "urgente sim/não". Os de prioridade alta são os "itens mais

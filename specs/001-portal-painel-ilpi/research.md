@@ -385,7 +385,7 @@ falha. O teste D8-3 verifica exatamente isso.
 **Decisão**: depois do envio do cadastro de menor, o navegador monta a página de autorização com os
 dados **que já estão no formulário**, e o responsável usa `window.print()` (imprimir ou salvar em
 PDF). Nenhum endpoint público devolve dados pessoais a partir do protocolo. Se a família perder a
-página, a equipe a reimprime pelo Painel (`GET /api/admin/voluntarios/:id/autorizacao`).
+página, a equipe a reimprime pelo Painel (desde 2026-10-06, `GET /api/admin/voluntarios/:id/impressao`, que também serve ao termo de adesão — FR-012a; antes `GET /api/admin/voluntarios/:id/autorizacao`).
 
 **Justificativa**: a consulta pública por protocolo só pode mostrar tipo, status e data (FR-044).
 Uma rota pública "reimprimir autorização por protocolo" exporia nome, RG e endereço de um menor a

@@ -87,9 +87,4 @@ export async function carregar(executor, id, { travar = false } = {}) {
   falhar(404, 'NAO_ENCONTRADO', 'Evento ou campanha não encontrado.');
 }
 
-// Coluna `date` chega do driver como meia-noite no horário LOCAL do processo: lê-se pelos campos
-// locais (toISOString converteria para UTC e poderia voltar um dia).
-const doisDigitos = (n) => String(n).padStart(2, '0');
-export const dataTexto = (d) => (d instanceof Date
-  ? `${d.getFullYear()}-${doisDigitos(d.getMonth() + 1)}-${doisDigitos(d.getDate())}`
-  : String(d ?? '').slice(0, 10));
+export { dataTexto } from './datas.js';

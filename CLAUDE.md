@@ -71,8 +71,9 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
 - **Upload de arquivos:** Vercel Blob. Cobre currículos (privados) e a
   imagem de cada notícia (pública, FR-032b). **Dois stores (decidido em
   2026-10-06):** na Vercel o acesso é escolhido ao criar o store, então há um
-  privado (`BLOB_PRIVADO_READ_WRITE_TOKEN`, currículos) e um público
-  (`BLOB_PUBLICO_READ_WRITE_TOKEN`, imagens). O currículo **não** usa URL
+  privado (`SAGE-CURRICULOS`, currículos) e um público (imagens, fase 11).
+  Na Vercel a autenticação é por OIDC (`BLOB_STORE_ID`, sem token guardado);
+  token só no `.env.local`, para testar arquivo no `npm run dev`. O currículo **não** usa URL
   assinada: a função do Painel confere o login e repassa o arquivo, para o
   link nunca sair do servidor (research D3). O anexo de
   comprovante bancário (FR-010b) **saiu em 2026-10-04**. A

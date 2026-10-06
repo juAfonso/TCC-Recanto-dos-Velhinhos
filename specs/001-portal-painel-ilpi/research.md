@@ -98,9 +98,14 @@ Portal.
 
 **Ajuste de 2026-10-06 (fase 7):**
 - **Dois stores no Blob, um por nível de acesso.** Na Vercel o acesso (público ou privado) é
-  escolhido ao **criar o store**, não por arquivo. Currículos vão para um store privado
-  (`BLOB_PRIVADO_READ_WRITE_TOKEN`) e imagens do Portal, a partir da fase 11, para um público
-  (`BLOB_PUBLICO_READ_WRITE_TOKEN`). Sem o token, o envio de arquivo responde
+  escolhido ao **criar o store**, não por arquivo. Currículos vão para um store privado e
+  imagens do Portal, a partir da fase 11, para um público.
+- **Credenciais por OIDC na Vercel.** Ao conectar um store ao projeto, a Vercel cria só
+  `BLOB_STORE_ID` (não cria mais token); a função se autentica pelo token OIDC do próprio
+  deploy, sem segredo guardado. O privado usa `BLOB_PRIVADO_STORE_ID` ou, por ter sido o primeiro
+  conectado, o `BLOB_STORE_ID` padrão; o público usará `BLOB_PUBLICO_STORE_ID` (fase 11). No
+  `npm run dev` não há OIDC: para testar arquivo localmente, `BLOB_PRIVADO_READ_WRITE_TOKEN` /
+  `BLOB_PUBLICO_READ_WRITE_TOKEN` no `.env.local`. Sem credencial, o envio de arquivo responde
   `503 ARQUIVOS_INDISPONIVEIS` e nada é gravado; a candidatura só com texto continua funcionando.
 - **Sem URL assinada: a função repassa o arquivo.** `GET /api/admin/candidaturas/:id/curriculo`
   confere a sessão, busca o arquivo no store privado com o token e o devolve ao navegador

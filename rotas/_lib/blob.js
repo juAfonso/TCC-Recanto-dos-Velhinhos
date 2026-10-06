@@ -1,9 +1,11 @@
 // Arquivos no Vercel Blob (research D3, revisto em 2026-10-06). O arquivo chega no mesmo envio
 // do formulário. Na Vercel, privado/público é escolhido POR STORE, então são dois:
 // - privado (currículos): só o Painel abre, e o arquivo é entregue pela própria função depois de
-//   conferir o login — nenhum link de currículo circula (BLOB_PRIVADO_READ_WRITE_TOKEN);
-// - público (imagens de notícia e da página institucional): conteúdo do Portal
-//   (BLOB_PUBLICO_READ_WRITE_TOKEN).
+//   conferir o login — nenhum link de currículo circula;
+// - público (imagens de notícia e da página institucional): conteúdo do Portal.
+// Credenciais (ajuste de 2026-10-06): na Vercel, o store conectado ao projeto cria só o id
+// (BLOB_STORE_ID) e a função se autentica sozinha por OIDC. Fora da Vercel (npm run dev) é
+// preciso um token de leitura e escrita do store no .env.local.
 
 import { randomUUID } from 'node:crypto';
 import { put, del, get } from '@vercel/blob';
@@ -34,16 +36,20 @@ REGRAS.imagem_institucional = REGRAS.imagem_noticia;
 
 const acessoBlob = (acesso) => (acesso === 'privado' ? 'private' : 'public');
 
-function token(acesso) {
-  const valor = acesso === 'privado'
-    ? process.env.BLOB_PRIVADO_READ_WRITE_TOKEN
-    : process.env.BLOB_PUBLICO_READ_WRITE_TOKEN;
-  if (!valor) {
+// Devolve { token } ou { storeId } para as chamadas do SDK. O store privado foi o primeiro
+// conectado, por isso também aceita o BLOB_STORE_ID padrão; o público terá o próprio nome.
+function credenciais(acesso) {
+  const env = process.env;
+  const token = acesso === 'privado' ? env.BLOB_PRIVADO_READ_WRITE_TOKEN : env.BLOB_PUBLICO_READ_WRITE_TOKEN;
+  if (token) return { token };
+  const storeId = acesso === 'privado' ? (env.BLOB_PRIVADO_STORE_ID || env.BLOB_STORE_ID) : env.BLOB_PUBLICO_STORE_ID;
+  const temOidc = Boolean(env.VERCEL || env.VERCEL_OIDC_TOKEN);
+  if (!storeId || !temOidc) {
     falhar(503, 'ARQUIVOS_INDISPONIVEIS', acesso === 'privado'
       ? 'Não conseguimos receber arquivos agora. Descreva sua experiência no campo de texto.'
       : 'Não conseguimos receber imagens agora. Tente de novo mais tarde.');
   }
-  return valor;
+  return { storeId };
 }
 
 // Confere tipo e tamanho ANTES de qualquer envio. `campo` é o nome no formulário.
@@ -72,7 +78,7 @@ export async function salvarArquivo(file, { categoria, enviadoPor, campo = 'arqu
     access: acessoBlob(regra.acesso),
     contentType: file.type,
     addRandomSuffix: false,
-    token: token(regra.acesso),
+    ...credenciais(regra.acesso),
   });
   try {
     const consulta = `INSERT INTO arquivo (blob_url, blob_pathname, acesso, categoria, nome_original, mime_type, tamanho_bytes, enviado_por)
@@ -81,7 +87,7 @@ export async function salvarArquivo(file, { categoria, enviadoPor, campo = 'arqu
     const [linha] = executor ? await executor.query(consulta, valores) : await sql.query(consulta, valores);
     return linha;
   } catch (e) {
-    await del(blob.url, { token: token(regra.acesso) }).catch(() => {});
+    await del(blob.url, credenciais(regra.acesso)).catch(() => {});
     throw e;
   }
 }
@@ -93,7 +99,7 @@ export async function respostaArquivoPrivado(arquivoId) {
     SELECT blob_pathname, nome_original, mime_type FROM arquivo
     WHERE id = ${arquivoId} AND acesso = 'privado' AND removido_em IS NULL`;
   if (!arquivo) return null;
-  const resultado = await get(arquivo.blob_pathname, { access: 'private', token: token('privado') });
+  const resultado = await get(arquivo.blob_pathname, { access: 'private', ...credenciais('privado') });
   if (!resultado || resultado.statusCode !== 200) return null;
   const nome = arquivo.nome_original.replace(/[^\w.\- ]+/g, '_');
   return new Response(resultado.stream, {
@@ -110,7 +116,7 @@ export async function respostaArquivoPrivado(arquivoId) {
 export async function removerArquivo(arquivoId, executor) {
   const [arquivo] = await sql`SELECT blob_url, acesso FROM arquivo WHERE id = ${arquivoId} AND removido_em IS NULL`;
   if (!arquivo) return false;
-  await del(arquivo.blob_url, { token: token(arquivo.acesso) });
+  await del(arquivo.blob_url, credenciais(arquivo.acesso));
   const marcar = 'UPDATE arquivo SET removido_em = now() WHERE id = $1';
   if (executor) await executor.query(marcar, [arquivoId]);
   else await sql.query(marcar, [arquivoId]);

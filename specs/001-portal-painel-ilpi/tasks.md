@@ -60,10 +60,10 @@ reprova a entrega que as quebrar.
 
 **Purpose**: inicializar o projeto Node e a configuração da Vercel.
 
-- [ ] T001 Criar `package.json` na raiz com `"type": "module"`, `"engines": { "node": ">=24" }`, scripts `migrate` (`node db/migrate.js`), `seed` (`node db/seed.js`) e `test` (`node --test tests/`), e **apenas** as dependências `@neondatabase/serverless`, `@vercel/blob` e `nodemailer` (plan.md → Complexity Tracking); rodar `npm install` e commitar `package-lock.json`
-- [ ] T002 [P] Criar `vercel.json` na raiz com `"crons": [{ "path": "/api/cron/diario", "schedule": "0 4 * * *" }]` (01:00 em Brasília — research D12)
-- [ ] T003 [P] Criar `.env.example` na raiz com as variáveis de `quickstart.md` → "Variáveis de ambiente" (valores vazios) e garantir em `.gitignore` as linhas `.env*` (exceto `.env.example`), `node_modules/` e `.vercel/`
-- [ ] T004 [P] Criar as pastas `api/_lib/`, `api/public/`, `api/auth/`, `api/me/`, `api/admin/`, `api/cron/`, `db/migrations/` e `tests/` conforme plan.md → Source Code
+- [X] T001 Criar `package.json` na raiz com `"type": "module"`, `"engines": { "node": ">=24" }`, scripts `migrate` (`node db/migrate.js`), `seed` (`node db/seed.js`) e `test` (`node --test tests/`), e **apenas** as dependências `@neondatabase/serverless`, `@vercel/blob` e `nodemailer` (plan.md → Complexity Tracking); rodar `npm install` e commitar `package-lock.json` — *feito em 2026-10-06: o script `test` ficou `node --test "tests/**/*.test.js"`, porque `node --test tests/` trata a pasta como arquivo e falha*
+- [X] T002 [P] Criar `vercel.json` na raiz com `"crons": [{ "path": "/api/cron/diario", "schedule": "0 4 * * *" }]` (01:00 em Brasília — research D12)
+- [X] T003 [P] Criar `.env.example` na raiz com as variáveis de `quickstart.md` → "Variáveis de ambiente" (valores vazios) e garantir em `.gitignore` as linhas `.env*` (exceto `.env.example`), `node_modules/` e `.vercel/`
+- [X] T004 [P] Criar as pastas `api/_lib/`, `api/public/`, `api/auth/`, `api/me/`, `api/admin/`, `api/cron/`, `db/migrations/` e `tests/` conforme plan.md → Source Code — *pastas vazias levam `.gitkeep`, senão o Git não as versiona*
 
 ---
 

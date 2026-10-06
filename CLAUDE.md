@@ -45,6 +45,12 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   de teste de cada pessoa o limite de ~10 do plano gratuito estourou (deploy
   falhou em "Provisioning Integrations"). Os previews também nasciam com banco
   vazio, sem utilidade. Para testar uma branch, use `npm run dev`.
+  **A API é uma função só (decidido em 2026-10-06).** O Hobby aceita no
+  máximo 12 funções por deploy, e a fase 4 chegou a 19: o deploy de produção
+  falhou e o site ficou na fase 3. Agora só `api/index.js` é função; as rotas
+  ficam em **`rotas/`** (antes `api/`), com a mesma estrutura e os mesmos
+  endereços. **Rota nova vai em `rotas/`, nunca em `api/`** — senão volta a
+  contar no limite. Plano Pro descartado (custo mensal). research D1.
 - **Banco:** Neon (PostgreSQL) — relacional, plano gratuito, confirmado que
   não exige cartão de crédito. Mantém o modelo relacional já implícito no PRD.
 - ~~C#, MySQL, Visual Studio~~ — stack original do TCC, **abandonada** em

@@ -17,7 +17,7 @@
 
 import { fileURLToPath } from 'node:url';
 import { Pool } from '@neondatabase/serverless';
-import { gerarHash, gerarSenhaAleatoria } from '../api/_lib/senha.js';
+import { gerarHash, gerarSenhaAleatoria } from '../rotas/_lib/senha.js';
 
 export const CONTA_INSTITUCIONAL = 'recantodosvelhinhos.pinheiral@gmail.com';
 export const CONTATO_INICIAL = 'Telefone (24) 3016-4023 · E-mail recantodosvelhinhos.pinheiral@gmail.com';

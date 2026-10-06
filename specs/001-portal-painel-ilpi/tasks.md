@@ -26,6 +26,9 @@ P1 → P2 → P3.
 
 ## Path Conventions
 
+**Desde 2026-10-06, todo arquivo citado aqui como `api/...` fica em `rotas/...`** (mesma estrutura); só
+`api/index.js` é função na Vercel, por causa do limite de 12 funções do plano gratuito (research D1).
+
 Estrutura do plan.md: `public/` (front estático, protótipo já no repositório), `api/` (funções
 Vercel, formato Web `export function GET/POST(request)` — research D1), `api/_lib/` (módulos
 compartilhados), `db/` (migrações e seed), `tests/` (`node:test`). Rotas dinâmicas usam a

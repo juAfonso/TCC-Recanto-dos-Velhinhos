@@ -5,10 +5,8 @@
 // URL de teste e liga o modo de e-mail de teste (nada é enviado de verdade).
 
 import { randomBytes } from 'node:crypto';
-import { pathToFileURL } from 'node:url';
 import { Pool } from '@neondatabase/serverless';
 import { aplicarMigracoes } from '../db/migrate.js';
-import { acharFuncao } from '../scripts/rotas.js';
 
 const urlTeste = process.env.DATABASE_URL_TESTE;
 if (!urlTeste) {
@@ -22,9 +20,11 @@ process.env.EMAIL_MODO = 'teste';
 process.env.SESSION_SECRET ||= randomBytes(32).toString('hex');
 
 // Imports dinâmicos para que os módulos leiam as variáveis já trocadas.
-const { sql } = await import('../api/_lib/db.js');
-const { gerarHash } = await import('../api/_lib/senha.js');
-const { criarCookie } = await import('../api/_lib/sessao.js');
+const { sql } = await import('../rotas/_lib/db.js');
+const { gerarHash } = await import('../rotas/_lib/senha.js');
+const { criarCookie } = await import('../rotas/_lib/sessao.js');
+// A mesma função única que roda na Vercel (api/index.js), que despacha para rotas/.
+const api = await import('../api/index.js');
 export { sql };
 
 // Recria o schema do zero e aplica as migrações. Chamar no `before` de cada arquivo.
@@ -38,16 +38,11 @@ export async function prepararBanco() {
   await aplicarMigracoes(urlTeste, { silencioso: true });
 }
 
-// Executa a função de api/ que atende `caminho`, como a Vercel faria.
+// Chama a API como a Vercel faria: pela função única api/index.js.
 export async function chamar(caminho, { metodo = 'GET', corpo, cookie, cabecalhos = {} } = {}) {
   const url = new URL(caminho, 'http://teste.local');
-  const achado = await acharFuncao(url.pathname);
-  if (!achado) throw new Error(`Nenhuma função atende ${url.pathname}`);
-  for (const [k, v] of Object.entries(achado.parametros)) url.searchParams.set(k, v);
-
-  const modulo = await import(pathToFileURL(achado.arquivo).href);
-  const handler = modulo[metodo];
-  if (typeof handler !== 'function') throw new Error(`${url.pathname} não exporta ${metodo}`);
+  const handler = api[metodo];
+  if (typeof handler !== 'function') throw new Error(`A API não aceita ${metodo}`);
 
   const headers = new Headers({ 'x-forwarded-for': '203.0.113.7', ...cabecalhos });
   if (cookie) headers.set('cookie', cookie);

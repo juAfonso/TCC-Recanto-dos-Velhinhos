@@ -6,6 +6,14 @@
       "**": false
     }
   },
+  "rewrites": [
+    { "source": "/api/:caminho*", "destination": "/api?__rota=/api/:caminho*" }
+  ],
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "rotas/**"
+    }
+  },
   "crons": [
     { "path": "/api/cron/diario", "schedule": "0 4 * * *" }
   ]

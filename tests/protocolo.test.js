@@ -4,7 +4,7 @@
 
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { gerarProtocolo, formatoValido, normalizarProtocolo } from '../api/_lib/protocolo.js';
+import { gerarProtocolo, formatoValido, normalizarProtocolo } from '../rotas/_lib/protocolo.js';
 
 const QUANTIDADE = 10_000;
 const FORMATO = /^(VOL|CAN|SOL)-[0-9A-HJKMNP-TV-Z]{10}$/;

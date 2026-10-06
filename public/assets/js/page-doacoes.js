@@ -1,7 +1,9 @@
+/* Página de doações: itens necessários (US1) e doação via Pix estático (US2).
+   O pagamento acontece no app do banco; o site só registra a DECLARAÇÃO do doador
+   ("Já fiz o Pix"), que nasce pendente até a equipe conferir no extrato (FR-008). */
 document.addEventListener('DOMContentLoaded', () => {
-  const db = DB.load();
 
-  /* ---------- Lista de itens necessários (físicos) — API, US1 ---------- */
+  /* ---------- Lista de itens necessários (físicos) — US1 ---------- */
   const itensLista = document.getElementById('itens-lista');
   if (itensLista) {
     Api.get('/api/public/itens-necessarios')
@@ -12,166 +14,204 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(() => { itensLista.innerHTML = PortalCards.erro(); });
   }
 
-  /* ---------- Fluxo de doação Pix ---------- */
+  /* ---------- Fluxo de doação Pix — US2 ---------- */
   const stepperEl = document.getElementById('donation-stepper');
   if (!stepperEl) return;
 
-  let currentStep = 1;
-  let donationDraft = { tipo: 'espontanea', valor: null, doador: null, id: null };
+  const $ = (id) => document.getElementById(id);
+  const formDoador = $('form-doador');
+  let chavePix = null;
+  let rascunho = { tipo: 'espontanea', valor: null, doador: null };
 
   const steps = document.querySelectorAll('.donation-step');
   const stepperItems = document.querySelectorAll('#donation-stepper .step');
 
-  function goToStep(n) {
-    currentStep = n;
-    steps.forEach(s => s.style.display = Number(s.dataset.step) === n ? 'block' : 'none');
+  function irPara(n) {
+    steps.forEach(s => { s.style.display = Number(s.dataset.step) === n ? 'block' : 'none'; });
     stepperItems.forEach(s => {
       const num = Number(s.dataset.step);
       s.classList.toggle('active', num === n);
       s.classList.toggle('done', num < n);
     });
+    // Leva o foco para o passo novo (leitor de tela e teclado — Princípio II).
+    const passo = document.querySelector(`.donation-step[data-step="${n}"]`);
+    const alvo = passo.querySelector('input:not([type=hidden]), button, a');
+    if (alvo) alvo.focus({ preventScroll: true });
+    stepperEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  /* valores predefinidos */
+  /* Sem chave Pix: nada de QR nem de botão (FR-007a) */
+  Api.get('/api/public/pix')
+    .then((pix) => {
+      if (pix.disponivel) { chavePix = pix; return; }
+      $('pix-fluxo').style.display = 'none';
+      $('pix-contato').textContent = pix.contato || 'pelo telefone ou e-mail da página Institucional.';
+      $('pix-indisponivel').style.display = 'flex';
+    })
+    .catch(() => {
+      $('pix-fluxo').style.display = 'none';
+      $('pix-contato').textContent = 'pelo telefone ou e-mail da página Institucional.';
+      $('pix-indisponivel').style.display = 'flex';
+    });
+
+  /* Valores sugeridos */
   document.querySelectorAll('.valor-preset').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.getElementById('valorDoacao').value = btn.dataset.valor;
+      $('valorDoacao').value = btn.dataset.valor + ',00';
+      Utils.clearFieldError($('valorDoacao').closest('.form-group'));
     });
   });
 
-  /* seleção visual dos radio cards */
+  /* Radio cards */
+  function tipoEscolhido() {
+    return document.querySelector('input[name="tipoDoacao"]:checked').value;
+  }
   function syncRadioCards() {
-    const tipo = document.querySelector('input[name="tipoDoacao"]:checked').value;
-    document.getElementById('card-espontanea').classList.toggle('selected', tipo === 'espontanea');
-    document.getElementById('card-associativa').classList.toggle('selected', tipo === 'associativa');
+    const tipo = tipoEscolhido();
+    $('card-espontanea').classList.toggle('selected', tipo === 'espontanea');
+    $('card-associativa').classList.toggle('selected', tipo === 'associativa');
   }
   document.querySelectorAll('input[name="tipoDoacao"]').forEach(r => r.addEventListener('change', syncRadioCards));
   syncRadioCards();
 
-  /* STEP 1 -> 2 */
-  document.getElementById('btn-step1-next').addEventListener('click', () => {
-    const valorGroup = document.getElementById('valorDoacao').closest('.form-group');
-    const valor = Number(document.getElementById('valorDoacao').value);
-    Utils.clearFieldError(valorGroup);
+  /* Valor: aceita "25", "25,50" ou "25.50"; mínimo R$ 1 (FR-007) */
+  function lerValor() {
+    const texto = $('valorDoacao').value.trim().replace(/\s|R\$/g, '').replace(',', '.');
+    if (!/^\d+(\.\d{1,2})?$/.test(texto)) return { erro: 'Digite um valor válido, por exemplo 25,00.' };
+    const valor = Number(texto);
+    if (valor < 1) return { erro: 'O valor mínimo é R$ 1,00.' };
+    return { valor };
+  }
 
-    if (!valor || valor < 1) {
-      Utils.setFieldError(valorGroup, 'Informe um valor válido (mínimo R$ 1).');
+  /* PASSO 1 → 2 (ou direto ao 3 na espontânea) */
+  $('btn-step1-next').addEventListener('click', () => {
+    const grupo = $('valorDoacao').closest('.form-group');
+    Utils.clearFieldError(grupo);
+    const { valor, erro } = lerValor();
+    if (erro) { Utils.setFieldError(grupo, erro); $('valorDoacao').focus(); return; }
+
+    rascunho = { tipo: tipoEscolhido(), valor, doador: null };
+    if (rascunho.tipo === 'espontanea') {
+      gerarPix();
+      irPara(3);
+    } else {
+      $('aviso-associado').style.display = 'none';
+      irPara(2);
+    }
+  });
+
+  /* PASSO 2: dados do doador associado, conferidos antes de gerar o QR (FR-006b) */
+  $('btn-step2-back').addEventListener('click', () => irPara(1));
+
+  formDoador.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    Utils.clearAllErrors(formDoador);
+    $('aviso-associado').style.display = 'none';
+
+    const doador = {
+      nome: $('doadorNome').value.trim(),
+      cpf: $('doadorCpf').value.trim(),
+      email: $('doadorEmail').value.trim(),
+      telefone: $('doadorTelefone').value.trim(),
+    };
+    const erros = [];
+    if (!doador.nome) erros.push(['doadorNome', 'Informe seu nome completo.']);
+    if (Mascaras.soDigitos(doador.cpf).length !== 11) erros.push(['doadorCpf', 'Informe os 11 números do CPF.']);
+    if (!Utils.isValidEmail(doador.email)) erros.push(['doadorEmail', 'Informe um e-mail válido.']);
+    const tel = Mascaras.soDigitos(doador.telefone).length;
+    if (tel !== 10 && tel !== 11) erros.push(['doadorTelefone', 'Informe o telefone com DDD.']);
+    if (!Consentimento.dados(formDoador).aceito) erros.push([formDoador.querySelector('input[name=aceito]').id, 'Para continuar, marque que concorda com o aviso de privacidade.']);
+    if (erros.length) {
+      erros.forEach(([id, msg]) => Utils.setFieldError($(id).closest('.form-group'), msg));
+      $(erros[0][0]).focus();
       return;
     }
 
-    donationDraft.tipo = document.querySelector('input[name="tipoDoacao"]:checked').value;
-    donationDraft.valor = valor;
-
-    const associativa = donationDraft.tipo === 'associativa';
-    document.getElementById('dados-associativos').style.display = associativa ? 'block' : 'none';
-    document.getElementById('dados-espontanea-info').style.display = associativa ? 'none' : 'block';
-
-    goToStep(2);
+    const botao = $('btn-step2-next');
+    botao.disabled = true;
+    try {
+      const r = await Api.post('/api/public/doacoes/verificar-associativa', { cpf: doador.cpf, email: doador.email }, { form: formDoador });
+      if (!r.podeSeguir) { mostrarAvisoAssociado(r.mensagem); return; }
+      rascunho.doador = doador;
+      gerarPix();
+      irPara(3);
+    } catch (erro) {
+      if (erro.status !== 429 && !erro.campos.length) Utils.toast(erro.message, 'danger');
+    } finally {
+      botao.disabled = false;
+    }
   });
 
-  /* STEP 2 -> 3 */
-  document.getElementById('btn-step2-back').addEventListener('click', () => goToStep(1));
-
-  document.getElementById('btn-step2-next').addEventListener('click', () => {
-    if (donationDraft.tipo === 'associativa') {
-      const nomeG = document.getElementById('doadorNome').closest('.form-group');
-      const cpfG = document.getElementById('doadorCpf').closest('.form-group');
-      const emailG = document.getElementById('doadorEmail').closest('.form-group');
-      const telG = document.getElementById('doadorTelefone').closest('.form-group');
-      [nomeG, cpfG, emailG, telG].forEach(Utils.clearFieldError);
-
-      const nome = document.getElementById('doadorNome').value.trim();
-      const cpf = document.getElementById('doadorCpf').value.trim();
-      const email = document.getElementById('doadorEmail').value.trim();
-      const telefone = document.getElementById('doadorTelefone').value.trim();
-
-      let valid = true;
-      if (!nome) { Utils.setFieldError(nomeG, 'Informe seu nome completo.'); valid = false; }
-      if (!Utils.isValidCPF(cpf)) { Utils.setFieldError(cpfG, 'Informe um CPF válido.'); valid = false; }
-      if (!Utils.isValidEmail(email)) { Utils.setFieldError(emailG, 'Informe um e-mail válido.'); valid = false; }
-      if (!telefone) { Utils.setFieldError(telG, 'Informe um telefone de contato.'); valid = false; }
-      if (!valid) return;
-
-      donationDraft.doador = { nome, cpf, email, telefone };
-    } else {
-      donationDraft.doador = null;
-    }
-
-    generatePixStep();
-    goToStep(3);
-  });
-
-  /* Gera o QR Pix estático com o valor escolhido + registra doação como pendente (FR-007, FR-008) */
-  function generatePixStep() {
-    const valorFmt = Utils.formatCurrency(donationDraft.valor);
-    document.getElementById('valor-confirmacao').textContent = valorFmt;
-
-    const codigo = Pix.payload({ ...DB.load().pix, valor: donationDraft.valor });
-    Pix.renderQR(document.getElementById('qr-box'), codigo, `QR code Pix para doação de ${valorFmt}`);
-    document.getElementById('pixCode').value = codigo;
-
-    // Registra a doação com status pendente
-    const freshDb = DB.load();
-    const doacao = {
-      id: Utils.generateId('d'),
-      valor: donationDraft.valor,
-      tipo: donationDraft.tipo,
-      doadorId: null,
-      doadorSnapshot: donationDraft.doador,
-      status: 'pendente',
-      criadoEm: new Date().toISOString()
-    };
-
-    // vincula ao cadastro de doador associado, se já existir usuário logado como doador
-    const session = Auth.getSession();
-    if (donationDraft.tipo === 'associativa' && session && session.tipo === 'doador') {
-      doacao.doadorId = session.usuarioId;
-    }
-
-    freshDb.doacoes.push(doacao);
-    DB.save(freshDb);
-    donationDraft.id = doacao.id;
+  // Mensagem neutra: não diz se o CPF ou o e-mail está cadastrado (FR-006b).
+  function mostrarAvisoAssociado(mensagem) {
+    $('aviso-associado-texto').innerHTML = `${Utils.escapeHtml(mensagem)}
+      <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+        <a class="btn btn-outline btn-sm" href="login.html">Entrar na área do doador</a>
+        <button type="button" class="btn btn-outline btn-sm" id="btn-trocar-espontanea">Fazer doação espontânea</button>
+      </div>`;
+    $('aviso-associado').style.display = 'flex';
+    $('btn-trocar-espontanea').addEventListener('click', () => {
+      document.querySelector('input[name="tipoDoacao"][value="espontanea"]').checked = true;
+      syncRadioCards();
+      rascunho = { tipo: 'espontanea', valor: rascunho.valor, doador: null };
+      gerarPix();
+      irPara(3);
+    });
   }
 
-  document.getElementById('btn-copy-pix').addEventListener('click', () => {
-    const input = document.getElementById('pixCode');
+  /* PASSO 3: QR estático com o valor escolhido, montado no navegador (FR-007) */
+  function gerarPix() {
+    const valorFmt = Utils.formatCurrency(rascunho.valor);
+    $('valor-confirmacao').textContent = valorFmt;
+    $('aviso-espontanea').style.display = rascunho.tipo === 'espontanea' ? '' : 'none';
+    const codigo = Pix.payload({ ...chavePix, valor: rascunho.valor });
+    Pix.renderQR($('qr-box'), codigo, `QR code Pix para doação de ${valorFmt}`);
+    $('pixCode').value = codigo;
+  }
+
+  $('btn-copy-pix').addEventListener('click', () => {
+    const input = $('pixCode');
     input.select();
-    navigator.clipboard?.writeText(input.value).catch(() => {});
-    Utils.toast('Código Pix copiado.');
+    (navigator.clipboard ? navigator.clipboard.writeText(input.value) : Promise.reject())
+      .then(() => Utils.toast('Código Pix copiado. Cole no app do seu banco.'))
+      .catch(() => Utils.toast('Selecionamos o código: use Ctrl+C (ou "Copiar" no celular).', 'warning'));
   });
 
-  /* Simula chegada da confirmação de pagamento via API (FR-008) */
-  document.getElementById('btn-simular-pagamento').addEventListener('click', () => {
-    const freshDb = DB.load();
-    const doacao = freshDb.doacoes.find(d => d.id === donationDraft.id);
-    if (doacao && doacao.status !== 'confirmada') {
-      doacao.status = 'confirmada';
-      DB.save(freshDb);
+  $('btn-step3-back').addEventListener('click', () => irPara(rascunho.tipo === 'associativa' ? 2 : 1));
+
+  /* "Já fiz o Pix": registra a declaração pendente (FR-008). Data/hora é a do servidor. */
+  $('btn-ja-fiz-pix').addEventListener('click', async () => {
+    const botao = $('btn-ja-fiz-pix');
+    botao.disabled = true;
+    botao.textContent = 'Registrando…';
+    const corpo = { tipo: rascunho.tipo, valor: rascunho.valor };
+    if (rascunho.tipo === 'associativa') {
+      corpo.doador = rascunho.doador;
+      corpo.consentimento = Consentimento.dados(formDoador);
     }
-    showComprovante(doacao);
-    goToStep(4);
+    try {
+      const r = await Api.post('/api/public/doacoes', corpo, { form: formDoador });
+      $('mensagem-final').textContent = rascunho.tipo === 'espontanea'
+        ? `${r.mensagem} Como é uma doação espontânea, ela não pode ser acompanhada depois.`
+        : r.mensagem;
+      irPara(4);
+    } catch (erro) {
+      if (erro.codigo === 'ASSOCIADO_DEVE_ENTRAR') { irPara(2); mostrarAvisoAssociado(erro.message); }
+      else if (erro.campos.length) { irPara(rascunho.tipo === 'associativa' ? 2 : 1); }
+      else if (erro.status !== 429) { Utils.toast(erro.message, 'danger'); }
+    } finally {
+      botao.disabled = false;
+      botao.textContent = 'Já fiz o Pix';
+    }
   });
 
-  function showComprovante(doacao) {
-    document.getElementById('comprovante-id').textContent = '#' + doacao.id.toUpperCase();
-    document.getElementById('comp-valor').textContent = Utils.formatCurrency(doacao.valor);
-    document.getElementById('comp-tipo').textContent = doacao.tipo === 'espontanea' ? 'Espontânea' : 'Associativa';
-    document.getElementById('comp-data').textContent = Utils.formatDateTime(doacao.criadoEm);
-    document.getElementById('comp-status').innerHTML = Utils.statusBadge(doacao.status);
-    Utils.toast('Comprovante disponível — obrigado pela sua doação!');
-  }
-
-  document.getElementById('btn-nova-doacao').addEventListener('click', () => {
-    donationDraft = { tipo: 'espontanea', valor: null, doador: null, id: null };
-    document.getElementById('valorDoacao').value = '';
+  /* Recomeçar */
+  $('btn-nova-doacao').addEventListener('click', () => {
+    rascunho = { tipo: 'espontanea', valor: null, doador: null };
+    $('valorDoacao').value = '';
     document.querySelector('input[name="tipoDoacao"][value="espontanea"]').checked = true;
     syncRadioCards();
-    document.getElementById('doadorNome').value = '';
-    document.getElementById('doadorCpf').value = '';
-    document.getElementById('doadorEmail').value = '';
-    document.getElementById('doadorTelefone').value = '';
-    goToStep(1);
+    formDoador.reset();
+    irPara(1);
   });
-
-  goToStep(1);
 });

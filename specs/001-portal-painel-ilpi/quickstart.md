@@ -30,6 +30,7 @@ CRON_SECRET=…                          # protege /api/cron/diario
 GMAIL_USER=…@gmail.com                 # conta INSTITUCIONAL, nunca pessoal
 GMAIL_APP_PASSWORD=…                   # senha de aplicativo
 APP_URL=https://….vercel.app           # base dos links de senha enviados por e-mail
+EMAIL_MODO=console                     # SÓ no desenvolvimento: e-mails aparecem no terminal
 ```
 
 > A senha de aplicativo e o `SESSION_SECRET` são credenciais reais. Confira antes do primeiro

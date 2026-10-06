@@ -86,7 +86,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="pix-tipo">Tipo da chave <span class="req">*</span></label>
-                            <select id="pix-tipo">
+                            <select id="pix-tipo" data-campo="tipoChave">
                                 <option value="cnpj">CNPJ</option>
                                 <option value="email">E-mail</option>
                                 <option value="aleatoria">Chave aleatória</option>
@@ -97,7 +97,7 @@
                         </div>
                         <div class="form-group">
                             <label for="pix-chave">Chave Pix <span class="req">*</span></label>
-                            <input type="text" id="pix-chave" autocomplete="off">
+                            <input type="text" id="pix-chave" data-campo="chave" autocomplete="off">
                             <div class="form-error"></div>
                         </div>
                     </div>
@@ -108,13 +108,13 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="pix-nome">Nome do recebedor <span class="req">*</span></label>
-                            <input type="text" id="pix-nome" maxlength="60">
+                            <input type="text" id="pix-nome" data-campo="nomeRecebedor" maxlength="60">
                             <p class="form-hint">Vai dentro do QR code: até 25 caracteres, sem acentos (o sistema ajusta sozinho).</p>
                             <div class="form-error"></div>
                         </div>
                         <div class="form-group">
                             <label for="pix-cidade">Cidade <span class="req">*</span></label>
-                            <input type="text" id="pix-cidade" maxlength="40">
+                            <input type="text" id="pix-cidade" data-campo="cidade" maxlength="40">
                             <p class="form-hint">Até 15 caracteres, sem acentos.</p>
                             <div class="form-error"></div>
                         </div>
@@ -145,7 +145,6 @@
 </div>
 
 <script src="../assets/js/utils.js"></script>
-<script src="../assets/js/data.js"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/auth.js"></script>
 <script src="../assets/js/admin-guard.js"></script>

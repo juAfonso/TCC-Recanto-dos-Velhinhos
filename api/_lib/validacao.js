@@ -23,6 +23,18 @@ export function cpf(valor) {
   return null;
 }
 
+export function cnpj(valor) {
+  const d = soDigitos(valor);
+  if (d.length !== 14 || /^(\d)\1{13}$/.test(d)) return 'CNPJ inválido. Confira os 14 números.';
+  const digito = (base) => {
+    const pesos = base.length === 12 ? [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2] : [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    const resto = pesos.reduce((s, p, i) => s + p * Number(base[i]), 0) % 11;
+    return resto < 2 ? 0 : 11 - resto;
+  };
+  return digito(d.slice(0, 12)) === Number(d[12]) && digito(d.slice(0, 13)) === Number(d[13])
+    ? null : 'CNPJ inválido. Confira os 14 números.';
+}
+
 // DDDs em uso no Brasil (Anatel).
 const DDDS = new Set([
   11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 24, 27, 28, 31, 32, 33, 34, 35, 37, 38,

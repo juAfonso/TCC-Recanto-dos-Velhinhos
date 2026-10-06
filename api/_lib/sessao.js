@@ -18,10 +18,13 @@ const assinar = (dados) => createHmac('sha256', segredo()).update(dados).digest(
 const atributos = 'HttpOnly; Secure; SameSite=Lax; Path=/';
 
 // Devolve o valor do cabeçalho Set-Cookie.
+// Sem Max-Age de propósito (decisão de 2026-10-06): é cookie de sessão do navegador, então
+// fechar o navegador encerra o login — o computador da secretaria é compartilhado. As 8 h
+// continuam valendo pelo `expiraEm` assinado, conferido no servidor a cada requisição.
 export function criarCookie({ ctx, id }, agora = Date.now()) {
   if (ctx !== 'admin' && ctx !== 'doador') throw new Error(`Contexto de sessão inválido: ${ctx}`);
   const dados = Buffer.from(JSON.stringify({ ctx, id, emitidaEm: agora, expiraEm: agora + VALIDADE_MS })).toString('base64url');
-  return `${NOME}=${dados}.${assinar(dados)}; ${atributos}; Max-Age=${VALIDADE_MS / 1000}`;
+  return `${NOME}=${dados}.${assinar(dados)}; ${atributos}`;
 }
 
 // Apaga o cookie no navegador (logout).

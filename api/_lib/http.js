@@ -51,6 +51,16 @@ export async function lerFormulario(request) {
   }
 }
 
+// Parâmetro de rota dinâmica ([id].js): a Vercel o entrega como parâmetro de consulta.
+// Id que não é uuid vira 404 direto, sem chegar ao banco.
+export function idDaRota(request, nome = 'id') {
+  const valor = new URL(request.url).searchParams.get(nome) ?? '';
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(valor)) {
+    falhar(404, 'NAO_ENCONTRADO', 'Registro não encontrado.');
+  }
+  return valor;
+}
+
 // Envolve o handler: ErroHttp vira a resposta de erro; qualquer outro erro vira 500
 // sem detalhe técnico para o usuário (o detalhe vai só para o log da Vercel).
 export function rota(handler) {

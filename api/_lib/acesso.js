@@ -28,6 +28,20 @@ export async function exigirAdmin(request) {
   return negar(request, sessao);
 }
 
+// Como exigirDoador, mas sem negar nem auditar: para rotas públicas em que estar logado é
+// opcional (doação associativa de quem já entrou no autoatendimento). Devolve a pessoa ou null.
+export async function doadorDaSessao(request) {
+  const sessao = lerSessao(request);
+  if (sessao?.ctx !== 'doador') return null;
+  const [pessoa] = await sql`
+    SELECT p.id, p.senha_definida_em
+    FROM pessoa p
+    WHERE p.id = ${sessao.id} AND p.ativo AND p.anonimizado_em IS NULL AND p.senha_definida_em IS NOT NULL
+      AND EXISTS (SELECT 1 FROM papel WHERE pessoa_id = p.id AND tipo = 'doador_associado' AND status = 'ativo')`;
+  if (!pessoa || sessao.emitidaEm < new Date(pessoa.senha_definida_em).getTime()) return null;
+  return { id: pessoa.id };
+}
+
 // Sessão de doador com pessoa ativa, papel de doador associado ativo e senha definida.
 // Sessões abertas antes da última definição/redefinição de senha deixam de valer (D11).
 // Devolve { pessoa: { id, nome, email } } — o id SEMPRE vem daqui, nunca da URL ou do corpo.

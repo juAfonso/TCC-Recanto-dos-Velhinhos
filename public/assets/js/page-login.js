@@ -62,7 +62,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  /* Esqueci a senha / não recebi o link: a página de senha pede um link novo (FR-046, D11) */
   document.getElementById('btn-esqueci-senha').addEventListener('click', () => {
-    Utils.toast('Se o e-mail informado estiver cadastrado, um link de redefinição de senha será enviado.');
+    window.location.href = 'definir-senha.html';
   });
 });

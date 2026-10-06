@@ -32,6 +32,25 @@ Este é um texto provisório do aviso de privacidade do Recanto dos Velhinhos Fr
 
 Pontos que o texto definitivo precisa cobrir: quais dados cada formulário coleta e para quê; que cadastros e candidaturas não aprovados são anonimizados 6 meses depois da conclusão da triagem; que o currículo de quem foi contratado é anonimizado 6 meses depois da efetivação; e o contato para pedir correção, anonimização ou revogação do consentimento.`;
 
+// Ponto de partida da página institucional: o texto que o grupo escreveu no protótipo.
+// A equipe do Recanto revisa e edita pelo Painel (FR-001a). Os nomes de funcionários do
+// protótipo eram fictícios e por isso não entram — a equipe é preenchida pela instituição.
+const INSTITUCIONAL_INICIAL = {
+  historia:
+    'Fundado pela comunidade de Pinheiral, o Recanto dos Velhinhos Francisco Gonçalves Barbosa nasceu do ' +
+    'desejo de oferecer um lar digno para idosos em situação de vulnerabilidade social e familiar. Ao longo ' +
+    'dos anos, a instituição consolidou-se como referência regional em cuidado humanizado, sustentada ' +
+    'principalmente pela generosidade de doadores, voluntários e parceiros locais que acreditam que todo ' +
+    'idoso merece respeito, atenção e carinho.',
+  missao:
+    'Proporcionar cuidado integral, digno e humanizado a idosos em situação de vulnerabilidade, promovendo ' +
+    'saúde, bem-estar e convivência social.\n\n' +
+    'Visão: ser reconhecida como referência regional em acolhimento humanizado de idosos, ampliando o ' +
+    'impacto positivo na comunidade de Pinheiral e região.\n\n' +
+    'Valores: cuidado, respeito, dignidade, transparência com doadores e voluntários, e compromisso com a ' +
+    'qualidade de vida de cada residente.',
+};
+
 async function semear(conexao, { demo }) {
   const q = (texto, parametros) => conexao.query(texto, parametros).then((r) => r.rows);
 
@@ -51,6 +70,12 @@ async function semear(conexao, { demo }) {
   await q(
     `INSERT INTO aviso_privacidade (versao, texto, publicado_por) VALUES ($1, $2, 'sistema')
      ON CONFLICT (versao) DO NOTHING`, [AVISO_VERSAO_INICIAL, AVISO_RASCUNHO]);
+
+  // Só preenche se a página ainda estiver vazia: nunca sobrescreve o que a equipe editou.
+  await q(
+    `UPDATE conteudo_institucional SET historia = $1, missao = $2, atualizado_por = 'sistema', atualizado_em = now()
+     WHERE id = 1 AND historia = '' AND missao = '' AND equipe = ''`,
+    [INSTITUCIONAL_INICIAL.historia, INSTITUCIONAL_INICIAL.missao]);
 
   const [contaExistente] = await q('SELECT id FROM conta_institucional WHERE identificador = $1', [CONTA_INSTITUCIONAL]);
   let senhaGerada = null;

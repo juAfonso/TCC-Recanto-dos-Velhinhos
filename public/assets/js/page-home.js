@@ -1,62 +1,40 @@
+/* Página inicial (US1): itens, campanhas e notícias vêm da API, sem login (FR-002, FR-003). */
 document.addEventListener('DOMContentLoaded', () => {
-  const db = DB.load();
 
-  /* Itens urgentes (ativos, urgentes primeiro) */
+  /* Itens de maior prioridade (alta → média → baixa, já ordenados pela API) */
   const itensGrid = document.getElementById('itens-urgentes-grid');
   if (itensGrid) {
-    const itens = db.itens
-      .filter(i => i.status === 'ativo')
-      .sort((a, b) => (b.urgente === true) - (a.urgente === true))
-      .slice(0, 4);
-
-    itensGrid.innerHTML = itens.map(i => `
-      <div class="card item-card">
-        <div>
-          <h3>${i.nome}</h3>
-          <p>${i.urgente ? 'Necessidade imediata.' : 'Contribuição sempre bem-vinda.'}</p>
-        </div>
-        <span class="qtd">${i.quantidade} ${i.unidade}</span>
-      </div>
-    `).join('') || '<p class="cell-muted">Nenhuma necessidade cadastrada no momento.</p>';
+    Api.get('/api/public/itens-necessarios')
+      .then(({ itens }) => {
+        itensGrid.innerHTML = itens.slice(0, 4).map(i => PortalCards.item(i)).join('')
+          || '<p class="cell-muted">Nenhuma necessidade cadastrada no momento.</p>';
+      })
+      .catch(() => { itensGrid.innerHTML = PortalCards.erro(); });
   }
 
-  /* Campanhas próximas da meta */
+  /* Campanhas em andamento: as com meta mais perto de atingi-la primeiro;
+     sem meta, aparecem depois e sem barra (FR-029b). */
   const campanhasEl = document.getElementById('campanhas-destaque');
   if (campanhasEl) {
-    const campanhas = db.campanhas
-      .filter(c => c.status === 'ativo')
-      .map(c => ({ ...c, pct: Math.min(100, Math.round((c.arrecadado / c.metaValor) * 100)) }))
-      .sort((a, b) => b.pct - a.pct)
-      .slice(0, 2);
-
-    campanhasEl.innerHTML = campanhas.map(c => `
-      <div class="campanha-card">
-        <h3>${c.titulo}</h3>
-        <div class="barra"><div class="progresso" style="width:${c.pct}%;"></div></div>
-        <p>${c.pct}% arrecadado — ${Utils.formatCurrency(c.arrecadado)} de ${Utils.formatCurrency(c.metaValor)}</p>
-      </div>
-    `).join('') || '<p style="text-align:center;">Nenhuma campanha ativa no momento.</p>';
+    Api.get('/api/public/eventos-campanhas')
+      .then(({ campanhas }) => {
+        const pct = (c) => (typeof c.meta === 'number' ? c.arrecadado / c.meta : -1);
+        const destaque = [...campanhas].sort((a, b) => pct(b) - pct(a)).slice(0, 2);
+        campanhasEl.innerHTML = destaque.length
+          ? `<div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));">${destaque.map(PortalCards.campanha).join('')}</div>`
+          : '<p style="text-align:center;">Nenhuma campanha ativa no momento.</p>';
+      })
+      .catch(() => { campanhasEl.innerHTML = PortalCards.erro(); });
   }
 
   /* Notícias recentes */
   const noticiasGrid = document.getElementById('noticias-home-grid');
   if (noticiasGrid) {
-    const noticias = [...db.noticias]
-      .sort((a, b) => new Date(b.dataPublicacao) - new Date(a.dataPublicacao))
-      .slice(0, 3);
-
-    noticiasGrid.innerHTML = noticias.map(n => `
-      <div class="noticia-card">
-        <div class="noticia-thumb">📰</div>
-        <div class="body">
-          <h3>${n.titulo}</h3>
-          <p>${n.conteudo.slice(0, 110)}${n.conteudo.length > 110 ? '…' : ''}</p>
-          <div class="meta">
-            <span>${Utils.formatDate(n.dataPublicacao)}</span>
-            <a href="noticias.html" style="color:var(--viridian);font-weight:700;text-decoration:none;">Ler mais →</a>
-          </div>
-        </div>
-      </div>
-    `).join('') || '<p class="cell-muted">Nenhuma notícia publicada ainda.</p>';
+    Api.get('/api/public/noticias?limite=3')
+      .then(({ noticias }) => {
+        noticiasGrid.innerHTML = noticias.map(n => PortalCards.noticia(n, { resumo: true })).join('')
+          || '<p class="cell-muted">Nenhuma notícia publicada ainda.</p>';
+      })
+      .catch(() => { noticiasGrid.innerHTML = PortalCards.erro(); });
   }
 });

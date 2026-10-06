@@ -43,50 +43,35 @@
     <p>Conheça a trajetória do Recanto dos Velhinhos Francisco Gonçalves Barbosa e as pessoas que tornam nosso cuidado possível todos os dias.</p>
 </section>
 
-<section class="section">
+<!-- Conteúdo editável pela equipe no Painel (FR-001a); preenchido por page-institucional.js.
+     Cada seção só aparece se tiver texto. -->
+<section class="section" id="sec-historia" hidden>
     <div class="container">
         <div class="titulo-section left">
             <span>NOSSA HISTÓRIA</span>
-            <h2>Mais de duas décadas de acolhimento</h2>
+            <h2>Como tudo começou</h2>
         </div>
-        <p style="max-width:820px;color:var(--muted);font-size:1rem;">
-            Fundado pela comunidade de Pinheiral, o Recanto dos Velhinhos Francisco Gonçalves Barbosa nasceu do
-            desejo de oferecer um lar digno para idosos em situação de vulnerabilidade social e familiar. Ao longo
-            dos anos, a instituição consolidou-se como referência regional em cuidado humanizado, sustentada
-            principalmente pela generosidade de doadores, voluntários e parceiros locais que acreditam que todo
-            idoso merece respeito, atenção e carinho na melhor fase de reflexão da vida.
-        </p>
-        <p style="max-width:820px;color:var(--muted);font-size:1rem;margin-top:16px;">
-            Hoje, seguimos com o mesmo propósito de sempre: transformar a gestão manual em cuidado ainda mais
-            presente — substituindo planilhas e anotações por processos organizados, sem nunca perder o que nos
-            move desde o início: as pessoas.
-        </p>
+        <div id="inst-historia" style="max-width:820px;color:var(--muted);font-size:1rem;"></div>
     </div>
 </section>
 
-<section class="section section-soft">
+<section class="section section-soft" id="sec-imagens" hidden>
+    <div class="container">
+        <div class="titulo-section left">
+            <span>NOSSA CASA</span>
+            <h2>Um pouco do nosso dia a dia</h2>
+        </div>
+        <div class="cards" id="inst-imagens" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));"></div>
+    </div>
+</section>
+
+<section class="section section-soft" id="sec-missao" hidden>
     <div class="container">
         <div class="titulo-section left">
             <span>NOSSO PROPÓSITO</span>
-            <h2>Missão, Visão e Valores</h2>
+            <h2>Missão</h2>
         </div>
-        <div class="cards">
-            <div class="card">
-                <h3>Missão</h3>
-                <p>Proporcionar cuidado integral, digno e humanizado a idosos em situação de vulnerabilidade,
-                promovendo saúde, bem-estar e convivência social.</p>
-            </div>
-            <div class="card">
-                <h3>Visão</h3>
-                <p>Ser reconhecida como referência regional em acolhimento humanizado de idosos, ampliando o
-                impacto positivo na comunidade de Pinheiral e região.</p>
-            </div>
-            <div class="card">
-                <h3>Valores</h3>
-                <p>Cuidado, respeito, dignidade, transparência com doadores e voluntários, e compromisso com a
-                qualidade de vida de cada residente.</p>
-            </div>
-        </div>
+        <div class="card" id="inst-missao" style="max-width:820px;"></div>
     </div>
 </section>
 
@@ -96,26 +81,13 @@
             <span>NOSSA EQUIPE</span>
             <h2>Quem cuida com a gente</h2>
         </div>
-        <div class="cards">
+        <div id="inst-equipe" style="max-width:820px;color:var(--muted);font-size:1rem;margin-bottom:24px;" hidden></div>
+        <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(240px,320px));">
             <div class="card" style="text-align:center;">
-                <div class="avatar-circle" style="margin:0 auto 16px;">MF</div>
-                <h3>Maria Fernanda Souza</h3>
-                <p class="card-meta">Coordenadora Administrativa</p>
-            </div>
-            <div class="card" style="text-align:center;">
-                <div class="avatar-circle" style="margin:0 auto 16px;">JB</div>
-                <h3>João Batista Ramos</h3>
-                <p class="card-meta">Cuidador</p>
-            </div>
-            <div class="card" style="text-align:center;">
-                <div class="avatar-circle" style="margin:0 auto 16px;">PF</div>
-                <h3>Patrícia Gomes Farias</h3>
-                <p class="card-meta">Enfermagem</p>
-            </div>
-            <div class="card" style="text-align:center;">
-                <div class="avatar-circle" style="margin:0 auto 16px;">+</div>
+                <div class="avatar-circle" style="margin:0 auto 16px;" aria-hidden="true">+</div>
                 <h3>Junte-se a nós</h3>
                 <p class="card-meta"><a href="vagas.html" style="color:var(--viridian);font-weight:700;">Ver vagas abertas →</a></p>
+                <p class="card-meta"><a href="voluntariado.html" style="color:var(--viridian);font-weight:700;">Seja voluntário →</a></p>
             </div>
         </div>
     </div>
@@ -178,8 +150,9 @@
 </footer>
 
 <script src="assets/js/utils.js"></script>
-<script src="assets/js/data.js"></script>
+<script src="assets/js/api.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/nav.js"></script>
+<script src="assets/js/page-institucional.js"></script>
 </body>
 </html>

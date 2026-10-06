@@ -68,10 +68,9 @@ cadastradas, dezenas de doações por mês.
 pelo clarify de 2026-10-05, estão resolvidos em research D11. O FR-056, marcado como pendente no
 plano anterior, foi decidido em 2026-09-30 e ampliado em 2026-10-05.
 
-**Ponto a confirmar com o grupo (não bloqueia o plano)**: research D15 mostra que a verificação do
-FR-006b, embora use mensagem neutra, deixa descobrir por comparação se um CPF ou e-mail é de
-associado. O plano limita tentativas, mas o risco residual precisa ser aceito pelo grupo — ou a
-decisão do clarify revista.
+**Risco aceito (2026-10-05)**: research D15 mostra que a verificação do FR-006b, embora use
+mensagem neutra, deixa descobrir por comparação se um CPF ou e-mail é de associado. O plano limita
+tentativas; o grupo aceitou o risco residual e as demais decisões técnicas do plano.
 
 ---
 

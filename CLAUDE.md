@@ -537,10 +537,10 @@ recente do spec.md, não esta lista resumida.
    `data-model.md`, `contracts/api.md` e `quickstart.md` seguem o spec de
    05/10 e a constituição 3.0.0. Links de senha: definição vale 7 dias,
    redefinição 1 hora, uso único, novo link pela tela "esqueci minha senha"
-   (research D11). **Aberto para o grupo**: a verificação do FR-006b deixa
-   descobrir por comparação se um CPF/e-mail é de associado; o plano limita
-   tentativas, mas o risco residual precisa ser aceito ou a decisão revista
-   (research D15). O protótipo continua precisando acompanhar (triagens com
+   (research D11). A verificação do FR-006b deixa descobrir por comparação
+   se um CPF/e-mail é de associado; o plano limita tentativas e **o grupo
+   aceitou o risco residual em 2026-10-05**, junto com as demais decisões
+   técnicas do plano (research D15). Não reabrir sem fato novo. O protótipo continua precisando acompanhar (triagens com
    entrevista, autoatendimento só do doador, página de autorização para
    imprimir) — a lista completa de telas está em `plan.md`.
 6. **(2026-10-04)** Correções do protótipo apontadas na revisão do grupo,

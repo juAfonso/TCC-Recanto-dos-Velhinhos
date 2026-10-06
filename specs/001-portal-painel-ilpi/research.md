@@ -348,8 +348,7 @@ segue para o QR, quem informa o de um associado é barrado. Comparando os dois r
 descobrir se um CPF ou e-mail é de associado. O plano reduz o risco — limite de 10 verificações por
 IP a cada 15 min (D13), sem dizer qual dos dois campos bateu —, mas não o elimina. A única forma de
 eliminar é não barrar ninguém, o que foi a opção C do clarify (registrar como espontânea sem
-vínculo), descartada pelo grupo. **Precisa de confirmação do grupo** de que o risco residual é
-aceitável.
+vínculo), descartada pelo grupo. **Risco residual aceito pelo grupo em 2026-10-05**, com a mitigação acima.
 
 ---
 
@@ -401,7 +400,7 @@ Princípio I proíbe.
 | E-mail sem domínio próprio cai em spam | Autor não recebe confirmação | Protocolo é o canal primário ("anote este código"); FR-049a registra falhas de envio |
 | Google bloqueia envio automatizado | E-mails param | Plano B: Brevo/SendGrid em subdomínio do provedor (D5) |
 | Cron do Hobby atrasa até 59 min | Status "ativo" por algumas horas após o vencimento | Filtro de data na leitura pública (D12) |
-| Enumeração de associados pela verificação | Descobrir se um CPF/e-mail é de associado | Limite de tentativas; **aceitação pelo grupo pendente** (D15) |
+| Enumeração de associados pela verificação | Descobrir se um CPF/e-mail é de associado | Limite de tentativas; risco residual aceito pelo grupo em 2026-10-05 (D15) |
 | Doação real sem clique em "Já fiz o Pix" | Não aparece no sistema | Consequência aceita (CSU01, exceção 08); a página avisa |
 | BR Code recusado por algum banco | Doador não consegue pagar pelo QR | Código copia e cola continua disponível; testar em vários bancos antes de operar (D9) |
 | Anonimização esquecer o histórico | Dado pessoal continua legível | Transação única (D16) + teste automatizado (D8) |

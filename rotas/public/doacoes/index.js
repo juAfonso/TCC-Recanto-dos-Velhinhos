@@ -75,7 +75,7 @@ export const POST = rota(async (request) => {
     email: v.email(d.email),
     telefone: v.telefone(d.telefone),
   });
-  if (falha) falhar(400, 'DADOS_INVALIDOS', falha.mensagem, falha.campos);
+  if (falha) falhar(400, 'DADOS_INVALIDOS', falha.mensagem, falha.campos, falha.mensagens);
   const avisoVersao = await validarAceite(corpo.consentimento);
 
   const resultado = await transacao(async (tx) => {

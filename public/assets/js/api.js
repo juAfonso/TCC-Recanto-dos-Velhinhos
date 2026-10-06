@@ -16,6 +16,7 @@ class ApiErro extends Error {
     this.status = status;
     this.codigo = erro.codigo || 'ERRO';
     this.campos = erro.campos || [];
+    this.mensagens = erro.mensagens || {};
   }
 }
 
@@ -24,12 +25,13 @@ const Api = (() => {
   const noPainel = () => window.location.pathname.includes('/admin/');
 
   // Marca o campo pelo id, name ou data-campo dentro do formulário (ou do documento).
-  function marcarCampos(campos, mensagem, form) {
+  // Cada campo recebe a própria mensagem quando a API manda `mensagens`; senão, a geral.
+  function marcarCampos(campos, mensagem, form, mensagens = {}) {
     const raiz = form || document;
     campos.forEach((campo) => {
       const el = raiz.querySelector(`[data-campo="${campo}"], [name="${campo}"], #${CSS.escape(campo)}`);
       const grupo = el && el.closest('.form-group');
-      if (grupo) Utils.setFieldError(grupo, mensagem);
+      if (grupo) Utils.setFieldError(grupo, mensagens[campo] || mensagem);
     });
   }
 
@@ -45,7 +47,7 @@ const Api = (() => {
       erro.message = 'Muitas tentativas seguidas. Aguarde alguns minutos e tente de novo.';
       Utils.toast(erro.message, 'warning');
     } else if (erro.campos.length) {
-      marcarCampos(erro.campos, erro.message, opcoes.form);
+      marcarCampos(erro.campos, erro.message, opcoes.form, erro.mensagens);
     }
     throw erro;
   }

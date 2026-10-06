@@ -57,7 +57,7 @@ export const PUT = rota(async (request) => {
     nomeRecebedor: v.obrigatorio(nome, 'O nome do recebedor') ?? (nome.length > 60 ? 'Use no máximo 60 caracteres.' : null),
     cidade: v.obrigatorio(cidade, 'A cidade') ?? (cidade.length > 40 ? 'Use no máximo 40 caracteres.' : null),
   });
-  if (falha) falhar(400, 'DADOS_INVALIDOS', falha.mensagem, falha.campos);
+  if (falha) falhar(400, 'DADOS_INVALIDOS', falha.mensagem, falha.campos, falha.mensagens);
 
   if ((tipo === 'cpf' || tipo === 'telefone') && corpo.confirmarAviso !== true) {
     falhar(409, 'AVISO_CHAVE_PESSOAL',

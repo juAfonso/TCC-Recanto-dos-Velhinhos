@@ -78,13 +78,14 @@
                         <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
   <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
 </svg></span>
-                        <input type="text" id="busca-campanha" placeholder="Buscar por título...">
+                        <label for="busca-campanha" class="sr-only">Buscar pelo nome</label>
+                        <input type="search" id="busca-campanha" placeholder="Buscar pelo nome...">
                     </div>
                 </div>
                 <div class="table-wrap">
                     <table>
                         <thead>
-                            <tr><th>Título</th><th>Data</th><th>Origem</th><th>Arrecadação</th><th>Status</th><th></th></tr>
+                            <tr><th scope="col">Nome</th><th scope="col">Tipo</th><th scope="col">Data ou período</th><th scope="col">Arrecadação</th><th scope="col">Situação</th><th scope="col">Ações</th></tr>
                         </thead>
                         <tbody id="campanhas-tbody"></tbody>
                     </table>
@@ -95,42 +96,71 @@
 </div>
 
 <!-- MODAL: nova/editar campanha -->
-<div class="modal-overlay" id="modal-campanha">
+<div class="modal-overlay" id="modal-campanha" role="dialog" aria-modal="true" aria-labelledby="modal-campanha-titulo">
     <div class="modal">
         <div class="modal-head">
-            <h3 id="modal-campanha-titulo">Nova campanha/evento</h3>
-            <button class="modal-close" data-close-modal="modal-campanha">✕</button>
+            <h3 id="modal-campanha-titulo">Nova campanha ou evento</h3>
+            <button class="modal-close" data-close-modal="modal-campanha" aria-label="Fechar">✕</button>
         </div>
         <form id="form-campanha" novalidate>
             <input type="hidden" id="camp-id">
+            <fieldset class="form-group" id="grupo-tipo" style="border:0;padding:0;">
+                <legend style="font-weight:700;margin-bottom:8px;">O que você vai cadastrar? <span class="req">*</span></legend>
+                <label class="checkbox-line"><input type="radio" name="tipo" value="evento" checked> <span><b>Evento</b> — acontece num dia (visita, festa, apresentação)</span></label>
+                <label class="checkbox-line" style="margin-top:8px;"><input type="radio" name="tipo" value="campanha"> <span><b>Campanha</b> — arrecadação durante um período</span></label>
+            </fieldset>
             <div class="form-group">
-                <label for="camp-titulo">Título <span class="req">*</span></label>
-                <input type="text" id="camp-titulo">
+                <label for="camp-nome">Nome <span class="req">*</span></label>
+                <input type="text" id="camp-nome" data-campo="nome" maxlength="150">
                 <div class="form-error"></div>
             </div>
             <div class="form-group">
                 <label for="camp-descricao">Descrição <span class="req">*</span></label>
-                <textarea id="camp-descricao"></textarea>
+                <textarea id="camp-descricao" data-campo="descricao" rows="3"></textarea>
                 <div class="form-error"></div>
             </div>
-            <div class="form-row">
+
+            <!-- Evento -->
+            <div id="campos-evento">
                 <div class="form-group">
-                    <label for="camp-data">Data <span class="req">*</span></label>
-                    <input type="date" id="camp-data">
-                    <div class="form-hint" id="camp-data-hint"></div>
+                    <label for="camp-data">Data do evento <span class="req">*</span></label>
+                    <input type="date" id="camp-data" data-campo="data">
                     <div class="form-error"></div>
                 </div>
                 <div class="form-group">
-                    <label for="camp-meta">Meta de arrecadação (R$) <span class="req">*</span></label>
-                    <input type="number" id="camp-meta" min="0">
+                    <label for="camp-recursos-texto">Do que o evento precisa (opcional)</label>
+                    <textarea id="camp-recursos-texto" rows="2" placeholder="ex.: cadeiras extras, lanche, caixa de som"></textarea>
+                </div>
+            </div>
+
+            <!-- Campanha -->
+            <div id="campos-campanha" hidden>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="camp-inicio">Início <span class="req">*</span></label>
+                        <input type="date" id="camp-inicio" data-campo="periodoInicio">
+                        <div class="form-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="camp-fim">Fim <span class="req">*</span></label>
+                        <input type="date" id="camp-fim" data-campo="periodoFim">
+                        <div class="form-error"></div>
+                    </div>
+                </div>
+                <fieldset class="form-group" style="border:0;padding:0;">
+                    <legend style="font-weight:700;margin-bottom:8px;">O que a campanha arrecada <span class="req">*</span></legend>
+                    <div id="lista-recursos"></div>
+                    <button type="button" class="btn btn-outline btn-sm" id="btn-add-recurso">+ Adicionar recurso</button>
+                    <div class="form-error" data-campo="recursos"></div>
+                </fieldset>
+                <div class="form-group">
+                    <label for="camp-meta">Meta em dinheiro (R$) — opcional</label>
+                    <input type="text" id="camp-meta" data-campo="meta" inputmode="decimal" placeholder="Deixe em branco se não houver meta">
+                    <p class="form-hint">Sem meta, o site não mostra barra de arrecadação. O valor arrecadado é informado à mão pela equipe.</p>
                     <div class="form-error"></div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="camp-recursos">Recursos necessários <span class="req">*</span></label>
-                <textarea id="camp-recursos"></textarea>
-                <div class="form-error"></div>
-            </div>
+
             <div class="form-actions">
                 <button type="button" class="btn btn-outline" data-close-modal="modal-campanha">Cancelar</button>
                 <button type="submit" class="btn btn-viridian">Salvar e publicar</button>
@@ -139,8 +169,29 @@
     </div>
 </div>
 
+<div class="modal-overlay" id="modal-arrecadado" role="dialog" aria-modal="true" aria-labelledby="modal-arrecadado-titulo">
+    <div class="modal">
+        <div class="modal-head">
+            <h3 id="modal-arrecadado-titulo">Atualizar valor arrecadado</h3>
+            <button class="modal-close" data-close-modal="modal-arrecadado" aria-label="Fechar">✕</button>
+        </div>
+        <form id="form-arrecadado" novalidate>
+            <p id="arrecadado-resumo" style="margin-bottom:12px;"></p>
+            <div class="form-group">
+                <label for="arrecadado-valor">Valor arrecadado até agora (R$) <span class="req">*</span></label>
+                <input type="text" id="arrecadado-valor" data-campo="valor" inputmode="decimal">
+                <p class="form-hint">Use o controle da secretaria: o sistema não soma as doações por Pix às campanhas.</p>
+                <div class="form-error"></div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" data-close-modal="modal-arrecadado">Cancelar</button>
+                <button type="submit" class="btn btn-viridian">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script src="../assets/js/utils.js"></script>
-<script src="../assets/js/data.js"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/auth.js"></script>
 <script src="../assets/js/admin-guard.js"></script>

@@ -274,7 +274,8 @@ Passo a passo de comandos e validação em
   continua obrigatória. Desenhar o QR usa `qrcode-generator` (MIT), copiado
   para `public/assets/vendor/` — não é dependência npm, justificativa no
   `research.md` D9. **Antes de operar, testar com a chave real em vários
-  aplicativos de banco.** O mock em `data.js` usa uma chave fictícia em
+  aplicativos de banco** — **feito em 2026-10-06: o QR de teste com a chave
+  real (CNPJ) foi lido corretamente em três bancos**, com nome e valor certos. O mock em `data.js` usa uma chave fictícia em
   domínio `.invalid`, de propósito: o banco lê o QR e diz "chave não
   encontrada", sem risco de pagar a terceiro. A chave real entra pela tela
   `admin/pix.html` (criada em 2026-10-03), que valida o CNPJ, avisa quando o
@@ -666,13 +667,14 @@ recente do spec.md, não esta lista resumida.
    já refletidas no spec e ainda não feitas no front: ~~doação sem
    protocolo e sem anexo, sem o botão que simula a confirmação~~ (**feito
    em 2026-10-06**, fase 4); meta opcional e valor arrecadado manual nas
-   campanhas (o Portal já respeita desde a fase 3; falta a tela do Painel); nome do evento na solicitação externa; máscara de telefone em
+   campanhas (Portal desde a fase 3; tela do Painel **feita na fase 5**); nome do evento na solicitação externa; máscara de telefone em
    todos os formulários e telefone visível ao admin fora da edição; editar,
    despublicar e imagem em notícias; CPF e data de nascimento na
    candidatura. Depende do back: abrir anexos e ler a descrição inteira no
    Painel. **(2026-10-05)** Trocar a caixa "urgente" de `admin/itens.html`
    pela escolha de prioridade alta/média/baixa, e ordenar por ela no Painel,
-   na home e em `doacoes.html` (home e `doacoes.html` feitas na fase 3).
+   na home e em `doacoes.html` (home e `doacoes.html` feitas na fase 3;
+   Painel feito na fase 5).
 7. ~~Emenda ao Princípio IV pendente de ratificação.~~ **Resolvida em
    2026-10-05** — ver "Constituição 3.0.0" em "Decisões já tomadas".
 

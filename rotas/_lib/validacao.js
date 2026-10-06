@@ -92,10 +92,11 @@ export function dataNaoPassada(valor) {
   return data(valor) ?? (String(valor) < hojeBrasilia() ? 'A data não pode estar no passado.' : null);
 }
 
-// Recebe { campo: mensagem|null } e devolve { campos, mensagem } se houver erro, senão null.
+// Recebe { campo: mensagem|null } e devolve { campos, mensagem, mensagens } se houver erro, senão null.
 // Uso: const falha = conferir({ cpf: cpf(corpo.cpf), email: email(corpo.email) });
 export function conferir(resultados) {
   const campos = Object.keys(resultados).filter((c) => resultados[c]);
   if (!campos.length) return null;
-  return { campos, mensagem: resultados[campos[0]] };
+  const mensagens = Object.fromEntries(campos.map((c) => [c, resultados[c]]));
+  return { campos, mensagem: resultados[campos[0]], mensagens };
 }

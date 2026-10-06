@@ -31,7 +31,9 @@ vem **sempre da sessão**, nunca da URL nem do corpo (FR-042).
 { "erro": { "codigo": "VALOR_ABAIXO_DO_MINIMO", "mensagem": "O valor mínimo é R$ 1,00.", "campos": ["valor"] } }
 ```
 
-`campos` aparece em erros de validação, para a tela marcar cada campo (Princípio II).
+`campos` aparece em erros de validação, para a tela marcar cada campo (Princípio II). Quando mais de
+um campo falha, vem também `mensagens` — `{ "campo": "texto" }` —, para cada campo mostrar a própria
+mensagem ao lado (acrescentado em 2026-10-06).
 
 **Códigos HTTP**: `200` · `201` · `400` entrada inválida · `401` sem sessão · `403` sem permissão ·
 `404` · `409` conflito de estado ou aviso que pede confirmação · `413` arquivo grande demais ·

@@ -87,6 +87,11 @@ createServer(async (req, res) => {
     if (!res.headersSent) responder(res, 500, { erro: { codigo: 'ERRO_INTERNO', mensagem: 'Erro no servidor de desenvolvimento.' } });
   }
   console.log(`${req.method} ${url.pathname} → ${res.statusCode}`);
+}).on('error', (e) => {
+  if (e.code !== 'EADDRINUSE') throw e;
+  console.error(`A porta ${PORTA} já está em uso — provavelmente outro "npm run dev" ainda está aberto.`);
+  console.error('Feche a outra janela (Ctrl+C) ou use outra porta:  set PORT=3001 && npm run dev');
+  process.exit(1);
 }).listen(PORTA, () => {
   console.log(`SAGE rodando em http://localhost:${PORTA}`);
   if (!process.env.DATABASE_URL) console.warn('Atenção: DATABASE_URL não definida (confira o .env.local).');

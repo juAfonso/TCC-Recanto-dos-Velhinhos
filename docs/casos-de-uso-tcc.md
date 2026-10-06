@@ -537,7 +537,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (visitante) | Sistema |
 |---|---|
-| 1. No passo 3 do fluxo principal, tenta enviar a candidatura sem anexar arquivo ou sem descrever a experiência. | |
+| 1. No passo 3 do fluxo principal, tenta enviar a candidatura sem anexar arquivo e sem descrever a experiência. | |
 | | 2. Impede o envio, explica que é preciso fornecer o currículo em uma das duas formas e retorna ao passo 3 do fluxo principal. |
 
 ## Fluxo Exceção 08 – Envio sem aceite do aviso de privacidade

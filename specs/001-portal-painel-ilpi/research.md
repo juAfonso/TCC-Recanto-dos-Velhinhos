@@ -95,6 +95,9 @@ Portal.
 
 **Decisão**: cookie de sessão assinado com HMAC-SHA256 (`node:crypto`), `HttpOnly`, `Secure`,
 `SameSite=Lax`, validade de 8 horas. Senhas com `scrypt` e salt por senha. Zero dependências.
+**Ajuste de 2026-10-06:** o cookie é de sessão do navegador (sem `Max-Age`): fechar o navegador
+encerra o login, porque o computador da secretaria é compartilhado. As 8 horas continuam valendo
+pelo prazo assinado dentro do cookie, conferido no servidor.
 
 **Dois contextos de login, e só dois** (Princípio IV, constituição 3.0.0):
 
@@ -332,6 +335,10 @@ esquecido (cadastro direto no Painel, efetivação, reativação). O índice fec
 | CPF e e-mail não existem | segue para o QR |
 | CPF ou e-mail pertencem a um doador associado | **mensagem neutra**: "Se você já é associado, entre no autoatendimento para doar. Se não, faça a doação espontânea." O QR não é gerado. |
 | CPF pertence a pessoa já cadastrada **sem** papel de doador (ex.: voluntária) | segue para o QR; no "Já fiz o Pix", o papel de doador é **adicionado ao cadastro existente** (FR-048, sem duplicar) e o link de definição de senha vai para o **e-mail que já está no cadastro**, não o digitado |
+
+**Quarto caso (2026-10-06):** CPF novo com e-mail que já pertence a **outra** pessoa cadastrada
+recebe a mesma mensagem neutra — senão o cadastro novo colidiria com o e-mail único, e quem
+digitou o e-mail alheio poderia tentar receber o acesso. O risco de descoberta é o mesmo, já aceito.
 
 No "Já fiz o Pix", a mesma verificação roda de novo no servidor — a do passo anterior é só para
 não deixar a pessoa pagar à toa.

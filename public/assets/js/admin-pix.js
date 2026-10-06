@@ -65,11 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderUltimaAtualizacao(pix) {
     document.getElementById('pix-ultima-atualizacao').textContent = pix && pix.atualizadoEm
       ? `Última atualização em ${Utils.formatDateTime(pix.atualizadoEm)} por ${pix.atualizadoPor}`
-      : 'Nenhuma alteração registrada pela equipe ainda.';
+      : 'Nenhuma chave cadastrada ainda. Sem chave, o site não oferece a doação via Pix.';
   }
 
-  function carregar() {
-    const pix = DB.load().pix;
+  // A chave vem do servidor (GET /api/admin/pix); nada fica guardado no navegador.
+  async function carregar() {
+    let pix = null;
+    try { pix = await Api.get('/api/admin/pix'); } catch (e) { Utils.toast(e.message, 'danger'); }
     if (pix) {
       tipoEl.value = pix.tipoChave;
       chaveEl.value = pix.chave;
@@ -83,6 +85,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   tipoEl.addEventListener('change', () => { syncTipo(); renderPreview(); });
   [chaveEl, nomeEl, cidadeEl].forEach(el => el.addEventListener('input', renderPreview));
+
+  async function salvar(dados, confirmarAviso = false) {
+    try {
+      await Api.put('/api/admin/pix', { ...dados, confirmarAviso }, { form });
+      Utils.toast('Chave Pix salva. Confira o QR code de teste abaixo.');
+      carregar();
+    } catch (erro) {
+      // Chave de pessoa física (CPF/telefone): o servidor pede confirmação explícita.
+      if (erro.codigo === 'AVISO_CHAVE_PESSOAL') {
+        if (confirm(erro.message)) return salvar(dados, true);
+      } else if (!erro.campos.length) {
+        Utils.toast(erro.message, 'danger');
+      }
+    }
+  }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -98,13 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!confirm('Salvar esta chave? A partir de agora, todas as doações pelo site serão geradas para ela.')) return;
 
-    const db = DB.load();
-    const session = Auth.getSession();
-    db.pix = { ...d, atualizadoEm: new Date().toISOString(), atualizadoPor: (session && session.nome) || 'Conta Administrativa' };
-    DB.addAudit(db, 'Atualização da chave Pix', `Chave do tipo ${d.tipoChave} cadastrada para "${d.nomeRecebedor}".`);
-    DB.save(db);
-    renderUltimaAtualizacao(db.pix);
-    Utils.toast('Chave Pix salva. Confira o QR code de teste abaixo.');
+    salvar(d);
   });
 
   carregar();

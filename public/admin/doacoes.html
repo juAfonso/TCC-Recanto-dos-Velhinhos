@@ -72,20 +72,33 @@
         <div class="admin-content">
             <div class="stat-grid" id="doacoes-stats"></div>
 
-            <div class="alert alert-info" style="margin-bottom:18px;"><span>ℹ️</span><div>
-                <strong>Confira se a entrada no extrato é Pix.</strong> Depósito, TED ou DOC não são confirmados por aqui, mesmo que o valor e a data batam: marque como não localizada com o motivo padrão, e a secretaria registra esse pagamento fora do sistema. Os totais desta tela mostram só doações por Pix declaradas no site — não use como prestação de contas.
-            </div></div>
+            <!-- Ajuda contextual da conferência (FR-061) -->
+            <details class="panel" style="margin-bottom:18px;" open>
+                <summary style="cursor:pointer;font-weight:700;">Como conferir uma doação no extrato</summary>
+                <ol style="margin:12px 0 0 20px;line-height:1.7;">
+                    <li>Abra o extrato da conta do Recanto no banco.</li>
+                    <li>Procure uma entrada <strong>Pix</strong> com o <strong>mesmo valor</strong>, perto da <strong>data e hora do clique</strong> mostradas aqui. Na doação associativa, o nome ajuda — mas a pessoa pode ter pago da conta de outra.</li>
+                    <li>Achou? Clique em <strong>Confirmar</strong>. Não achou depois de alguns dias, ou a entrada é depósito/TED? Clique em <strong>Não localizada</strong>.</li>
+                </ol>
+                <p class="form-hint" style="margin-top:10px;">
+                    O sistema <strong>não</strong> enxerga a conta do banco e <strong>não</strong> confirma nada sozinho: se ninguém conferir, a doação fica pendente para sempre.
+                    Depósito, TED ou DOC <strong>não</strong> se confirmam aqui, mesmo com valor e data iguais — use o motivo pronto, e a secretaria registra fora do sistema.
+                    O selo <em>possível duplicata</em> aparece quando há outra pendente de mesmo valor com até 30 minutos de diferença: pode ser a mesma pessoa clicando duas vezes.
+                </p>
+            </details>
 
             <div class="panel">
-                <div class="tabs-nav">
-                    <button class="tab-btn active" data-filtro="todas">Todas</button>
-                    <button class="tab-btn" data-filtro="pendente">Pendentes</button>
+                <div class="tabs-nav" role="tablist">
+                    <button class="tab-btn active" data-filtro="pendente">Pendentes</button>
                     <button class="tab-btn" data-filtro="confirmada">Confirmadas</button>
+                    <button class="tab-btn" data-filtro="nao_localizada">Não localizadas</button>
+                    <button class="tab-btn" data-filtro="todas">Todas</button>
                 </div>
                 <div class="table-wrap">
                     <table>
+                        <caption class="sr-only">Declarações de doação via Pix</caption>
                         <thead>
-                            <tr><th>ID</th><th>Data</th><th>Tipo</th><th>Doador</th><th>Valor</th><th>Status</th><th></th></tr>
+                            <tr><th scope="col">Data e hora do clique</th><th scope="col">Tipo</th><th scope="col">Doador</th><th scope="col">Valor</th><th scope="col">Situação</th><th scope="col">Ações</th></tr>
                         </thead>
                         <tbody id="doacoes-tbody"></tbody>
                     </table>
@@ -95,11 +108,37 @@
     </main>
 </div>
 
+<div class="modal-overlay" id="modal-nao-localizada" role="dialog" aria-modal="true" aria-labelledby="modal-nl-titulo">
+    <div class="modal">
+        <div class="modal-head">
+            <h3 id="modal-nl-titulo">Marcar como não localizada</h3>
+            <button class="modal-close" data-close-modal="modal-nao-localizada" aria-label="Fechar">✕</button>
+        </div>
+        <form id="form-nao-localizada" novalidate>
+            <p id="modal-nl-resumo" style="margin-bottom:14px;"></p>
+            <fieldset class="form-group" style="border:0;padding:0;">
+                <legend style="font-weight:700;margin-bottom:8px;">Motivo (opcional)</legend>
+                <label class="checkbox-line"><input type="radio" name="motivoTipo" value="nenhum" checked> Sem motivo</label>
+                <label class="checkbox-line" style="margin-top:8px;"><input type="radio" name="motivoTipo" value="padrao"> Pagamento por depósito ou transferência, fora do Pix</label>
+                <label class="checkbox-line" style="margin-top:8px;"><input type="radio" name="motivoTipo" value="livre"> Outro motivo</label>
+            </fieldset>
+            <div class="form-group" id="grupo-motivo-livre" style="display:none;">
+                <label for="motivo-livre">Escreva o motivo</label>
+                <textarea id="motivo-livre" rows="3" maxlength="500"></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" data-close-modal="modal-nao-localizada">Cancelar</button>
+                <button type="submit" class="btn btn-viridian">Marcar como não localizada</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script src="../assets/js/utils.js"></script>
-<script src="../assets/js/data.js"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/auth.js"></script>
 <script src="../assets/js/admin-guard.js"></script>
+<script src="../assets/js/admin-modal.js"></script>
 <script src="../assets/js/admin-doacoes.js"></script>
 </body>
 </html>

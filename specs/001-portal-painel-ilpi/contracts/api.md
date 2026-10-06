@@ -90,7 +90,8 @@ Sem chave ativa: `{ "disponivel": false, "contato": "…" }`. O front não mostr
 
 - `200 { "podeSeguir": true }` — CPF e e-mail livres, ou pessoa existente sem papel de doador.
 - `200 { "podeSeguir": false, "mensagem": "Se você já é associado, entre no autoatendimento para doar. Se não, faça a doação espontânea." }`
-  — CPF **ou** e-mail de doador associado. A resposta não diz qual dos dois bateu.
+  — CPF **ou** e-mail de doador associado, ou e-mail de outra pessoa cadastrada com CPF diferente
+  (2026-10-06). A resposta não diz qual dos dois bateu.
 - Limite D13: `429`.
 
 **`POST /api/public/doacoes`** — o clique em "Já fiz o Pix" (FR-005, FR-006, FR-006a, FR-008).

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>Criar senha — Recanto dos Velhinhos</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div class="login-shell">
+    <div style="width:100%;max-width:440px;">
+        <a href="index.html" class="back-home">← Voltar ao Portal Público</a>
+
+        <div class="login-card">
+            <div class="logo">
+                <img src="assets/img/logo-icon.png" alt="Recanto dos Velhinhos Francisco Gonçalves Barbosa" class="logo-mark">
+            </div>
+            <div class="login-title">
+                <h1>Criar sua senha</h1>
+                <p>Área do doador associado do Recanto dos Velhinhos.</p>
+            </div>
+
+            <!-- Com link válido: escolher a senha (FR-006a, FR-046) -->
+            <form id="form-senha" novalidate>
+                <div class="form-group">
+                    <label for="senha">Nova senha <span class="req">*</span></label>
+                    <input type="password" id="senha" data-campo="senha" autocomplete="new-password" aria-describedby="senha-dica">
+                    <p class="form-hint" id="senha-dica">Pelo menos 8 caracteres.</p>
+                    <div class="form-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="senha2">Repita a senha <span class="req">*</span></label>
+                    <input type="password" id="senha2" autocomplete="new-password">
+                    <div class="form-error"></div>
+                </div>
+                <button type="submit" class="btn btn-viridian btn-block">Salvar senha</button>
+            </form>
+
+            <!-- Senha salva -->
+            <div id="sucesso" class="alert alert-success" role="status" style="display:none;"><span aria-hidden="true">✅</span><div>
+                <span id="sucesso-texto"></span>
+                <div style="margin-top:10px;"><a class="btn btn-viridian btn-sm" href="login.html">Ir para o login</a></div>
+            </div></div>
+
+            <!-- Link vencido, usado ou ausente: pedir outro sem depender da equipe (D11) -->
+            <div id="link-invalido" style="display:none;">
+                <div class="alert alert-warning" role="alert"><span aria-hidden="true">⚠️</span><div id="link-invalido-texto">
+                    Este link não vale mais: ele vence em pouco tempo e só pode ser usado uma vez. Peça um novo link abaixo.
+                </div></div>
+                <form id="form-novo-link" novalidate>
+                    <div class="form-group">
+                        <label for="email">E-mail do cadastro <span class="req">*</span></label>
+                        <input type="email" id="email" data-campo="email" autocomplete="email">
+                        <div class="form-error"></div>
+                    </div>
+                    <button type="submit" class="btn btn-outline btn-block">Pedir outro link</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/page-definir-senha.js"></script>
+</body>
+</html>

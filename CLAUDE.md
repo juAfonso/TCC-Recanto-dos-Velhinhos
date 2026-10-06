@@ -128,6 +128,17 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
      gerada pelo seed de produção e mostrada uma única vez — não é a senha
      do Gmail.
   4. **Commits sempre em branch**, com PR para a `main`; nada direto na `main`.
+  5. **Fechar o navegador encerra o login** (Painel e doador). O cookie não
+     tem `Max-Age`; o limite de 8 h continua conferido no servidor. Motivo: o
+     computador da secretaria é compartilhado.
+  6. **`EMAIL_MODO=console`** no `.env.local`: no desenvolvimento os e-mails
+     (inclusive o link de criar senha) aparecem no terminal do `npm run dev`
+     e nada é enviado. Na Vercel, não definir.
+- **Doação associativa com e-mail de outra pessoa (decidido em 2026-10-06,
+  fase 4).** CPF novo com e-mail que já pertence a outra pessoa cadastrada
+  recebe a **mesma mensagem neutra** do FR-006b. Sem isso, o cadastro novo
+  colidiria com o e-mail único e quem digitou o e-mail alheio poderia
+  tentar ganhar acesso. Mesmo risco residual de descoberta já aceito no D15.
 - **Front-end:** já existe um protótipo estático (`recanto-frontend`) com as
   páginas index, login, institucional, doacoes, campanhas, noticias, vagas,
   voluntariado, autoatendimento, consultar-status, solicitar-evento e uma
@@ -606,15 +617,16 @@ recente do spec.md, não esta lista resumida.
    confirmar, não localizar) são fluxos alternativos; validações e erros são
    fluxos de exceção, nunca "caso inválido, retorna" dentro do principal.
    **Falta colar no PRD e na seção 19** do documento do TCC.
-2. O protótipo em `public/` ainda tem `doacoes.html` e `admin/doacoes.html`
-   descrevendo o fluxo com API de pagamentos — precisam virar declaração do
-   doador + conferência manual.
+2. ~~O protótipo em `public/` ainda tem `doacoes.html` e `admin/doacoes.html`
+   descrevendo o fluxo com API de pagamentos.~~ **Resolvido em 2026-10-06**
+   (fase 4 / US2): declaração "Já fiz o Pix" + conferência manual no Painel.
 3. Fotos institucionais reais ainda precisam vir do Recanto (o hero já é
    a fachada real desde 2026-10-05), cada uma com texto alternativo
    (Princípio II).
 4. As credenciais de demonstração do `public/README.md` (`admin`/`admin123`
    e as de autoatendimento) existem só na camada mock e **não podem**
-   sobreviver ao `db/seed.js` real.
+   sobreviver ao `db/seed.js` real. **(2026-10-06)** `admin/admin123` já
+   saiu da tela de login (fase 2); as de autoatendimento saem na US9.
 5. ~~Plano desatualizado em relação ao spec.~~ **Resolvido em 2026-10-05**:
    `/speckit-plan` refeito — `plan.md`, `research.md` (D1–D18),
    `data-model.md`, `contracts/api.md` e `quickstart.md` seguem o spec de
@@ -627,16 +639,16 @@ recente do spec.md, não esta lista resumida.
    entrevista, autoatendimento só do doador, página de autorização para
    imprimir) — a lista completa de telas está em `plan.md`.
 6. **(2026-10-04)** Correções do protótipo apontadas na revisão do grupo,
-   já refletidas no spec e ainda não feitas no front: doação sem protocolo
-   e sem anexo (o grupo vai refazer o fluxo, incluindo tirar o botão que
-   simula a confirmação); meta opcional e valor arrecadado manual nas
-   campanhas; nome do evento na solicitação externa; máscara de telefone em
+   já refletidas no spec e ainda não feitas no front: ~~doação sem
+   protocolo e sem anexo, sem o botão que simula a confirmação~~ (**feito
+   em 2026-10-06**, fase 4); meta opcional e valor arrecadado manual nas
+   campanhas (o Portal já respeita desde a fase 3; falta a tela do Painel); nome do evento na solicitação externa; máscara de telefone em
    todos os formulários e telefone visível ao admin fora da edição; editar,
    despublicar e imagem em notícias; CPF e data de nascimento na
    candidatura. Depende do back: abrir anexos e ler a descrição inteira no
    Painel. **(2026-10-05)** Trocar a caixa "urgente" de `admin/itens.html`
    pela escolha de prioridade alta/média/baixa, e ordenar por ela no Painel,
-   na home e em `doacoes.html`.
+   na home e em `doacoes.html` (home e `doacoes.html` feitas na fase 3).
 7. ~~Emenda ao Princípio IV pendente de ratificação.~~ **Resolvida em
    2026-10-05** — ver "Constituição 3.0.0" em "Decisões já tomadas".
 

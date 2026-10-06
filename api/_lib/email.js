@@ -30,6 +30,11 @@ function transporteGmail() {
 }
 
 async function tentar(mensagem) {
+  // Desenvolvimento sem Gmail configurado: o e-mail aparece no terminal do `npm run dev`.
+  if (process.env.EMAIL_MODO === 'console') {
+    console.log(`\n───── E-mail (não enviado: EMAIL_MODO=console) ─────\nPara: ${mensagem.to}\nAssunto: ${mensagem.subject}\n\n${mensagem.text}\n────────────────────────────────────────────────────\n`);
+    return;
+  }
   if (process.env.EMAIL_MODO === 'teste') {
     if (process.env.EMAIL_FALHAR === '1') throw new Error('falha simulada');
     caixaDeTeste.push(mensagem);

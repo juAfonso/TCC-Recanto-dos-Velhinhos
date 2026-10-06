@@ -68,8 +68,14 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   registrada no Princípio I (simplicidade) da constituição: sem build step e
   sem curva de React para um time de 6 pessoas com prazo fixo. Custo aceito:
   sem componentização, algum HTML repetido entre páginas.
-- **Upload de arquivos:** Vercel Blob. Cobre currículos (URLs privadas/
-  assinadas) e a imagem de cada notícia (pública, FR-032b). O anexo de
+- **Upload de arquivos:** Vercel Blob. Cobre currículos (privados) e a
+  imagem de cada notícia (pública, FR-032b). **Dois stores (decidido em
+  2026-10-06):** na Vercel o acesso é escolhido ao criar o store, então há um
+  privado (`SAGE-CURRICULOS`, currículos) e um público (imagens, fase 11).
+  Na Vercel a autenticação é por OIDC (`BLOB_STORE_ID`, sem token guardado);
+  token só no `.env.local`, para testar arquivo no `npm run dev`. O currículo **não** usa URL
+  assinada: a função do Painel confere o login e repassa o arquivo, para o
+  link nunca sair do servidor (research D3). O anexo de
   comprovante bancário (FR-010b) **saiu em 2026-10-04**. A
   autorização de responsável legal de menores **saiu do Blob em 2026-10-03**:
   passou a ser entregue em papel na sede (ver "Alinhamento com o texto do

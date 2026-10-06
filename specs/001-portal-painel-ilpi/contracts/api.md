@@ -66,7 +66,7 @@ negação de acesso.
 
 | Método | Rota | Retorna |
 |---|---|---|
-| `GET` | `/api/public/institucional` | história, missão, equipe e imagens com texto alternativo (FR-001) |
+| `GET` | `/api/public/institucional` | história, missão, equipe, acolhimento, bazar e imagens com texto alternativo (FR-001) |
 | `GET` | `/api/public/eventos-campanhas` | eventos com `data >= hoje` e campanhas com hoje no período, `status = ativo` (FR-002, D12); campanha sem meta vem sem `meta` nem `arrecadado` (FR-029b) |
 | `GET` | `/api/public/itens-necessarios` | itens ativos, ordenados alta → média → baixa (FR-003, FR-026) |
 | `GET` | `/api/public/noticias` | só `publicada` (FR-032a) |

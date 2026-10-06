@@ -456,11 +456,21 @@ Passo a passo de comandos e validação em
   Ficou para depois: validade e reenvio dos links de senha (vai para o
   plano).
 - **Página institucional editável no Painel (decidido em 2026-10-05).** A
-  equipe edita história, missão e equipe numa tela própria (FR-001a), com
+  equipe edita história, missão, equipe, acolhimento de residentes e bazar
+  numa tela própria (FR-001a), com
   imagens opcionais de texto alternativo obrigatório e histórico das
   versões. Entrou no CSU03 (fluxo alternativo 04), não é CSU novo. Motivo:
   o grupo entrega e sai; texto fixo no HTML travaria a instituição. Não é
   notícia — não se publica nem despublica. O protótipo ainda não tem a tela.
+- **Texto institucional do Recanto e duas seções novas (2026-10-06).** O
+  Recanto entregou o texto da página (fundação em 7/1/1983, 22 residentes,
+  diretoria voluntária presidida pela Sra. Eliege de Faria Barbosa). Além de
+  história, missão e equipe, ele tem **"Acolhimento de residentes"** e
+  **"Nosso bazar"**, que viraram seções **editáveis** (migração 006), porque
+  o dia do bazar e a situação de vagas mudam. A seção de acolhimento é só
+  texto informativo — **cadastro de residentes continua fora do escopo**. O
+  texto entra pelo `db/seed.js`; números como "22 residentes" envelhecem e a
+  equipe atualiza pelo Painel. Session 2026-10-06 (2) do spec.md.
 - **Constituição 3.0.0: emenda ao Princípio IV (ratificada em 2026-10-05)**
   pelo responsável pelo projeto, com ciência do orientador. O texto 2.0.0
   exigia três perfis com acesso (funcionário, voluntário e doador); o

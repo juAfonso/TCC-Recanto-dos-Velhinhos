@@ -48,6 +48,37 @@ const Utils = (() => {
     return d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   }
 
+  /* Data sem hora ('AAAA-MM-DD', como vem do banco) → 'DD/MM/AAAA'.
+     Não usa new Date(): '2026-10-21' seria lido como meia-noite UTC e
+     apareceria como dia 20 no fuso de Brasília. */
+  function formatDay(aaaaMmDd) {
+    const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(aaaaMmDd || '');
+    return m ? `${m[3]}/${m[2]}/${m[1]}` : '—';
+  }
+
+  /* Todo texto vindo do servidor passa por aqui antes de ir para innerHTML. */
+  function escapeHtml(texto) {
+    return String(texto ?? '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  /* Texto com quebras de linha → parágrafos (já escapados). */
+  function paragrafos(texto, attrs = '') {
+    return String(texto ?? '').split(/\n\s*\n/).map(p => p.trim()).filter(Boolean)
+      .map(p => `<p${attrs}>${escapeHtml(p).replace(/\n/g, '<br>')}</p>`).join('');
+  }
+
+  /* Prioridade do item necessário (FR-026): rótulo em texto, não só cor (Princípio II). */
+  const PRIORIDADES = {
+    alta:  { rotulo: 'Prioridade alta',  frase: 'Precisamos com urgência.', cls: 'badge-danger' },
+    media: { rotulo: 'Prioridade média', frase: 'Ajuda muito neste momento.', cls: 'badge-warning' },
+    baixa: { rotulo: 'Prioridade baixa', frase: 'Contribuição sempre bem-vinda.', cls: 'badge-neutral' },
+  };
+  function prioridade(p) {
+    return PRIORIDADES[p] || PRIORIDADES.baixa;
+  }
+
   function daysSince(isoDate) {
     const d = new Date(isoDate);
     if (isNaN(d.getTime())) return 0;
@@ -124,7 +155,8 @@ const Utils = (() => {
   }
 
   return {
-    toast, formatCurrency, formatDate, formatDateTime, daysSince, maskCPF,
+    toast, formatCurrency, formatDate, formatDateTime, formatDay, escapeHtml, paragrafos, prioridade,
+    daysSince, maskCPF,
     generateProtocol, generateId, isValidEmail, isValidCPF, statusBadge,
     qs, setFieldError, clearFieldError, clearAllErrors
   };

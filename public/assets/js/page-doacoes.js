@@ -1,20 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
   const db = DB.load();
 
-  /* ---------- Lista de itens necessários (físicos) ---------- */
+  /* ---------- Lista de itens necessários (físicos) — API, US1 ---------- */
   const itensLista = document.getElementById('itens-lista');
   if (itensLista) {
-    const itens = db.itens.filter(i => i.status === 'ativo');
-    itensLista.innerHTML = itens.map(i => `
-      <div class="card item-card">
-        <div>
-          <h3>${i.nome}</h3>
-          <p>${i.urgente ? 'Necessidade imediata.' : 'Contribuição sempre bem-vinda.'}</p>
-          <p class="card-meta">Atualizado em ${Utils.formatDate(i.atualizadoEm)}</p>
-        </div>
-        <span class="qtd">${i.quantidade} ${i.unidade}</span>
-      </div>
-    `).join('') || '<p class="cell-muted">Nenhuma necessidade cadastrada no momento.</p>';
+    Api.get('/api/public/itens-necessarios')
+      .then(({ itens }) => {
+        itensLista.innerHTML = itens.map(i => PortalCards.item(i, { comData: true })).join('')
+          || '<p class="cell-muted">Nenhuma necessidade cadastrada no momento.</p>';
+      })
+      .catch(() => { itensLista.innerHTML = PortalCards.erro(); });
   }
 
   /* ---------- Fluxo de doação Pix ---------- */

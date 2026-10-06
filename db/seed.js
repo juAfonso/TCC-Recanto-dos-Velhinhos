@@ -32,6 +32,38 @@ Este é um texto provisório do aviso de privacidade do Recanto dos Velhinhos Fr
 
 Pontos que o texto definitivo precisa cobrir: quais dados cada formulário coleta e para quê; que cadastros e candidaturas não aprovados são anonimizados 6 meses depois da conclusão da triagem; que o currículo de quem foi contratado é anonimizado 6 meses depois da efetivação; e o contato para pedir correção, anonimização ou revogação do consentimento.`;
 
+// Texto da página institucional entregue pelo Recanto em 2026-10-06. Entra só se a página
+// estiver vazia; depois a equipe atualiza pelo Painel (FR-001a) — por exemplo, o número de
+// residentes e o dia do bazar. Em cada bloco, uma primeira linha curta vira título.
+const INSTITUCIONAL_INICIAL = {
+  historia: `O Recanto dos Velhinhos Francisco Gonçalves Barbosa foi fundado em 7 de janeiro de 1983, por iniciativa da Sra. Anete Francisca Ferreira Moreira, que por muitos anos foi mentora dos trabalhos assistenciais na região, com o apoio do Sr. Aurelino Gonçalves Barbosa, então prefeito de Piraí — município do qual Pinheiral era distrito à época.
+
+Desde então, a instituição acolhe em regime de internato idosos de ambos os sexos, com assistência contínua, 24 horas por dia. Hoje são 22 residentes, muitos deles sem qualquer amparo familiar, em situação de vulnerabilidade e dependentes de cuidados especiais. Para quem mora aqui, o Recanto não é uma instituição — é o lar.
+
+Entidade filantrópica e sem fins lucrativos, o Recanto se mantém com o repasse mensal da Prefeitura de Pinheiral, com parte do benefício dos próprios residentes, com a renda do bazar realizado na sede e com as doações de quem acredita neste trabalho.`,
+
+  missao: `Missão
+Acolher, em regime de internato e com assistência contínua, idosos em situação de vulnerabilidade social e familiar de Pinheiral e região, oferecendo moradia, cuidado humanizado e convivência digna a quem muitas vezes não dispõe de amparo da própria família.
+
+Visão
+Ampliar e qualificar o cuidado prestado, por meio da reestruturação da sede e da capacitação contínua de nossa equipe, consolidando-se como referência em acolhimento de idosos em Pinheiral e estendendo esse atendimento a municípios vizinhos.
+
+Valores
+Dignidade, no tratamento de cada residente como pessoa. Acolhimento, recebendo quem mais precisa, independentemente de ter ou não família que o ampare. Filantropia, como entidade sem fins lucrativos. Trabalho voluntário, que sustenta nossa diretoria desde a fundação. Transparência com quem doa, com quem se voluntaria e com a comunidade que nos mantém.`,
+
+  equipe: `A instituição é presidida pela Sra. Eliege de Faria Barbosa. Toda a diretoria — diretores e conselheiros — é composta por voluntários e colaboradores associados à entidade, eleitos a cada três anos conforme o Estatuto.
+
+Quem desejar se associar pode comparecer à sede do Recanto e preencher a Ficha do Colaborador, contribuindo com a quantia que puder.`,
+
+  acolhimento: `O Recanto acolhe idosos a partir de 60 anos, de ambos os sexos, em regime de internato com assistência contínua, priorizando pessoas em situação de vulnerabilidade social e familiar de Pinheiral e região.
+
+O acolhimento depende de vaga disponível, e nossa capacidade é limitada pela estrutura física da sede. Para saber a situação atual, entre em contato pelo telefone.`,
+
+  bazar: `Todo primeiro sábado do mês, das 14h às 16h.
+
+Na própria sede, o Recanto realiza um bazar mensal com roupas, calçados, utilidades domésticas, móveis e eletrodomésticos recebidos em bom estado. Toda a renda é revertida em favor da instituição — e toda doação de itens em bom estado é bem-vinda.`,
+};
+
 async function semear(conexao, { demo }) {
   const q = (texto, parametros) => conexao.query(texto, parametros).then((r) => r.rows);
 
@@ -51,6 +83,15 @@ async function semear(conexao, { demo }) {
   await q(
     `INSERT INTO aviso_privacidade (versao, texto, publicado_por) VALUES ($1, $2, 'sistema')
      ON CONFLICT (versao) DO NOTHING`, [AVISO_VERSAO_INICIAL, AVISO_RASCUNHO]);
+
+  // Só preenche se a página ainda estiver vazia: nunca sobrescreve o que a equipe editou.
+  const { historia, missao, equipe, acolhimento, bazar } = INSTITUCIONAL_INICIAL;
+  await q(
+    `UPDATE conteudo_institucional
+     SET historia = $1, missao = $2, equipe = $3, acolhimento = $4, bazar = $5,
+         atualizado_por = 'sistema', atualizado_em = now()
+     WHERE id = 1 AND historia = '' AND missao = '' AND equipe = '' AND acolhimento = '' AND bazar = ''`,
+    [historia, missao, equipe, acolhimento, bazar]);
 
   const [contaExistente] = await q('SELECT id FROM conta_institucional WHERE identificador = $1', [CONTA_INSTITUCIONAL]);
   let senhaGerada = null;

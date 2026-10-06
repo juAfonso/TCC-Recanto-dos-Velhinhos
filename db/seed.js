@@ -2,6 +2,9 @@
 //
 //   npm run seed              → produção: configuração inicial, aviso RASCUNHO e a conta
 //                               institucional com senha GERADA NA HORA e mostrada uma única vez.
+//   npm run seed -- --producao → o mesmo que o primeiro, no banco de DATABASE_URL_PRODUCAO
+//                               (branch main do Neon). Rodar no SEU terminal: a senha aparece
+//                               só ali, uma vez.
 //   npm run seed -- --demo    → desenvolvimento: o mesmo, com senha de demonstração fixa,
 //                               mais dados fictícios para testar as telas.
 //
@@ -177,13 +180,19 @@ export async function rodarSeed(url, { demo = false } = {}) {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const demo = process.argv.includes('--demo');
+  const producao = process.argv.includes('--producao');
+  if (demo && producao) {
+    console.error('--demo e --producao não combinam: dados fictícios nunca vão para a produção.');
+    process.exit(1);
+  }
   if (demo && process.env.VERCEL_ENV === 'production') {
     console.error('--demo não roda em produção.');
     process.exit(1);
   }
-  const url = process.env.DATABASE_URL;
+  const nomeVar = producao ? 'DATABASE_URL_PRODUCAO' : 'DATABASE_URL';
+  const url = process.env[nomeVar];
   if (!url) {
-    console.error('DATABASE_URL não definida. Confira o .env.local (modelo em .env.example).');
+    console.error(`${nomeVar} não definida. Confira o .env.local (modelo em .env.example).`);
     process.exit(1);
   }
   rodarSeed(url, { demo })

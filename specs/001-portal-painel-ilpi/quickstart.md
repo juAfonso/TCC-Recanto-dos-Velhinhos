@@ -54,7 +54,7 @@ em qualquer computador com Node, sem instalar nem logar no Vercel CLI.
 
 - `--demo` popula dados fictícios (conta institucional com a senha de demonstração `DEMO.senhaPainel` do `db/seed.js`, itens, campanha, voluntária,
   doadora associada, chave Pix fictícia em domínio `.invalid`). **Nunca rodar em produção.** O seed grava em `configuracao.ambiente` se o banco é `demo` ou `producao` e recusa misturar os dois.
-- Em produção, `npm run seed` sem `--demo` cria só a configuração inicial, o contato do Recanto e a conta
+- Em produção, `npm run migrate -- --producao` e depois `npm run seed -- --producao` (com `DATABASE_URL_PRODUCAO` = branch main) criam só a configuração inicial, o contato do Recanto e a conta
   institucional (usuário: o Gmail institucional, decisão de 2026-10-06), com **senha gerada na hora e mostrada uma única vez**. As credenciais do
   protótipo (`admin`/`admin123`) não podem existir fora do ambiente local.
 - Aplicação em `http://localhost:3000`.

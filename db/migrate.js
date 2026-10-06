@@ -3,6 +3,7 @@
 //
 //   npm run migrate              → banco de DATABASE_URL
 //   npm run migrate -- --teste   → banco de DATABASE_URL_TESTE (branch de teste do Neon)
+//   npm run migrate -- --producao → banco de DATABASE_URL_PRODUCAO (branch main do Neon)
 
 import { readdir, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -49,8 +50,8 @@ export async function aplicarMigracoes(url, { silencioso = false } = {}) {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const teste = process.argv.includes('--teste');
-  const nomeVar = teste ? 'DATABASE_URL_TESTE' : 'DATABASE_URL';
+  const nomeVar = process.argv.includes('--producao') ? 'DATABASE_URL_PRODUCAO'
+    : process.argv.includes('--teste') ? 'DATABASE_URL_TESTE' : 'DATABASE_URL';
   const url = process.env[nomeVar];
   if (!url) {
     console.error(`${nomeVar} não definida. Confira o .env.local (modelo em .env.example).`);

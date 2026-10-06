@@ -279,10 +279,14 @@ Passo a passo de comandos e validação em
   encontrada", sem risco de pagar a terceiro. A chave real entra pela tela
   `admin/pix.html` (criada em 2026-10-03), que valida o CNPJ, avisa quando o
   tipo é CPF/telefone e mostra um QR de teste de R$ 10 para conferir no app
-  do banco. **Enquanto o front usar a camada mock**, o que for salvo nessa
-  tela fica só no navegador de quem salvou; visitantes continuam vendo a
-  chave de teste. Para valer em produção, falta `/api/admin/pix` gravando na
-  tabela `chave_pix_institucional`.
+  do banco. ~~Enquanto o front usar a camada mock, o que for salvo nessa
+  tela fica só no navegador.~~ **Desde a fase 4 (2026-10-06)** a tela grava
+  pela API na tabela `chave_pix_institucional`. **A chave real (CNPJ) está
+  cadastrada na produção e também no banco `dev` (decidido em 2026-10-06)**:
+  o QR do `npm run dev` é de verdade. **Em teste local, leia o QR mas não
+  pague** — o dinheiro iria para a conta do Recanto. As declarações de teste
+  ficam só no banco `dev` e não se misturam à conferência da produção. O
+  `seed --demo` continua criando a chave fictícia `.invalid` em bancos novos.
 - **Por que a objeção anterior do orientador não alcança esta decisão
   (esclarecido em 2026-09-05).** Ponto importante, porque é o que distingue
   esta reversão de uma desobediência à orientação. O orientador **não se opõe

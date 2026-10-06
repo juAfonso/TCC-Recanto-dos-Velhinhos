@@ -126,7 +126,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU02 |
 |---|---|
 | Nome | Manter Campanhas e Eventos |
-| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para cadastrar, alterar e encerrar campanhas e eventos institucionais, que são publicados automaticamente no Portal Público, onde o visitante os consulta sem login. A meta em dinheiro é opcional e o valor arrecadado é informado pela equipe, porque as doações via Pix não são vinculadas a campanhas. |
+| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para cadastrar, alterar e encerrar eventos e campanhas institucionais, que são publicados automaticamente no Portal Público, onde o visitante os consulta sem login. Evento e campanha são tipos diferentes, cadastrados na mesma tela: o evento tem data e recursos necessários descritos em texto, e só ele passa pelo aviso de conflito de data; a campanha tem período de arrecadação, os recursos a arrecadar (dinheiro ou itens) e meta em dinheiro opcional, com valor arrecadado informado pela equipe, porque as doações via Pix não são vinculadas a campanhas. |
 | Ator Principal | Funcionário |
 | Ator Secundário | Visitante |
 | Pré-condições | Funcionário deve estar autenticado no Painel Administrativo pela conta institucional. |
@@ -135,66 +135,74 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. Acessa a tela de campanhas e eventos do Painel Administrativo. | |
-| | 2. Lista as campanhas/eventos, ativos e encerrados, e oferece as opções cadastrar, alterar, atualizar valor arrecadado e encerrar. |
-| 3. Escolhe cadastrar e informa nome, data, descrição, recursos necessários e, opcionalmente, meta em dinheiro. | |
+| 1. Acessa a tela de eventos e campanhas do Painel Administrativo. | |
+| | 2. Lista os eventos e as campanhas, ativos e encerrados, e oferece as opções cadastrar evento, cadastrar campanha, alterar, atualizar valor arrecadado e encerrar. |
+| 3. Escolhe cadastrar evento e informa nome, data, descrição e recursos necessários. | |
 | | 4. Verifica se a data já tem outro evento confirmado; havendo conflito, executa o fluxo alternativo 01. |
-| | 5. Grava a campanha/evento como ativa, publica-a automaticamente no Portal Público — sem barra de arrecadação, se não houver meta em dinheiro — e registra a conta e a data na auditoria. O caso de uso se encerra. |
+| | 5. Grava o evento como ativo, publica-o automaticamente no Portal Público e registra a conta e a data na auditoria. O caso de uso se encerra. |
 
-## Fluxo Alternativo 01 – Conflito de data
+## Fluxo Alternativo 01 – Conflito de data do evento
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| | 1. No passo 4 do fluxo principal, avisa que a data pretendida coincide com outro evento já confirmado e exibe qual. |
+| | 1. No passo 4 do fluxo principal ou no passo 3 do fluxo alternativo 03, avisa que a data do evento coincide com outro evento já confirmado e exibe qual. |
 | 2. Opta por alterar a data ou por prosseguir mesmo assim. | |
-| | 3. Se a data foi alterada, retorna ao passo 4 do fluxo principal; se o funcionário optou por prosseguir, retorna ao passo 5. O aviso é sinalização, nunca bloqueio. |
+| | 3. Se a data foi alterada, verifica-a de novo; se o funcionário optou por prosseguir, grava o evento. O aviso é sinalização, nunca bloqueio. |
 
-## Fluxo Alternativo 02 – Alterar campanha/evento
+## Fluxo Alternativo 02 – Cadastrar campanha
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. No passo 3 do fluxo principal, escolhe alterar uma campanha/evento existente. | |
+| 1. No passo 3 do fluxo principal, escolhe cadastrar campanha e informa nome, período de arrecadação, descrição, os recursos a arrecadar — dinheiro ou itens, ao menos um — e, opcionalmente, meta em dinheiro. | |
+| | 2. Grava a campanha como ativa, sem verificar conflito de data, publica-a automaticamente no Portal Público — sem barra de arrecadação, se não houver meta em dinheiro — e registra a conta e a data. O caso de uso se encerra. |
+
+## Fluxo Alternativo 03 – Alterar evento ou campanha
+
+| Ator (funcionário) | Sistema |
+|---|---|
+| 1. No passo 3 do fluxo principal, escolhe alterar um evento ou uma campanha existente. | |
 | | 2. Exibe os dados atuais e solicita as alterações. |
-| 3. Modifica os dados desejados e confirma. | |
+| 3. Modifica os dados desejados e confirma; se mudou a data de um evento, o sistema executa o fluxo alternativo 01. | |
 | | 4. Grava as alterações preservando o histórico, atualiza a publicação no Portal Público e registra a conta e a data. O caso de uso se encerra. |
 
-## Fluxo Alternativo 03 – Atualizar valor arrecadado
+## Fluxo Alternativo 04 – Atualizar valor arrecadado
 
 | Ator (funcionário) | Sistema |
 |---|---|
 | 1. No passo 3 do fluxo principal, escolhe atualizar o valor arrecadado de uma campanha com meta em dinheiro e informa o valor, a partir do controle da secretaria. | |
 | | 2. Grava o valor, atualiza o progresso exibido no Portal Público e registra a conta e a data. O caso de uso se encerra. |
 
-## Fluxo Alternativo 04 – Encerrar campanha/evento
+## Fluxo Alternativo 05 – Encerrar evento ou campanha
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. No passo 3 do fluxo principal, escolhe encerrar uma campanha/evento ativa. | |
-| | 2. Altera o status para encerrado, remove-a da listagem pública sem excluir o registro e registra a conta e a data. O caso de uso se encerra. |
+| 1. No passo 3 do fluxo principal, escolhe encerrar um evento ou uma campanha ativa. | |
+| | 2. Altera o status para encerrado, remove-o da listagem pública sem excluir o registro e registra a conta e a data. O caso de uso se encerra. |
 
-## Fluxo Exceção 05 – Dados inválidos ou data passada
+## Fluxo Exceção 06 – Dados inválidos ou data passada
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. No passo 3 do fluxo principal ou no passo 3 do fluxo alternativo 02, deixa campo obrigatório em branco, informa meta negativa ou informa no cadastro uma data que já passou. | |
+| 1. No passo 3 do fluxo principal, no passo 1 do fluxo alternativo 02 ou no passo 3 do fluxo alternativo 03, deixa campo obrigatório em branco, cadastra campanha sem nenhum recurso, informa meta negativa ou informa no cadastro uma data que já passou. | |
 | | 2. Não grava, indica cada campo a corrigir e retorna ao passo em que os dados foram informados. |
 
-## Fluxo Exceção 06 – Encerrar campanha já encerrada
+## Fluxo Exceção 07 – Encerrar o que já está encerrado
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. No passo 1 do fluxo alternativo 04, tenta encerrar uma campanha/evento que já está encerrada. | |
+| 1. No passo 1 do fluxo alternativo 05, tenta encerrar um evento ou uma campanha que já está encerrada. | |
 | | 2. Não altera o registro. O caso de uso se encerra. |
 
 ## Pós-condições
 
-- **Fluxo principal:** A campanha/evento está gravada e publicada no Portal Público.
-- **Fluxo Alternativo 01 – Conflito de data:** O funcionário foi avisado do conflito e decidiu conscientemente.
-- **Fluxo Alternativo 02 – Alterar campanha/evento:** Os dados foram modificados e o histórico da alteração foi preservado.
-- **Fluxo Alternativo 03 – Atualizar valor arrecadado:** O Portal Público exibe o progresso da campanha com o valor informado pela equipe.
-- **Fluxo Alternativo 04 – Encerrar campanha/evento:** A campanha/evento saiu da listagem pública e seu registro histórico permanece.
-- **Fluxo Exceção 05 – Dados inválidos ou data passada:** Nenhuma alteração foi gravada.
-- **Fluxo Exceção 06 – Encerrar campanha já encerrada:** O registro permaneceu inalterado.
+- **Fluxo principal:** O evento está gravado e publicado no Portal Público.
+- **Fluxo Alternativo 01 – Conflito de data do evento:** O funcionário foi avisado do conflito e decidiu conscientemente.
+- **Fluxo Alternativo 02 – Cadastrar campanha:** A campanha está gravada, com seus recursos, e publicada no Portal Público.
+- **Fluxo Alternativo 03 – Alterar evento ou campanha:** Os dados foram modificados e o histórico da alteração foi preservado.
+- **Fluxo Alternativo 04 – Atualizar valor arrecadado:** O Portal Público exibe o progresso da campanha com o valor informado pela equipe.
+- **Fluxo Alternativo 05 – Encerrar evento ou campanha:** O evento ou a campanha saiu da listagem pública e seu registro histórico permanece.
+- **Fluxo Exceção 06 – Dados inválidos ou data passada:** Nenhuma alteração foi gravada.
+- **Fluxo Exceção 07 – Encerrar o que já está encerrado:** O registro permaneceu inalterado.
 
 ---
 
@@ -270,7 +278,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU04 |
 |---|---|
 | Nome | Manter Usuários |
-| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para consultar, cadastrar, alterar, inativar e reativar usuários dos perfis funcionário, voluntário e doador associado. O sistema não permite exclusão física de nenhum usuário: a inativação só remove o acesso, não apaga dados e pode ser desfeita. |
+| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para consultar, cadastrar, alterar, inativar e reativar usuários dos perfis funcionário, voluntário e doador associado. O sistema não permite exclusão física de nenhum usuário: a inativação só remove o acesso, não apaga dados e pode ser desfeita. Funcionário e voluntário são papéis exclusivos; o de doador associado pode ser acumulado com qualquer um deles. |
 | Ator Principal | Funcionário |
 | Ator Secundário | — |
 | Pré-condições | Funcionário deve estar autenticado no Painel Administrativo pela conta institucional, com nível de permissão para gestão de usuários. |
@@ -298,7 +306,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 |---|---|
 | | 1. No passo 2 do fluxo alternativo 01, identifica que o CPF informado já pertence a um usuário e exibe o registro existente, sem criar outro. |
 | 2. Se for o caso, opta por adicionar o novo perfil ao cadastro existente. | |
-| | 3. Adiciona o perfil ao cadastro e registra a conta e a data. O caso de uso se encerra. |
+| | 3. Adiciona o perfil ao cadastro e registra a conta e a data. Se o perfil adicionado for o de funcionário e a pessoa for voluntária, encerra o papel de voluntário, sem apagar o registro, porque os dois papéis são exclusivos. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 03 – Alterar dados
 
@@ -332,14 +340,21 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | 1. No passo 1 do fluxo alternativo 01 ou no passo 3 do fluxo alternativo 03, deixa campo obrigatório em branco ou informa CPF, e-mail ou telefone inválido. | |
 | | 2. Não grava, indica cada campo a corrigir e retorna ao passo em que os dados foram informados. |
 
-## Fluxo Exceção 07 – Tentativa de exclusão definitiva
+## Fluxo Exceção 07 – Voluntário que já é funcionário
+
+| Ator (funcionário) | Sistema |
+|---|---|
+| 1. No passo 2 do fluxo alternativo 02, tenta adicionar o perfil de voluntário a uma pessoa que é funcionária ativa. | |
+| | 2. Impede a inclusão e informa que funcionário e voluntário são papéis exclusivos. O caso de uso se encerra. |
+
+## Fluxo Exceção 08 – Tentativa de exclusão definitiva
 
 | Ator (funcionário) | Sistema |
 |---|---|
 | 1. No passo 4 do fluxo principal, procura uma forma de excluir definitivamente o usuário. | |
 | | 2. Não oferece exclusão e indica a inativação; informa que dados pessoais só deixam de ser legíveis por anonimização (CSU11). O caso de uso se encerra. |
 
-## Fluxo Exceção 08 – Tentativa de acesso sem permissão
+## Fluxo Exceção 09 – Tentativa de acesso sem permissão
 
 | Ator (usuário autenticado) | Sistema |
 |---|---|
@@ -350,13 +365,14 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 - **Fluxo principal:** Os dados do usuário foram exibidos a um perfil autorizado.
 - **Fluxo Alternativo 01 – Cadastrar usuário:** Um novo usuário ativo foi gravado no sistema.
-- **Fluxo Alternativo 02 – CPF já cadastrado:** Não há registro duplicado; a pessoa pode acumular mais de um perfil no mesmo cadastro.
+- **Fluxo Alternativo 02 – CPF já cadastrado:** Não há registro duplicado; se a pessoa passou de voluntária a funcionária, o papel de voluntário foi encerrado e seu histórico permanece.
 - **Fluxo Alternativo 03 – Alterar dados:** Os dados foram modificados e o histórico da alteração foi preservado.
 - **Fluxo Alternativo 04 – Inativar usuário:** O usuário está inativo, sem acesso, com registro, dados e histórico preservados.
 - **Fluxo Alternativo 05 – Reativar usuário:** O usuário voltou a estar ativo.
 - **Fluxo Exceção 06 – Dados inválidos:** Nenhum dado foi gravado.
-- **Fluxo Exceção 07 – Tentativa de exclusão definitiva:** Nenhum registro foi excluído.
-- **Fluxo Exceção 08 – Tentativa de acesso sem permissão:** O acesso foi negado e a tentativa consta na auditoria.
+- **Fluxo Exceção 07 – Voluntário que já é funcionário:** O cadastro permaneceu inalterado.
+- **Fluxo Exceção 08 – Tentativa de exclusão definitiva:** Nenhum registro foi excluído.
+- **Fluxo Exceção 09 – Tentativa de acesso sem permissão:** O acesso foi negado e a tentativa consta na auditoria.
 
 ---
 
@@ -400,7 +416,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Ator (funcionário) | Sistema |
 |---|---|
 | 1. Depois do fluxo alternativo 02 e da entrevista, aprova o cadastro. | |
-| | 2. Sendo menor de idade, verifica se a autorização do responsável foi marcada como recebida; estando pendente, executa o fluxo de exceção 08. |
+| | 2. Sendo menor de idade, verifica se a autorização do responsável foi marcada como recebida; estando pendente, executa o fluxo de exceção 08. Se o CPF pertence a um funcionário ativo, executa o fluxo de exceção 09. |
 | | 3. Efetiva a pessoa como voluntária ativa, registra a conta e a data e envia e-mail com o resultado. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 04 – Registrar recebimento da autorização
@@ -439,14 +455,21 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | 1. No passo 1 do fluxo alternativo 03, tenta aprovar o cadastro de um menor de idade cuja autorização ainda está pendente. | |
 | | 2. Impede a aprovação e informa que a autorização do responsável legal ainda não foi recebida. O caso de uso se encerra. |
 
-## Fluxo Exceção 09 – Envio sem aceite do aviso de privacidade
+## Fluxo Exceção 09 – Pessoa que já é funcionária
+
+| Ator (funcionário) | Sistema |
+|---|---|
+| | 1. No passo 2 do fluxo alternativo 03, identifica que o CPF do cadastro pertence a um funcionário ativo. |
+| | 2. Impede a aprovação e informa que funcionário e voluntário são papéis exclusivos; o funcionário pode rejeitar o cadastro (fluxo alternativo 05). O caso de uso se encerra. |
+
+## Fluxo Exceção 10 – Envio sem aceite do aviso de privacidade
 
 | Ator (visitante) | Sistema |
 |---|---|
 | 1. No passo 3 do fluxo principal, tenta enviar o cadastro sem aceitar o aviso de privacidade. | |
 | | 2. Impede o envio, explica que o aceite é obrigatório e retorna ao passo 3 do fluxo principal. |
 
-## Fluxo Exceção 10 – Falha no envio de e-mail
+## Fluxo Exceção 11 – Falha no envio de e-mail
 
 | Ator (autor da submissão) | Sistema |
 |---|---|
@@ -464,8 +487,9 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 - **Fluxo Alternativo 06 – Fim do prazo de retenção:** O cadastro rejeitado foi anonimizado ao fim do prazo de retenção.
 - **Fluxo Exceção 07 – Dados inválidos:** Nenhum cadastro foi registrado.
 - **Fluxo Exceção 08 – Aprovação de menor sem autorização recebida:** O cadastro permaneceu sem aprovação.
-- **Fluxo Exceção 09 – Envio sem aceite do aviso de privacidade:** Nenhum cadastro foi registrado.
-- **Fluxo Exceção 10 – Falha no envio de e-mail:** O registro permanece e a falha de envio está sinalizada à equipe.
+- **Fluxo Exceção 09 – Pessoa que já é funcionária:** O cadastro permaneceu sem aprovação.
+- **Fluxo Exceção 10 – Envio sem aceite do aviso de privacidade:** Nenhum cadastro foi registrado.
+- **Fluxo Exceção 11 – Falha no envio de e-mail:** O registro permanece e a falha de envio está sinalizada à equipe.
 
 ---
 
@@ -474,7 +498,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU06 |
 |---|---|
 | Nome | Cadastrar Candidato a Vaga |
-| Sumário | Este caso de uso descreve os passos percorridos pelo visitante para se candidatar a uma vaga de emprego e pela equipe para avaliar a candidatura, com etapa de entrevista. Só a aprovação final efetiva o candidato como funcionário nos registros administrativos. |
+| Sumário | Este caso de uso descreve os passos percorridos pelo visitante para se candidatar a uma vaga de emprego e pela equipe para avaliar a candidatura, com etapa de entrevista. Só a aprovação final efetiva o candidato como funcionário nos registros administrativos. Funcionário e voluntário são papéis exclusivos: quem já é voluntário tem esse papel encerrado ao ser efetivado. |
 | Ator Principal | Visitante (candidato) |
 | Ator Secundário | Funcionário |
 | Pré-condições | Visitante deve estar na página pública de vagas. O aviso de privacidade deve estar publicado. |
@@ -509,7 +533,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Ator (funcionário) | Sistema |
 |---|---|
 | | 1. No passo 2 do fluxo alternativo 02, identifica que o CPF do candidato já pertence a um voluntário cadastrado. |
-| | 2. Altera o status para aprovada, adiciona o perfil de funcionário ao cadastro existente, sem criar um segundo registro, registra a conta e a data e envia e-mail com o resultado. O caso de uso se encerra. |
+| | 2. Altera o status para aprovada, adiciona o perfil de funcionário ao cadastro existente, sem criar um segundo registro, encerra o papel de voluntário, sem apagar o registro, porque os dois papéis são exclusivos, registra a conta e a data e envia e-mail com o resultado. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 04 – Rejeitar candidatura
 
@@ -559,7 +583,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 - **Fluxo principal:** A candidatura está registrada como em análise, com consentimento e protocolo, aguardando triagem.
 - **Fluxo Alternativo 01 – Chamar para entrevista:** A candidatura consta como chamado para entrevista; nenhum funcionário foi criado.
 - **Fluxo Alternativo 02 – Aprovar após entrevista:** O candidato está efetivado como funcionário, sem credencial individual, e a aprovação consta na auditoria.
-- **Fluxo Alternativo 03 – Candidato já cadastrado como voluntário:** A pessoa acumula os perfis de voluntário e funcionário no mesmo cadastro, sem duplicação.
+- **Fluxo Alternativo 03 – Candidato já cadastrado como voluntário:** A pessoa é funcionária no mesmo cadastro, sem duplicação; o papel de voluntário foi encerrado e seu histórico permanece.
 - **Fluxo Alternativo 04 – Rejeitar candidatura:** A candidatura consta como rejeitada e o registro foi preservado.
 - **Fluxo Alternativo 05 – Fim do prazo de retenção:** A candidatura rejeitada foi anonimizada, com o currículo, ao fim do prazo de retenção.
 - **Fluxo Exceção 06 – Dados inválidos:** Nenhuma candidatura foi registrada.
@@ -625,7 +649,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU08 |
 |---|---|
 | Nome | Solicitar Evento ou Campanha Externa |
-| Sumário | Este caso de uso descreve os passos percorridos por pessoa ou organização externa para propor um evento ou campanha à instituição, e pela equipe para avaliar essa proposta. A aprovação não publica nada: a instituição entra em contato com o solicitante e só depois de combinar os detalhes confirma o evento, que então é publicado no Portal Público. |
+| Sumário | Este caso de uso descreve os passos percorridos por pessoa ou organização externa para propor um evento ou uma campanha à instituição, e pela equipe para avaliar essa proposta. A aprovação não publica nada: a instituição entra em contato com o solicitante e só depois de combinar os detalhes confirma a proposta, que gera um evento ou uma campanha, conforme o tipo, publicado no Portal Público. Os recursos esperados são o que o solicitante pede à instituição (espaço, equipe, horário) e ficam registrados na solicitação; os recursos a arrecadar de uma campanha são definidos pelo funcionário na confirmação. |
 | Ator Principal | Solicitante externo |
 | Ator Secundário | Funcionário |
 | Pré-condições | Solicitante deve estar na página pública de solicitação de evento/campanha. O aviso de privacidade deve estar publicado. |
@@ -634,7 +658,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (solicitante) | Sistema |
 |---|---|
-| 1. Preenche dados de contato, nome do evento, tipo, objetivo, data pretendida e recursos esperados, aceita o aviso de privacidade e confirma o envio. | |
+| 1. Escolhe se propõe um evento ou uma campanha e preenche dados de contato, nome do evento ou da campanha, objetivo, data ou período pretendido e os recursos que espera da instituição (como espaço, equipe ou horário), aceita o aviso de privacidade e confirma o envio. | |
 | | 2. Registra a solicitação com status em análise, grava o consentimento, gera o código de protocolo e sinaliza a solicitação no Painel Administrativo. |
 | | 3. Exibe o protocolo, orientando o solicitante a anotá-lo, e envia e-mail de confirmação. O caso de uso se encerra. |
 
@@ -643,29 +667,29 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Ator (funcionário) | Sistema |
 |---|---|
 | 1. A partir do passo 2 do fluxo principal, com a solicitação sinalizada no Painel, acessa a fila de triagem, avalia a solicitação e a aprova. | |
-| | 2. Se a data pretendida coincide com evento já confirmado, avisa sobre o conflito e permite prosseguir. |
+| | 2. Na solicitação de evento, se a data pretendida coincide com evento já confirmado, avisa sobre o conflito e permite prosseguir. |
 | | 3. Altera o status para aprovada — aguardando contato, sem publicar nada, registra a conta e a data e envia e-mail ao solicitante informando que a instituição entrará em contato para combinar o evento. O caso de uso se encerra. |
 
-## Fluxo Alternativo 02 – Confirmar evento após contato
+## Fluxo Alternativo 02 – Confirmar proposta após contato
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. Depois do fluxo alternativo 01 e de combinar os detalhes com o solicitante, fora do sistema, confirma o evento, ajustando os dados combinados. | |
-| | 2. Se a data coincide com evento já confirmado, avisa sobre o conflito e permite prosseguir. |
-| | 3. Gera o evento/campanha com os dados combinados, publica-o automaticamente no Portal Público (CSU02) e registra a conta e a data. O caso de uso se encerra. |
+| 1. Depois do fluxo alternativo 01 e de combinar os detalhes com o solicitante, fora do sistema, confirma a proposta, ajustando os dados combinados e, na campanha, informando os recursos a arrecadar. | |
+| | 2. Na solicitação de evento, se a data coincide com evento já confirmado, avisa sobre o conflito e permite prosseguir. |
+| | 3. Gera o evento ou a campanha, conforme o tipo da solicitação, com os dados combinados, publica-o automaticamente no Portal Público (CSU02) e registra a conta e a data. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 03 – Rejeitar solicitação
 
 | Ator (funcionário) | Sistema |
 |---|---|
 | 1. A partir do passo 2 do fluxo principal ou depois do fluxo alternativo 01, rejeita a solicitação, informando o motivo, se quiser. | |
-| | 2. Altera o status para rejeitada, sem gerar evento, preserva o registro e, quando informado, o motivo, registra a conta e a data e envia e-mail com o resultado. O caso de uso se encerra. |
+| | 2. Altera o status para rejeitada, sem gerar evento nem campanha, preserva o registro e, quando informado, o motivo, registra a conta e a data e envia e-mail com o resultado. O caso de uso se encerra. |
 
 ## Fluxo Exceção 04 – Dados inválidos
 
 | Ator (solicitante) | Sistema |
 |---|---|
-| 1. No passo 1 do fluxo principal, envia a solicitação com campo obrigatório em branco ou com telefone, e-mail ou data inválidos. | |
+| 1. No passo 1 do fluxo principal, envia a solicitação sem escolher entre evento e campanha, com campo obrigatório em branco ou com telefone, e-mail ou data inválidos. | |
 | | 2. Impede o envio, indica cada campo a corrigir e retorna ao passo 1 do fluxo principal. |
 
 ## Fluxo Exceção 05 – Envio sem aceite do aviso de privacidade
@@ -686,7 +710,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 - **Fluxo principal:** A solicitação está registrada como em análise, com consentimento e protocolo, aguardando avaliação.
 - **Fluxo Alternativo 01 – Aprovar solicitação:** A solicitação consta como aprovada — aguardando contato; nada foi publicado.
-- **Fluxo Alternativo 02 – Confirmar evento após contato:** O evento/campanha foi gerado a partir da solicitação e está publicado no Portal Público.
+- **Fluxo Alternativo 02 – Confirmar proposta após contato:** O evento ou a campanha foi gerado a partir da solicitação e está publicado no Portal Público.
 - **Fluxo Alternativo 03 – Rejeitar solicitação:** A solicitação consta como rejeitada e o registro foi preservado.
 - **Fluxo Exceção 04 – Dados inválidos:** Nenhuma solicitação foi registrada.
 - **Fluxo Exceção 05 – Envio sem aceite do aviso de privacidade:** Nenhuma solicitação foi registrada.

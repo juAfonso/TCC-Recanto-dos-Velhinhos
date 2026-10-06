@@ -229,9 +229,14 @@ paralelo.
   ~~Rejeição exige motivo registrado nas três triagens.~~ **Revertido em
   2026-10-03: o motivo da rejeição é opcional nas três triagens** (ver
   "Alinhamento com o texto do TCC").
-- **Pessoa que já é voluntária e tem candidatura a vaga aprovada acumula o
-  perfil de funcionário no mesmo cadastro** (mesmo CPF), em vez de gerar um
-  usuário duplicado.
+- ~~**Pessoa que já é voluntária e tem candidatura a vaga aprovada acumula o
+  perfil de funcionário no mesmo cadastro.**~~ **Revertido em 2026-10-05:**
+  funcionário e voluntário são papéis **exclusivos**, como no DER conceitual.
+  Continua um único cadastro por CPF, sem duplicar: na efetivação, o papel de
+  voluntário é **encerrado** (não apagado); funcionário ativo não pode ser
+  aprovado como voluntário. Doador associado acumula com qualquer um.
+  Motivo: voluntário que é empregado da mesma entidade cria risco de vínculo
+  trabalhista no serviço voluntário. FR-048 reescrito.
 - **Toda submissão pública (voluntariado, candidatura, solicitação externa)
   dispara e-mail automático de confirmação** para o autor, com o código de
   protocolo e aviso de que a análise pode levar alguns dias.
@@ -350,6 +355,24 @@ paralelo.
       sistema; o Pix fica com a secretaria, como pagamento na sede. Agora
       explícito como Fluxo de Exceção H do CSU01. A página avisa que sem o
       clique a doação não é registrada.
+- **Alinhamento com o DER conceitual (2026-10-05).** Comparando os casos de
+  uso com `der-conceitual-recanto.drawio` (Session 2026-10-05 do spec.md):
+  1. **[Reversão] Funcionário e voluntário exclusivos** (ver item acima).
+  2. **Evento e campanha são tipos diferentes, na mesma tela** com escolha do
+     tipo. Evento: data e recursos necessários em texto. Campanha: período,
+     recursos a arrecadar (entidade Recurso) e meta opcional. Continuam 11
+     CSUs; o CSU02 e o CSU08 foram reescritos.
+  3. **"Recursos esperados" da solicitação externa** = o que o solicitante
+     pede à instituição (espaço, equipe, horário); atributo da solicitação,
+     não vira Recurso.
+  4. **Conflito de data só para evento**; campanha não é verificada.
+  5. **Consentimento (LGPD) é entidade no DER**, ligada à Solicitação (1),
+     ao Candidato (1) e ao Doador_Associado (1 ou mais, um por versão do
+     aviso aceita); cada consentimento pertence a exatamente uma delas
+     (Restrição 4 do DER). Como atributo, perderia o histórico de aceites do
+     doador. O DER está versionado em `docs/der-conceitual-recanto.drawio`.
+  Pendente no DER: explicar no texto que a Restrição 1 (todo mundo tem um
+  papel) vale para a união das duas especializações parciais.
 - **Falhas de serviços externos não derrubam o registro do usuário
   (2026-09-04).** Se o e-mail de confirmação falhar, o cadastro/candidatura/
   solicitação é mantido, o sistema tenta reenviar uma vez e, persistindo a

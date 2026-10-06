@@ -162,8 +162,9 @@ correções de tela estão listadas como pendência no CLAUDE.md.
 ## 12. Requisitos Funcionais
 
 **Gestão de usuários** — Cadastro, consulta, alteração e inativação de registros dos perfis
-funcionário, voluntário e doador associado, com busca por nome, CPF ou e-mail. Uma mesma pessoa pode
-acumular mais de um perfil no mesmo cadastro, identificado pelo CPF.
+funcionário, voluntário e doador associado, com busca por nome, CPF ou e-mail. Cada pessoa tem um
+único cadastro, identificado pelo CPF; funcionário e voluntário são papéis exclusivos, e o de doador
+associado pode ser acumulado com qualquer um deles.
 
 **Preservação de registros** — Nenhum registro é excluído definitivamente: a remoção de acesso
 ocorre por inativação, que pode ser desfeita, preservando o histórico necessário à prestação de
@@ -181,9 +182,10 @@ data/hora, sem emissão de recibo, e conferência posterior pela administração
 valor e pela data/hora e, na doação associativa, também pelo nome do doador —, com confirmação ou
 marcação como não localizada, com motivo opcional.
 
-**Gestão de campanhas e eventos** — Cadastro, alteração e encerramento de campanhas e eventos com
-nome, data, descrição, recursos necessários e, opcionalmente, meta em dinheiro com valor arrecadado
-informado pela equipe, com aviso de conflito de datas e publicação automática no portal público.
+**Gestão de campanhas e eventos** — Cadastro, alteração e encerramento de eventos — com nome, data,
+descrição e recursos necessários — e de campanhas — com nome, período, descrição, recursos a
+arrecadar e, opcionalmente, meta em dinheiro com valor arrecadado informado pela equipe —, na mesma
+tela, com aviso de conflito de datas entre eventos e publicação automática no portal público.
 
 **Divulgação institucional** — Publicação, edição e despublicação de notícias, informações
 institucionais e necessidades da instituição no portal público, com uma imagem por notícia
@@ -460,7 +462,8 @@ orientações na própria tela nas operações menos autoexplicativas.
 2. Depois da entrevista, o funcionário aprova a candidatura, e o sistema atualiza o status para
    "aprovada" e efetiva o cadastro do candidato como funcionário.
 3. O funcionário aprova uma candidatura cujo CPF já corresponde a um voluntário cadastrado, e o
-   sistema adiciona o perfil de funcionário ao cadastro existente, sem criar registro duplicado.
+   sistema adiciona o perfil de funcionário ao cadastro existente, sem criar registro duplicado, e
+   encerra o papel de voluntário, mantendo seu histórico.
 4. O funcionário rejeita a candidatura, informando o motivo se quiser, e o sistema atualiza o status
    para "rejeitada", sem criar cadastro de funcionário.
 

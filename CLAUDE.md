@@ -532,14 +532,17 @@ recente do spec.md, não esta lista resumida.
 4. As credenciais de demonstração do `public/README.md` (`admin`/`admin123`
    e as de autoatendimento) existem só na camada mock e **não podem**
    sobreviver ao `db/seed.js` real.
-5. **(2026-10-03)** O alinhamento com o texto do TCC mudou o spec, mas
-   `plan.md`, `data-model.md`, `contracts/api.md` e `quickstart.md` ainda
-   descrevem o desenho anterior (motivo obrigatório, anexo de autorização,
-   autoatendimento de voluntário, tabela de solicitação do titular, sync com
-   redes sociais). Rodar `/speckit-plan` de novo antes de implementar essas
-   partes. O protótipo também precisa acompanhar (triagens com etapa de
-   entrevista, autoatendimento sem voluntário, página de autorização para
-   imprimir).
+5. ~~Plano desatualizado em relação ao spec.~~ **Resolvido em 2026-10-05**:
+   `/speckit-plan` refeito — `plan.md`, `research.md` (D1–D18),
+   `data-model.md`, `contracts/api.md` e `quickstart.md` seguem o spec de
+   05/10 e a constituição 3.0.0. Links de senha: definição vale 7 dias,
+   redefinição 1 hora, uso único, novo link pela tela "esqueci minha senha"
+   (research D11). **Aberto para o grupo**: a verificação do FR-006b deixa
+   descobrir por comparação se um CPF/e-mail é de associado; o plano limita
+   tentativas, mas o risco residual precisa ser aceito ou a decisão revista
+   (research D15). O protótipo continua precisando acompanhar (triagens com
+   entrevista, autoatendimento só do doador, página de autorização para
+   imprimir) — a lista completa de telas está em `plan.md`.
 6. **(2026-10-04)** Correções do protótipo apontadas na revisão do grupo,
    já refletidas no spec e ainda não feitas no front: doação sem protocolo
    e sem anexo (o grupo vai refazer o fluxo, incluindo tirar o botão que

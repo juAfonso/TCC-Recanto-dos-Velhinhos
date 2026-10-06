@@ -1,241 +1,294 @@
 # Contratos de API — Portal Público e Painel Administrativo
 
-**Feature**: `001-portal-painel-ilpi` · **Data**: 2026-09-04 · **Fase**: 1
+**Feature**: `001-portal-painel-ilpi` · **Data**: 2026-10-05 (refeito; versão anterior de 2026-09-04)
+· **Fase**: 1
 
-Funções serverless em `/api` na Vercel (Node.js 24 LTS). Todas as respostas são JSON UTF-8. Todo texto
-voltado ao usuário final vai em português do Brasil, sem jargão (Princípio I).
+Funções serverless em `api/` na Vercel (Node.js 24 LTS, formato Web — research D1). Respostas em
+JSON UTF-8. Texto para o usuário final em português do Brasil, sem jargão (Princípio I). Entidades
+em [data-model.md](../data-model.md); decisões D1–D18 em [research.md](../research.md).
 
 ---
 
 ## Convenções
 
-**Três zonas de acesso**, e a zona é o que determina a verificação de autorização:
+### Zonas de acesso (Princípio IV, constituição 3.0.0)
 
 | Zona | Prefixo | Autenticação |
 |---|---|---|
 | Pública | `/api/public/*` | nenhuma |
-| Autoatendimento | `/api/me/*` | cookie de sessão de `usuario` |
-| Administrativa | `/api/admin/*` | cookie de sessão de `conta_institucional` |
+| Autenticação | `/api/auth/*`, `/api/admin/login` | nenhuma (cria sessão) |
+| Autoatendimento | `/api/me/*` | cookie `ctx = doador` — pessoa ativa, papel de doador ativo, senha definida (D4) |
+| Administrativa | `/api/admin/*` | cookie `ctx = admin` — conta institucional ativa |
+| Agendada | `/api/cron/*` | `Authorization: Bearer $CRON_SECRET` |
 
-**Autorização é sempre verificada no servidor** (Princípio IV). Esconder um botão na interface não
-conta como controle de acesso. Toda requisição a `/api/admin/*` revalida o nível de permissão; a
-negação registra a tentativa em `registro_auditoria` e responde `403` sem detalhar o motivo interno
-(FR-047).
+A autorização é verificada **no servidor** a cada requisição. Fora da zona certa: `403`, corpo sem
+dados, tentativa registrada em `registro_auditoria` (FR-047). No autoatendimento, o id da pessoa
+vem **sempre da sessão**, nunca da URL nem do corpo (FR-042).
 
-**Formato de erro** (uniforme):
+### Formato de erro
 
 ```json
-{ "erro": { "codigo": "PROTOCOLO_NAO_ENCONTRADO", "mensagem": "Não encontramos nenhum registro com esse código." } }
+{ "erro": { "codigo": "VALOR_ABAIXO_DO_MINIMO", "mensagem": "O valor mínimo é R$ 1,00.", "campos": ["valor"] } }
 ```
 
-**Códigos HTTP**: `200` ok · `201` criado · `400` entrada inválida · `401` sem sessão ·
-`403` sem permissão · `404` não encontrado · `409` conflito de estado · `422` regra de negócio
-violada · `429` limite de tentativas · `503` recurso indisponível.
+`campos` aparece em erros de validação, para a tela marcar cada campo (Princípio II).
 
-**Nunca** trafegam em resposta pública: CPF, endereço, telefone, e-mail de terceiros, URL de Blob
-restrito, motivo interno de negação de acesso.
+**Códigos HTTP**: `200` · `201` · `400` entrada inválida · `401` sem sessão · `403` sem permissão ·
+`404` · `409` conflito de estado ou aviso que pede confirmação · `413` arquivo grande demais ·
+`422` regra de negócio · `429` limite de tentativas · `503` indisponível.
+
+### Avisos que pedem confirmação (FR-030, FR-023a)
+
+Quando a regra é **aviso, nunca bloqueio**, a primeira chamada responde `409` com o aviso; a tela
+mostra e, se o funcionário decidir seguir, repete a chamada com `"confirmarAviso": true`.
+
+### Envio com arquivo
+
+Rotas marcadas com 📎 recebem `multipart/form-data` (D3): os campos do formulário mais o arquivo.
+Currículo até 4 MB; imagem até 2 MB. Acima disso: `413 ARQUIVO_GRANDE_DEMAIS`.
+
+### O que nunca trafega na zona pública
+
+CPF, RG, endereço, telefone, e-mail, nome de pessoa física, URL de currículo, motivo interno de
+negação de acesso.
 
 ---
 
 ## Zona pública
 
-### Conteúdo institucional (CSU03, US1)
+### Conteúdo (US1, CSU02, CSU03, CSU07)
 
 | Método | Rota | Retorna |
 |---|---|---|
-| `GET` | `/api/public/institucional` | história, missão, equipe (FR-001) |
-| `GET` | `/api/public/campanhas` | campanhas/eventos vigentes (FR-002) |
-| `GET` | `/api/public/itens-necessarios` | itens ativos (FR-003) |
-| `GET` | `/api/public/noticias` | notícias publicadas (FR-032) |
-| `GET` | `/api/public/vagas` | vagas ativas (FR-016) |
+| `GET` | `/api/public/institucional` | história, missão, equipe e imagens com texto alternativo (FR-001) |
+| `GET` | `/api/public/eventos-campanhas` | eventos com `data >= hoje` e campanhas com hoje no período, `status = ativo` (FR-002, D12); campanha sem meta vem sem `meta` nem `arrecadado` (FR-029b) |
+| `GET` | `/api/public/itens-necessarios` | itens ativos, ordenados alta → média → baixa (FR-003, FR-026) |
+| `GET` | `/api/public/noticias` | só `publicada` (FR-032a) |
 | `GET` | `/api/public/aviso-privacidade` | texto e versão vigentes (FR-053) |
 
 ### Doação (CSU01)
-`GET /api/public/pix` — dados para pagamento (FR-007).
+
+**`GET /api/public/pix`** (FR-007, FR-007a)
 
 ```json
-{ "disponivel": true, "chave": "12.345.678/0001-90", "tipoChave": "cnpj", "nomeRecebedor": "Recanto dos Velhinhos", "cidade": "Pinheiral" }
+{ "disponivel": true, "chave": "…", "tipoChave": "cnpj", "nomeRecebedor": "…", "cidade": "Pinheiral" }
 ```
 
-O front-end monta o BR Code e o QR code com esses dados e o valor escolhido pelo doador
-(`public/assets/js/pix.js`, research D9). A API não recebe o valor e não gera QR code.
+Sem chave ativa: `{ "disponivel": false, "contato": "…" }`. O front não mostra QR nem botão.
 
-Sem chave ativa cadastrada, responde `200` com `{ "disponivel": false, "contato": "…" }`. O
-front-end então **não** oferece o formulário de declaração e mostra o canal de contato (FR-007a).
-
-`POST /api/public/doacoes` — declara uma doação já paga (FR-005, FR-006, FR-045).
+**`POST /api/public/doacoes/verificar-associativa`** (FR-006b, D15) — antes de gerar o QR.
 
 ```json
-{ "tipo": "espontanea", "valor": 150.00, "dataInformada": "2026-09-03",
-  "comprovanteArquivoId": null, "consentimento": null }
+{ "cpf": "…", "email": "…" }
 ```
 
-- `tipo: "associativa"` exige os dados do doador e `consentimento` (FR-051).
-- `tipo: "espontanea"` dispensa consentimento — **exceto** se `comprovanteArquivoId` vier
-  preenchido, porque o comprovante carrega dados do pagador (FR-051). Sem consentimento nesse caso:
-  `422 CONSENTIMENTO_OBRIGATORIO`.
-- Resposta `201`: `{ "protocolo": "DOA-7K2M9XQ4RT", "status": "pendente" }`.
-- O status **sempre** nasce `pendente`. Nenhuma entrada desse endpoint pode produzir `confirmada`
-  (Princípio VII).
+- `200 { "podeSeguir": true }` — CPF e e-mail livres, ou pessoa existente sem papel de doador.
+- `200 { "podeSeguir": false, "mensagem": "Se você já é associado, entre no autoatendimento para doar. Se não, faça a doação espontânea." }`
+  — CPF **ou** e-mail de doador associado. A resposta não diz qual dos dois bateu.
+- Limite D13: `429`.
 
-### Submissões públicas com triagem (CSU05, CSU06, CSU08)
+**`POST /api/public/doacoes`** — o clique em "Já fiz o Pix" (FR-005, FR-006, FR-006a, FR-008).
 
-| Método | Rota | Regras |
+```json
+{ "tipo": "associativa", "valor": 50.00,
+  "doador": { "nome": "…", "cpf": "…", "email": "…", "telefone": "…" },
+  "consentimento": { "avisoVersao": "2026-10-v1", "aceito": true } }
+```
+
+- `espontanea`: só `tipo` e `valor`. Sem consentimento (FR-051).
+- `associativa` **com sessão de doador**: só `tipo` e `valor`; o vínculo vem da sessão.
+- `associativa` **sem sessão**: exige `doador` e `consentimento`; repete a verificação do FR-006b
+  (se barrar, `422 ASSOCIADO_DEVE_ENTRAR` com a mesma mensagem neutra). Cria `pessoa` e papel de
+  doador, ou adiciona o papel a pessoa existente (D15); grava consentimento; envia link de
+  definição de senha (D11) ao e-mail **do cadastro**.
+- `valor < 1.00`, ausente ou não numérico: `400 VALOR_INVALIDO` / `VALOR_ABAIXO_DO_MINIMO`.
+- Resposta `201`: `{ "status": "pendente", "mensagem": "Obrigado! A equipe confere sua doação no extrato do banco." }`.
+  **Sem protocolo.** Nada nesta rota produz `confirmada` (Princípio VII).
+- `declarada_em` é a hora do servidor (D9); o corpo não aceita data.
+
+### Submissões com triagem (CSU05, CSU06, CSU08)
+
+| Método | Rota | Regras específicas |
 |---|---|---|
-| `POST` | `/api/public/voluntarios` | menor de idade exige `autorizacaoArquivoId` (FR-012); consentimento obrigatório |
-| `POST` | `/api/public/candidaturas` | exige currículo em arquivo **ou** texto (FR-017); consentimento obrigatório |
-| `POST` | `/api/public/solicitacoes-evento` | consentimento obrigatório |
+| `POST` | `/api/public/voluntarios` | campos do FR-011; menor → `autorizacaoStatus: "pendente"` na resposta (FR-012) |
+| `POST` 📎 | `/api/public/candidaturas` | `cargo` fixo; CPF e data de nascimento (FR-016a); currículo em arquivo **ou** texto (FR-017) |
+| `POST` | `/api/public/solicitacoes` | `tipo` evento/campanha; data **ou** período conforme o tipo; telefone brasileiro (FR-020, FR-037a) |
 
-Todas respondem `201` com `{ "protocolo": "…", "status": "pendente" }` (FR-013, FR-018, FR-021) e
-disparam o e-mail de confirmação ao autor do FR-049. **A falha do e-mail não desfaz o registro nem
-altera a resposta** (FR-049a).
-
-**Notificação à equipe de triagem (FR-014)**: resolvida em 2026-09-23 — **não há envio de e-mail à
-equipe**. A sinalização de nova submissão acontece apenas em `GET /api/admin/dashboard` (FR-036),
-que lista os cadastros pendentes de triagem. Nenhum endpoint dispara e-mail para a conta
-institucional. O e-mail do FR-049 continua indo só para o **autor** da submissão.
+Comuns às três:
+- Consentimento obrigatório: sem aceite, `422 CONSENTIMENTO_OBRIGATORIO` (FR-051).
+- Resposta `201`: `{ "protocolo": "VOL-…", "status": "pendente", "emailEnviado": true }`. A tela
+  destaca **"anote este código"**; `emailEnviado: false` não muda nada além de um aviso discreto.
+- O registro é gravado antes do e-mail; falha de envio segue a política D5 e **nunca** desfaz o
+  registro (FR-049a).
+- A página de autorização do menor é montada no navegador com os dados do próprio formulário (D17).
 
 ### Consulta de status (CSU10)
 
-`GET /api/public/status/:protocolo` (FR-044)
+**`GET /api/public/status/:protocolo`** (FR-044, FR-044a)
 
 ```json
-{ "tipo": "doacao", "status": "pendente", "atualizadoEm": "2026-09-04T12:00:00Z" }
+{ "tipo": "voluntario", "status": "entrevista", "rotuloStatus": "Chamado para entrevista", "data": "2026-10-05" }
 ```
 
-Regras de segurança, todas obrigatórias:
-- Retorna **apenas** tipo, status e data. Nenhum dado pessoal, nem do próprio solicitante.
-- Protocolo inexistente e protocolo mal formado produzem resposta **idêntica** (`404`), para não
-  revelar qual é o caso.
-- Limitação de tentativas por IP (`429`), porque o protocolo é a única credencial (research D6).
-- Cobre voluntário, candidatura, solicitação externa, doação e solicitação de titular (FR-059).
+- Só tipo, status e data. Nenhum dado pessoal.
+- Inexistente e mal formado: **mesma** resposta `404 NAO_ENCONTRADO`, mesmo tempo de resposta
+  aproximado.
+- `429` após 10 consultas por IP em 15 min (D13).
+- Cobre voluntário, candidatura e solicitação externa. **Doação não tem protocolo.**
 
-### Direitos do titular (CSU11)
+---
 
-`POST /api/public/solicitacoes-titular` — abre pedido de acesso, correção, anonimização ou revogação
-(FR-054, FR-059). Responde `201` com protocolo `LGP-…`.
+## Autenticação
 
-### Upload
+### Painel
 
-`POST /api/public/uploads` — recebe currículo, autorização de menor ou comprovante bancário.
-Responde `{ "arquivoId": "uuid" }`, que é então enviado no `POST` da submissão.
-Valida tipo MIME e tamanho. **Nunca** devolve a URL do Blob (research D3).
+`POST /api/admin/login` `{ identificador, senha }` → cookie `ctx = admin` · `POST /api/admin/logout`.
+Cinco falhas em 15 min por IP e conta → `429` (D13).
+
+### Doador associado (CSU09)
+
+| Método | Rota | Notas |
+|---|---|---|
+| `POST` | `/api/auth/login` | `{ email, senha }`; nega se senha não definida, pessoa inativa ou papel de doador não ativo, **com a mesma mensagem** de senha errada |
+| `POST` | `/api/auth/logout` | |
+| `POST` | `/api/auth/link-senha` | `{ email }` — envia link de **definição** (sem senha ainda) ou **redefinição**; resposta sempre `200` idêntica (FR-046, D11) |
+| `POST` | `/api/auth/definir-senha` | `{ token, senha }` — consome token válido; encerra sessões abertas; `400 LINK_INVALIDO_OU_EXPIRADO` com orientação para pedir outro |
 
 ---
 
 ## Zona de autoatendimento (CSU09)
 
-Sessão de `usuario`. Cada rota devolve **somente** dados do próprio titular (FR-042) — o `id` vem da
-sessão, nunca da URL ou do corpo.
-
-| Método | Rota | Notas |
+| Método | Rota | Retorna |
 |---|---|---|
-| `POST` | `/api/auth/login` | login individual (FR-041) |
-| `POST` | `/api/auth/logout` | |
-| `POST` | `/api/auth/recuperar-senha` | envia link por e-mail (FR-046) |
-| `POST` | `/api/auth/redefinir-senha` | consome token de uso único e expiração curta |
 | `GET` | `/api/me` | dados cadastrais próprios |
-| `GET` | `/api/me/doacoes` | histórico próprio (doador associado) |
-| `GET` | `/api/me/voluntariado` | status de voluntariado próprio |
-| `POST` | `/api/me/solicitacoes-titular` | direitos do titular já autenticado (FR-054) |
+| `GET` | `/api/me/doacoes` | **só doações `confirmada`** — valor e data (FR-041); pendentes e não localizadas nunca aparecem |
 
-`POST /api/auth/recuperar-senha` responde `200` mesmo para e-mail inexistente, para não revelar
-quais e-mails estão cadastrados.
+Doar logado usa `POST /api/public/doacoes` com o cookie (vínculo pela sessão).
 
 ---
 
 ## Zona administrativa
 
-Sessão de `conta_institucional`. Toda ação que altera estado grava em `registro_auditoria` com a
-conta e a data (FR-035).
+Toda ação que muda estado grava em `registro_auditoria` com a conta e a data (FR-035). Nenhuma rota
+`DELETE` sobre dado de negócio (Princípio III).
 
-### Autenticação
+### Visão consolidada e operação
 
-`POST /api/admin/login` (FR-040) · `POST /api/admin/logout`
-
-### Conferência de doações (CSU01)
 | Método | Rota | Notas |
 |---|---|---|
-| `GET` | `/api/admin/doacoes?status=pendente` | fila de conferência |
-| `GET` | `/api/admin/doacoes/:id` | inclui `possiveisDuplicatas[]` (FR-050) e link do comprovante |
-| `POST` | `/api/admin/doacoes/:id/confirmar` | `409 DOACAO_JA_CONFIRMADA` se já estiver confirmada |
-| `POST` | `/api/admin/doacoes/:id/nao-localizar` | exige `motivo`; `422` sem ele |
-| `GET/PUT` | `/api/admin/pix` | cadastra/atualiza chave, nome do recebedor e cidade (FR-007) |
+| `GET` | `/api/admin/dashboard` | contagens: itens de prioridade alta, itens sem atualização (FR-028), submissões pendentes nas três filas, doações pendentes, falhas de e-mail não tratadas, registros na fila de retenção (FR-036, SC-007) |
+| `GET` | `/api/admin/auditoria` | mais recentes primeiro, paginado (FR-035) |
+| `GET` | `/api/admin/falhas-email` · `POST …/:id/reenviar` · `POST …/:id/tratada` | FR-049a |
+| `GET`/`PUT` | `/api/admin/configuracao` | prazos e contato (D10) |
+| `GET`/`POST` | `/api/admin/aviso-privacidade` | `POST` publica **nova versão**; versões antigas não se editam |
 
-`confirmar` é idempotente por design: a segunda chamada não altera o registro nem emite nova
-declaração de doação (FR-050).
+### Conferência de doações (CSU01)
+
+| Método | Rota | Notas |
+|---|---|---|
+| `GET` | `/api/admin/doacoes?status=pendente` | valor, data/hora do clique, nome do doador se associativa, `possivelDuplicata` (FR-008, D18) |
+| `POST` | `/api/admin/doacoes/:id/confirmar` | `409 DOACAO_JA_CONFERIDA` se não estiver `pendente`; nada muda (FR-050) |
+| `POST` | `/api/admin/doacoes/:id/nao-localizar` | `{ motivo?: string, motivoPadrao?: true }` — motivo **opcional**; `motivoPadrao` grava o texto do FR-008a |
+| `GET`/`PUT` | `/api/admin/pix` | chave, tipo, nome do recebedor, cidade (FR-007) |
 
 ### Triagens (CSU05, CSU06, CSU08)
 
-Mesmo formato para as três filas — `voluntarios`, `candidaturas`, `solicitacoes-evento`:
+Filas: `voluntarios`, `candidaturas`, `solicitacoes`.
 
-| Método | Rota |
-|---|---|
-| `GET` | `/api/admin/{fila}?status=pendente` |
-| `POST` | `/api/admin/{fila}/:id/aprovar` |
-| `POST` | `/api/admin/{fila}/:id/rejeitar` |
+| Método | Rota | Vale para | De → para |
+|---|---|---|---|
+| `GET` | `/api/admin/{fila}?status=` | todas | — |
+| `GET` | `/api/admin/{fila}/:id` | todas | todos os campos coletados (FR-037a) |
+| `POST` | `/api/admin/voluntarios/:id/entrevista` · `/candidaturas/:id/entrevista` | voluntário, candidatura | pendente/em análise → entrevista |
+| `POST` | `/api/admin/voluntarios/:id/aprovar` · `/candidaturas/:id/aprovar` | voluntário, candidatura | entrevista → aprovado |
+| `POST` | `/api/admin/solicitacoes/:id/aprovar` | solicitação | em análise → aguardando contato (nada publicado) |
+| `POST` | `/api/admin/solicitacoes/:id/confirmar` | solicitação | aguardando contato → confirmada; corpo com os dados combinados e, na campanha, os recursos; cria e publica evento/campanha |
+| `POST` | `/api/admin/{fila}/:id/rejeitar` | todas | `{ motivo?: string }` — **opcional** |
+| `POST` | `/api/admin/voluntarios/:id/autorizacao-recebida` | voluntário menor | pendente → recebida (FR-012) |
+| `GET` | `/api/admin/voluntarios/:id/autorizacao` | voluntário menor | dados para reimprimir a página (D17) |
+| `GET` | `/api/admin/candidaturas/:id/curriculo` | candidatura | redireciona para URL assinada de vida curta (D3) |
 
-- `rejeitar` exige `motivo` nas **três** filas; sem ele, `422 MOTIVO_OBRIGATORIO`.
-- `aprovar` e `rejeitar` disparam e-mail ao **autor da submissão** com o resultado da triagem, incluindo
-  o motivo na rejeição (FR-049b). A falha no envio não reverte nem altera a decisão já registrada.
-- Não existe rota de aprovação automática ou em lote por critério calculado (Princípio VIII,
-  FR-034).
-- `candidaturas/:id/aprovar`: se o CPF já existir em `usuario`, adiciona o perfil `funcionario` ao
-  cadastro existente em vez de criar outro (FR-048).
+Regras:
+- Transição fora da ordem acima: `409 TRANSICAO_INVALIDA`.
+- Aprovar menor com autorização pendente: `422 AUTORIZACAO_PENDENTE`.
+- Aprovar voluntário que é funcionário ativo: `422 FUNCIONARIO_NAO_PODE_SER_VOLUNTARIO` (FR-048).
+- `candidaturas/:id/aprovar`: transação única — encontra ou cria a pessoa pelo CPF, encerra papel
+  de voluntário ativo, cria papel de funcionário (FR-048, D14).
+- Aprovar solicitação de evento ou confirmar evento em data ocupada: `409 CONFLITO_DE_DATA` com os
+  eventos em conflito; seguir com `confirmarAviso: true` (FR-030).
+- Toda decisão dispara e-mail ao autor (FR-049b), com motivo se houver; falha não reverte a decisão.
+- Não existe aprovação automática nem em lote (FR-034, Princípio VIII).
 
-### Gestão de conteúdo (CSU02, CSU03, CSU07)
-
-`GET/POST/PUT` em `/api/admin/itens`, `/api/admin/campanhas`, `/api/admin/noticias`.
-`POST /api/admin/itens/:id/baixar` dá baixa em item suprido (FR-027).
-Cadastro de campanha em data conflitante responde `200` com aviso de conflito — sinaliza, não
-bloqueia (FR-030). Publicação de notícia nunca falha por erro de sincronização com rede social
-(FR-033).
-
-**Não existe `DELETE` em nenhuma dessas rotas** (Princípio III, FR-024).
-
-### Gestão de usuários (CSU04)
-
-| Método | Rota | Notas |
-|---|---|---|
-| `GET` | `/api/admin/usuarios?busca=` | busca por CPF ou e-mail (FR-023) |
-| `POST`/`PUT` | `/api/admin/usuarios[/:id]` | |
-| `POST` | `/api/admin/usuarios/:id/inativar` | única forma de remoção de acesso |
-| `GET` | `/api/admin/auditoria` | histórico (FR-035) |
-| `GET` | `/api/admin/dashboard` | indicadores e pendências (FR-036) |
-
-### Ajuda do Painel (FR-060, FR-060a, FR-061)
-
-**Nenhum endpoint.** A área de ajuda é uma página estática (`public/admin/ajuda.html`) e a ajuda
-contextual do FR-061 é texto nas próprias telas. Não há dado a ler nem a gravar, então não existe
-rota de API — registrar isso aqui evita que alguém invente um `/api/admin/ajuda` desnecessário.
-
-### Direitos do titular (CSU11)
+### Conteúdo (CSU02, CSU03, CSU07)
 
 | Método | Rota | Notas |
 |---|---|---|
-| `GET` | `/api/admin/solicitacoes-titular?status=em_analise` | |
-| `POST` | `/api/admin/solicitacoes-titular/:id/atender` | executa a ação pedida |
-| `POST` | `/api/admin/solicitacoes-titular/:id/recusar` | exige `motivo` |
-| `POST` | `/api/admin/usuarios/:id/anonimizar` | FR-055 |
-| `GET` | `/api/admin/retencao/pendentes` | registros no fim do prazo (FR-056) |
+| `GET`/`POST` | `/api/admin/itens` | `?busca=` por nome; `POST` com nome, quantidade ≥ 0, unidade, prioridade (FR-026) |
+| `PUT` | `/api/admin/itens/:id` | atualizar quantidade renova `quantidade_atualizada_em` |
+| `POST` | `/api/admin/itens/:id/baixa` | `ativo → suprido` (FR-027) |
+| `GET`/`POST` | `/api/admin/eventos-campanhas` | `POST` com `tipo`; evento: nome, data, descrição, recursos em texto; campanha: nome, período, descrição, `recursos[]` (≥ 1), `meta?`; data passada: `400`; conflito de evento: `409` + `confirmarAviso` |
+| `PUT` | `/api/admin/eventos-campanhas/:id` | mesmas validações |
+| `PUT` | `/api/admin/campanhas/:id/arrecadado` | só com meta (FR-029b) |
+| `POST` | `/api/admin/eventos-campanhas/:id/encerrar` | a qualquer momento; já encerrado: `200` sem alteração (FR-029a) |
+| `GET`/`POST` 📎 | `/api/admin/noticias` | imagem exige `imagemAlt` (FR-032b) |
+| `PUT` 📎 | `/api/admin/noticias/:id` | |
+| `POST` | `/api/admin/noticias/:id/despublicar` · `/publicar` | FR-032a |
+| `GET`/`PUT` 📎 | `/api/admin/institucional` | textos e imagens, texto alternativo obrigatório, versão anterior no histórico (FR-001a) |
 
-`anonimizar` (FR-055) torna ilegíveis os campos pessoais, preenche `anonimizado_em`, remove os
-objetos restritos no Blob e **preserva** a linha, o histórico e a auditoria. Aceita
-`dadosRetidosJustificativa` quando obrigação legal exigir manter parte dos dados.
+### Usuários (CSU04)
 
-`/api/admin/retencao/pendentes` apenas **lista**. Enquanto os prazos do FR-056 não forem definidos
-pela instituição, nenhuma anonimização automática por decurso de prazo é executada (research D10).
+| Método | Rota | Notas |
+|---|---|---|
+| `GET` | `/api/admin/pessoas?busca=` | nome, CPF ou e-mail (FR-023) |
+| `GET` | `/api/admin/pessoas/:id` | todos os dados, papéis, submissões, consentimentos, histórico |
+| `POST` | `/api/admin/pessoas` | cadastro direto de funcionário ou voluntário, sem triagem; CPF existente: `409 CPF_JA_CADASTRADO` com o id para abrir o registro (FR-023) |
+| `PUT` | `/api/admin/pessoas/:id` | correção, com histórico (FR-037) |
+| `POST` | `/api/admin/pessoas/:id/papeis` | adiciona papel; respeita exclusividade (FR-048) |
+| `POST` | `/api/admin/pessoas/:id/inativar` · `/reativar` | submissão em triagem: `409` + `confirmarAviso` (FR-023a) |
+
+Não existe rota de exclusão (FR-024).
+
+### LGPD (CSU11)
+
+| Método | Rota | Notas |
+|---|---|---|
+| `POST` | `/api/admin/consentimentos/:id/revogar` | aplica o efeito do FR-057 conforme o dono do consentimento: submissão em triagem → `encerrado_titular`; voluntário ativo → papel inativo; doador → papel encerrado. Não anonimiza. |
+| `POST` | `/api/admin/anonimizacoes` | `{ alvo: "pessoa" \| "cadastro_voluntario" \| "candidatura" \| "curriculo" \| "solicitacao", id, justificativaRetencao? }` (FR-055, FR-056) |
+| `GET` | `/api/admin/retencao` | fila de registros vencidos, conforme a tabela de retenção do `data-model.md` |
+
+`anonimizacoes`, em transação única: campos pessoais viram `[anonimizado]`; currículo removido do
+Blob; `historico_alteracao`, `falha_email` e consentimentos ligados também anonimizados (D16);
+doações da pessoa ficam com valor, data, tipo e status, sem justificativa (FR-055); a linha, o
+histórico e a auditoria permanecem. `justificativaRetencao` só é exigida quando o funcionário marca
+campos retidos por obrigação legal **fora** das doações.
+
+### Ajuda (FR-060, FR-060a, FR-061)
+
+**Nenhum endpoint.** `public/admin/ajuda.html` é estática e a ajuda contextual é texto das telas.
 
 ---
 
-## Contratos que os testes automatizados devem cobrir
+## Zona agendada
 
-Estes quatro são os testes da estratégia escolhida (research D8):
+**`GET /api/cron/diario`** — `vercel.json`: `"schedule": "0 4 * * *"` (01:00 em Brasília, ±59 min).
 
-1. `POST /api/admin/doacoes/:id/confirmar` duas vezes → segunda responde `409`, não altera o
-   registro e não emite nova declaração (FR-050).
-2. Protocolos gerados em série → todos únicos, sem ordem previsível, no alfabeto definido (FR-045).
-3. `POST /api/admin/usuarios/:id/anonimizar` → campos pessoais ilegíveis, linha preservada,
-   auditoria intacta, contagem de registros de histórico inalterada (FR-055).
-4. Requisição a `/api/admin/*` com sessão de autoatendimento (ou sem sessão) → `403`, registro em
-   `registro_auditoria`, e nenhum dado no corpo da resposta (FR-047).
+1. Encerra eventos com `data < hoje` e campanhas com `periodo_fim < hoje` ainda `ativo`, autor
+   `sistema`, ação `evento.encerrar_auto` / `campanha.encerrar_auto` (FR-029c).
+2. Remove janelas expiradas de `limite_tentativa` (D13).
+
+Idempotente. Sem `CRON_SECRET` correto: `401`.
+
+---
+
+## Contratos cobertos pelos testes automatizados (research D8)
+
+1. **FR-050** — `POST /api/admin/doacoes/:id/confirmar` duas vezes: a segunda responde `409` e o
+   registro não muda.
+2. **FR-043 / FR-044a** — protocolos gerados em série são únicos, no alfabeto e formato definidos,
+   sem ordem previsível; `GET /api/public/status/` com código inexistente e com código mal formado
+   produz respostas idênticas.
+3. **FR-055** — `POST /api/admin/anonimizacoes` sobre doador com doações confirmadas: nenhum campo
+   pessoal legível em `pessoa`, `historico_alteracao`, `falha_email` e `consentimento`; doações com
+   valor, data, tipo e status intactos; contagem de linhas e de auditoria inalterada.
+4. **FR-047** — chamada a `/api/admin/*` sem sessão e com sessão de doador: `403`, corpo sem dados,
+   linha `acesso.negado` em `registro_auditoria`.

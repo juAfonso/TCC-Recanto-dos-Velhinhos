@@ -1,273 +1,437 @@
 # Data Model — Portal Público e Painel Administrativo
 
-**Feature**: `001-portal-painel-ilpi` · **Data**: 2026-09-04 · **Fase**: 1 (Design & Contracts)
-**Banco**: Neon (PostgreSQL)
+**Feature**: `001-portal-painel-ilpi` · **Data**: 2026-10-05 (refeito; versão anterior de 2026-09-04)
+· **Fase**: 1 (Design & Contracts) · **Banco**: Neon (PostgreSQL)
+
+Fonte: Key Entities do [spec.md](./spec.md) e o DER conceitual
+(`docs/der-conceitual-recanto.drawio`). Decisões técnicas citadas como D1–D18 estão em
+[research.md](./research.md).
 
 ---
 
 ## Regras que valem para o modelo inteiro
 
-Estas regras vêm da constituição e do spec, e nenhuma tabela pode contrariá-las.
-
-1. **Nada é excluído fisicamente** (Princípio III, FR-024). Não existe `DELETE` sobre dado de
-   negócio em lugar nenhum da API nem da camada de persistência. Remoção é mudança de status.
-2. **Toda tabela de negócio carrega auditoria mínima**: `criado_em`, `atualizado_em` e, onde houver
-   ação administrativa, `conferido_por` / `aprovado_por` (referência à **conta institucional**, não
-   a um funcionário — FR-035).
-3. **Anonimização não apaga a linha** (FR-055). Os campos pessoais viram valores ilegíveis e
-   `anonimizado_em` é preenchido. Chaves estrangeiras, histórico e auditoria continuam válidos.
-4. **Toda submissão pública tem protocolo** não sequencial (FR-043, FR-045, FR-059), gerado como
-   descrito em `research.md` → D6.
-5. **Toda triagem exige motivo na rejeição** (decisão de projeto: vale para voluntário, candidatura
-   e solicitação externa).
+1. **Nada de negócio é excluído fisicamente** (Princípio III, FR-024). Não existe `DELETE` sobre
+   tabela de negócio na API nem nos scripts. Remoção é mudança de status. Única exceção: a limpeza
+   de `limite_tentativa`, que é contador técnico sem dado pessoal (D13).
+2. **Toda mudança de status registra autor e data** — na própria linha (`*_por`, `*_em`) e em
+   `registro_auditoria`. Autor é a conta institucional, o doador associado ou `sistema`; nunca o
+   funcionário individual (FR-035).
+3. **Anonimização não apaga a linha** (FR-055, FR-056). Campos pessoais viram o texto fixo
+   `[anonimizado]` (ou `NULL` onde o campo é opcional), `anonimizado_em` é preenchido, e o mesmo
+   vale para `historico_alteracao`, `falha_email` e `consentimento` ligados (D16).
+4. **Valores editáveis ficam em `configuracao`**, nunca como constante (FR-028, FR-056).
+5. **Datas de negócio** (evento, período de campanha, prazos) são avaliadas no fuso
+   `America/Sao_Paulo`. Carimbos de tempo são `timestamptz`.
+6. **Identificadores** são `uuid` (`gen_random_uuid()`), exceto `registro_auditoria` (`bigserial`).
 
 ---
 
-## Entidades
+## Pessoas, papéis e acesso
 
-### `usuario`
+### `pessoa`
 
-Pessoa com acesso ao sistema. Uma pessoa = uma linha, identificada por CPF, acumulando perfis
-(FR-048) — voluntária aprovada em vaga vira também funcionária **sem** duplicar registro.
+Pessoa cadastrada — entidade Pessoa do DER. **Não** significa "tem acesso": só o doador associado
+tem login (FR-025). Uma pessoa = uma linha, identificada pelo CPF (FR-048).
 
 | Campo | Tipo | Notas |
 |---|---|---|
 | `id` | `uuid` PK | |
-| `cpf` | `text` UNIQUE | normalizado só com dígitos; anonimizável |
-| `nome` | `text` | anonimizável |
-| `email` | `text` | anonimizável; usado no login de autoatendimento |
-| `telefone` | `text` | anonimizável |
-| `senha_hash` | `text` NULL | `scrypt`; nulo enquanto não houver login próprio |
-| `senha_salt` | `text` NULL | |
-| `ativo` | `boolean` | inativação = única remoção de acesso (FR-024) |
-| `anonimizado_em` | `timestamptz` NULL | preenchido por FR-055 |
+| `cpf` | `text` UNIQUE | só dígitos, validado; anonimizável |
+| `nome`, `email`, `telefone` | `text` | anonimizáveis; telefone brasileiro válido (FR-037a) |
+| `data_nascimento` | `date` NULL | |
+| `ativo` | `boolean` | inativação pelo Painel (FR-024), reversível |
+| `senha_hash` | `text` NULL | `scrypt`; só para doador associado (D4) |
+| `senha_definida_em` | `timestamptz` NULL | nulo até usar o link de definição (FR-006a) |
+| `anonimizado_em` | `timestamptz` NULL | |
 | `criado_em`, `atualizado_em` | `timestamptz` | |
 
-**Validações**: CPF válido e único. E-mail único entre usuários não anonimizados.
-**Transições**: `ativo=true` ⇄ `ativo=false`. Anonimização é irreversível e força `ativo=false`.
+**Índices**: `cpf` UNIQUE; `lower(email)` UNIQUE **parcial** `WHERE anonimizado_em IS NULL`.
 
-### `usuario_perfil`
+### `papel`
 
-Acúmulo de perfis por pessoa (FR-048). Tabela associativa — é o que permite a mesma linha de
-`usuario` ser voluntária e funcionária ao mesmo tempo.
+Um papel por linha. Implementa as especializações do DER e a exclusividade do FR-048 (D14).
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `usuario_id` | `uuid` FK → `usuario` | PK composta |
-| `perfil` | `text` | `funcionario` \| `voluntario` \| `doador_associado` |
-| `concedido_em` | `timestamptz` | |
-| `concedido_por` | `text` NULL | conta institucional |
+| `id` | `uuid` PK | |
+| `pessoa_id` | `uuid` FK → `pessoa` | |
+| `tipo` | `text` | `funcionario` \| `voluntario` \| `doador_associado` |
+| `status` | `text` | `ativo` \| `inativo` \| `encerrado` |
+| `origem_id` | `uuid` NULL | cadastro de voluntário ou candidatura que originou o papel; nulo se cadastrado direto no Painel |
+| `inicio_em`, `fim_em` | `timestamptz` | `fim_em` nulo enquanto ativo |
+| `alterado_por` | `text` | conta ou `sistema` |
+
+**Exclusividade (D14)**: índice único parcial em `(pessoa_id)` `WHERE tipo IN ('funcionario',
+'voluntario') AND status = 'ativo'`.
+
+**Transições**:
+- `ativo → inativo` (inativação, revogação de consentimento do voluntário — FR-057) · `inativo →
+  ativo` (reativação).
+- `voluntario: ativo → encerrado` só na efetivação como funcionário (FR-048); é terminal.
+- `doador_associado: ativo → encerrado` na revogação do consentimento do doador (FR-057); bloqueia
+  login e novas declarações vinculadas.
 
 ### `conta_institucional`
 
-Login compartilhado do Painel Administrativo (FR-040). Separada de `usuario` de propósito: não é uma
-pessoa, e a auditoria registra a conta, não o indivíduo (FR-035) — limitação aceita conscientemente.
+Login compartilhado do Painel (FR-040). Não é pessoa. **Sem campo de nível de permissão**
+(constituição 3.0.0, FR-025).
 
 | Campo | Tipo | Notas |
 |---|---|---|
 | `id` | `uuid` PK | |
-| `identificador` | `text` UNIQUE | ex.: `admin` |
-| `senha_hash`, `senha_salt` | `text` | |
-| `nivel` | `text` | nível de permissão (FR-025, FR-047) |
+| `identificador` | `text` UNIQUE | |
+| `senha_hash` | `text` | |
 | `ativo` | `boolean` | |
 
-### `cadastro_voluntario`
+Criada por `db/seed.js` em produção **com senha gerada na hora e mostrada uma vez**. As credenciais
+de demonstração do protótipo (`admin`/`admin123`) não podem existir fora do ambiente local.
 
-Submissão pública com triagem obrigatória (Princípio VIII, FR-011 a FR-015).
+### `token_senha`
+
+Links de definição e redefinição de senha (FR-006a, FR-046, D11).
 
 | Campo | Tipo | Notas |
 |---|---|---|
 | `id` | `uuid` PK | |
-| `protocolo` | `text` UNIQUE | prefixo `VOL-` |
-| `usuario_id` | `uuid` FK NULL | preenchido só na aprovação |
-| `nome`, `email`, `telefone`, `cpf` | `text` | anonimizáveis |
-| `data_nascimento` | `date` | define se é menor de idade |
-| `menor_de_idade` | `boolean` | derivado na submissão |
-| `autorizacao_blob_id` | `uuid` FK NULL → `arquivo` | obrigatório se menor (FR-012, FR-058) |
-| `disponibilidade`, `areas_interesse` | `text` | |
-| `status` | `text` | `pendente` \| `aprovado` \| `rejeitado` |
-| `motivo_rejeicao` | `text` NULL | **obrigatório** quando `rejeitado` |
-| `triado_por`, `triado_em` | `text`, `timestamptz` NULL | conta institucional |
-| `anonimizado_em` | `timestamptz` NULL | |
+| `pessoa_id` | `uuid` FK → `pessoa` | |
+| `finalidade` | `text` | `definir` (7 dias) \| `redefinir` (1 hora) |
+| `token_hash` | `text` UNIQUE | SHA-256 do token; o token em si nunca é gravado |
+| `expira_em` | `timestamptz` | |
+| `usado_em`, `invalidado_em` | `timestamptz` NULL | gerar um novo invalida os anteriores |
 
-**Transições**: `pendente → aprovado` (cria/atualiza `usuario` + perfil `voluntario`) · `pendente →
-rejeitado` (exige motivo). Nunca automático (FR-034).
+Válido só se `usado_em`, `invalidado_em` nulos e `expira_em > now()`.
 
-### `vaga` e `candidatura_vaga`
+---
 
-`vaga`: título, descrição, requisitos, `ativa`, auditoria.
+## Submissões públicas com triagem
 
-`candidatura_vaga` (FR-016 a FR-019):
+As três têm protocolo (D6), nascem no status inicial e só mudam por ação humana (Princípio VIII,
+FR-034). Campos comuns:
+
+| Campo | Notas |
+|---|---|
+| `protocolo` | `text` UNIQUE |
+| `motivo_rejeicao` | `text` NULL — **opcional** (2026-10-03) |
+| `triado_por`, `triado_em` | última decisão de triagem |
+| `concluido_em` | `timestamptz` NULL — rejeição ou encerramento a pedido do titular; **início do prazo de retenção** (FR-056) |
+| `anonimizado_em` | `timestamptz` NULL |
+| `criado_em` | `timestamptz` |
+
+### `cadastro_voluntario` (FR-011 a FR-015, CSU05)
+
+Prefixo `VOL-`. Campos do termo de adesão da Lei 9.608/1998 — nenhum além destes (FR-011).
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `id` | `uuid` PK · `protocolo` `text` UNIQUE | prefixo `CAN-` |
-| `vaga_id` | `uuid` FK → `vaga` | |
-| `nome`, `email`, `telefone`, `cpf` | `text` | anonimizáveis |
-| `curriculo_blob_id` | `uuid` FK NULL → `arquivo` | currículo em arquivo **ou** texto |
+| `nome`, `escolaridade`, `profissao`, `rg`, `cpf` | `text` | anonimizáveis |
+| `data_nascimento` | `date` | decide se é menor |
+| `endereco`, `bairro`, `cep`, `cidade`, `uf` | `text` | anonimizáveis |
+| `telefone`, `email` | `text` | anonimizáveis |
+| `tipo_servico`, `objetivos`, `condicoes` | `text` | |
+| `menor_de_idade` | `boolean` | calculado no envio (maioridade aos 18) |
+| `autorizacao_status` | `text` | `nao_se_aplica` \| `pendente` \| `recebida` (FR-012) |
+| `autorizacao_recebida_por`, `_em` | | |
+| `status` | `text` | ver transições |
+| `pessoa_id` | `uuid` FK NULL | preenchido só na aprovação |
+
+**Transições** (`status`):
+
+```
+pendente ──► entrevista ──► aprovado
+   │             │
+   ├─────────────┴──► rejeitado              (motivo opcional)
+   └─────────────┴──► encerrado_titular      (revogação do consentimento, FR-057)
+```
+
+- `→ aprovado` exige `autorizacao_status <> 'pendente'` (FR-012) e que a pessoa não seja
+  funcionária ativa (FR-048). Cria ou reaproveita `pessoa` pelo CPF e cria papel `voluntario`.
+- `rejeitado`, `aprovado` e `encerrado_titular` são terminais.
+
+### `candidatura` (FR-016 a FR-019, CSU06)
+
+Prefixo `CAN-`. **Sem tabela de vagas**: os cargos são fixos (FR-016, Assumptions).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `cargo` | `text` | `limpeza` \| `cuidador` \| `enfermagem` \| `cozinha` |
+| `nome`, `cpf`, `telefone`, `email` | `text` | anonimizáveis (FR-016a) |
+| `data_nascimento` | `date` | maioridade |
+| `curriculo_arquivo_id` | `uuid` FK NULL → `arquivo` | |
 | `curriculo_texto` | `text` NULL | |
-| `status` | `text` | `pendente` \| `aprovado` \| `rejeitado` |
-| `motivo_rejeicao` | `text` NULL | obrigatório quando `rejeitado` |
-| `triado_por`, `triado_em` | | |
+| `status` | `text` | `em_analise` → `entrevista` → `aprovada`; `rejeitada`; `encerrada_titular` |
+| `efetivado_em` | `timestamptz` NULL | início do prazo do currículo do aprovado (FR-056) |
+| `curriculo_anonimizado_em` | `timestamptz` NULL | só o currículo, mantendo o funcionário |
+| `pessoa_id` | `uuid` FK NULL | preenchido na aprovação |
 
-**Validação**: pelo menos um entre `curriculo_blob_id` e `curriculo_texto` (FR-017).
-**Na aprovação**: se o CPF já existir em `usuario`, adiciona o perfil `funcionario` à linha
-existente em vez de criar outra (FR-048).
+**Validação**: `curriculo_arquivo_id` ou `curriculo_texto` presente (FR-017).
+**Na aprovação** (transação única): encontra ou cria `pessoa` pelo CPF; se houver papel
+`voluntario` ativo, encerra-o; cria papel `funcionario`. Nada antes disso (FR-019).
 
-### `solicitacao_evento_externo`
+### `solicitacao_externa` (FR-020 a FR-022, CSU08)
 
-Proposta de evento/campanha vinda de terceiros (FR-020 a FR-022). Campos de contato, tipo, objetivo,
-`data_pretendida`, recursos esperados, `protocolo` (prefixo `EVE-`), `status`, `motivo_rejeicao`
-(obrigatório na rejeição), auditoria.
-**Validação**: conflito de `data_pretendida` com `campanha_evento` confirmado é sinalizado à equipe.
+Prefixo `SOL-`.
 
-### `chave_pix_institucional`
+| Campo | Tipo | Notas |
+|---|---|---|
+| `tipo` | `text` | `evento` \| `campanha` |
+| `nome_contato`, `email`, `telefone` | `text` | pessoa ou organização; anonimizáveis |
+| `nome_iniciativa` | `text` | nome do evento ou da campanha |
+| `objetivo` | `text` | |
+| `data_pretendida` | `date` NULL | evento |
+| `periodo_inicio`, `periodo_fim` | `date` NULL | campanha |
+| `recursos_esperados` | `text` | o que pede à instituição — **não** vira `recurso` |
+| `status` | `text` | `em_analise` → `aguardando_contato` → `confirmada`; `rejeitada`; `encerrada_titular` |
+| `evento_id` / `campanha_id` | `uuid` FK NULL | preenchido na confirmação |
 
-Configuração exibida publicamente na página de doação (FR-007). **Não é credencial** — não dá ao
-sistema nenhum poder sobre a conta bancária.
+**Transições**: `em_analise → aguardando_contato` (aprovar, nada publicado) → `confirmada` (cria
+evento ou campanha com os dados combinados, FR-022). Rejeição a partir de `em_analise` ou
+`aguardando_contato`. Aviso de conflito de data só para `tipo = evento` (FR-030).
+
+---
+
+## LGPD
+
+### `consentimento` (FR-051, FR-052, FR-057)
+
+Entidade Consentimento do DER. **Restrição 4 do DER** implementada com quatro FKs e um `CHECK` de
+que exatamente uma está preenchida.
 
 | Campo | Tipo | Notas |
 |---|---|---|
 | `id` | `uuid` PK | |
-| `chave` | `text` | exibida com opção de copiar |
-| `tipo_chave` | `text` | `cpf` \| `cnpj` \| `email` \| `telefone` \| `aleatoria` |
-| `nome_recebedor` | `text` | vai no BR Code; o front-end corta em 25 caracteres e tira acentos |
-| `cidade` | `text` | vai no BR Code; o front-end corta em 15 caracteres e tira acentos |
-| `ativa` | `boolean` | se não houver ativa → FR-007a |
+| `cadastro_voluntario_id` | `uuid` FK NULL | 1 por cadastro |
+| `candidatura_id` | `uuid` FK NULL | 1 por candidatura |
+| `solicitacao_externa_id` | `uuid` FK NULL | 1 por solicitação |
+| `pessoa_id` | `uuid` FK NULL | doador associado — **um por versão do aviso aceita** |
+| `aviso_versao` | `text` FK → `aviso_privacidade.versao` | |
+| `finalidade` | `text` | |
+| `aceito_em` | `timestamptz` | |
+| `revogado_em`, `revogado_por` | NULL | FR-057 |
+
+`UNIQUE (pessoa_id, aviso_versao)` para doador; `UNIQUE` em cada uma das outras três FKs.
+
+### `aviso_privacidade` (FR-053)
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `versao` | `text` PK | ex.: `2026-10-v1` |
+| `texto` | `text` | redigido pelo grupo, aprovado pela instituição |
+| `publicado_em`, `publicado_por` | | |
+
+Nova versão = nova linha; nunca se edita uma versão publicada. Vigente = a de `publicado_em` mais
+recente.
+
+---
+
+## Doação
+
+### `chave_pix_institucional` (FR-007)
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | `uuid` PK | |
+| `chave`, `tipo_chave` | `text` | `cnpj` \| `cpf` \| `email` \| `telefone` \| `aleatoria` |
+| `nome_recebedor`, `cidade` | `text` | o front corta (25/15) e tira acentos para o BR Code |
+| `ativa` | `boolean` | sem chave ativa → FR-007a |
 | `atualizado_por`, `atualizado_em` | | |
 
-### `doacao`
+### `doacao` (FR-005 a FR-009, FR-050)
 
-Registro da **declaração** de uma doação paga fora do sistema (FR-005 a FR-010b). O nome da entidade
-segue "Doação" como no spec, mas o significado mudou com a reversão para Pix estático: a linha nasce
-como afirmação não verificada do doador.
+Declaração de uma doação paga fora do sistema. **Sem protocolo, sem anexo** (2026-10-04).
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `id` | `uuid` PK · `protocolo` `text` UNIQUE | prefixo `DOA-` |
+| `id` | `uuid` PK | |
 | `tipo` | `text` | `espontanea` \| `associativa` |
-| `valor` | `numeric(12,2)` | informado pelo doador |
-| `data_informada` | `date` | data em que o doador diz ter pago |
-| `doador_usuario_id` | `uuid` FK NULL | só em `associativa` |
-| `comprovante_blob_id` | `uuid` FK NULL → `arquivo` | opcional (FR-010b), **acesso restrito** |
+| `valor` | `numeric(12,2)` | valor do QR, `>= 1.00` |
+| `declarada_em` | `timestamptz` | `now()` do servidor no clique (D9) |
+| `pessoa_id` | `uuid` FK NULL | só em `associativa`; se a pessoa for anonimizada, continua apontando para a linha anonimizada ("doador anonimizado", FR-055) |
 | `status` | `text` | `pendente` \| `confirmada` \| `nao_localizada` |
-| `motivo_nao_localizada` | `text` NULL | obrigatório quando `nao_localizada` |
-| `conferido_por`, `conferido_em` | `text`, `timestamptz` NULL | conta institucional |
-| `criado_em` | `timestamptz` | |
-| `anonimizado_em` | `timestamptz` NULL | ver retenção contábil em FR-055 |
+| `motivo_nao_localizada` | `text` NULL | opcional; pode ser o motivo padrão do FR-008a |
+| `conferido_por`, `conferido_em` | NULL | |
 
-**Transições**: `pendente → confirmada` · `pendente → nao_localizada` (exige motivo). Ambas exigem
-ação humana. **`confirmada` é terminal**: nova tentativa de confirmar não altera nada nem emite nova
-declaração (FR-050).
-**Regra de duplicata (FR-050)**: ao abrir a conferência, o sistema lista outras declarações
-`pendente` com mesmo `valor` e `data_informada` em janela próxima, para o funcionário julgar. É
-sinalização, nunca bloqueio automático.
-**Anonimização**: doação `espontanea` sem comprovante anexado não tem titular identificável e fica
-fora de pedidos de anonimização (Assumptions do spec).
+**Validação**: `CHECK ((tipo = 'espontanea') = (pessoa_id IS NULL))` — Restrição 3 do DER.
+**Transições**: `pendente → confirmada` · `pendente → nao_localizada`. Ambas terminais e humanas.
+Confirmar o que já está `confirmada` não altera nada (FR-050), garantido por
+`UPDATE … WHERE status = 'pendente'`.
+**Possível duplicata (D18)**: outra `pendente` com mesmo `valor` e `declarada_em` a até 30 min.
+**Anonimização**: a doação não tem campo pessoal próprio; ao anonimizar a pessoa, valor, data,
+tipo e status ficam intactos, sem justificativa de retenção (FR-055, 2026-10-05).
 
-### `item_necessario`
+---
 
-Nome, quantidade/valor necessário, `status` (`ativo` \| `suprido`), `atualizado_em`.
-Item sem atualização há mais que o período configurado (FR-028) é sinalizado — ver `configuracao`.
+## Conteúdo
 
-### `campanha_evento`
+### `item_necessario` (FR-026 a FR-028)
 
-Título, descrição, `data_inicio`, `data_fim`, recursos necessários, `status`, auditoria.
-**Validação**: conflito de data com outro evento confirmado é sinalizado no cadastro (FR-030).
+| Campo | Tipo | Notas |
+|---|---|---|
+| `nome` | `text` | |
+| `quantidade` | `numeric(10,2)` | `>= 0` |
+| `unidade` | `text` | ex.: pacotes, latas |
+| `prioridade` | `text` | `alta` \| `media` \| `baixa` (2026-10-05) |
+| `status` | `text` | `ativo` \| `suprido` |
+| `quantidade_atualizada_em` | `timestamptz` | base do alerta do FR-028 |
+| `baixa_por`, `baixa_em` | NULL | |
 
-### `noticia`
+Portal ordena ativos por prioridade (alta → baixa). Alerta: `ativo` e
+`quantidade_atualizada_em < now() - item_sem_atualizacao_dias`.
 
-Título, corpo, `publicado_em`, `status_sincronizacao_rede_social`
-(`nao_tentado` \| `sucesso` \| `falhou`). Falha de sincronização **nunca** bloqueia a publicação
-no site (FR-033).
+### `evento` e `campanha` (FR-029 a FR-031, DER)
+
+Tipos diferentes, mesma tela (2026-10-05).
+
+`evento`:
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `nome`, `descricao`, `recursos_necessarios` | `text` | recursos em texto livre |
+| `data` | `date` | não pode ser passada no cadastro |
+| `solicitacao_origem_id` | `uuid` FK NULL | |
+| `status` | `text` | `ativo` \| `encerrado` |
+| `encerrado_por`, `encerrado_em` | NULL | conta ou `sistema` (FR-029c) |
+
+`campanha`: igual, trocando `data` por `periodo_inicio`/`periodo_fim` e `recursos_necessarios` pela
+tabela `recurso`, mais `meta_valor` `numeric NULL` e `arrecadado_valor` `numeric NULL`
+(informado à mão, FR-029b; só faz sentido com meta).
+
+**Conflito de data (FR-030)**: só evento × evento ativo na mesma `data`. Aviso, nunca bloqueio.
+
+### `recurso` (DER, relação Arrecada)
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `campanha_id` | `uuid` FK | toda campanha tem ≥ 1 (FR-029) |
+| `tipo` | `text` | `dinheiro` \| `item` |
+| `descricao` | `text` | |
+
+Sem relação com `item_necessario`, como no DER.
+
+### `noticia` (FR-032, FR-032a, FR-032b)
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `titulo`, `corpo` | `text` | |
+| `imagem_arquivo_id` | `uuid` FK NULL → `arquivo` | pública |
+| `imagem_alt` | `text` NULL | obrigatório se houver imagem — `CHECK` |
+| `status` | `text` | `publicada` \| `despublicada` |
+| `publicada_em`, `atualizado_em` | | |
+
+### `conteudo_institucional` (FR-001, FR-001a)
+
+**Uma única linha** (`id` fixo).
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `historia`, `missao`, `equipe` | `text` | |
+| `atualizado_por`, `atualizado_em` | | versões anteriores em `historico_alteracao` |
+
+`conteudo_institucional_imagem`: `arquivo_id`, `texto_alternativo` (obrigatório), `ordem`.
 
 ### `arquivo`
 
-Ponteiro para o objeto no Vercel Blob. Nenhuma URL de Blob é exposta diretamente ao Portal Público
-— o download passa por função que checa autorização (research D3).
+Ponteiro para objeto no Vercel Blob (D3).
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `id` | `uuid` PK | |
-| `blob_url` | `text` | URL interna do Vercel Blob |
+| `blob_url` | `text` | nunca em resposta pública se `acesso = privado` |
+| `acesso` | `text` | `privado` (currículo) \| `publico` (imagens) |
+| `categoria` | `text` | `curriculo` \| `imagem_noticia` \| `imagem_institucional` |
 | `nome_original`, `mime_type`, `tamanho_bytes` | | |
-| `categoria` | `text` | `curriculo` \| `autorizacao_menor` \| `comprovante_doacao` |
-| `enviado_em` | `timestamptz` | base para a retenção do FR-056 |
-| `removido_em` | `timestamptz` NULL | anonimização remove o objeto no Blob e marca a linha |
+| `removido_em` | NULL | anonimização remove o objeto no Blob e marca a linha |
 
-### `registro_consentimento`
+---
 
-Comprovação do aceite do aviso de privacidade (FR-051, FR-052).
+## Operação
 
-| Campo | Tipo | Notas |
-|---|---|---|
-| `id` | `uuid` PK | |
-| `submissao_tipo`, `submissao_id` | `text`, `uuid` | vínculo polimórfico com a submissão |
-| `aceito_em` | `timestamptz` | |
-| `finalidade` | `text` | |
-| `versao_aviso` | `text` | versão do texto aceito |
-| `status` | `text` | `vigente` \| `revogado` |
-| `revogado_em` | `timestamptz` NULL | FR-057 |
+### `registro_auditoria` (FR-035, FR-047)
 
-### `solicitacao_titular_dados`
-
-Pedido de exercício de direito LGPD (FR-054, FR-059).
-
-| Campo | Tipo | Notas |
-|---|---|---|
-| `id` | `uuid` PK · `protocolo` `text` UNIQUE | prefixo `LGP-` |
-| `tipo` | `text` | `acesso` \| `correcao` \| `anonimizacao` \| `revogacao` |
-| `nome_solicitante`, `email_solicitante` | `text` | |
-| `descricao` | `text` | |
-| `status` | `text` | `em_analise` \| `atendida` \| `recusada` |
-| `motivo_recusa` | `text` NULL | obrigatório quando `recusada` |
-| `dados_retidos_justificativa` | `text` NULL | o que foi retido por obrigação legal e por quê (FR-055) |
-| `atendido_por`, `atendido_em` | | |
-
-### `registro_auditoria`
-
-Trilha de toda ação administrativa (FR-035, FR-047). **Append-only** — sem update, sem delete.
+**Append-only**: sem `UPDATE`, sem `DELETE` (permissão revogada para o usuário da aplicação).
 
 | Campo | Tipo | Notas |
 |---|---|---|
 | `id` | `bigserial` PK | |
-| `conta_institucional` | `text` | autoria = conta, não pessoa (FR-035) |
-| `acao` | `text` | ex.: `doacao.confirmar`, `voluntario.rejeitar`, `acesso.negado` |
+| `autor_tipo` | `text` | `conta_institucional` \| `doador` \| `sistema` \| `anonimo` |
+| `autor_id` | `uuid` NULL | |
+| `acao` | `text` | ex.: `doacao.confirmar`, `voluntario.entrevista`, `evento.encerrar_auto`, `acesso.negado` |
 | `entidade_tipo`, `entidade_id` | `text`, `uuid` NULL | |
-| `detalhe` | `jsonb` | **nunca** grava dado pessoal em claro |
+| `detalhe` | `jsonb` | **nunca** dado pessoal em claro |
 | `ocorrido_em` | `timestamptz` | |
 
-**Inclui tentativas negadas** (FR-047), registradas sem expor ao usuário o motivo interno.
+### `historico_alteracao` (FR-037, D16)
 
-### `configuracao`
+| Campo | Tipo | Notas |
+|---|---|---|
+| `entidade_tipo`, `entidade_id` | | |
+| `estado_anterior` | `jsonb` | pode conter dado pessoal → anonimizado junto com o registro |
+| `alterado_por`, `alterado_em` | | |
 
-Pares chave/valor editáveis pela equipe, para não exigir redeploy (research D10).
+### `falha_email` (FR-049a, FR-049b)
 
-| Chave | Uso |
-|---|---|
-| `item_periodo_prolongado_dias` | FR-028 — **30** (definido em 2026-09-23) |
-| `retencao_<categoria>_dias` | FR-056 — **sem default**, aguarda definição da instituição |
-| `aviso_privacidade_versao` | versão corrente para FR-052 |
+| Campo | Tipo | Notas |
+|---|---|---|
+| `destinatario` | `text` | anonimizável |
+| `motivo` | `text` | `confirmacao` \| `triagem` \| `definir_senha` \| `redefinir_senha` |
+| `entidade_tipo`, `entidade_id` | | submissão relacionada |
+| `erro` | `text` | mensagem técnica, sem dado pessoal |
+| `falhou_em` | `timestamptz` | |
+| `tratada_por`, `tratada_em` | NULL | |
+
+### `configuracao` (D10)
+
+Chave/valor: `item_sem_atualizacao_dias` = 30 · `retencao_meses` = 6 · `contato_instituicao`.
+
+### `limite_tentativa` (D13)
+
+`chave` (hash de IP/e-mail + escopo), `janela_inicio`, `contagem`. Limpa pelo cron diário.
+
+---
+
+## Retenção — o que a fila do FR-056 lista
+
+Calculado na consulta (sem cron), com `retencao_meses` da configuração:
+
+| Registro | Condição | O que se anonimiza |
+|---|---|---|
+| `cadastro_voluntario` | `status IN (rejeitado, encerrado_titular)` e `concluido_em` + prazo vencido | o cadastro inteiro |
+| `candidatura` | idem | a candidatura inteira, com o currículo |
+| `candidatura` aprovada | `efetivado_em` + prazo vencido e `curriculo_anonimizado_em IS NULL` | **só o currículo** |
+| `solicitacao_externa` | `status IN (rejeitada, encerrada_titular)` e `concluido_em` + prazo vencido | a solicitação inteira |
+| Doador associado inativo | — | **nunca entra na fila** (FR-056); só anonimiza a pedido |
 
 ---
 
 ## Relacionamentos (resumo)
 
 ```
-usuario 1─N usuario_perfil
-usuario 1─N doacao (associativa)
-usuario 0─1 cadastro_voluntario (após aprovação)
-vaga    1─N candidatura_vaga
-arquivo 1─1 { cadastro_voluntario.autorizacao | candidatura.curriculo
-            | doacao.comprovante }
-registro_consentimento N─1 (submissão polimórfica)
-registro_auditoria → append-only, sem FK obrigatória
+pessoa 1─N papel                      (exclusividade funcionario/voluntario ativa — D14)
+pessoa 1─N doacao                     (só associativa)
+pessoa 1─N consentimento              (doador: um por versão do aviso)
+pessoa 1─N token_senha
+cadastro_voluntario 1─1 consentimento · N─0..1 pessoa (após aprovação)
+candidatura         1─1 consentimento · N─0..1 pessoa · 0..1 arquivo (currículo)
+solicitacao_externa 1─1 consentimento · 0..1 evento | 0..1 campanha
+campanha 1─N recurso
+noticia 0..1 arquivo · conteudo_institucional 1─N conteudo_institucional_imagem
+aviso_privacidade 1─N consentimento
+registro_auditoria, historico_alteracao → sem FK obrigatória
 ```
 
 ## Índices que importam
 
-- `UNIQUE` em todo `protocolo` — é a chave da consulta pública.
-- `usuario.cpf` UNIQUE — sustenta o acúmulo de perfis (FR-048).
-- `doacao (status, data_informada)` — alimenta a fila de conferência e a detecção de duplicata.
-- `item_necessario (status, atualizado_em)` — alimenta o alerta do FR-028.
-- `registro_auditoria (ocorrido_em DESC)` — consulta do histórico.
+- `UNIQUE` em todo `protocolo` — chave da consulta pública.
+- `pessoa.cpf` UNIQUE; `lower(pessoa.email)` UNIQUE parcial.
+- Índice único parcial de papel ativo exclusivo (D14).
+- `doacao (status, declarada_em)` — fila de conferência e duplicatas.
+- `item_necessario (status, prioridade, quantidade_atualizada_em)`.
+- `evento (status, data)` · `campanha (status, periodo_fim)` — Portal e cron.
+- `registro_auditoria (ocorrido_em DESC)`.
+- `limite_tentativa (chave, janela_inicio)`.
+
+## Tabelas removidas em relação a 2026-09-04
+
+`usuario_perfil` (virou `papel`), `vaga` (cargos fixos), `solicitacao_titular_dados` (FR-059
+removido), `registro_consentimento` polimórfico (virou `consentimento` com FKs, DER), e os campos de
+protocolo, data informada e comprovante da `doacao`, de anexo de autorização do voluntário, de
+sincronização com redes sociais da notícia e de nível da conta institucional.

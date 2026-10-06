@@ -1,102 +1,102 @@
 # Implementation Plan: Portal Público e Painel Administrativo do Recanto dos Velhinhos
 
-**Branch**: `001-portal-painel-ilpi` | **Date**: 2026-09-04 | **Spec**: [spec.md](./spec.md)
+**Branch**: `001-portal-painel-ilpi` (trabalho na `main`) | **Date**: 2026-10-05 (refeito; versão
+anterior de 2026-09-04) | **Spec**: [spec.md](./spec.md)
 
-**Input**: Feature specification from `/specs/001-portal-painel-ilpi/spec.md`
+**Input**: Feature specification from `/specs/001-portal-painel-ilpi/spec.md`, com as sessões de
+03, 04 e 05/10 e a constituição 3.0.0.
 
 ---
 
 ## Summary
 
-Substituir a gestão manual da ILPI (planilhas Excel + Instagram) por uma aplicação web com dois
-módulos: **Portal Público** (sem login) e **Painel Administrativo** (autenticado). Cobre 11 casos de
-uso e os requisitos FR-001 a FR-059.
+Substituir a gestão manual da ILPI (planilhas e Instagram) por uma aplicação web com **Portal
+Público** (sem login), **autoatendimento do doador associado** e **Painel Administrativo** (conta
+institucional). Cobre os 11 casos de uso e os requisitos FR-001 a FR-061 (FR-010, FR-010b, FR-033,
+FR-045 e FR-059 são números reservados).
 
-A abordagem técnica aproveita o protótipo `recanto-frontend` já existente — 21 páginas HTML, design
-system de 1267 linhas de CSS e 24 módulos JS — mantendo-o em HTML/CSS/JS puro e substituindo apenas
-sua camada de dados falsa (`assets/js/data.js`, hoje em `localStorage`) por chamadas `fetch` a
-funções serverless em `/api` na Vercel, com PostgreSQL no Neon e arquivos no Vercel Blob.
+A abordagem mantém o protótipo de `public/` em HTML/CSS/JS puro e troca sua camada falsa
+(`assets/js/data.js`) por chamadas `fetch` a funções serverless em `api/` na Vercel, com PostgreSQL
+no Neon, currículos e imagens no Vercel Blob e e-mail pelo SMTP do Gmail institucional.
 
-Duas decisões desta sessão moldam o plano: a inclusão da LGPD no escopo (CSU11) e a **reversão do
-CSU01 para Pix estático**, que removeu a integração com API de pagamentos e transformou a doação em
-declaração do doador conferida manualmente pela equipe.
-
-> ### CSU01 — liberado em 2026-09-05
-> A reversão para Pix estático exigiu emenda ao Princípio VII da constituição (versão **2.0.0**),
-> **ratificada em 2026-09-05**. Esteve bloqueada por um dia porque a rota constava como descartada
-> pelo orientador; esclareceu-se que a objeção dele era à justificativa de *custo zero*, não à
-> mudança em si, e a justificativa desta decisão é outra — eliminar a dependência de conta PJ em
-> provedor de pagamentos. **Nenhuma história está bloqueada.**
+**Por que o plano foi refeito**: o plano de 2026-09-04 desenhava doação com protocolo e anexo,
+autorização de menor no Blob, autoatendimento de voluntário, solicitação de titular com protocolo,
+sincronização com redes sociais e acúmulo de perfis. Tudo isso foi revertido entre 03 e 05/10. O
+desenho novo também incorpora a etapa de entrevista, papéis exclusivos, encerramento automático,
+página institucional editável e as regras de revogação, retenção e anonimização do clarify de
+2026-10-05.
 
 ---
 
 ## Technical Context
 
-**Language/Version**: JavaScript ES2022 — navegador (sem transpilação) e Node.js 24 LTS nas funções
-serverless.
+**Language/Version**: JavaScript ES2022 — no navegador, sem transpilação; Node.js 24 LTS nas funções.
 
-**Primary Dependencies**: deliberadamente mínimas (Princípio I). São **três**:
-`@neondatabase/serverless` (driver HTTP, porque pool TCP não sobrevive a função efêmera),
-`@vercel/blob` (upload de arquivos) e `nodemailer` (SMTP do Gmail institucional — ver research D5;
-sem domínio próprio, é a única rota que autentica corretamente). Tudo mais usa o runtime:
-`node:crypto` para hash de senha (`scrypt`) e assinatura de cookie (HMAC), e `node:test` para os
-testes. **Sem framework de front-end, sem ORM, sem biblioteca de autenticação, sem build step.**
-No front-end há um único arquivo de terceiros, `qrcode-generator` (MIT), copiado para
-`public/assets/vendor/` para desenhar o QR code Pix — não é dependência npm (research D9, 2026-10-03).
-Justificativas em `research.md`.
+**Primary Dependencies**: três dependências npm, todas justificadas (Princípio I):
+`@neondatabase/serverless` (D2), `@vercel/blob` (D3) e `nodemailer` (D5). No front-end, um arquivo
+de terceiros copiado, sem npm: `qrcode-generator` (D9). Todo o resto vem do runtime: `node:crypto`
+(`scrypt`, HMAC, SHA-256, `randomBytes`), `node:test`, `Request.formData()`. Sem framework, ORM,
+biblioteca de autenticação ou build step.
 
-**Storage**: Neon (PostgreSQL) para dados relacionais; Vercel Blob para arquivos enviados
-(currículos, autorização de menor, comprovante bancário). O QR code Pix não é armazenado: é gerado
-no navegador a partir da chave (FR-007, decisão de 2026-10-03).
+**Storage**: Neon (PostgreSQL) — ~22 tabelas ([data-model.md](./data-model.md)). Vercel Blob —
+currículos (privados) e imagens de notícia e da página institucional (públicas). O QR code Pix não é
+armazenado.
 
-**Testing**: `node:test`, restrito a quatro regras críticas — FR-050 (não-duplicação de confirmação
-de doação), FR-045 (protocolo), FR-055 (anonimização) e FR-047 (controle de acesso). Demais telas
-verificadas manualmente pelos portões da constituição.
+**Testing**: `node:test` em quatro regras críticas — FR-050, FR-043/FR-044a, FR-055 e FR-047
+(D8) —, contra uma branch de teste do Neon. O resto é validado pelos cenários e portões de
+[quickstart.md](./quickstart.md).
 
-**Target Platform**: Vercel (estático + funções serverless Node.js 24 LTS). Navegadores: versões mais
-recentes de Chrome, Firefox, Edge e Safari, desktop e mobile.
+**Target Platform**: Vercel Hobby (estático + funções Node 24 + um cron diário). Chrome, Firefox,
+Edge e Safari recentes, em desktop e celular.
 
 **Project Type**: aplicação web — front-end estático + API serverless.
 
-**Performance Goals**: SC-001a (conferência de uma doação em menos de 2 minutos), SC-009 (declaração
-de doação em menos de 2 minutos), SC-013 (e-mail de confirmação em até 5 minutos). Nenhuma meta de
-throughput: o volume esperado é de dezenas de submissões por mês.
+**Performance Goals**: SC-001a (conferir uma doação em < 2 min), SC-007 (nova submissão no Painel em
+até 1 min), SC-009 (declarar doação em < 2 min), SC-013 (e-mail em até 5 min). Sem meta de
+throughput: dezenas de submissões e doações por mês.
 
-**Constraints**: plano gratuito em toda a stack — sem domínio próprio, sem SLA, e hibernação do
-banco Neon após inatividade (cold start na primeira requisição). Mobile-first obrigatório
-(Princípio V). Sem integração com API de pagamentos (Princípio VII, versão 2.0.0).
+**Constraints**:
+- Plano gratuito em toda a stack: sem domínio próprio, sem SLA, hibernação do Neon.
+- Vercel Hobby: cron **uma vez por dia, ±59 min**; corpo de requisição **4,5 MB**; função até
+  **300 s** (conferido na documentação em 2026-10-05).
+- Mobile-first (Princípio V); sem integração de pagamento (Princípio VII).
 
-**Scale/Scope**: uma ILPI em Pinheiral/RJ. ~15 tabelas, ~40 endpoints, 21 telas. Ordem de grandeza:
-centenas de usuários cadastrados, dezenas de doações por mês.
+**Scale/Scope**: uma ILPI em Pinheiral/RJ. ~22 tabelas, ~65 rotas, ~27 telas. Centenas de pessoas
+cadastradas, dezenas de doações por mês.
 
-**NEEDS CLARIFICATION (institucional, não técnico)**: os prazos de retenção por categoria de dado
-(FR-056) não têm valor definido e não recebem default de propósito — é decisão jurídica da
-instituição. Até haver definição, o sistema armazena o prazo como configuração e apenas **sinaliza**
-registros vencidos, sem anonimizar automaticamente. **É a última pendência que bloqueia valor de
-configuração**; as três decisões de equipe que estavam abertas foram fechadas em 2026-09-23 (FR-014
-sem e-mail à equipe, FR-028 em 30 dias, FR-030 como aviso).
+**NEEDS CLARIFICATION**: nenhum. A validade e o reenvio dos links de senha, deixados para o plano
+pelo clarify de 2026-10-05, estão resolvidos em research D11. O FR-056, marcado como pendente no
+plano anterior, foi decidido em 2026-09-30 e ampliado em 2026-10-05.
+
+**Ponto a confirmar com o grupo (não bloqueia o plano)**: research D15 mostra que a verificação do
+FR-006b, embora use mensagem neutra, deixa descobrir por comparação se um CPF ou e-mail é de
+associado. O plano limita tentativas, mas o risco residual precisa ser aceito pelo grupo — ou a
+decisão do clarify revista.
 
 ---
 
 ## Constitution Check
 
-*GATE: avaliado antes da Fase 0 e reavaliado após a Fase 1.*
+*GATE: avaliado antes da Fase 0 e reavaliado após a Fase 1. Constituição **3.0.0** (2026-10-05).*
 
 | Princípio | Situação | Como o plano atende |
 |---|---|---|
-| I — Simplicidade | ✅ Passa | Stack sem framework, sem ORM, sem build step. Cada dependência tem justificativa escrita em `research.md` (D1–D8). Duas dependências npm no total. |
-| II — Acessibilidade | ✅ Passa | Portão obrigatório por tela em `quickstart.md`. O design system do protótipo é o ponto de partida e precisa ter contraste verificado. |
-| III — Integridade de dados | ✅ Passa | Nenhuma rota `DELETE` sobre dado de negócio (`contracts/api.md`); `registro_auditoria` é append-only; toda tabela tem status e auditoria. Anonimização (FR-055) preserva a linha. |
-| IV — Separação de contextos | ✅ Passa | Três zonas de API com autenticação distinta; autorização verificada no servidor a cada requisição; arquivos restritos servidos por função que checa permissão, nunca por URL pública de Blob. |
-| V — Responsividade | ✅ Passa | Portão obrigatório por tela pública; protótipo já é mobile-first. |
-| VI — Escopo fechado | ✅ Passa | O plano cobre exatamente os 11 CSUs. Nada de residentes, medicamentos, estoque ou IA. |
-| VII — Pix sem integração | ✅ Passa | O plano segue a versão **2.0.0** do princípio, ratificada em 2026-09-05: chave/QR code estáticos como conteúdo institucional, nenhuma integração de pagamento, e confirmação por ato humano conferido contra o extrato. |
-| VIII — Triagem humana | ✅ Passa | Nenhuma rota de aprovação automática ou em lote por critério calculado; rejeição exige motivo nas três filas; submissões nascem `pendente`. |
+| I — Simplicidade | ✅ Passa | Sem framework, ORM nem build step. Três dependências npm e um arquivo vendorizado, cada um com justificativa escrita (D2, D3, D5, D9). Limite de tentativas e cron usam o banco e a plataforma que já existem (D12, D13), sem serviço novo. Janela de duplicata é constante, não configuração especulativa (D18). |
+| II — Acessibilidade | ✅ Passa | Portão por tela em `quickstart.md`. Texto alternativo obrigatório validado no servidor para imagens de notícia e da página institucional (FR-032b, FR-001a). Erros de validação devolvem `campos[]` para a tela marcar cada campo. |
+| III — Integridade | ✅ Passa, com duas observações | Nenhuma rota `DELETE`; toda mudança de status registra autor e data, inclusive as automáticas (autor `sistema`, FR-029c); `registro_auditoria` append-only; histórico de alterações (D16). **Observações**: (a) a anonimização remove o objeto do currículo no Blob e marca a linha — é o mecanismo do FR-055, que o CLAUDE.md já distingue de exclusão física; (b) o cron apaga janelas expiradas de `limite_tentativa`, contador técnico sem dado pessoal e sem valor de negócio (D13). |
+| IV — Separação de contextos | ✅ Passa | Exatamente os dois acessos autenticados da versão 3.0.0: conta institucional (`/api/admin/*`) e doador associado (`/api/me/*`), mais a zona pública. Contexto verificado no servidor a cada requisição; id do doador sempre da sessão; currículo só por URL assinada após checar a sessão; nenhum dado pessoal na zona pública (consulta de status e página de autorização do menor desenhadas para isso — D17). |
+| V — Responsividade | ✅ Passa | Portão por tela pública; protótipo já é mobile-first. |
+| VI — Escopo fechado | ✅ Passa | Cobre os 11 CSUs. A página institucional editável está dentro do CSU03 (decisão de 2026-10-05). Nada de residentes, saúde, IA, redes sociais, BI ou módulo financeiro. Cron e Blob são recursos da própria plataforma de hospedagem, não integrações externas novas. |
+| VII — Pix sem integração | ✅ Passa | QR estático montado no navegador a partir da chave cadastrada pela instituição; sem API de pagamento, cobrança dinâmica ou webhook; declaração nasce `pendente` e só um humano confirma; data/hora do clique pelo servidor. *Nota de redação*: o princípio ainda fala em "imagem de QR code fornecida pela instituição"; o QR gerado da chave cadastrada cumpre o mesmo propósito. Um ajuste de redação (PATCH) pode ser feito quando convier, sem bloquear nada. |
+| VIII — Triagem humana | ✅ Passa | Submissões nascem no status inicial; toda transição de triagem é rota humana explícita; entrevista antes da aprovação; nenhuma aprovação automática ou em lote; nada publicado na aprovação da solicitação externa, só na confirmação. O único automatismo — encerrar evento vencido — não é triagem. |
 
-**Resultado**: nenhum gate reprovado, nenhuma condição pendente.
+**Resultado**: nenhum gate reprovado.
 
-**Reavaliação pós-Fase 1**: o desenho de `data-model.md` e `contracts/api.md` não introduziu nenhuma
-abstração adicional nem nova dependência além das declaradas. Nenhum princípio mudou de situação.
+**Reavaliação pós-Fase 1**: o desenho de `data-model.md` e `contracts/api.md` não acrescentou
+dependência nem camada além das listadas. Duas regras de negócio passaram para o banco por
+segurança — exclusividade de papéis (índice parcial, D14) e Restrição 4 do DER (`CHECK` em
+`consentimento`) —, o que reforça os Princípios III e IV sem acrescentar complexidade de código.
+Nenhum princípio mudou de situação.
 
 ---
 
@@ -107,96 +107,99 @@ abstração adicional nem nova dependência além das declaradas. Nenhum princí
 ```text
 specs/001-portal-painel-ilpi/
 ├── plan.md              # Este arquivo
-├── research.md          # Fase 0 — decisões técnicas e alternativas
-├── data-model.md        # Fase 1 — entidades, validações, transições
-├── quickstart.md        # Fase 1 — setup e cenários de validação
+├── research.md          # Fase 0 — D1–D18
+├── data-model.md        # Fase 1 — entidades, transições, retenção
+├── quickstart.md        # Fase 1 — setup e cenários V1–V12
 ├── contracts/
-│   └── api.md           # Fase 1 — contratos dos endpoints
+│   └── api.md           # Fase 1 — rotas por zona de acesso
 ├── checklists/
-│   └── requirements.md  # log de qualidade da especificação
-└── tasks.md             # Fase 2 — gerado por /speckit-tasks, NÃO por este comando
+│   └── requirements.md
+└── tasks.md             # Fase 2 — /speckit-tasks (ainda não existe)
 ```
 
 ### Source Code (repository root)
 
 ```text
-public/                          # front-end estático (do protótipo recanto-frontend)
-├── index.html
-├── institucional.html · campanhas.html · noticias.html
+public/                              # protótipo, já no repositório desde 2026-09-04
+├── index.html · institucional.html · campanhas.html · noticias.html
 ├── doacoes.html · voluntariado.html · vagas.html · solicitar-evento.html
 ├── consultar-status.html · login.html · autoatendimento.html
-├── aviso-privacidade.html       # NOVO — FR-053
-├── solicitar-direitos.html      # NOVO — CSU11 / FR-054
+├── aviso-privacidade.html           # NOVO — FR-053
+├── definir-senha.html               # NOVO — definição e redefinição (D11)
+├── autorizacao-menor.html           # NOVO — página para imprimir (FR-012, D17)
 ├── admin/
-│   ├── dashboard.html · itens.html · campanhas.html · noticias.html
-│   ├── doacoes.html · usuarios.html
+│   ├── dashboard.html · itens.html · campanhas.html · noticias.html · doacoes.html
+│   ├── usuarios.html · pix.html
 │   ├── triagem-voluntarios.html · triagem-vagas.html · triagem-eventos.html
-│   ├── pix.html                 # NOVO — FR-007
-│   ├── solicitacoes-titular.html # NOVO — CSU11 / FR-059
-│   └── ajuda.html               # NOVO — FR-060/FR-060a (estática, sem endpoint)
+│   ├── institucional.html           # NOVO — FR-001a
+│   ├── lgpd.html                    # NOVO — revogação, anonimização, fila de retenção (CSU11)
+│   ├── configuracoes.html           # NOVO — prazos, contato, aviso de privacidade
+│   ├── auditoria.html               # NOVO — FR-035
+│   └── ajuda.html                   # NOVO — FR-060/060a (escrita depois das telas prontas)
 └── assets/
-    ├── css/style.css            # design system existente
+    ├── css/style.css
     ├── js/
-    │   ├── api.js               # NOVO — substitui data.js (fetch + tratamento de erro)
-    │   ├── auth.js · nav.js · utils.js
-    │   ├── page-*.js · admin-*.js
-    │   └── consentimento.js     # NOVO — FR-051/FR-052
-    └── img/                     # hero.jpg, logo-icon.png (sem vídeo — removido em 2026-09-05)
+    │   ├── api.js                   # NOVO — substitui data.js
+    │   ├── pix.js                   # já existe (BR Code)
+    │   ├── consentimento.js         # NOVO — FR-051/052
+    │   ├── mascaras.js              # NOVO — telefone e CPF (FR-037a)
+    │   └── page-*.js · admin-*.js · auth.js · nav.js · utils.js
+    ├── vendor/qrcode.js             # já existe (D9)
+    └── img/
 
-api/                             # funções serverless (Vercel)
-├── _lib/                        # módulos compartilhados, não são endpoints
-│   ├── db.js · sessao.js · autorizacao.js · protocolo.js
-│   ├── auditoria.js · email.js · blob.js · consentimento.js
-├── public/                      # zona pública
-├── me/                          # zona de autoatendimento
-├── admin/                       # zona administrativa
-└── auth/
-
+api/
+├── _lib/                            # módulos compartilhados (o "_" impede virar rota)
+│   ├── db.js · sessao.js · acesso.js · auditoria.js · historico.js
+│   ├── protocolo.js · email.js · blob.js · limite.js · validacao.js
+│   └── anonimizacao.js · papeis.js · datas.js
+├── public/  ·  auth/  ·  me/  ·  admin/  ·  cron/
 db/
-├── migrations/                  # 001_*.sql, 002_*.sql, …
+├── migrations/                      # 001_*.sql …
 ├── migrate.js
-└── seed.js
-
+└── seed.js                          # --demo só local
 tests/
-├── doacao-idempotencia.test.js  # FR-050
-├── protocolo.test.js            # FR-045
-├── anonimizacao.test.js         # FR-055
-└── autorizacao.test.js          # FR-047
+├── doacao-confirmacao.test.js       # FR-050
+├── protocolo.test.js                # FR-043 / FR-044a
+├── anonimizacao.test.js             # FR-055
+└── acesso.test.js                   # FR-047
+vercel.json                          # cron diário
+package.json
 ```
 
-**Structure Decision**: estrutura de aplicação web com front-end estático e API serverless, ditada
-pelo formato da Vercel (`public/` servido como estático, `api/` como funções). Não se adotou a
-separação clássica `backend/` + `frontend/` porque a Vercel espera exatamente esses dois diretórios,
-e inventar outra hierarquia exigiria configuração extra sem benefício — Princípio I.
+**Structure Decision**: a Vercel serve `public/` como estático e `api/` como funções, com rotas por
+arquivo (ex.: `api/admin/doacoes/[id]/confirmar.js`). Separar em `backend/` e `frontend/` exigiria
+configuração extra sem ganho (Princípio I). `api/_lib/` é a única camada compartilhada.
 
-Os módulos de `api/_lib/` são a única camada compartilhada. O prefixo `_` impede que a Vercel os
-publique como endpoints.
-
-**Pré-requisito de implementação**: o protótipo `recanto-frontend` **ainda não está no
-repositório** — vive em `C:\Users\afons\Downloads\recanto-frontend\recanto-frontend`. Copiar para
-`public/` e commitar é a primeira tarefa. Atenção ao `assets/video/hero-video.mp4`, responsável por
-quase todos os 9,6 MB da pasta.
+Telas do protótipo que **mudam de comportamento** (pendências 2 e 6 do CLAUDE.md): `doacoes.html`
+(sem protocolo, sem anexo, sem botão que simula confirmação), `admin/doacoes.html` (motivo
+opcional, motivo padrão, possível duplicata), as três triagens (etapa de entrevista),
+`autoatendimento.html` (só doador, só confirmadas), `admin/itens.html` (prioridade em vez de
+"urgente"), `admin/campanhas.html` (evento × campanha, meta opcional, recursos),
+`solicitar-evento.html` (nome da iniciativa, data ou período), `vagas.html` (CPF e data de
+nascimento), `admin/noticias.html` (editar, despublicar, imagem).
 
 ---
 
 ## Ordem de implementação sugerida
 
-Deriva das prioridades do spec e das dependências entre histórias. `/speckit-tasks` detalha.
+`/speckit-tasks` detalha. A ordem segue as prioridades do spec e as dependências.
 
-1. **Fundação** — trazer o protótipo para `public/`, schema inicial, `api/_lib/` (db, sessão,
-   autorização, protocolo, auditoria), `api.js` no lugar de `data.js`.
-2. **US1 (P1)** — Portal Público informativo. Prova a ponta a ponta sem depender de nada.
-3. **US3 (P2) + CSU07** — gestão de itens e campanhas: é o que alimenta a US1.
-4. **US4, US5, US6 (P1/P2)** — submissões públicas e triagens, com e-mail (FR-049/049a).
-5. **US11 (P2) — LGPD** — o consentimento (FR-051/FR-052) **acompanha** cada formulário das etapas
-   anteriores e não deve ser adiado; só o fluxo de atendimento de direitos vem aqui.
-6. **US9, US10** — autoatendimento e consulta por protocolo.
-
-**US2 (P1) — CSU01 doação**: liberada. Por ser P1 e por não depender de nenhuma outra história
-(precisa apenas da fundação e da tela de configuração da chave Pix), pode entrar logo após a etapa 1,
-em paralelo com a US1. Sem a integração de pagamento, o backend dela ficou pequeno: não há endpoint
-de webhook, verificação de assinatura nem job de polling — o volume está na tela de conferência do
-Painel e na regra de possível duplicata (FR-050).
+1. **Fundação** — `package.json`, migrações, `api/_lib/` (banco, sessão, acesso, auditoria,
+   histórico, limite, e-mail), login do Painel, `api.js` no lugar de `data.js`, seed de produção
+   sem credencial de demonstração. Os quatro testes automatizados nascem aqui, junto com a regra
+   que protegem.
+2. **US1 + US3 (P1/P2)** — Portal informativo e o que o alimenta: itens, eventos/campanhas, cron
+   diário.
+3. **US2 (P1)** — doação: chave Pix, verificação associativa, declaração, conferência, conta do
+   doador e links de senha (D11, D15). Pode correr em paralelo com o item 2 depois da fundação.
+4. **US4, US5, US6 (P2)** — submissões e triagens com entrevista, e-mails (FR-049/049a/049b),
+   página de autorização do menor.
+5. **US11 (P2) — LGPD** — o consentimento acompanha cada formulário dos itens 3 e 4 desde o
+   início; aqui entram o aviso versionado, a revogação, a anonimização e a fila de retenção.
+6. **US7, US8, US9, US10 (P3)** — gestão de usuários e auditoria, notícias e página
+   institucional, autoatendimento, consulta por protocolo.
+7. **Ajuda do Painel (FR-060/060a/061)** — por último, escrita contra as telas prontas (decisão de
+   2026-09-23).
 
 ---
 
@@ -204,12 +207,10 @@ Painel e na regra de possível duplicata (FR-050).
 
 | Violação | Por que é necessária | Alternativa mais simples rejeitada porque |
 |---|---|---|
-| Duas dependências npm (`@neondatabase/serverless`, `@vercel/blob`) | Pool TCP não sobrevive a função serverless, e a Vercel não tem disco persistente | `pg` puro esgota o limite de conexões do plano gratuito; salvar arquivo em disco local não persiste. Ver `research.md` D2 e D3 |
-| Terceira dependência npm (`nodemailer`), adicionada em 2026-09-23 | A instituição não tem domínio próprio e não pretende registrar. Sem domínio, provedor terceiro enviando como `@gmail.com` falha no DMARC e cai em spam; o SMTP do próprio Gmail é a única rota que autentica | Escrever SMTP sobre `node:tls` à mão exigiria negociação STARTTLS, autenticação e codificação MIME — complexidade desproporcional e propensa a erro em um time com 11 semanas. Ver `research.md` D5 |
-| Arquivo de terceiros no front-end (`qrcode-generator`, MIT), adicionado em 2026-10-03 | O Portal gera o QR code Pix estático com o valor escolhido pelo doador (FR-007) | Codificar QR code à mão (Reed-Solomon, máscaras) é complexo e arrisca gerar QR que algum banco não lê. Copiado para `public/assets/vendor/`, sem npm, sem build e sem CDN. Ver `research.md` D9 |
-
-Nenhuma outra complexidade a justificar: não há ORM, framework, camada de repositório, biblioteca de
-autenticação nem passo de build.
+| Duas dependências npm (`@neondatabase/serverless`, `@vercel/blob`) | Pool TCP não sobrevive a função serverless; a Vercel não tem disco persistente | `pg` esgota conexões do Neon gratuito; disco local não persiste (D2, D3) |
+| Terceira dependência npm (`nodemailer`, 2026-09-23) | Sem domínio próprio, só o SMTP do Gmail autentica no DMARC | SMTP à mão sobre `node:tls` (STARTTLS, autenticação, MIME) custa mais do que a dependência economiza (D5) |
+| Arquivo de terceiros no front (`qrcode-generator`, MIT, 2026-10-03) | O Portal gera o QR Pix com o valor escolhido (FR-007) | Codificar QR à mão arrisca QR que algum banco não lê (D9) |
+| Tabela `limite_tentativa` com limpeza física pelo cron | FR-044a e segurança de login exigem contador que sobreviva entre chamadas | Contador em memória não existe em serverless; Redis seria serviço novo (D13) |
 
 ---
 
@@ -217,9 +218,9 @@ autenticação nem passo de build.
 
 | Arquivo | Fase | Conteúdo |
 |---|---|---|
-| `research.md` | 0 | 10 decisões técnicas com alternativas e custos aceitos; riscos registrados |
-| `data-model.md` | 1 | 16 entidades, validações, transições de estado, índices |
-| `contracts/api.md` | 1 | ~40 endpoints em três zonas de acesso; 4 contratos sob teste |
-| `quickstart.md` | 1 | Setup, 10 cenários de validação, portões de qualidade |
+| `research.md` | 0 | 18 decisões (D11–D18 novas; D3–D6, D8–D10 revistas), riscos |
+| `data-model.md` | 1 | ~22 tabelas, transições, retenção, índices, tabelas removidas |
+| `contracts/api.md` | 1 | ~65 rotas em cinco zonas; 4 contratos sob teste |
+| `quickstart.md` | 1 | setup, 12 cenários de validação, portões |
 
 **Próximo comando**: `/speckit-tasks`.

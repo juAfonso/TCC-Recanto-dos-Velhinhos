@@ -1,270 +1,395 @@
 # Research — Portal Público e Painel Administrativo do Recanto dos Velhinhos
 
-**Feature**: `001-portal-painel-ilpi` · **Data**: 2026-09-04 · **Fase**: 0 (Outline & Research)
+**Feature**: `001-portal-painel-ilpi` · **Data**: 2026-10-05 (refeito; versão anterior de 2026-09-04)
+· **Fase**: 0 (Outline & Research)
 
 Cada decisão abaixo foi tomada sob o Princípio I da constituição (simplicidade acima de
 sofisticação), que exige justificativa escrita para toda nova dependência, abstração ou camada.
 A pergunta aplicada a cada item foi: *qual é a menor peça que resolve o requisito?*
 
+**O que mudou desde 2026-09-04**: o spec passou pelas sessões de 03, 04 e 05/10 e a constituição
+chegou à 3.0.0. Saíram o protocolo e o anexo da doação, o anexo da autorização do menor, o
+autoatendimento de voluntário, a solicitação de titular com protocolo e a sincronização com redes
+sociais. Entraram a etapa de entrevista nas triagens, papéis exclusivos de funcionário e voluntário,
+encerramento automático de evento/campanha, página institucional editável e as regras novas de
+revogação, retenção e anonimização. As decisões D11 a D18 são novas; D3, D4, D5, D6, D8 e D10
+foram revistas.
+
+Limites da Vercel conferidos na documentação oficial em 2026-10-05: cron do plano Hobby roda
+**no máximo uma vez por dia, com precisão de ±59 min**; corpo de requisição e de resposta de
+função limitado a **4,5 MB**; duração máxima de função no Hobby de **300 s**.
+
 ---
 
 ## D1 — Arquitetura da aplicação
 
-**Decisão**: páginas HTML/CSS/JS estáticas servidas pela Vercel + funções serverless em `/api`
-(Node.js 24 LTS). Sem framework de front-end, sem build step.
+**Decisão**: páginas HTML/CSS/JS estáticas em `public/`, servidas pela Vercel, e funções serverless
+em `api/` (Node.js 24 LTS), escritas no formato Web padrão — `export function GET(request)` /
+`POST(request)`, recebendo `Request` e devolvendo `Response`. Sem framework, sem build step.
 
-**Justificativa**: o protótipo `recanto-frontend` já entrega 21 telas e um design system de 1267
-linhas de CSS em HTML/CSS/JS puro. Migrar para React/Next.js jogaria fora o HTML dessas telas e
-imporia curva de aprendizado a um time de 6 pessoas com prazo fixo de TCC — exatamente o risco que
-o Princípio VI (escopo fechado) identifica como principal ameaça à entrega. A integração se reduz a
-substituir a camada mock `assets/js/data.js` por chamadas `fetch`.
+**Justificativa**: o protótipo já está no repositório (`public/`, desde 2026-09-04) com as telas e o
+design system em HTML/CSS/JS puro. A integração é trocar a camada falsa `assets/js/data.js` por
+chamadas `fetch`. O formato Web padrão é suportado pela Vercel sem configuração e dá
+`request.formData()` nativo, o que dispensa biblioteca de upload (D3).
 
 **Alternativas consideradas**:
-- *Next.js (App Router) + React*: mais idiomático na Vercel e traria componentização real,
-  eliminando a repetição de navbar/rodapé entre as 21 páginas. Rejeitado pelo custo de reescrita e
-  de aprendizado frente ao prazo.
-- *Next.js só nas páginas novas*: rejeitado por criar dois modelos mentais no mesmo repositório,
-  o pior dos dois mundos para manutenção pela instituição depois da entrega.
+- *Next.js + React*: componentização real, mas reescreveria as telas e imporia curva de
+  aprendizado a 6 pessoas com prazo fixo. Rejeitado (decisão de 2026-09-04, Princípio I).
+- *Handler `(req, res)` com helpers da Vercel*: funciona, mas não parseia `multipart/form-data`
+  — exigiria biblioteca. Rejeitado em favor do formato Web.
 
-**Custo aceito**: sem componentização, o HTML de navbar/rodapé/`<head>` se repete entre páginas.
-Mitigação: `assets/js/nav.js` já injeta a navegação no protótipo; manter esse padrão.
+**Custo aceito**: HTML de navbar/rodapé repetido entre páginas; `assets/js/nav.js` continua
+injetando a navegação, como no protótipo.
 
 ---
 
 ## D2 — Acesso ao banco a partir de funções serverless
 
-**Decisão**: driver `@neondatabase/serverless`, usando o modo HTTP (`neon()`) para consultas
-avulsas e `Pool` apenas onde houver transação de múltiplos comandos.
+**Decisão**: `@neondatabase/serverless` — `neon()` (HTTP) para consultas avulsas e `Pool` só onde
+houver transação de vários comandos (aprovação de candidatura, anonimização, revogação).
 
-**Justificativa**: funções serverless são instâncias efêmeras — um pool TCP tradicional (`pg`) abre
-conexões que não sobrevivem à invocação e esgotam o limite de conexões do plano gratuito do Neon.
-O driver da Neon fala com o banco por HTTP/WebSocket, o que elimina o problema e é a rota
-recomendada pela própria Neon para esse ambiente.
+**Justificativa**: pool TCP tradicional (`pg`) não sobrevive a instâncias efêmeras e esgota o
+limite de conexões do plano gratuito do Neon. SQL escrito à mão, sem ORM, deixa auditável a
+proibição de `DELETE` (Princípio III).
 
-**Alternativas consideradas**:
-- *`pg` puro*: rejeitado pelo esgotamento de conexões descrito acima.
-- *Prisma/Drizzle (ORM)*: rejeitado pelo Princípio I. Um ORM adiciona schema DSL, geração de código
-  e passo de build para um modelo de ~15 tabelas que SQL escrito à mão resolve. SQL explícito também
-  torna auditável a proibição de `DELETE` (Princípio III), que ficaria escondida atrás do ORM.
+**Alternativas consideradas**: `pg` puro (esgota conexões); Prisma/Drizzle (schema DSL e build
+step para ~20 tabelas — Princípio I).
 
-**Consequência a registrar no spec**: o plano gratuito do Neon hiberna o banco após inatividade. A
-primeira requisição depois da hibernação sofre atraso perceptível (cold start). Já previsto em
-Assumptions do spec.md.
+**Consequência**: o Neon gratuito hiberna após inatividade; a primeira requisição depois disso é
+lenta. Já previsto nas Assumptions do spec.
 
 ---
 
-## D3 — Armazenamento de arquivos enviados
+## D3 — Arquivos enviados (revista)
 
-**Decisão**: Vercel Blob com acesso privado; o download passa sempre por uma função serverless que
-verifica a autorização e então redireciona para uma URL assinada de vida curta.
+**Decisão**: Vercel Blob, com dois níveis de acesso:
 
-**Justificativa**: a Vercel não tem disco persistente — arquivo salvo no sistema de arquivos da
-função desaparece. Três tipos de arquivo aqui são dados pessoais sensíveis: currículos, autorização
-de responsável legal de menor (FR-058) e comprovante bancário (FR-010b). O Princípio IV exige que a
-autorização seja verificada **no servidor**; uma URL pública de Blob, mesmo com nome aleatório,
-seria acesso sem verificação. Daí a indireção obrigatória pela função.
+| Arquivo | Acesso | Limite |
+|---|---|---|
+| Currículo (FR-017) | **privado** — download só por função do Painel que verifica a sessão e devolve URL assinada de vida curta | 4 MB · PDF, DOC, DOCX, ODT |
+| Imagem de notícia (FR-032b) e da página institucional (FR-001a) | **pública** — é conteúdo do Portal | 2 MB · JPEG, PNG, WebP |
+
+O arquivo viaja **no mesmo envio do formulário** (`multipart/form-data`, lido com
+`request.formData()`), não em upload separado.
+
+**Justificativa**:
+- Saíram do Blob o comprovante bancário (2026-10-04) e a autorização do menor (2026-10-03). O
+  único arquivo pessoal que resta é o currículo.
+- O limite de 4,5 MB do corpo de requisição na Vercel define os tetos: 4 MB de currículo deixam
+  folga para os demais campos.
+- Upload no mesmo envio evita arquivos órfãos no Blob quando a pessoa desiste do formulário — o
+  desenho anterior (`POST /uploads` devolvendo um id) deixava lixo sem dono, com dado pessoal.
 
 **Alternativas consideradas**:
-- *Binário no PostgreSQL (`bytea`)*: backup junto do banco e nenhum serviço novo, mas consome
-  rápido a cota do plano gratuito do Neon e pesa nas consultas. Rejeitado.
-- *Blob com acesso público*: rejeitado por violar o Princípio IV e o FR-058.
+- *Upload direto do navegador ao Blob com token* (`@vercel/blob/client`): contorna os 4,5 MB, mas
+  traz um fluxo de duas etapas e token temporário, sem necessidade para currículos de poucas
+  páginas. Rejeitado.
+- *Binário no PostgreSQL*: consome a cota do Neon gratuito. Rejeitado.
 
-**Regra derivada**: nenhuma URL de Blob pode ser gravada em HTML servido ao Portal Público.
+**Regra derivada**: nenhuma URL de currículo aparece em resposta da zona pública nem em HTML do
+Portal.
 
 ---
 
-## D4 — Autenticação e sessão
+## D4 — Autenticação e sessão (revista)
 
-**Decisão**: cookie de sessão assinado com HMAC-SHA256 via `node:crypto`, com flags `HttpOnly`,
-`Secure`, `SameSite=Lax`. Senhas com `scrypt` do `node:crypto`, salt por usuário. Zero dependências
-externas.
+**Decisão**: cookie de sessão assinado com HMAC-SHA256 (`node:crypto`), `HttpOnly`, `Secure`,
+`SameSite=Lax`, validade de 8 horas. Senhas com `scrypt` e salt por senha. Zero dependências.
 
-**Justificativa**: o Princípio I pede a menor solução que atenda ao requisito. O Node 24 já traz
-`scrypt` (função de derivação de chave resistente a força bruta, recomendada pelo OWASP) e HMAC.
-Adicionar `bcrypt` (compilação nativa, problemática em serverless), `jsonwebtoken` ou uma biblioteca
-de sessão inteira não resolveria nada que o runtime já não resolva.
+**Dois contextos de login, e só dois** (Princípio IV, constituição 3.0.0):
 
-**Alternativas consideradas**:
-- *`bcryptjs`*: puro JS e popular, mas é dependência a mais para o que `scrypt` já faz.
-- *Auth como serviço (Auth0, Clerk, Supabase Auth)*: rejeitado — traria cadastro de usuário para
-  fora do sistema, conflitando com o acúmulo de perfis no mesmo CPF (FR-048) e com a proibição de
-  exclusão física (FR-024), além de custo e vínculo contratual.
+| Contexto | Quem | Cookie carrega |
+|---|---|---|
+| Painel | conta institucional compartilhada (FR-040) | `{ ctx: "admin", contaId }` |
+| Autoatendimento | doador associado (FR-041) | `{ ctx: "doador", pessoaId }` |
 
-**Atenção**: são dois contextos de login distintos (Princípio IV) — conta institucional
-compartilhada do Painel Administrativo (FR-040) e login individual de autoatendimento (FR-041).
-O cookie deve carregar qual contexto está ativo, e a verificação de perfil roda a cada requisição.
+Funcionários e voluntários não têm login. Não existe "nível de permissão" dentro do Painel
+(FR-025): a autorização é o contexto do cookie, verificado no servidor a cada requisição.
 
----
+**Regra de acesso do doador**: o login só é aceito se a pessoa estiver ativa **e** o papel de
+doador associado estiver ativo **e** a senha já tiver sido definida pelo link (FR-006a). A
+revogação do consentimento do doador encerra o papel (FR-057), o que derruba o login sem afetar
+outros papéis da mesma pessoa.
 
-## D5 — Envio de e-mail transacional
-
-**Decisão (revista em 2026-09-23)**: SMTP do Gmail institucional do Recanto, via `nodemailer`, com
-senha de aplicativo. **Terceira dependência npm do projeto**, aceita conscientemente.
-
-**Justificativa**: em 2026-09-23 a instituição confirmou que **não possui domínio próprio e não
-pretende registrar um**. Isso inverte a conclusão anterior desta decisão. Sem domínio, um provedor
-terceiro (Resend, SendGrid, Brevo) enviando como `algo@gmail.com` não consegue autenticar-se: o
-gmail.com publica SPF/DKIM e não autoriza terceiros a enviar em seu nome, de modo que a mensagem
-falha no alinhamento DMARC e é classificada como spam ou rejeitada. Enviar pelo SMTP do próprio
-Gmail resolve isso porque **é o Google que entrega**, com autenticação íntegra.
-
-Limite da conta gratuita: ~500 mensagens/dia. O volume esperado é de 20 a 50 por **mês** (FR-049,
-FR-049b e FR-046) — três ordens de grandeza de folga. Custo: **zero**, em qualquer cenário.
-
-**A justificativa anterior estava errada e fica registrada para não ser repetida**: dizia que SMTP
-direto teria "entregabilidade pior sem domínio próprio". É o contrário. Sem domínio, o SMTP do
-provedor do endereço é a única rota que autentica corretamente.
-
-**Alternativas consideradas**:
-- *Resend* (decisão anterior): o domínio de teste só entrega para o dono da conta — inútil para
-  escrever a voluntários. Com domínio verificado seria a melhor opção, mas não há domínio.
-- *Brevo / SendGrid com remetente avulso verificado*: tecnicamente permitido, porém é exatamente a
-  combinação que falha no DMARC descrita acima.
-- *Brevo / SendGrid enviando de um subdomínio do próprio provedor*: autentica corretamente, mas o
-  remetente não é o Recanto, o que confunde quem recebe e quebra a resposta. Fica como **plano B**
-  caso o Google bloqueie a conta.
-
-**Justificativa da terceira dependência (exigida pelo Princípio I)**: escrever SMTP sobre
-`node:tls` à mão é viável, mas envolve negociação STARTTLS, autenticação e codificação MIME —
-complexidade desproporcional e propensa a erro, em um time que precisa entregar em 11 semanas. O
-`nodemailer` é maduro e resolve isso. A alternativa de não usar biblioteca custaria mais do que a
-dependência economiza.
-
-**Restrições conhecidas, todas registradas**:
-- **Zona cinzenta nos termos do Google**: envio automatizado não é o uso previsto de conta comum.
-  Improvável gerar problema neste volume, mas é risco real e o plano B acima existe por isso.
-- **A conta precisa ser institucional, nunca pessoal.** Se for o Gmail de um funcionário e ele sair
-  da instituição, o envio para de funcionar.
-- **A senha de aplicativo é credencial**: vai em variável de ambiente, jamais no repositório.
-- **Cair em spam é pior que falhar.** Falha o sistema detecta e sinaliza (FR-049a); entrega no spam
-  é silenciosa. Por isso o **protocolo é o canal primário** de acompanhamento e o e-mail é
-  complementar — a interface deve dizer "anote este código", não "enviamos um e-mail".
+**Alternativas consideradas**: `bcryptjs` (dependência a mais para o que `scrypt` faz); auth como
+serviço (tira o cadastro do sistema, conflita com FR-024 e FR-048, e traz vínculo contratual).
 
 ---
 
-## D6 — Geração do código de protocolo
+## D5 — E-mail transacional (revista)
 
-**Decisão**: 10 caracteres do alfabeto Crockford Base32 (sem I, L, O, U — reduz erro de digitação),
-sorteados de `crypto.randomBytes`, com prefixo por tipo. Exemplo: `VOL-7K2M9XQ4RT`.
+**Decisão**: SMTP do Gmail institucional via `nodemailer`, senha de aplicativo em variável de
+ambiente. Terceira dependência npm, justificada em 2026-09-23 (sem domínio próprio, é a única rota
+que autentica no DMARC). A justificativa e os riscos dessa escolha seguem válidos e estão no
+CLAUDE.md; não são repetidos aqui.
 
-**Justificativa**: o spec (Assumptions e FR-044) exige protocolo **não sequencial e não previsível**,
-porque o protocolo é o único credencial da consulta pública de status — um código adivinhável
-exporia o status de submissões de terceiros. 10 caracteres Base32 ≈ 50 bits de entropia, muito além
-do que força bruta alcança contra um endpoint com limitação de tentativas.
+**Política de reenvio (FR-049a, FR-049b) — nova**:
+1. O registro é gravado e confirmado no banco **antes** de qualquer tentativa de envio.
+2. Primeira tentativa com tempo-limite de 8 s.
+3. Se falhar, espera 3 s e tenta uma segunda vez, na mesma requisição.
+4. Se falhar de novo, grava uma linha em `falha_email` (sinalizada no Painel) e a resposta ao
+   usuário segue normal: o protocolo já está na tela.
 
-**Alternativas consideradas**:
-- *ID sequencial ou UUIDv4 visível*: sequencial é adivinhável (rejeitado); UUIDv4 é seguro mas longo
-  demais para alguém anotar num papel ou ditar por telefone — público idoso, Princípio I.
+**Justificativa**: o spec pede "reenviar uma vez após um intervalo". Fazer o reenvio na mesma
+requisição é o desenho mais simples que existe em serverless: não exige fila nem cron, e o pior
+caso (~20 s) está muito abaixo dos 300 s de limite. A espera é aceitável porque o volume é de
+dezenas de envios por mês e a interface mostra "enviando…".
 
-**Regra derivada**: o endpoint público de consulta por protocolo precisa de limitação de tentativas
-por IP, e deve responder "não encontrado" de forma idêntica para protocolo inexistente e para
-protocolo mal formado, sem vazar qual é o caso.
+**Alternativas consideradas**: reenvio pelo cron diário (D12) — atrasaria o reenvio em até 24 h e
+quebraria o SC-013; fila externa (Upstash, QStash) — dependência e serviço novos sem necessidade.
+
+---
+
+## D6 — Código de protocolo (revista)
+
+**Decisão**: 10 caracteres Crockford Base32 sorteados por `crypto.randomBytes`, com prefixo por
+tipo: `VOL-` (voluntário), `CAN-` (candidatura), `SOL-` (solicitação externa). Exemplo:
+`VOL-7K2M9XQ4RT`. **Doação não tem protocolo** (2026-10-04) e não existe mais protocolo de
+solicitação de titular (2026-10-03).
+
+**Justificativa**: ~50 bits de entropia, curto o bastante para anotar num papel ou ditar por
+telefone, sem I, L, O e U para evitar confusão de leitura. A consulta pública depende só do
+protocolo, que por isso não pode ser previsível (FR-043, FR-044a).
+
+**Alternativas consideradas**: sequencial (adivinhável); UUID (longo demais para o público idoso).
 
 ---
 
 ## D7 — Migrações de banco
 
-**Decisão**: arquivos `.sql` numerados em `db/migrations/`, aplicados por um script Node
-(`db/migrate.js`) que registra o que já rodou numa tabela `schema_migrations`.
+**Decisão**: arquivos `.sql` numerados em `db/migrations/`, aplicados por `db/migrate.js`, que
+registra o que já rodou em `schema_migrations`.
 
-**Justificativa**: ~15 tabelas e um time que precisa enxergar o SQL para aprender. Ferramenta de
-migração (Flyway, Prisma Migrate, node-pg-migrate) resolveria mais do que o problema exige.
-
-**Alternativas consideradas**: aplicar o schema manualmente pelo console do Neon — rejeitado por não
-deixar histórico versionado, contrariando a rastreabilidade que o Princípio III pede.
+**Alternativas consideradas**: aplicar pelo console do Neon (sem histórico versionado, contra o
+Princípio III); ferramenta de migração (mais do que o problema pede).
 
 ---
 
-## D8 — Estratégia de testes
+## D8 — Testes automatizados (revista)
 
-**Decisão**: `node:test` (runner nativo do Node 24) sobre as quatro regras críticas escolhidas pelo
-grupo: não-duplicação de confirmação de doação (FR-050), geração de protocolo (FR-045), anonimização
-(FR-055) e controle de acesso por perfil (FR-047). Demais telas verificadas manualmente pelos
-portões da constituição.
+**Decisão**: `node:test` sobre as quatro regras críticas escolhidas pelo grupo em 2026-09-04, com
+os números de requisito atualizados:
 
-**Justificativa**: são as regras onde uma falha silenciosa custa caro — dinheiro conferido em dobro,
-protocolo adivinhável, dado pessoal que deveria ter sumido e não sumiu, e acesso indevido. O runner
-nativo evita instalar Vitest/Jest.
+1. **FR-050** — confirmação de doação não duplica.
+2. **FR-043 / FR-044a** — protocolo único, imprevisível, e consulta com resposta idêntica para
+   inexistente e mal formado. (Era FR-045, que agora é número reservado.)
+3. **FR-055** — anonimização torna dados ilegíveis, preserva linha, histórico e auditoria, e mantém
+   as doações do doador anonimizado com valor, data, tipo e status.
+4. **FR-047** — rota do Painel com sessão de doador ou sem sessão responde `403` e registra a
+   tentativa.
 
-**Alternativas consideradas**:
-- *Suíte completa com Playwright E2E*: mais rigor acadêmico, rejeitado pelo custo de tempo frente ao
-  prazo (decisão do grupo em 2026-09-04).
-- *Nenhum teste automatizado*: rejeitado — deixaria regras de dinheiro e de LGPD sem rede.
-
----
-
-## D9 — Doação com Pix estático
-
-**Decisão**: a chave Pix é conteúdo institucional cadastrado no Painel (entidade Chave Pix
-Institucional), junto com o nome do recebedor e a cidade. Desde 2026-10-03 o QR code não é mais uma
-imagem enviada pela equipe: o navegador do doador gera o BR Code de um Pix estático com o valor
-escolhido (ver "QR code gerado no navegador", abaixo). Nenhuma integração de pagamento. O doador declara a doação e um
-funcionário confirma contra o extrato bancário.
-
-**Justificativa**: decisão do responsável pelo projeto em 2026-09-04, que exigiu emenda ao Princípio
-VII da constituição (versão 2.0.0, ratificada em 2026-09-05). O que se elimina **não é custo** — é a
-dependência externa de a instituição abrir e ter aprovada uma conta PJ em provedor de pagamentos,
-cujo prazo é controlado por terceiros. Custo de hospedagem e domínio a instituição assume de
-qualquer forma, e esse ponto nunca foi contestado.
-
-**Alternativas consideradas**: API de pagamentos dinâmica (Mercado Pago, Efí, Asaas) — era o desenho
-anterior do spec, revertido. Ver `spec.md` → Clarifications → Session 2026-09-04 (2).
-
-**Cuidado ao defender esta decisão**: a justificativa de "custo zero" já foi avaliada e derrubada
-pelo orientador. Usar esse argumento reabre uma discussão encerrada. O argumento válido é a
-eliminação da dependência de gateway/conta PJ e do risco de cronograma que ela traz.
-
-**Implicação técnica notável**: sem webhook, o backend do CSU01 fica bem menor — não há endpoint
-público de callback, não há verificação de assinatura de webhook, não há job de polling. Em
-compensação, entra a tela de conferência no Painel e a regra de detecção de possível duplicata
-(FR-050).
-
-### QR code gerado no navegador (2026-10-03)
-
-**Decisão**: o Portal monta o BR Code (padrão EMV QRCPS-MPM do Banco Central, o mesmo texto do
-"Pix copia e cola") com chave, nome do recebedor, cidade e o **valor escolhido pelo doador**, e o
-desenha como QR code. Tudo no navegador, em `public/assets/js/pix.js`; nenhuma chamada a servidor
-além da leitura da chave pública (`GET /api/public/pix`). O identificador da transação vai como
-`***`, o padrão para Pix estático sem identificador.
-
-**Justificativa**: o doador não precisa digitar o valor no app do banco, o que reduz erro de
-digitação e, com ele, divergência entre extrato e declaração na conferência manual. Também elimina
-o upload de uma imagem que podia ficar desatualizada em relação à chave cadastrada.
-
-**Por que não fere o Princípio VII nem a D9**: "Pix dinâmico" é o QR cujo conteúdo é uma URL
-hospedada por um provedor de pagamentos (PSP). O QR gerado aqui é estático — o valor é um campo
-opcional do próprio padrão estático — e não envolve provedor, conta PJ em gateway nem webhook. O
-valor embutido não confirma nada: a confirmação continua sendo a conferência humana do extrato.
-
-**Dependência de front-end**: `qrcode-generator` 1.4.4 (Kazuhiko Arase, licença MIT), copiada para
-`public/assets/vendor/qrcode.js`. Não é dependência npm e não entra em build — é um arquivo estático
-servido junto com as páginas, sem CDN em tempo de execução. **Justificativa (Princípio I)**: montar
-o texto do BR Code e o CRC16 são cerca de 60 linhas e foram escritos à mão; já codificar um QR code
-(Reed-Solomon, máscaras, posicionamento de módulos) seria escrever à mão algo que essa biblioteca
-madura resolve, com risco real de gerar um QR que algum banco não lê.
-
-**Risco registrado**: cada aplicativo de banco é exigente com o formato (nome com até 25
-caracteres e sem acento, cidade com até 15, tamanhos de campo exatos). O CRC foi conferido contra o
-exemplo do manual do BR Code, mas o código **precisa ser testado com a chave real em vários
-aplicativos de banco** antes de entrar em operação.
+Os testes rodam contra um banco Neon separado (branch de teste do próprio Neon, gratuita), nunca
+contra o de produção. O restante é verificado pelos portões da constituição (`quickstart.md`).
 
 ---
 
-## D10 — Valores de configuração ainda indefinidos
+## D9 — Doação com Pix estático (revista)
 
-Dois requisitos dependem de números que só a instituição pode fixar. Ambos entram como configuração
-em tabela, não como constante no código, para que a equipe possa ajustá-los sem redeploy.
+**Decisão**: a chave Pix, o nome do recebedor e a cidade são conteúdo institucional cadastrado no
+Painel (FR-007). O navegador monta o BR Code de um Pix **estático** com o valor escolhido e desenha
+o QR (`public/assets/js/pix.js` + `public/assets/vendor/qrcode.js`, `qrcode-generator` MIT, sem
+npm). A declaração é **só o clique em "Já fiz o Pix"**: o servidor grava valor e data/hora do
+clique, sem protocolo e sem anexo (2026-10-04).
 
-| Requisito | O que falta | Sugestão de partida |
+**Justificativa**: a de 2026-09-04 (Princípio VII): eliminar a **dependência de conta PJ em
+gateway** — nunca "custo zero", argumento já derrubado pelo orientador.
+
+**Data/hora do clique**: gravada pelo **servidor** (`now()` do banco), não enviada pelo navegador
+— relógio do celular errado não pode desalinhar a conferência com o extrato.
+
+**Risco registrado (mantido)**: cada app de banco é exigente com o formato do BR Code. Testar com a
+chave real em vários bancos antes de operar.
+
+---
+
+## D10 — Configuração editável (revista)
+
+Todos os valores que o spec manda manter fora do código ficam na tabela `configuracao`, editável
+pela equipe no Painel, sem redeploy:
+
+| Chave | Valor inicial | Origem |
 |---|---|---|
-| FR-028 | ~~"período prolongado" sem atualização de item necessário~~ | **Fechado em 2026-09-23: 30 dias.** Continua como configuração editável, não constante |
-| FR-056 | prazos de retenção por categoria de dado | a definir com a instituição — não há default seguro |
+| `item_sem_atualizacao_dias` | 30 | FR-028 (2026-09-23) |
+| `retencao_meses` | 6 | FR-056 (2026-09-30, ampliado em 2026-10-05) |
+| `contato_instituicao` | definido pela instituição | FR-007a, FR-053 |
 
-**NEEDS CLARIFICATION (institucional, não técnico)**: o FR-056 não tem valor sugerido de propósito.
-Prazo de retenção é decisão jurídica da instituição (a constituição já coloca a definição das bases
-legais e dos prazos fora do sistema); chutar um número aqui daria falsa sensação de conformidade.
-Até haver definição, o sistema deve armazenar os prazos como configuração e **não** executar
-anonimização automática por decurso de prazo — apenas sinalizar à equipe.
+O aviso de privacidade não é configuração: tem tabela própria e versionada (`aviso_privacidade`),
+porque cada consentimento aponta para a versão aceita (FR-052).
+
+**Pendência fechada**: a versão anterior deste documento marcava o FR-056 como "NEEDS
+CLARIFICATION". Está resolvido desde 2026-09-30 (6 meses) e ampliado em 2026-10-05.
+
+**Anonimização por prazo**: o sistema **sinaliza** registros vencidos na fila de retenção, e a
+equipe executa. Não há anonimização automática: o spec (FR-056) fala em sinalizar, e uma ação
+irreversível sobre dado pessoal sem ninguém olhar seria o tipo de efeito silencioso que o
+Princípio VIII evita nas triagens.
+
+---
+
+## D11 — Links de definição e redefinição de senha (nova)
+
+Resolve a pendência deixada pelo clarify de 2026-10-05.
+
+**Decisão**:
+
+| | Definir senha (conta nova, FR-006a) | Redefinir senha (FR-046) |
+|---|---|---|
+| Validade | **7 dias** | **1 hora** |
+| Uso | único | único |
+| Pedido de novo link | pela mesma tela "Esqueci minha senha / não recebi o link" | idem |
+
+- Um único endpoint (`POST /api/auth/link-senha`) atende os dois casos: se o e-mail é de doador
+  associado **sem senha definida**, envia link de definição; se tem senha, envia link de
+  redefinição. Para e-mail desconhecido, a resposta é **idêntica** e nada é enviado (FR-046).
+- O token tem 32 bytes aleatórios e vai na URL; o banco guarda só o **hash SHA-256** dele.
+  Vazamento do banco não entrega links válidos.
+- Gerar um link novo **invalida** os anteriores da mesma pessoa e finalidade.
+- No máximo **3 links por e-mail por hora** (D13); acima disso, a resposta continua idêntica, mas
+  nada é enviado.
+- Definir ou redefinir a senha encerra as sessões de autoatendimento abertas daquela pessoa.
+
+**Justificativa**: 1 hora é o padrão recomendado (OWASP) para redefinição, porque o link equivale
+a uma senha. A definição tem prazo maior porque o doador pode só olhar o e-mail dias depois de
+doar — e, se perder o prazo, pede outro link pela mesma tela, sem depender da equipe. Um endpoint
+para os dois casos é menos código e uma tela a menos para o público idoso entender.
+
+**Alternativas consideradas**: link de definição sem validade (fica utilizável para sempre se o
+e-mail vazar); validade de 24 h na definição (curta para quem não abre e-mail todo dia); tela
+separada de "reenviar ativação" (duas telas para a mesma necessidade).
+
+---
+
+## D12 — Encerramento automático de evento e campanha (nova, FR-029c)
+
+**Decisão**: duas camadas.
+
+1. **Leitura**: toda consulta pública de eventos e campanhas filtra pela data — evento só aparece
+   se `data >= hoje`; campanha, se `hoje` estiver dentro do período —, sempre no fuso
+   `America/Sao_Paulo`. É isso que garante o FR-002.
+2. **Cron diário** (`vercel.json`, `0 4 * * *` = 01:00 em Brasília): `GET /api/cron/diario` muda
+   para `encerrado` o que venceu, com autor `sistema` na auditoria. Protegido por `CRON_SECRET`
+   (cabeçalho `Authorization: Bearer`), que a Vercel envia sozinha.
+
+**Justificativa**: no plano Hobby o cron roda uma vez por dia e pode atrasar até 59 min. Se o
+Portal dependesse só do cron, um evento de ontem poderia aparecer até ~02:00 de hoje. Com o filtro
+na leitura, o Portal nunca mostra o que venceu, e o cron só acerta o status no banco para o Painel
+e a auditoria. O UPDATE do cron é idempotente: rodar duas vezes não muda nada.
+
+**Alternativas consideradas**: só o filtro na leitura, sem cron (o status no banco ficaria
+"ativo" para sempre, contrariando o FR-029c); encerrar "preguiçosamente" quando alguém abre o
+Painel (mistura escrita em rota de leitura e deixa a auditoria com a hora errada).
+
+---
+
+## D13 — Limite de tentativas (nova)
+
+**Decisão**: tabela `limite_tentativa` no próprio PostgreSQL, com contagem por chave e janela de
+tempo. A chave é o **hash SHA-256 do IP** (mais o escopo), nunca o IP em claro (coleta mínima).
+
+| Escopo | Limite | Requisito |
+|---|---|---|
+| Consulta de protocolo | 10 por IP a cada 15 min | FR-044a |
+| Login do Painel e do autoatendimento | 5 falhas por IP+conta a cada 15 min | segurança mínima da constituição |
+| Pedido de link de senha | 3 por e-mail por hora | D11 |
+| Verificação de doador associado | 10 por IP a cada 15 min | D15 |
+
+**Justificativa**: funções serverless não guardam memória entre chamadas, então o contador precisa
+de armazenamento externo. O banco já existe; o volume é baixo.
+
+**Alternativas consideradas**: Upstash Redis / Vercel KV (serviço e dependência novos para um
+contador); só limitar no front (não é controle — Princípio IV).
+
+**Limpeza**: o cron diário (D12) apaga linhas de janelas expiradas. É a **única** remoção física
+do sistema, e não fere o Princípio III: são contadores técnicos efêmeros, não dado de negócio,
+e não contêm dado pessoal.
+
+---
+
+## D14 — Papéis exclusivos de funcionário e voluntário (nova, FR-048)
+
+**Decisão**: uma linha por pessoa em `pessoa` (CPF único) e uma linha por papel em `papel`, com
+status `ativo` | `inativo` | `encerrado`. A exclusividade é garantida **no banco** por índice único
+parcial: no máximo um papel `funcionario` ou `voluntario` com status `ativo` por pessoa.
+
+- Efetivar candidato que já é voluntário: na mesma transação, o papel `voluntario` passa a
+  `encerrado` e nasce o papel `funcionario`. Nada é apagado.
+- Aprovar voluntário que é funcionário ativo: o índice rejeita, e a API responde
+  `422 FUNCIONARIO_NAO_PODE_SER_VOLUNTARIO`.
+- `doador_associado` fica fora do índice e convive com qualquer papel.
+
+**Justificativa**: regra de negócio sustentada só por código pode ser furada por um caminho
+esquecido (cadastro direto no Painel, efetivação, reativação). O índice fecha todos de uma vez.
+
+---
+
+## D15 — Doação associativa: quem já tem cadastro (nova, FR-006b)
+
+**Decisão**: antes de gerar o QR da doação associativa, o front chama
+`POST /api/public/doacoes/verificar-associativa` com CPF e e-mail.
+
+| Situação | Resposta |
+|---|---|
+| CPF e e-mail não existem | segue para o QR |
+| CPF ou e-mail pertencem a um doador associado | **mensagem neutra**: "Se você já é associado, entre no autoatendimento para doar. Se não, faça a doação espontânea." O QR não é gerado. |
+| CPF pertence a pessoa já cadastrada **sem** papel de doador (ex.: voluntária) | segue para o QR; no "Já fiz o Pix", o papel de doador é **adicionado ao cadastro existente** (FR-048, sem duplicar) e o link de definição de senha vai para o **e-mail que já está no cadastro**, não o digitado |
+
+No "Já fiz o Pix", a mesma verificação roda de novo no servidor — a do passo anterior é só para
+não deixar a pessoa pagar à toa.
+
+**Justificativa do terceiro caso**: sem essa regra, alguém digitaria o CPF de uma voluntária com o
+próprio e-mail e ganharia acesso ao autoatendimento com os dados dela. Mandando o link ao e-mail já
+cadastrado, quem digitou não ganha nada. A mensagem ao visitante é a mesma do caso de conta nova
+("Se os dados estiverem corretos, você receberá um link por e-mail para criar sua senha"), então
+também não revela que a pessoa já existia.
+
+**⚠ Limitação a levar ao grupo**: a decisão do clarify (FR-006b, opção A) promete não revelar se o
+cadastro existe. A **mensagem** é neutra, mas o **comportamento** não é: quem informa um CPF novo
+segue para o QR, quem informa o de um associado é barrado. Comparando os dois resultados, dá para
+descobrir se um CPF ou e-mail é de associado. O plano reduz o risco — limite de 10 verificações por
+IP a cada 15 min (D13), sem dizer qual dos dois campos bateu —, mas não o elimina. A única forma de
+eliminar é não barrar ninguém, o que foi a opção C do clarify (registrar como espontânea sem
+vínculo), descartada pelo grupo. **Precisa de confirmação do grupo** de que o risco residual é
+aceitável.
+
+---
+
+## D16 — Histórico de alterações e alcance da anonimização (nova)
+
+**Decisão**: tabela `historico_alteracao` guarda, a cada edição (FR-037, FR-001a, FR-032a), o
+estado anterior do registro em `jsonb`, com conta e data. É diferente de `registro_auditoria`:
+a auditoria diz **quem fez o quê** e nunca leva dado pessoal; o histórico guarda **o valor antigo**
+e por isso pode conter dado pessoal.
+
+**Consequência obrigatória**: a anonimização (FR-055, FR-056) precisa alcançar, na mesma
+transação, o registro principal, suas linhas de `historico_alteracao`, as de `falha_email` e os
+consentimentos ligados. Se esquecer o histórico, o endereço antigo continua legível, e o SC-016
+falha. O teste D8-3 verifica exatamente isso.
+
+---
+
+## D17 — Página de autorização do menor para impressão (nova, FR-012)
+
+**Decisão**: depois do envio do cadastro de menor, o navegador monta a página de autorização com os
+dados **que já estão no formulário**, e o responsável usa `window.print()` (imprimir ou salvar em
+PDF). Nenhum endpoint público devolve dados pessoais a partir do protocolo. Se a família perder a
+página, a equipe a reimprime pelo Painel (`GET /api/admin/voluntarios/:id/autorizacao`).
+
+**Justificativa**: a consulta pública por protocolo só pode mostrar tipo, status e data (FR-044).
+Uma rota pública "reimprimir autorização por protocolo" exporia nome, RG e endereço de um menor a
+quem tivesse o código.
+
+---
+
+## D18 — Janela de possível duplicata na conferência (nova, FR-050)
+
+**Decisão**: na tela de conferência, uma declaração pendente é sinalizada como possível duplicata
+quando há outra pendente com o **mesmo valor** e clique a **até 30 minutos** de distância. Constante
+no código, não configuração.
+
+**Justificativa**: o spec não fixa número. Trinta minutos cobrem o caso real de alguém clicar duas
+vezes ou voltar à página. É sinalização, nunca bloqueio, então um número errado custa no máximo um
+aviso a mais ou a menos. Tornar isso configurável seria "configurabilidade especulativa", que o
+Princípio I proíbe.
 
 ---
 
@@ -272,8 +397,12 @@ anonimização automática por decurso de prazo — apenas sinalizar à equipe.
 
 | Risco | Impacto | Mitigação |
 |---|---|---|
-| Cold start do Neon após hibernação | Primeira requisição lenta | Já previsto em Assumptions; SC-001 não depende mais de tempo de máquina |
-| E-mail em domínio de teste cai em spam | Doador/voluntário não recebe confirmação | FR-049a: registro nunca depende do e-mail; equipe reenvia manualmente |
-| Doação real sem declaração do doador | Não aparece no sistema | Consequência aceita e registrada em Assumptions; conciliação contábil continua no extrato |
-| Repetição de HTML entre 21 páginas | Divergência visual ao editar | Injeção de navbar/rodapé por JS, como o protótipo já faz |
-| Conta institucional compartilhada | Auditoria não identifica funcionário | Aceito conscientemente (FR-035); registrado como limitação, não lacuna |
+| Cold start do Neon após hibernação | Primeira requisição lenta | Previsto nas Assumptions; nenhuma meta depende de tempo de máquina após hibernação |
+| E-mail sem domínio próprio cai em spam | Autor não recebe confirmação | Protocolo é o canal primário ("anote este código"); FR-049a registra falhas de envio |
+| Google bloqueia envio automatizado | E-mails param | Plano B: Brevo/SendGrid em subdomínio do provedor (D5) |
+| Cron do Hobby atrasa até 59 min | Status "ativo" por algumas horas após o vencimento | Filtro de data na leitura pública (D12) |
+| Enumeração de associados pela verificação | Descobrir se um CPF/e-mail é de associado | Limite de tentativas; **aceitação pelo grupo pendente** (D15) |
+| Doação real sem clique em "Já fiz o Pix" | Não aparece no sistema | Consequência aceita (CSU01, exceção 08); a página avisa |
+| BR Code recusado por algum banco | Doador não consegue pagar pelo QR | Código copia e cola continua disponível; testar em vários bancos antes de operar (D9) |
+| Anonimização esquecer o histórico | Dado pessoal continua legível | Transação única (D16) + teste automatizado (D8) |
+| Conta institucional compartilhada | Auditoria não identifica o funcionário | Aceito conscientemente (FR-035) |

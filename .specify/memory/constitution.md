@@ -1,6 +1,31 @@
 <!--
 Sync Impact Report
 ==================
+Mudança de versão: 3.0.0 → 3.0.1
+Data: 2026-10-06
+Tipo de bump: PATCH (esclarecimentos de redação nos Princípios VII e VIII, sem mudança de regra)
+
+STATUS DESTA EMENDA: RATIFICADA em 2026-10-06, aprovada pelo grupo a partir do
+/speckit-analyze de 2026-10-05.
+
+Princípios alterados:
+  - VII: "chave Pix e/ou imagem de QR code fornecidas pela própria instituição" →
+    "chave Pix fornecida pela própria instituição [...], a partir da qual o Portal gera o QR
+    code estático". Alinha o texto à decisão de 2026-10-03 (QR gerado no navegador a partir
+    da chave); a imagem de QR enviada pela equipe deixou de existir.
+  - VIII: nova regra esclarecendo que a conta de autoatendimento do doador associado não é
+    cadastro sujeito a triagem. A regra "nenhum envio de acesso antes da aprovação humana"
+    podia ser lida como proibindo o link de definição de senha do FR-006a. O princípio
+    existe para proteger quem tem contato com os residentes; o doador não tem esse contato,
+    e a doação dele continua dependendo de conferência humana.
+
+Impacto sobre trabalho já realizado: nenhum. spec.md, plan.md e tasks.md já seguiam este
+entendimento; a emenda só torna a leitura inequívoca.
+
+Princípios inalterados: I, II, III, IV, V, VI.
+
+Emenda anterior (3.0.0, ratificada em 2026-10-05) — registro mantido abaixo
+==========================================================================
 Mudança de versão: 2.0.0 → 3.0.0
 Data: 2026-10-05
 Tipo de bump: MAJOR (redefinição incompatível de regra do Princípio IV)
@@ -222,9 +247,10 @@ não entrega.
 
 ### VII. Pix como Único Meio de Doação Digital, sem Custódia nem Integração de Pagamento
 
-Doações financeiras DEVEM ser realizadas exclusivamente via Pix, por meio de chave Pix e/ou
-imagem de QR code fornecidas pela própria instituição e cadastradas como conteúdo
-institucional no Painel Administrativo. O sistema NÃO integra API de pagamentos.
+Doações financeiras DEVEM ser realizadas exclusivamente via Pix, por meio da chave Pix
+fornecida pela própria instituição e cadastrada como conteúdo institucional no Painel
+Administrativo, a partir da qual o Portal gera o QR code estático. O sistema NÃO integra API
+de pagamentos.
 
 Regras não negociáveis:
 
@@ -263,6 +289,10 @@ Regras não negociáveis:
   autor e data.
 - Nenhum efeito colateral (envio de acesso, publicação, vínculo ativo) pode ocorrer antes da
   aprovação humana.
+- A conta de autoatendimento do doador associado não é cadastro sujeito a triagem: não cria
+  vínculo de trabalho ou voluntariado com a instituição, não dá contato com os residentes e
+  só é ativada por link enviado ao e-mail informado. A doação vinculada a ela continua
+  pendente até a conferência humana (Princípio VII).
 
 Justificativa: a instituição responde legal e moralmente por quem tem contato com os idosos;
 essa decisão é humana e indelegável.
@@ -324,4 +354,4 @@ princípios. Violações identificadas DEVEM ser corrigidas antes da integraçã
 formalmente como exceção aprovada, com prazo de correção. Complexidade não justificada é
 motivo suficiente para reprovar uma entrega.
 
-**Version**: 3.0.0 | **Ratified**: 2026-08-12 | **Last Amended**: 2026-10-05
+**Version**: 3.0.1 | **Ratified**: 2026-08-12 | **Last Amended**: 2026-10-06

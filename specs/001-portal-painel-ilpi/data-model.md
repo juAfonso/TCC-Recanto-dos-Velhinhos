@@ -1,6 +1,6 @@
 # Data Model — Portal Público e Painel Administrativo
 
-**Feature**: `001-portal-painel-ilpi` · **Data**: 2026-10-05 (refeito; versão anterior de 2026-09-04)
+**Feature**: `001-portal-painel-ilpi` · **Data**: 2026-10-05, ajustado em 2026-10-06 após o `/speckit-analyze` (refeito; versão anterior de 2026-09-04)
 · **Fase**: 1 (Design & Contracts) · **Banco**: Neon (PostgreSQL)
 
 Fonte: Key Entities do [spec.md](./spec.md) e o DER conceitual
@@ -14,9 +14,14 @@ Fonte: Key Entities do [spec.md](./spec.md) e o DER conceitual
 1. **Nada de negócio é excluído fisicamente** (Princípio III, FR-024). Não existe `DELETE` sobre
    tabela de negócio na API nem nos scripts. Remoção é mudança de status. Única exceção: a limpeza
    de `limite_tentativa`, que é contador técnico sem dado pessoal (D13).
-2. **Toda mudança de status registra autor e data** — na própria linha (`*_por`, `*_em`) e em
-   `registro_auditoria`. Autor é a conta institucional, o doador associado ou `sistema`; nunca o
-   funcionário individual (FR-035).
+2. **Toda tabela de negócio tem status e autor/data na própria linha** (constituição, "Persistência"):
+   `criado_por`/`criado_em` desde a primeira versão, e `*_por`/`*_em` em cada mudança de status — além
+   da linha em `registro_auditoria`. Autor é a conta institucional, o doador associado, `publico`
+   (submissão do Portal) ou `sistema`; nunca o funcionário individual (FR-035). Tabelas de linhas
+   filhas (`recurso`, `conteudo_institucional_imagem`) têm `ativo` em vez de serem apagadas: **tirar
+   um recurso de uma campanha ou uma imagem da página é desativar, nunca `DELETE`**. Únicas tabelas
+   sem status: `registro_auditoria` e `historico_alteracao` (são o próprio registro de autoria) e
+   `limite_tentativa` (contador técnico, D13).
 3. **Anonimização não apaga a linha** (FR-055, FR-056). Campos pessoais viram o texto fixo
    `[anonimizado]` (ou `NULL` onde o campo é opcional), `anonimizado_em` é preenchido, e o mesmo
    vale para `historico_alteracao`, `falha_email` e `consentimento` ligados (D16).
@@ -133,6 +138,7 @@ Prefixo `VOL-`. Campos do termo de adesão da Lei 9.608/1998 — nenhum além de
 | `autorizacao_status` | `text` | `nao_se_aplica` \| `pendente` \| `recebida` (FR-012) |
 | `autorizacao_recebida_por`, `_em` | | |
 | `status` | `text` | ver transições |
+| `origem` | `text` | `portal` \| `painel` (2026-10-06) — no Painel, a equipe cadastra com os mesmos campos (FR-023) |
 | `pessoa_id` | `uuid` FK NULL | preenchido só na aprovação |
 
 **Transições** (`status`):
@@ -147,6 +153,10 @@ pendente ──► entrevista ──► aprovado
 - `→ aprovado` exige `autorizacao_status <> 'pendente'` (FR-012) e que a pessoa não seja
   funcionária ativa (FR-048). Cria ou reaproveita `pessoa` pelo CPF e cria papel `voluntario`.
 - `rejeitado`, `aprovado` e `encerrado_titular` são terminais.
+- **Origem `painel`** (FR-023, 2026-10-06): sem triagem. Maior de idade nasce `aprovado` (com
+  pessoa e papel criados na mesma transação); menor nasce `pendente` com autorização `pendente` e
+  segue `pendente → aprovado` quando a autorização for marcada como recebida, sem passar por
+  entrevista.
 
 ### `candidatura` (FR-016 a FR-019, CSU06)
 
@@ -253,6 +263,8 @@ Declaração de uma doação paga fora do sistema. **Sem protocolo, sem anexo** 
 
 **Validação**: `CHECK ((tipo = 'espontanea') = (pessoa_id IS NULL))` — Restrição 3 do DER.
 **Transições**: `pendente → confirmada` · `pendente → nao_localizada`. Ambas terminais e humanas.
+**Não editável** (FR-037, exceção de 2026-10-06): nenhuma rota altera `valor`, `tipo`, `declarada_em`
+ou `pessoa_id`. Declaração errada é marcada como `nao_localizada`.
 Confirmar o que já está `confirmada` não altera nada (FR-050), garantido por
 `UPDATE … WHERE status = 'pendente'`.
 **Possível duplicata (D18)**: outra `pendente` com mesmo `valor` e `declarada_em` a até 30 min.
@@ -273,6 +285,8 @@ tipo e status ficam intactos, sem justificativa de retenção (FR-055, 2026-10-0
 | `prioridade` | `text` | `alta` \| `media` \| `baixa` (2026-10-05) |
 | `status` | `text` | `ativo` \| `suprido` |
 | `quantidade_atualizada_em` | `timestamptz` | base do alerta do FR-028 |
+| `criado_por`, `criado_em` | | |
+| `atualizado_por`, `atualizado_em` | | |
 | `baixa_por`, `baixa_em` | NULL | |
 
 Portal ordena ativos por prioridade (alta → baixa). Alerta: `ativo` e
@@ -290,6 +304,8 @@ Tipos diferentes, mesma tela (2026-10-05).
 | `data` | `date` | não pode ser passada no cadastro |
 | `solicitacao_origem_id` | `uuid` FK NULL | |
 | `status` | `text` | `ativo` \| `encerrado` |
+| `criado_por`, `criado_em` | | conta (ou a da confirmação da solicitação, FR-022) |
+| `atualizado_por`, `atualizado_em` | | |
 | `encerrado_por`, `encerrado_em` | NULL | conta ou `sistema` (FR-029c) |
 
 `campanha`: igual, trocando `data` por `periodo_inicio`/`periodo_fim` e `recursos_necessarios` pela
@@ -302,9 +318,12 @@ tabela `recurso`, mais `meta_valor` `numeric NULL` e `arrecadado_valor` `numeric
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `campanha_id` | `uuid` FK | toda campanha tem ≥ 1 (FR-029) |
+| `campanha_id` | `uuid` FK | toda campanha ativa tem ≥ 1 recurso **ativo** (FR-029) |
 | `tipo` | `text` | `dinheiro` \| `item` |
 | `descricao` | `text` | |
+| `ativo` | `boolean` | editar a campanha desativa os recursos que saíram e cria os novos |
+| `criado_por`, `criado_em` | | |
+| `desativado_por`, `desativado_em` | NULL | |
 
 Sem relação com `item_necessario`, como no DER.
 
@@ -316,7 +335,9 @@ Sem relação com `item_necessario`, como no DER.
 | `imagem_arquivo_id` | `uuid` FK NULL → `arquivo` | pública |
 | `imagem_alt` | `text` NULL | obrigatório se houver imagem — `CHECK` |
 | `status` | `text` | `publicada` \| `despublicada` |
-| `publicada_em`, `atualizado_em` | | |
+| `criado_por`, `criado_em` | | |
+| `atualizado_por`, `atualizado_em` | | edição de texto ou imagem |
+| `status_alterado_por`, `status_alterado_em` | | última publicação ou despublicação |
 
 ### `conteudo_institucional` (FR-001, FR-001a)
 
@@ -327,7 +348,7 @@ Sem relação com `item_necessario`, como no DER.
 | `historia`, `missao`, `equipe` | `text` | |
 | `atualizado_por`, `atualizado_em` | | versões anteriores em `historico_alteracao` |
 
-`conteudo_institucional_imagem`: `arquivo_id`, `texto_alternativo` (obrigatório), `ordem`.
+`conteudo_institucional_imagem`: `arquivo_id`, `texto_alternativo` (obrigatório), `ordem`, `ativo`, `criado_por`/`criado_em`, `desativado_por`/`desativado_em` — tirar uma imagem da página é desativar.
 
 ### `arquivo`
 
@@ -339,6 +360,7 @@ Ponteiro para objeto no Vercel Blob (D3).
 | `acesso` | `text` | `privado` (currículo) \| `publico` (imagens) |
 | `categoria` | `text` | `curriculo` \| `imagem_noticia` \| `imagem_institucional` |
 | `nome_original`, `mime_type`, `tamanho_bytes` | | |
+| `enviado_por`, `enviado_em` | | `publico` (currículo) ou a conta (imagens) |
 | `removido_em` | NULL | anonimização remove o objeto no Blob e marca a linha |
 
 ---
@@ -380,7 +402,7 @@ Ponteiro para objeto no Vercel Blob (D3).
 
 ### `configuracao` (D10)
 
-Chave/valor: `item_sem_atualizacao_dias` = 30 · `retencao_meses` = 6 · `contato_instituicao`.
+Chave/valor: `item_sem_atualizacao_dias` = 30 · `retencao_meses` = 6 · `contato_instituicao`. Cada linha tem `atualizado_por`/`atualizado_em`; o valor anterior vai para `historico_alteracao`.
 
 ### `limite_tentativa` (D13)
 

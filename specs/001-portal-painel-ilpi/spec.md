@@ -115,6 +115,12 @@
 
 - Q: Quem edita a página institucional (história, missão e equipe) depois da entrega? (FR-001) → A: **A equipe, por uma tela própria no Painel** (FR-001a), dentro do CSU03 (Divulgação Institucional), sem CSU novo. Ela tem campos de texto para história, missão e equipe e imagens opcionais com texto alternativo obrigatório. Motivo: o grupo entrega e sai, e sem essa tela ninguém no Recanto conseguiria mudar o texto sem mexer em HTML. Descartados: publicar o conteúdo institucional como um tipo de notícia (mistura conteúdo fixo com notícias datadas) e deixar o texto fixo no código (trava a instituição depois da entrega).
 
+### Session 2026-10-06 — Ajustes vindos do `/speckit-analyze`
+
+- Q: O voluntário cadastrado direto pela equipe no Painel coleta o quê, e como fica o menor de idade? (FR-023) → A: **Os mesmos dados do termo de adesão do formulário público (FR-011)**, porque a Lei 9.608/1998 exige termo de adesão de todo voluntário, qualquer que seja o caminho do cadastro. O cadastro direto gera um cadastro de voluntário com origem "Painel": maior de idade já nasce aprovado; menor de idade nasce pendente, com autorização do responsável pendente, e só é aprovado depois de a autorização ser marcada como recebida (FR-012). Só a triagem é dispensada. Descartado: proibir cadastro direto de menor (deixava sem solução o termo de adesão do adulto).
+- Q: A declaração de doação pode ser corrigida pela equipe, como "qualquer dado" do FR-037? → A: **Não.** O que foi conferido contra o extrato é registro de conferência (Princípio III); alterar o valor apagaria a prova. Declaração errada é marcada como não localizada (FR-008). Os dados das três submissões com triagem passam a ser corrigíveis no Painel.
+- A conta do doador associado não depende de triagem: esclarecido na constituição 3.0.1 (Princípio VIII), sem mudança no spec.
+
 ## User Scenarios & Testing (mandatory)
 
 ### User Story 1 - Portal Público Informativo (Priority: P1)
@@ -404,7 +410,7 @@ Antes de enviar qualquer formulário que colete dados pessoais, o visitante é i
 
 **Gestão de Usuários (Painel Administrativo)**
 
-- **FR-023**: O sistema DEVE permitir cadastro, consulta, alteração e inativação de usuários dos perfis funcionário, voluntário e doador associado, buscáveis por nome, CPF ou e-mail. O cadastro feito diretamente por um funcionário no Painel não passa por triagem, porque já é ação explícita de um funcionário (FR-034); para voluntário menor de idade, vale a mesma exigência de autorização recebida (FR-012). Se o CPF informado já existir, o sistema DEVE exibir o registro existente em vez de criar outro.
+- **FR-023**: O sistema DEVE permitir cadastro, consulta, alteração e inativação de usuários dos perfis funcionário, voluntário e doador associado, buscáveis por nome, CPF ou e-mail. O cadastro feito diretamente por um funcionário no Painel não passa por triagem, porque já é ação explícita de um funcionário (FR-034). Para o perfil voluntário, o cadastro direto DEVE coletar os mesmos dados do termo de adesão (FR-011) e gera um cadastro de voluntário com origem "Painel": maior de idade nasce aprovado; menor de idade nasce pendente, com autorização do responsável pendente, e só é aprovado depois de a autorização ser marcada como recebida (FR-012) — decisão de 2026-10-06. Se o CPF informado já existir, o sistema DEVE exibir o registro existente em vez de criar outro.
 - **FR-023a**: Ao inativar um usuário que tenha submissão em triagem (por exemplo, voluntário ativo com candidatura em análise), o sistema DEVE avisar sobre a pendência e permitir prosseguir.
 - **FR-024**: O sistema NÃO PODE permitir exclusão física (definitiva) do registro de nenhum usuário, nem oferecer essa ação na interface; a inativação é a única forma de remoção de acesso. A inativação NÃO apaga nem oculta dados pessoais e pode ser desfeita (decisão de 2026-10-03). Atender a um pedido de anonimização do titular (FR-055) NÃO configura exclusão física: os dados pessoais identificáveis deixam de ser legíveis, mas o registro, seu histórico e a trilha de auditoria permanecem íntegros.
 - **FR-025**: O sistema DEVE definir o nível de acesso de cada usuário autenticado de acordo com seu perfil. Nesta versão há dois tipos de acesso autenticado: a conta institucional do Painel (FR-040) e o doador associado (FR-041). Funcionários e voluntários existem como perfis de cadastro, sem login individual.
@@ -442,7 +448,7 @@ Antes de enviar qualquer formulário que colete dados pessoais, o visitante é i
 
 **Edição e Correção de Dados**
 
-- **FR-037**: O sistema DEVE permitir que a equipe administrativa edite ou corrija, a qualquer momento, qualquer dado previamente cadastrado, preservando o histórico da alteração.
+- **FR-037**: O sistema DEVE permitir que a equipe administrativa edite ou corrija, a qualquer momento, qualquer dado previamente cadastrado — inclusive os dados das submissões de voluntário, candidatura e solicitação externa —, preservando o histórico da alteração. **Exceção** (decisão de 2026-10-06): a declaração de doação não é editável, porque o que foi conferido contra o extrato é registro de conferência (Princípio III); uma declaração errada é marcada como não localizada (FR-008). Registro anonimizado não pode ser corrigido.
 - **FR-037a**: Todo dado coletado num formulário DEVE estar visível ao funcionário na consulta do registro, não só na tela de edição; dado que não precisa ser consultado não deve ser coletado (coleta mínima, Princípio IV). Todo campo de telefone DEVE aceitar apenas número brasileiro válido (DDD mais 8 ou 9 dígitos), com máscara de preenchimento.
 
 **Acesso e Proteção de Dados**

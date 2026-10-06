@@ -418,6 +418,27 @@ paralelo.
   03/10 (sem autoatendimento de voluntário). A emenda só alinha o texto ao
   desenho, sem mudar o sistema. Se alguém ler o Princípio IV pedindo login
   de funcionário ou voluntário, está lendo a versão 2.0.0.
+- **Ajustes vindos do `/speckit-analyze` (aprovados pelo grupo em
+  2026-10-06)**, Session 2026-10-06 do spec.md:
+  1. **Constituição 3.0.1 (PATCH):** o Princípio VIII agora diz que a conta
+     do doador associado **não** depende de triagem (não dá contato com os
+     residentes; a doação continua esperando a conferência no extrato). O
+     Princípio VII deixou de falar em "imagem de QR code" — o QR é gerado a
+     partir da chave.
+  2. **Voluntário cadastrado direto no Painel coleta o termo de adesão
+     inteiro** (FR-023), porque a Lei 9.608/1998 vale para qualquer caminho
+     de cadastro. Vira um cadastro de voluntário com origem "Painel": adulto
+     já aprovado; menor pendente até a autorização ser recebida.
+  3. **Declaração de doação não se edita** (exceção no FR-037): o que foi
+     conferido contra o extrato é prova da conferência. Declaração errada é
+     marcada como não localizada. Os dados das três submissões com triagem
+     passaram a ser corrigíveis no Painel.
+  4. Ajustes técnicos sem decisão nova: toda tabela ganhou autor e data na
+     própria linha (constituição, "Persistência"); recurso de campanha e
+     imagem da página institucional são **desativados**, nunca apagados;
+     respostas da API sem cache (SC-002); inativos visíveis na busca de
+     usuários; ajuda contextual nas três triagens. `tasks.md` renumerado
+     (128 tarefas).
 - **Falhas de serviços externos não derrubam o registro do usuário
   (2026-09-04).** Se o e-mail de confirmação falhar, o cadastro/candidatura/
   solicitação é mantido, o sistema tenta reenviar uma vez e, persistindo a

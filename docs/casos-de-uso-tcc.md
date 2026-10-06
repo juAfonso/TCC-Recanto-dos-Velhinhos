@@ -322,9 +322,9 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. No passo 3 do fluxo principal, em vez de indicar um usuário, escolhe cadastrar novo usuário e informa, para o perfil funcionário ou voluntário, nome, CPF, data de nascimento, e-mail e telefone. | |
+| 1. No passo 3 do fluxo principal, em vez de indicar um usuário, escolhe cadastrar novo usuário e informa, para o perfil funcionário, nome, CPF, data de nascimento, e-mail e telefone; para o perfil voluntário, os mesmos dados do termo de adesão pedidos no CSU05. | |
 | | 2. Verifica se o CPF já existe; existindo, executa o fluxo alternativo 02. |
-| | 3. Grava o usuário como ativo, sem passar por triagem, porque o cadastro já é ação explícita de um funcionário, e registra a conta e a data. Sendo voluntário menor de idade, o cadastro fica com a autorização do responsável legal pendente até ser marcada como recebida (CSU05). O caso de uso se encerra. |
+| | 3. Grava o usuário sem passar por triagem, porque o cadastro já é ação explícita de um funcionário, e registra a conta e a data. Funcionário e voluntário maior de idade ficam ativos. Voluntário menor de idade fica pendente, com a autorização do responsável legal pendente, e só é aprovado depois de ela ser marcada como recebida (CSU05, fluxos alternativos 04 e 03). O caso de uso se encerra. |
 
 ## Fluxo Alternativo 02 – CPF já cadastrado
 

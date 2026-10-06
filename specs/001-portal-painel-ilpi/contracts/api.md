@@ -1,6 +1,6 @@
 # Contratos de API — Portal Público e Painel Administrativo
 
-**Feature**: `001-portal-painel-ilpi` · **Data**: 2026-10-05 (refeito; versão anterior de 2026-09-04)
+**Feature**: `001-portal-painel-ilpi` · **Data**: 2026-10-05, ajustado em 2026-10-06 após o `/speckit-analyze` (refeito; versão anterior de 2026-09-04)
 · **Fase**: 1
 
 Funções serverless em `api/` na Vercel (Node.js 24 LTS, formato Web — research D1). Respostas em
@@ -46,6 +46,12 @@ mostra e, se o funcionário decidir seguir, repete a chamada com `"confirmarAvis
 
 Rotas marcadas com 📎 recebem `multipart/form-data` (D3): os campos do formulário mais o arquivo.
 Currículo até 4 MB; imagem até 2 MB. Acima disso: `413 ARQUIVO_GRANDE_DEMAIS`.
+
+### Cache
+
+Toda resposta de `GET /api/public/*` leva `Cache-Control: no-store`, para que uma mudança feita no
+Painel apareça no Portal na hora seguinte em que a página for aberta (SC-002). Respostas do Painel e
+do autoatendimento também levam `no-store`, por carregarem dado pessoal.
 
 ### O que nunca trafega na zona pública
 
@@ -142,7 +148,8 @@ Comuns às três:
 
 ### Painel
 
-`POST /api/admin/login` `{ identificador, senha }` → cookie `ctx = admin` · `POST /api/admin/logout`.
+`POST /api/admin/login` `{ identificador, senha }` → cookie `ctx = admin` · `POST /api/admin/logout` ·
+`GET /api/admin/sessao` → `{ identificador }` ou `401` (usado pelas telas do Painel para conferir o login).
 Cinco falhas em 15 min por IP e conta → `429` (D13).
 
 ### Doador associado (CSU09)
@@ -191,6 +198,10 @@ Toda ação que muda estado grava em `registro_auditoria` com a conta e a data (
 | `POST` | `/api/admin/doacoes/:id/nao-localizar` | `{ motivo?: string, motivoPadrao?: true }` — motivo **opcional**; `motivoPadrao` grava o texto do FR-008a |
 | `GET`/`PUT` | `/api/admin/pix` | chave, tipo, nome do recebedor, cidade (FR-007) |
 
+**Não existe rota que edite uma declaração de doação** (FR-037, exceção de 2026-10-06): o que foi
+conferido contra o extrato é registro de conferência. Declaração errada é marcada como não
+localizada.
+
 ### Triagens (CSU05, CSU06, CSU08)
 
 Filas: `voluntarios`, `candidaturas`, `solicitacoes`.
@@ -207,9 +218,10 @@ Filas: `voluntarios`, `candidaturas`, `solicitacoes`.
 | `POST` | `/api/admin/voluntarios/:id/autorizacao-recebida` | voluntário menor | pendente → recebida (FR-012) |
 | `GET` | `/api/admin/voluntarios/:id/autorizacao` | voluntário menor | dados para reimprimir a página (D17) |
 | `GET` | `/api/admin/candidaturas/:id/curriculo` | candidatura | redireciona para URL assinada de vida curta (D3) |
+| `PUT` | `/api/admin/{fila}/:id` | todas | **corrige dados** sem mudar status (FR-037, 2026-10-06); estado anterior em `historico_alteracao`; mesmas validações do envio; registro anonimizado → `409 REGISTRO_ANONIMIZADO`; no voluntário aprovado e na candidatura aprovada, nome, e-mail e telefone corrigidos também na `pessoa` |
 
 Regras:
-- Transição fora da ordem acima: `409 TRANSICAO_INVALIDA`.
+- Transição fora da ordem acima: `409 TRANSICAO_INVALIDA`. Exceção: voluntário de `origem = painel` vai de `pendente` direto a `aprovado`, sem entrevista, assim que a autorização for recebida (FR-023).
 - Aprovar menor com autorização pendente: `422 AUTORIZACAO_PENDENTE`.
 - Aprovar voluntário que é funcionário ativo: `422 FUNCIONARIO_NAO_PODE_SER_VOLUNTARIO` (FR-048).
 - `candidaturas/:id/aprovar`: transação única — encontra ou cria a pessoa pelo CPF, encerra papel
@@ -239,9 +251,9 @@ Regras:
 
 | Método | Rota | Notas |
 |---|---|---|
-| `GET` | `/api/admin/pessoas?busca=` | nome, CPF ou e-mail (FR-023) |
+| `GET` | `/api/admin/pessoas?busca=&situacao=` | nome, CPF ou e-mail (FR-023); `situacao` = `todos` (padrão) \| `ativos` \| `inativos` — inativos sempre consultáveis (constituição, Princípio III); cada resultado traz `ativo` |
 | `GET` | `/api/admin/pessoas/:id` | todos os dados, papéis, submissões, consentimentos, histórico |
-| `POST` | `/api/admin/pessoas` | cadastro direto de funcionário ou voluntário, sem triagem; CPF existente: `409 CPF_JA_CADASTRADO` com o id para abrir o registro (FR-023) |
+| `POST` | `/api/admin/pessoas` | cadastro direto, sem triagem; CPF existente: `409 CPF_JA_CADASTRADO` com o id para abrir o registro (FR-023). **Funcionário**: nome, CPF, data de nascimento, e-mail, telefone. **Voluntário** (2026-10-06): os mesmos campos do FR-011; cria `cadastro_voluntario` com `origem = painel` — maior de idade já `aprovado`, com pessoa e papel; menor `pendente` com autorização pendente, aprovado por `POST /api/admin/voluntarios/:id/aprovar` depois de `autorizacao-recebida`, sem exigir entrevista |
 | `PUT` | `/api/admin/pessoas/:id` | correção, com histórico (FR-037) |
 | `POST` | `/api/admin/pessoas/:id/papeis` | adiciona papel; respeita exclusividade (FR-048) |
 | `POST` | `/api/admin/pessoas/:id/inativar` · `/reativar` | submissão em triagem: `409` + `confirmarAviso` (FR-023a) |

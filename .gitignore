@@ -1,4 +1,6 @@
-.claude/
+# .claude/: só as skills do Spec Kit são do projeto; o resto é configuração pessoal
+.claude/*
+!.claude/skills/
 node_modules/
 .env
 bin/

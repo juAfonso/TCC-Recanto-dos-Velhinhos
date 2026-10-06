@@ -144,10 +144,10 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   pesava 9,3 dos 9,6 MB do front. Foi trocado por `assets/img/hero.jpg`, um
   quadro extraído do próprio vídeo, e a classe CSS passou de `.hero-video`
   para `.hero-image`. Motivos: peso no repositório, consumo de dados móveis
-  e autoplay atrapalhando leitor de tela (Princípios II e V). **A imagem é
-  provisória** — é stock do modelo MANAS, não retrata o Recanto e mostra
-  bebida alcoólica, o que é inadequado para uma ILPI. Trocar por foto real
-  assim que a instituição fornecer.
+  e autoplay atrapalhando leitor de tela (Princípios II e V).
+  **Desde 2026-10-05 o hero é a fachada real do Recanto**
+  (`assets/img/newNewHero.jpg`, commit `0370180`), no lugar do quadro de
+  stock do modelo MANAS. `assets/img/newHero.jpg` ficou sem uso.
 - **Se a operação exigir recursos além do plano gratuito no futuro** (mais
   tráfego, domínio próprio), migrar para um plano pago é decisão e custo da
   instituição — não uma obrigação de manutenção contínua do grupo depois da
@@ -162,6 +162,34 @@ editar decisões aqui. Até decidirem isso formalmente, tratem qualquer edição
 deste arquivo como algo a avisar no grupo antes de commitar, não a resolver
 sozinho — reduz o risco de duas pessoas reescreverem a mesma decisão em
 paralelo.
+
+## Como começar a trabalhar (pessoa ou Claude)
+
+Vale para qualquer pessoa do grupo e para qualquer sessão do Claude Code.
+Passo a passo de comandos e validação em
+`specs/001-portal-painel-ilpi/quickstart.md`.
+
+1. **Uma vez por computador:** Node 24 LTS (`winget install
+   OpenJS.NodeJS.LTS`), clonar o repositório, `npm install` e criar o
+   `.env.local` a partir do `.env.example`. No PowerShell, `npm` pode ser
+   bloqueado pela política de scripts: use `npm.cmd` ou o Prompt de Comando.
+2. **Bancos (Neon):** a Julia passa as connection strings **em mensagem
+   privada** — nunca no grupo, no repositório ou no chat do Claude.
+   `DATABASE_URL` = branch `dev` (compartilhada). `DATABASE_URL_TESTE` = uma
+   branch de teste **só sua** (ex.: `teste-isadora`), porque `npm test` apaga
+   a branch inteira e atrapalharia quem estiver testando ao mesmo tempo.
+   O Neon gratuito permite ~10 branches: não criar além do necessário.
+3. **O que fazer:** `specs/001-portal-painel-ilpi/tasks.md`. Fases 1 e 2
+   (fundação) prontas; cada história (Fases 3–13) depende só delas, salvo
+   as exceções da tabela "User Story Dependencies". **Combinem no grupo quem
+   fica com qual fase antes de começar** e não mexam na fase de outra pessoa.
+4. **Como pedir ao Claude:** "Leia o CLAUDE.md e rode `/speckit-implement`
+   só para a Fase N do tasks.md, numa branch própria a partir da main. No
+   fim, commit, envie a branch e me passe o link do PR. Não mexa em outras
+   fases." As skills do Spec Kit estão versionadas em `.claude/skills/`.
+5. **Sempre:** branch própria, PR para a `main`, nada direto na `main`.
+   `npm test` passando antes do PR. Toda decisão nova ou revertida entra
+   neste arquivo, com data, no mesmo PR.
 
 ## Decisões já tomadas (e por quê)
 
@@ -571,8 +599,9 @@ recente do spec.md, não esta lista resumida.
 2. O protótipo em `public/` ainda tem `doacoes.html` e `admin/doacoes.html`
    descrevendo o fluxo com API de pagamentos — precisam virar declaração do
    doador + conferência manual.
-3. Fotos institucionais reais ainda precisam vir do Recanto (a imagem do hero
-   é provisória, ver acima), cada uma com texto alternativo (Princípio II).
+3. Fotos institucionais reais ainda precisam vir do Recanto (o hero já é
+   a fachada real desde 2026-10-05), cada uma com texto alternativo
+   (Princípio II).
 4. As credenciais de demonstração do `public/README.md` (`admin`/`admin123`
    e as de autoatendimento) existem só na camada mock e **não podem**
    sobreviver ao `db/seed.js` real.

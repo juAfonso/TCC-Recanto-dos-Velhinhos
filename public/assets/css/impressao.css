@@ -1,0 +1,17 @@
+/* Documentos para imprimir: termo de adesão e autorização do responsável (2026-10-06). */
+.termo { max-width: 780px; margin: 0 auto; padding: 32px 24px; background: #fff; color: #222; line-height: 1.6; }
+.termo h1 { font-size: 1.35rem; color: #222; margin-bottom: 4px; }
+.termo h2 { font-size: 1rem; margin: 22px 0 8px; color: #222; }
+.termo dl { display: grid; grid-template-columns: 210px 1fr; gap: 4px 12px; font-size: .95rem; }
+.termo dt { font-weight: 700; }
+.termo .linha { border-bottom: 1px solid #333; height: 32px; margin: 4px 0 12px; }
+.termo .rotulo { font-size: .85rem; color: #444; }
+.termo .assinaturas { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 36px; }
+.acoes-tela { max-width: 780px; margin: 24px auto 0; padding: 0 24px; display: flex; gap: 10px; flex-wrap: wrap; }
+.aviso-tela { max-width: 780px; margin: 16px auto; }
+@media (max-width: 600px) { .termo dl, .termo .assinaturas { grid-template-columns: 1fr; } }
+@media print {
+  .acoes-tela, .aviso-tela { display: none !important; }
+  body { background: #fff !important; }
+  .termo { padding: 0; }
+}

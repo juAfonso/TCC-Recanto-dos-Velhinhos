@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Termo de adesão ao serviço voluntário — Recanto dos Velhinhos</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/impressao.css">
+</head>
+<body>
+
+<div class="acoes-tela">
+    <button type="button" class="btn btn-viridian" id="btn-imprimir">Imprimir ou salvar em PDF</button>
+    <button type="button" class="btn btn-outline" onclick="history.length > 1 ? history.back() : window.close()">Voltar</button>
+</div>
+<div class="alert alert-info aviso-tela"><span aria-hidden="true">ℹ️</span><div>
+    Imprima este termo (ou salve em PDF) e leve-o à sede do Recanto. Ele é assinado por você e pela instituição
+    <b>quando o cadastro for aprovado</b>. Nada desta página é enviado pela internet.
+</div></div>
+
+<main class="termo">
+    <p id="sem-dados" hidden>Não encontramos os dados do cadastro neste navegador. Peça à equipe do Recanto para imprimir o termo pelo Painel.</p>
+    <div id="conteudo" hidden>
+        <h1>Termo de adesão ao serviço voluntário</h1>
+        <p class="rotulo">Lei nº 9.608, de 18 de fevereiro de 1998 · Protocolo <b id="t-protocolo"></b></p>
+
+        <h2>Instituição</h2>
+        <p>
+            <b>Recanto dos Velhinhos Francisco Gonçalves Barbosa</b>, entidade filantrópica sem fins lucrativos,
+            com sede na R. Francisco Ribeiro de Abreu, 60 — Centro, Pinheiral/RJ, CEP 27197-000.
+        </p>
+        <div class="rotulo">CNPJ</div><div class="linha"></div>
+
+        <h2>Voluntário(a)</h2>
+        <dl id="t-dados"></dl>
+
+        <h2>Serviço voluntário</h2>
+        <dl>
+            <dt>Serviço a prestar</dt><dd id="t-servico"></dd>
+            <dt>Dias e horários</dt><dd id="t-condicoes"></dd>
+        </dl>
+        <p class="rotulo" style="margin-top:6px;">Se os dias e horários estiverem em branco, combine e escreva na entrevista:</p>
+        <div class="linha"></div>
+
+        <h2>Declaração</h2>
+        <p>
+            O(a) voluntário(a) acima identificado(a) declara aderir ao serviço voluntário no Recanto dos Velhinhos
+            Francisco Gonçalves Barbosa, de forma espontânea e sem remuneração, nos termos da Lei nº 9.608/1998.
+            Declara estar ciente de que o serviço voluntário <b>não gera vínculo empregatício</b> nem obrigação de
+            natureza trabalhista, previdenciária ou afim; de que eventuais despesas realizadas no desempenho das
+            atividades só serão ressarcidas se previamente autorizadas pela instituição; e de que este termo pode
+            ser encerrado a qualquer momento, por qualquer das partes, mediante comunicação.
+        </p>
+        <p id="t-aviso-menor" hidden>
+            Por se tratar de menor de 18 anos, este termo só vale acompanhado da <b>autorização do responsável legal</b>,
+            que também o assina abaixo.
+        </p>
+
+        <div class="assinaturas">
+            <div><div class="linha"></div><div class="rotulo">Assinatura do(a) voluntário(a)</div></div>
+            <div><div class="linha"></div><div class="rotulo">Assinatura do(a) representante da instituição</div></div>
+            <div id="t-assinatura-responsavel" hidden><div class="linha"></div><div class="rotulo">Assinatura do(a) responsável legal</div></div>
+            <div><div class="linha"></div><div class="rotulo">Local e data</div></div>
+        </div>
+    </div>
+</main>
+
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/impressao-voluntario.js"></script>
+<script src="assets/js/page-termo-adesao.js"></script>
+</body>
+</html>

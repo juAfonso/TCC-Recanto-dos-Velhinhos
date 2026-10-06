@@ -105,7 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (v.menorDeIdade && v.autorizacaoStatus === 'pendente' && ['pendente', 'entrevista'].includes(v.status)) {
         acoes.push(['autorizacao-recebida', 'btn-outline', 'Marcar autorização como recebida']);
       }
-      if (v.menorDeIdade) acoes.push(['reimprimir', 'btn-outline', 'Reimprimir autorização']);
+      acoes.push(['imprimir-termo', 'btn-outline', 'Imprimir termo de adesão']);
+      if (v.menorDeIdade) acoes.push(['imprimir-autorizacao', 'btn-outline', 'Imprimir autorização do responsável']);
       acoes.push(['corrigir', 'btn-outline', 'Corrigir dados']);
     }
     $('vol-acoes').innerHTML = acoes.map(([acao, cls, rotulo]) => `<button type="button" class="btn ${cls} btn-sm" data-acao="${acao}">${rotulo}</button>`).join('')
@@ -136,7 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
       openModal('modal-rejeitar');
       $('rej-motivo').focus();
     }
-    if (acao === 'reimprimir') reimprimir();
+    if (acao === 'imprimir-termo') imprimir('termo-adesao.html');
+    if (acao === 'imprimir-autorizacao') imprimir('autorizacao-menor.html');
     if (acao === 'corrigir') abrirCorrecao();
   });
 
@@ -146,15 +148,19 @@ document.addEventListener('DOMContentLoaded', () => {
     await decidir('rejeitar', { motivo: $('rej-motivo').value.trim() });
   });
 
-  // Reimpressão: os dados vêm do Painel e vão para a página de impressão pelo sessionStorage,
-  // que a nova aba herda desta (research D17).
-  async function reimprimir() {
+  // Documentos para imprimir (termo de adesão e autorização): os dados vêm do Painel e vão para a
+  // página de impressão pelo sessionStorage, que a aba nova aberta por window.open herda (D17).
+  async function imprimir(pagina) {
     try {
-      const d = await Api.get(`/api/admin/voluntarios/${atual.id}/autorizacao`);
-      sessionStorage.setItem('sage_autorizacao_menor', JSON.stringify(d));
-      window.open('../autorizacao-menor.html', '_blank');
-      setTimeout(() => sessionStorage.removeItem('sage_autorizacao_menor'), 5000);
-    } catch (erro) { Utils.toast(erro.message, 'danger'); }
+      const d = await Api.get(`/api/admin/voluntarios/${atual.id}/impressao`);
+      // Grava ANTES de abrir: a aba nova copia o sessionStorage no momento em que é criada.
+      ImpressaoVoluntario.guardar(d);
+      const aba = window.open(`../${pagina}`, '_blank');
+      if (!aba) Utils.toast('O navegador bloqueou a janela. Permita pop-ups para este site e tente de novo.', 'warning');
+      setTimeout(() => { try { sessionStorage.removeItem(ImpressaoVoluntario.CHAVE); } catch (e) { /* nada */ } }, 5000);
+    } catch (erro) {
+      Utils.toast(erro.message, 'danger');
+    }
   }
 
   /* ---------- Correção de dados ---------- */

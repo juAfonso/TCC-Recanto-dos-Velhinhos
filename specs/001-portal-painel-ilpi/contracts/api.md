@@ -219,7 +219,7 @@ Filas: `voluntarios`, `candidaturas`, `solicitacoes`.
 | `POST` | `/api/admin/solicitacoes/:id/confirmar` | solicitação | aguardando contato → confirmada; corpo com os dados combinados e, na campanha, os recursos; cria e publica evento/campanha |
 | `POST` | `/api/admin/{fila}/:id/rejeitar` | todas | `{ motivo?: string }` — **opcional** |
 | `POST` | `/api/admin/voluntarios/:id/autorizacao-recebida` | voluntário menor | pendente → recebida (FR-012) |
-| `GET` | `/api/admin/voluntarios/:id/autorizacao` | voluntário menor | dados para reimprimir a página (D17) |
+| `GET` | `/api/admin/voluntarios/:id/impressao` | voluntário | dados para imprimir o termo de adesão (FR-012a) e, se menor, a autorização (FR-012, D17); auditado. Substituiu `/autorizacao` em 2026-10-06 |
 | `GET` | `/api/admin/candidaturas/:id/curriculo` | candidatura | redireciona para URL assinada de vida curta (D3) |
 | `PUT` | `/api/admin/{fila}/:id` | todas | **corrige dados** sem mudar status (FR-037, 2026-10-06); estado anterior em `historico_alteracao`; mesmas validações do envio; registro anonimizado → `409 REGISTRO_ANONIMIZADO`; no voluntário aprovado e na candidatura aprovada, nome, e-mail e telefone corrigidos também na `pessoa` |
 

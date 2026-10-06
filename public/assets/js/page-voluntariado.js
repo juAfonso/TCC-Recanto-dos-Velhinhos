@@ -71,14 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
     $('aviso-email').textContent = r.emailEnviado
       ? 'Também mandamos o código para o seu e-mail (confira a caixa de spam).'
       : 'Não conseguimos enviar o e-mail agora, mas o cadastro foi registrado. Anote o código acima.';
-    if (r.autorizacaoStatus === 'pendente') {
-      // Só no navegador desta pessoa; a página de autorização apaga ao sair.
-      try {
-        sessionStorage.setItem('sage_autorizacao_menor', JSON.stringify({ ...corpo, protocolo: r.protocolo }));
-      } catch (e) { /* sem sessionStorage, a equipe reimprime pelo Painel */ }
-      $('aviso-menor').hidden = false;
-    }
+    // Dados para os documentos de imprimir: só nesta aba do navegador, até ela ser fechada.
+    // Sem sessionStorage, a equipe imprime pelo Painel.
+    const menor = r.autorizacaoStatus === 'pendente';
+    ImpressaoVoluntario.guardar({ ...corpo, protocolo: r.protocolo, menorDeIdade: menor });
+    $('aviso-menor').hidden = !menor;
     $('sucesso').scrollIntoView({ behavior: 'smooth' });
-    $('protocolo-gerado').focus?.();
   }
 });

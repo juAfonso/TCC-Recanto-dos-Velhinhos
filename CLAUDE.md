@@ -113,6 +113,21 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   basta estar na máquina de uma pessoa.
 - **Fluxo de trabalho:** Spec Kit + Claude Code (VS Code), especificando e
   planejando a partir do PRD antes de implementar.
+- **Ambiente de desenvolvimento (decidido em 2026-10-06):**
+  1. **Três branches no Neon:** `main` (produção, dados reais), `dev` (na
+     máquina de quem programa, com `npm run seed -- --demo`) e `teste`
+     (apagada e recriada a cada `npm test`). Nunca rodar `--demo` na `main`:
+     o seed marca cada banco como `demo` ou `producao` e recusa misturar.
+  2. **`npm run dev` no lugar do `vercel dev`.** Um servidor pequeno em
+     `scripts/dev.js`, sem dependência, serve `public/` e as funções de
+     `api/` como a Vercel. Motivo: o Vercel CLI exige instalação global e
+     login em cada computador, e no Windows o app do Claude instala numa
+     pasta isolada que o Prompt de Comando não enxerga.
+  3. **O login do Painel é o Gmail institucional**
+     (`recantodosvelhinhos.pinheiral@gmail.com`), com senha **própria**,
+     gerada pelo seed de produção e mostrada uma única vez — não é a senha
+     do Gmail.
+  4. **Commits sempre em branch**, com PR para a `main`; nada direto na `main`.
 - **Front-end:** já existe um protótipo estático (`recanto-frontend`) com as
   páginas index, login, institucional, doacoes, campanhas, noticias, vagas,
   voluntariado, autoatendimento, consultar-status, solicitar-evento e uma

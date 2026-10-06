@@ -14,15 +14,15 @@ código de implementação aqui.
 | Item | Observação |
 |---|---|
 | Node.js 24 LTS | **na máquina de quem programa** (`winget install OpenJS.NodeJS.LTS`) |
-| Conta Neon | projeto PostgreSQL gratuito, com uma **branch de teste** separada (D8) |
+| Conta Neon | projeto PostgreSQL gratuito com três branches: `main` (produção), `dev` (desenvolvimento, com `seed --demo`) e `teste` (apagada a cada `npm test`, D8) |
 | Conta Vercel | com Blob habilitado |
-| Vercel CLI | `npm i -g vercel` — roda funções e cron localmente |
+| Vercel CLI | **opcional** desde 2026-10-06 — `npm run dev` faz o mesmo papel localmente (abaixo) |
 | Gmail institucional | com verificação em duas etapas e senha de aplicativo (D5) |
 
 ### Variáveis de ambiente (`.env.local`, nunca commitado)
 
 ```
-DATABASE_URL=postgresql://…            # Neon — produção/desenvolvimento
+DATABASE_URL=postgresql://…            # Neon — na sua máquina, a branch dev; na Vercel, a main
 DATABASE_URL_TESTE=postgresql://…      # Neon — branch de teste (node --test)
 BLOB_READ_WRITE_TOKEN=…                # Vercel Blob
 SESSION_SECRET=…                       # HMAC do cookie (32+ bytes aleatórios)
@@ -42,15 +42,19 @@ APP_URL=https://….vercel.app           # base dos links de senha enviados por 
 
 ```bash
 npm install
-node db/migrate.js
-node db/seed.js --demo
-vercel dev
+npm run migrate
+npm run seed -- --demo
+npm run dev
 ```
 
-- `--demo` popula dados fictícios (conta institucional de teste, itens, campanha, voluntária,
-  doadora associada, chave Pix fictícia em domínio `.invalid`). **Nunca rodar em produção.**
-- Em produção, `node db/seed.js` sem `--demo` cria só a configuração inicial e a conta
-  institucional, com **senha gerada na hora e mostrada uma única vez**. As credenciais do
+Os scripts leem o `.env.local` sozinhos. `npm run dev` (`scripts/dev.js`, sem dependência) serve
+`public/` e executa as funções de `api/` como a Vercel faria, em `http://localhost:3000` — funciona
+em qualquer computador com Node, sem instalar nem logar no Vercel CLI.
+
+- `--demo` popula dados fictícios (conta institucional com a senha de demonstração `DEMO.senhaPainel` do `db/seed.js`, itens, campanha, voluntária,
+  doadora associada, chave Pix fictícia em domínio `.invalid`). **Nunca rodar em produção.** O seed grava em `configuracao.ambiente` se o banco é `demo` ou `producao` e recusa misturar os dois.
+- Em produção, `npm run seed` sem `--demo` cria só a configuração inicial, o contato do Recanto e a conta
+  institucional (usuário: o Gmail institucional, decisão de 2026-10-06), com **senha gerada na hora e mostrada uma única vez**. As credenciais do
   protótipo (`admin`/`admin123`) não podem existir fora do ambiente local.
 - Aplicação em `http://localhost:3000`.
 
@@ -177,7 +181,7 @@ Nenhuma tela é dada como concluída sem:
 ## Testes automatizados
 
 ```bash
-node --test
+npm test
 ```
 
 Rodam contra `DATABASE_URL_TESTE`. Cobrem as quatro regras de `contracts/api.md` → "Contratos

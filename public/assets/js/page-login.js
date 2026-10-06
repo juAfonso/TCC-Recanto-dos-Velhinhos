@@ -1,12 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* já autenticado? redireciona direto */
+  /* já autenticado? redireciona direto (o Painel é confirmado pelo servidor) */
   const existing = Auth.getSession();
-  if (existing) {
-    if (existing.tipo === 'admin') window.location.href = 'admin/dashboard.html';
-    else window.location.href = 'autoatendimento.html';
+  if (existing && existing.tipo !== 'admin') {
+    window.location.href = 'autoatendimento.html';
     return;
   }
+  Auth.verificarAdmin().then((identificador) => {
+    if (identificador) window.location.href = 'admin/dashboard.html';
+  });
 
   /* alternância de abas */
   const tabBtns = document.querySelectorAll('.tab-btn');
@@ -21,20 +23,24 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* login admin */
-  document.getElementById('form-admin-login').addEventListener('submit', (e) => {
+  const formAdmin = document.getElementById('form-admin-login');
+  formAdmin.addEventListener('submit', async (e) => {
     e.preventDefault();
     const userInput = document.getElementById('admin-user');
     const passInput = document.getElementById('admin-pass');
-    Utils.clearFieldError(userInput.closest('.form-group'));
-    Utils.clearFieldError(passInput.closest('.form-group'));
+    const botao = formAdmin.querySelector('[type="submit"]');
+    Utils.clearAllErrors(formAdmin);
 
-    const ok = Auth.loginAdmin(userInput.value.trim(), passInput.value);
-    if (ok) {
-      Utils.toast('Login realizado com sucesso!');
+    botao.disabled = true;
+    botao.textContent = 'Entrando…';
+    try {
+      await Auth.loginAdmin(userInput.value.trim(), passInput.value, formAdmin);
       window.location.href = 'admin/dashboard.html';
-    } else {
-      Utils.setFieldError(passInput.closest('.form-group'), 'Usuário ou senha inválidos.');
-      Utils.toast('Não foi possível entrar. Verifique usuário e senha.', 'danger');
+    } catch (erro) {
+      // Erros com campo já foram marcados pelo Api; o 429 já virou aviso.
+      if (erro.status !== 429) Utils.toast(erro.message, 'danger');
+      botao.disabled = false;
+      botao.textContent = 'Entrar no Painel';
     }
   });
 

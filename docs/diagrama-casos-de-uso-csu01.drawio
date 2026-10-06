@@ -1,0 +1,91 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="uc-csu01" name="CSU01 — Doação via Pix">
+    <mxGraphModel dx="1431" dy="865" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1320" pageHeight="780" background="light-dark(#FFFFFF,#F6E9FF)" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="sistema" parent="1" style="rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=center;fontStyle=1;fontSize=14;spacingTop=6;strokeColor=light-dark(#000000,#000000);fillColor=light-dark(#FFFFFF,#F6E9FF);" value="&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(0, 0, 0));&quot;&gt;SAGE — CSU01 Doação via Pix&lt;/span&gt;" vertex="1">
+          <mxGeometry height="690" width="940" x="200" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="ator_doador" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;strokeColor=light-dark(#000000,#000000);fillColor=none;" value="&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(0, 0, 0));&quot;&gt;Doador&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="30" x="90" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="ator_associado" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;strokeColor=light-dark(#000000,#000000);fillColor=none;" value="&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(0, 0, 0));&quot;&gt;Doador&lt;br&gt;associado&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="30" x="90" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="ator_funcionario" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fontStyle=1;strokeColor=light-dark(#000000,#000000);fillColor=none;" value="&lt;span style=&quot;color: light-dark(rgb(0, 0, 0), rgb(0, 0, 0));&quot;&gt;Funcionário&lt;/span&gt;" vertex="1">
+          <mxGeometry height="60" width="30" x="1210" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_doar" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#008A00,#CCE5FF);strokeColor=light-dark(#008A00,#7EA6E0);fontColor=#ffffff;fontStyle=1;" value="Doar via Pix" vertex="1">
+          <mxGeometry height="70" width="190" x="240" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_qr" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#008A00,#CCE5FF);strokeColor=light-dark(#008A00,#7EA6E0);fontColor=#ffffff;" value="Gerar QR code Pix estático&lt;br&gt;com o valor escolhido" vertex="1">
+          <mxGeometry height="70" width="190" x="520" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_declarar" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#008A00,#CCE5FF);strokeColor=light-dark(#008A00,#7EA6E0);fontColor=#ffffff;" value="Declarar doação&lt;br&gt;(&quot;Já fiz o Pix&quot;)" vertex="1">
+          <mxGeometry height="70" width="190" x="520" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_cadastrar" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#008A00,#CCE5FF);strokeColor=light-dark(#008A00,#7EA6E0);fontColor=#ffffff;" value="Cadastrar doador associado&lt;br&gt;(primeira doação associativa)" vertex="1">
+          <mxGeometry height="70" width="190" x="520" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_vincular" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#008A00,#CCE5FF);strokeColor=light-dark(#008A00,#7EA6E0);fontColor=#ffffff;" value="Vincular doação ao cadastro&lt;br&gt;do doador associado" vertex="1">
+          <mxGeometry height="70" width="190" x="520" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_consentimento" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#008A00,#CCE5FF);strokeColor=light-dark(#E1F5EE,#7EA6E0);fontColor=light-dark(#000000,#121212);" value="Registrar consentimento&lt;br&gt;(aviso de privacidade — LGPD)" vertex="1">
+          <mxGeometry height="70" width="190" x="840" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_link" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#008A00,#CCE5FF);strokeColor=light-dark(#E1F5EE,#7EA6E0);fontColor=light-dark(#000000,#000000);" value="Enviar link de&lt;br&gt;definição de senha" vertex="1">
+          <mxGeometry height="70" width="190" x="840" y="350" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_conferir" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#67AB9F,#9AC7BF);strokeColor=light-dark(#67AB9F,#67AB9F);fontColor=light-dark(#67AB9F,#121212);fontStyle=1;" value="Conferir declaração&lt;br&gt;no extrato bancário" vertex="1">
+          <mxGeometry height="70" width="190" x="880" y="475" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_confirmar" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#67AB9F,#9AC7BF);strokeColor=light-dark(#67AB9F,#67AB9F);fontColor=light-dark(#67AB9F,#121212);" value="Confirmar doação" vertex="1">
+          <mxGeometry height="70" width="190" x="680" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="uc_naolocalizada" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=light-dark(#67AB9F,#9AC7BF);strokeColor=light-dark(#67AB9F,#67AB9F);fontColor=light-dark(#67AB9F,#121212);" value="Marcar como não localizada&lt;br&gt;(motivo opcional)" vertex="1">
+          <mxGeometry height="70" width="190" x="920" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="nota" parent="1" style="shape=note;whiteSpace=wrap;html=1;size=14;fillColor=light-dark(#A680B8,#C3ABD0);strokeColor=#A680B8;fontColor=light-dark(#A781B8,#000000);align=left;spacingLeft=8;spacingRight=8;fontSize=11;" value="O pagamento acontece fora do sistema, no aplicativo do banco do doador. Sem o clique em &quot;Já fiz o Pix&quot;, nada é registrado. Toda declaração nasce &lt;b&gt;pendente&lt;/b&gt; e só o funcionário, conferindo o extrato, a confirma. Doação não gera protocolo nem recibo." vertex="1">
+          <mxGeometry height="100" width="330" x="230" y="590" as="geometry" />
+        </mxCell>
+        <mxCell id="a_doador_doar" edge="1" parent="1" source="ator_doador" style="endArrow=none;html=1;strokeColor=light-dark(#000000,#000000);" target="uc_doar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a_func_conferir" edge="1" parent="1" source="ator_funcionario" style="endArrow=none;html=1;strokeColor=light-dark(#000000,#000000);" target="uc_conferir">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="g_associado" edge="1" parent="1" style="endArrow=block;endFill=0;endSize=12;html=1;strokeColor=light-dark(#000000,#000000);">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="105" y="460.94" as="sourcePoint" />
+            <mxPoint x="105" y="317.93" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="i_qr" edge="1" parent="1" source="uc_doar" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=11;strokeColor=light-dark(#000000,#000000);labelBackgroundColor=none;fontColor=light-dark(#000000,#121212);" target="uc_qr" value="&lt;span&gt;«include»&lt;/span&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="i_declarar" edge="1" parent="1" source="uc_doar" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=11;strokeColor=light-dark(#000000,#000000);fontColor=light-dark(#000000,#121212);labelBackgroundColor=none;" target="uc_declarar" value="«include»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="i_consentimento" edge="1" parent="1" source="uc_cadastrar" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=11;strokeColor=light-dark(#000000,#000000);labelBackgroundColor=none;fontColor=light-dark(#000000,#121212);" target="uc_consentimento" value="«include»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="i_link" edge="1" parent="1" source="uc_cadastrar" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=11;strokeColor=light-dark(#000000,#000000);labelBackgroundColor=none;fontColor=light-dark(#000000,#121212);" target="uc_link" value="«include»">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_cadastrar" edge="1" parent="1" source="uc_cadastrar" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=11;strokeColor=light-dark(#000000,#000000);labelBackgroundColor=none;fontColor=light-dark(#000000,#121212);" target="uc_doar" value="«extend»&lt;br&gt;[associativa, sem login]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_vincular" edge="1" parent="1" source="uc_vincular" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=11;strokeColor=light-dark(#000000,#000000);labelBackgroundColor=none;fontColor=light-dark(#000000,#121212);" target="uc_doar" value="«extend»&lt;br&gt;[autenticado no&lt;br&gt;autoatendimento — CSU09]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_confirmar" edge="1" parent="1" source="uc_confirmar" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=11;strokeColor=light-dark(#000000,#000000);labelBackgroundColor=none;fontColor=light-dark(#000000,#121212);" target="uc_conferir" value="«extend»&lt;br&gt;[Pix localizado]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_naolocalizada" edge="1" parent="1" source="uc_naolocalizada" style="dashed=1;endArrow=open;endSize=10;html=1;fontSize=11;strokeColor=light-dark(#000000,#000000);labelBackgroundColor=none;fontColor=light-dark(#000000,#121212);" target="uc_conferir" value="«extend»&lt;br&gt;[Pix não localizado]">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

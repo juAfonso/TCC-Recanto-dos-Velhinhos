@@ -1,76 +1,84 @@
+/* Cadastro de voluntário (US4, FR-011 a FR-013, FR-012, FR-049).
+   Depois do envio, o protocolo aparece em destaque. Se for menor, os dados vão para a página
+   de autorização pelo sessionStorage do próprio navegador — nunca por uma rota pública (D17). */
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('form-voluntario');
-  if (!form) return;
+  const $ = (id) => document.getElementById(id);
+  const form = $('form-voluntario');
 
-  const idadeInput = document.getElementById('v-idade');
-  const grupoAutorizacao = document.getElementById('grupo-autorizacao');
-  const autorizacaoInput = document.getElementById('v-autorizacao');
+  $('v-nascimento').max = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
 
-  function toggleAutorizacao() {
-    const idade = Number(idadeInput.value);
-    const menor = idade > 0 && idade < 18;
-    grupoAutorizacao.style.display = menor ? 'block' : 'none';
-    if (!menor) {
-      autorizacaoInput.value = '';
-      Utils.clearFieldError(grupoAutorizacao);
-    }
+  $('v-servico').addEventListener('change', () => {
+    const outro = $('v-servico').value === 'Outro';
+    $('grupo-servico-outro').hidden = !outro;
+    if (outro) $('v-servico-outro').focus();
+  });
+
+  function dados() {
+    return {
+      nome: $('v-nome').value.trim(),
+      dataNascimento: $('v-nascimento').value,
+      cpf: $('v-cpf').value,
+      rg: $('v-rg').value.trim(),
+      escolaridade: $('v-escolaridade').value.trim(),
+      profissao: $('v-profissao').value.trim(),
+      endereco: $('v-endereco').value.trim(),
+      bairro: $('v-bairro').value.trim(),
+      cep: $('v-cep').value,
+      cidade: $('v-cidade').value.trim(),
+      uf: $('v-uf').value,
+      telefone: $('v-telefone').value,
+      email: $('v-email').value.trim(),
+      tipoServico: $('v-servico').value,
+      tipoServicoOutro: $('v-servico-outro').value.trim(),
+      objetivos: $('v-objetivos').value.trim(),
+      condicoes: $('v-condicoes').value.trim(),
+    };
   }
-  idadeInput.addEventListener('input', toggleAutorizacao);
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     Utils.clearAllErrors(form);
-
-    const nome = document.getElementById('v-nome').value.trim();
-    const idade = Number(idadeInput.value);
-    const telefone = document.getElementById('v-telefone').value.trim();
-    const endereco = document.getElementById('v-endereco').value.trim();
-    const area = document.getElementById('v-area').value;
-    const termos = document.getElementById('v-termos').checked;
-    const menorIdade = idade > 0 && idade < 18;
-    const temAnexo = autorizacaoInput.files && autorizacaoInput.files.length > 0;
-
-    let valid = true;
-    const fail = (input, msg) => { Utils.setFieldError(input.closest('.form-group'), msg); valid = false; };
-
-    if (!nome) fail(document.getElementById('v-nome'), 'Informe seu nome completo.');
-    if (!idade || idade < 14 || idade > 110) fail(idadeInput, 'Informe uma idade válida.');
-    if (!telefone) fail(document.getElementById('v-telefone'), 'Informe um telefone de contato.');
-    if (!endereco) fail(document.getElementById('v-endereco'), 'Informe seu endereço.');
-    if (!area) fail(document.getElementById('v-area'), 'Selecione uma área de interesse.');
-
-    // FR-012: exige anexo de autorização do responsável legal para menores de idade
-    if (menorIdade && !temAnexo) {
-      Utils.setFieldError(grupoAutorizacao, 'O anexo da autorização do responsável legal é obrigatório para menores de 18 anos.');
-      valid = false;
-    }
-
-    if (!termos) fail(document.getElementById('v-termos'), 'É necessário aceitar os termos para continuar.');
-
-    if (!valid) {
-      Utils.toast('Verifique os campos destacados no formulário.', 'danger');
+    const corpo = dados();
+    if (!Consentimento.dados(form).aceito) {
+      const caixa = form.querySelector('input[name=aceito]');
+      Utils.setFieldError(caixa.closest('.form-group'), 'Para enviar, marque que concorda com o aviso de privacidade.');
+      caixa.focus();
       return;
     }
-
-    const db = DB.load();
-    const protocolo = Utils.generateProtocol();
-
-    db.voluntarios.push({
-      id: Utils.generateId('v'),
-      protocolo,
-      nome, endereco, telefone, idade, areaInteresse: area,
-      menorIdade,
-      anexoAutorizacao: temAnexo ? autorizacaoInput.files[0].name : null,
-      status: 'pendente',
-      criadoEm: new Date().toISOString()
-    });
-
-    DB.save(db);
-
-    document.getElementById('form-wrap').style.display = 'none';
-    document.getElementById('result-wrap').style.display = 'block';
-    document.getElementById('protocolo-gerado').textContent = protocolo;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    Utils.toast('Cadastro de voluntário enviado com sucesso!');
+    const botao = form.querySelector('[type=submit]');
+    botao.disabled = true;
+    botao.textContent = 'Enviando…';
+    try {
+      const r = await Api.post('/api/public/voluntarios', { ...corpo, consentimento: Consentimento.dados(form) }, { form });
+      mostrarSucesso(r, corpo);
+    } catch (erro) {
+      if (erro.campos.length) {
+        const primeiro = form.querySelector('.has-error input, .has-error select, .has-error textarea');
+        if (primeiro) primeiro.focus();
+      } else if (erro.status !== 429) {
+        Utils.toast(erro.message, 'danger');
+      }
+    } finally {
+      botao.disabled = false;
+      botao.textContent = 'Enviar cadastro';
+    }
   });
+
+  function mostrarSucesso(r, corpo) {
+    $('form-wrap').hidden = true;
+    $('sucesso').hidden = false;
+    $('protocolo-gerado').textContent = r.protocolo;
+    $('aviso-email').textContent = r.emailEnviado
+      ? 'Também mandamos o código para o seu e-mail (confira a caixa de spam).'
+      : 'Não conseguimos enviar o e-mail agora, mas o cadastro foi registrado. Anote o código acima.';
+    if (r.autorizacaoStatus === 'pendente') {
+      // Só no navegador desta pessoa; a página de autorização apaga ao sair.
+      try {
+        sessionStorage.setItem('sage_autorizacao_menor', JSON.stringify({ ...corpo, protocolo: r.protocolo }));
+      } catch (e) { /* sem sessionStorage, a equipe reimprime pelo Painel */ }
+      $('aviso-menor').hidden = false;
+    }
+    $('sucesso').scrollIntoView({ behavior: 'smooth' });
+    $('protocolo-gerado').focus?.();
+  }
 });

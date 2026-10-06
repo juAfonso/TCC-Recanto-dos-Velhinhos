@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Autorização do responsável — Recanto dos Velhinhos</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .termo { max-width: 780px; margin: 0 auto; padding: 32px 24px; background: #fff; color: #222; line-height: 1.6; }
+  .termo h1 { font-size: 1.35rem; color: #222; margin-bottom: 4px; }
+  .termo h2 { font-size: 1rem; margin: 22px 0 8px; color: #222; }
+  .termo dl { display: grid; grid-template-columns: 210px 1fr; gap: 4px 12px; font-size: .95rem; }
+  .termo dt { font-weight: 700; }
+  .termo .linha { border-bottom: 1px solid #333; height: 32px; margin: 4px 0 12px; }
+  .termo .rotulo { font-size: .85rem; color: #444; }
+  .termo .assinaturas { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: 36px; }
+  .acoes-tela { max-width: 780px; margin: 24px auto 0; padding: 0 24px; display: flex; gap: 10px; flex-wrap: wrap; }
+  @media (max-width: 600px) { .termo dl, .termo .assinaturas { grid-template-columns: 1fr; } }
+  @media print {
+    .acoes-tela, .aviso-tela { display: none !important; }
+    body { background: #fff !important; }
+    .termo { padding: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="acoes-tela">
+    <button type="button" class="btn btn-viridian" id="btn-imprimir">Imprimir ou salvar em PDF</button>
+    <a href="index.html" class="btn btn-outline">Voltar ao site</a>
+</div>
+<div class="alert alert-info aviso-tela" style="max-width:780px;margin:16px auto;"><span aria-hidden="true">ℹ️</span><div>
+    Imprima esta página (ou salve em PDF), peça ao responsável para preencher e assinar, e <b>entregue na sede do Recanto</b>.
+    O cadastro só pode ser aprovado depois que a equipe receber a autorização. Nada desta página é enviado pela internet.
+</div></div>
+
+<main class="termo" id="termo">
+    <p id="sem-dados" hidden>Não encontramos os dados do cadastro neste navegador. Se você já enviou o cadastro, peça à equipe do Recanto para reimprimir a autorização.</p>
+    <div id="conteudo" hidden>
+        <h1>Autorização do responsável legal para serviço voluntário</h1>
+        <p class="rotulo">Recanto dos Velhinhos Francisco Gonçalves Barbosa — Pinheiral/RJ · Protocolo <b id="t-protocolo"></b></p>
+
+        <h2>Dados do(a) voluntário(a) menor de idade</h2>
+        <dl id="t-dados"></dl>
+
+        <h2>Autorização</h2>
+        <p>
+            Eu, responsável legal pelo(a) menor identificado(a) acima, <b>autorizo</b> que ele(a) preste serviço
+            voluntário no Recanto dos Velhinhos Francisco Gonçalves Barbosa, nos termos da Lei nº 9.608/1998,
+            sem remuneração e sem vínculo empregatício, no tipo de serviço e nas condições informados acima,
+            podendo esta autorização ser revogada a qualquer momento.
+        </p>
+
+        <h2>Dados do(a) responsável legal (preencher à mão)</h2>
+        <div class="rotulo">Nome completo</div><div class="linha"></div>
+        <div class="assinaturas" style="margin-top:0;">
+            <div><div class="rotulo">RG ou CPF</div><div class="linha"></div></div>
+            <div><div class="rotulo">Parentesco ou vínculo</div><div class="linha"></div></div>
+        </div>
+        <div class="rotulo">Telefone</div><div class="linha"></div>
+
+        <div class="assinaturas">
+            <div><div class="linha"></div><div class="rotulo">Assinatura do(a) responsável legal</div></div>
+            <div><div class="linha"></div><div class="rotulo">Local e data</div></div>
+        </div>
+
+        <p class="rotulo" style="margin-top:28px;">
+            Entregar na sede: R. Francisco Ribeiro de Abreu, 60 — Centro, Pinheiral/RJ, 27197-000.
+            Uso interno — recebido por: ______________________ em ____/____/______
+        </p>
+    </div>
+</main>
+
+<script src="assets/js/utils.js"></script>
+<script src="assets/js/page-autorizacao-menor.js"></script>
+</body>
+</html>

@@ -125,6 +125,12 @@
 
 - Q: O texto institucional entregue pelo Recanto tem, além de história, missão e equipe, as seções "Acolhimento de residentes" (quem é acolhido e como saber de vaga) e "Nosso bazar" (dia, horário e o que se doa). Onde ficam? (FR-001, FR-001a) → A: **Duas seções novas da página institucional, editáveis pela equipe como as outras.** O dia do bazar e a situação de vagas mudam, e texto fixo no HTML obrigaria a mexer no código. Descartado: juntar no texto da história (página desorganizada) e fixar no HTML (a equipe não conseguiria editar). A seção de acolhimento é **só texto informativo**: não cria cadastro de residentes, que continua fora do escopo. A "equipe" passa a mostrar quem conduz a instituição (diretoria voluntária), conforme o texto entregue.
 
+### Session 2026-10-06 (3) — Formulário de voluntário (fase 6)
+
+- Q: Quais campos do termo de adesão (FR-011) são obrigatórios no formulário público? → A: **Identificação, endereço, contato e tipo de serviço** são obrigatórios (nome, data de nascimento, CPF, RG, endereço, bairro, CEP, cidade, UF, telefone, e-mail, tipo de serviço). **Escolaridade, profissão, objetivos e condições (dias e horários) são opcionais**: a equipe completa na entrevista. Nenhum campo fora do termo foi acrescentado.
+- Q: Como o voluntário informa o tipo de serviço? → A: **Lista fixa** (atividades recreativas, oficinas de artesanato, leitura e contação de histórias, acompanhamento aos idosos, apoio em eventos e campanhas, manutenção predial, apoio administrativo) **mais "Outro" com texto livre**.
+- Q: Há idade mínima para o cadastro? → A: **Não.** Qualquer menor de 18 anos pode se cadastrar; o cadastro fica com a autorização do responsável pendente até a entrega em papel na sede (FR-012). A equipe avalia na entrevista.
+
 ## User Scenarios & Testing (mandatory)
 
 ### User Story 1 - Portal Público Informativo (Priority: P1)

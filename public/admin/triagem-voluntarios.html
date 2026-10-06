@@ -70,16 +70,31 @@
         </div>
 
         <div class="admin-content">
+            <!-- Ajuda contextual da triagem (FR-061) -->
+            <details class="panel" style="margin-bottom:18px;">
+                <summary style="cursor:pointer;font-weight:700;">Como fazer a triagem de voluntários</summary>
+                <ol style="margin:12px 0 0 20px;line-height:1.7;">
+                    <li><b>Pendente:</b> leia o cadastro. Se fizer sentido, clique em <b>Chamar para entrevista</b> — a pessoa recebe um e-mail avisando que a equipe vai entrar em contato. Combine a entrevista por telefone ou e-mail.</li>
+                    <li><b>Entrevista:</b> depois de conversar, clique em <b>Aprovar</b> (o voluntário fica ativo) ou <b>Rejeitar</b>.</li>
+                    <li><b>Menor de 18 anos:</b> só pode ser aprovado depois que o responsável entregar a <b>autorização assinada</b> na sede. Quando ela chegar, clique em <b>Marcar autorização como recebida</b>. Se a família perdeu a folha, use <b>Reimprimir autorização</b>.</li>
+                    <li><b>Rejeitar:</b> o motivo é opcional. Se escrever, ele vai no e-mail para a pessoa — use palavras gentis.</li>
+                </ol>
+                <p class="form-hint" style="margin-top:8px;">O sistema não aprova ninguém sozinho e não apaga cadastros: rejeitados ficam no histórico. Achou um dado errado? Use <b>Corrigir dados</b>.</p>
+            </details>
+
             <div class="panel">
-                <div class="tabs-nav">
-                    <button class="tab-btn active" data-filtro="pendente">Pendentes</button>
+                <div class="tabs-nav" role="tablist">
+                    <button class="tab-btn active" data-filtro="pendente">Pendentes <span id="cont-pendente"></span></button>
+                    <button class="tab-btn" data-filtro="entrevista">Em entrevista <span id="cont-entrevista"></span></button>
                     <button class="tab-btn" data-filtro="aprovado">Aprovados</button>
                     <button class="tab-btn" data-filtro="rejeitado">Rejeitados</button>
+                    <button class="tab-btn" data-filtro="todos">Todos</button>
                 </div>
                 <div class="table-wrap">
                     <table>
+                        <caption class="sr-only">Cadastros de voluntários</caption>
                         <thead>
-                            <tr><th>Protocolo</th><th>Nome</th><th>Idade</th><th>Área de interesse</th><th>Anexo</th><th>Status</th><th></th></tr>
+                            <tr><th scope="col">Protocolo</th><th scope="col">Nome</th><th scope="col">Idade</th><th scope="col">Tipo de serviço</th><th scope="col">Recebido em</th><th scope="col">Situação</th><th scope="col">Ações</th></tr>
                         </thead>
                         <tbody id="voluntarios-tbody"></tbody>
                     </table>
@@ -90,17 +105,52 @@
 </div>
 
 <!-- MODAL: rejeitar com motivo (opcional) -->
-<div class="modal-overlay" id="modal-rejeitar">
+<div class="modal-overlay" id="modal-voluntario" role="dialog" aria-modal="true" aria-labelledby="modal-vol-titulo">
+    <div class="modal" style="max-width:760px;">
+        <div class="modal-head">
+            <h3 id="modal-vol-titulo">Cadastro de voluntário</h3>
+            <button class="modal-close" data-close-modal="modal-voluntario" aria-label="Fechar">✕</button>
+        </div>
+
+        <!-- Leitura: todos os dados coletados (FR-037a) -->
+        <div id="vol-detalhe">
+            <div id="vol-situacao" style="margin-bottom:14px;"></div>
+            <dl id="vol-dados" style="display:grid;grid-template-columns:minmax(140px,200px) 1fr;gap:6px 14px;font-size:.92rem;"></dl>
+            <div class="form-actions" id="vol-acoes" style="flex-wrap:wrap;margin-top:20px;"></div>
+        </div>
+
+        <!-- Correção de dados (FR-037) -->
+        <form id="form-corrigir" novalidate hidden>
+            <p class="form-hint" style="margin-bottom:12px;">Corrigir não muda a etapa da triagem. A versão anterior fica guardada no histórico.</p>
+            <div class="form-group"><label for="c-nome">Nome completo *</label><input type="text" id="c-nome" data-campo="nome" maxlength="150"><div class="form-error"></div></div>
+            <div class="form-row"><div class="form-group"><label for="c-nascimento">Data de nascimento *</label><input type="date" id="c-nascimento" data-campo="dataNascimento"><div class="form-error"></div></div><div class="form-group"><label for="c-cpf">CPF *</label><input type="text" id="c-cpf" data-campo="cpf" data-mascara="cpf"><div class="form-error"></div></div></div>
+            <div class="form-row"><div class="form-group"><label for="c-rg">RG *</label><input type="text" id="c-rg" data-campo="rg" maxlength="30"><div class="form-error"></div></div><div class="form-group"><label for="c-escolaridade">Escolaridade</label><input type="text" id="c-escolaridade" data-campo="escolaridade" maxlength="80"><div class="form-error"></div></div></div>
+            <div class="form-group"><label for="c-profissao">Profissão</label><input type="text" id="c-profissao" data-campo="profissao" maxlength="80"><div class="form-error"></div></div>
+            <div class="form-group"><label for="c-endereco">Endereço *</label><input type="text" id="c-endereco" data-campo="endereco" maxlength="200"><div class="form-error"></div></div>
+            <div class="form-row"><div class="form-group"><label for="c-bairro">Bairro *</label><input type="text" id="c-bairro" data-campo="bairro" maxlength="80"><div class="form-error"></div></div><div class="form-group"><label for="c-cep">CEP *</label><input type="text" id="c-cep" data-campo="cep" data-mascara="cep"><div class="form-error"></div></div></div>
+            <div class="form-row"><div class="form-group"><label for="c-cidade">Cidade *</label><input type="text" id="c-cidade" data-campo="cidade" maxlength="80"><div class="form-error"></div></div><div class="form-group"><label for="c-uf">UF *</label><select id="c-uf" data-campo="uf"><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select><div class="form-error"></div></div></div>
+            <div class="form-row"><div class="form-group"><label for="c-telefone">Telefone *</label><input type="text" id="c-telefone" data-campo="telefone" data-mascara="telefone"><div class="form-error"></div></div><div class="form-group"><label for="c-email">E-mail *</label><input type="text" id="c-email" data-campo="email"><div class="form-error"></div></div></div>
+            <div class="form-group"><label for="c-servico">Tipo de serviço *</label><input type="text" id="c-servico" data-campo="tipoServicoOutro" maxlength="200"><div class="form-error"></div></div>
+            <div class="form-group"><label for="c-objetivos">Objetivos</label><textarea id="c-objetivos" data-campo="objetivos" rows="2"></textarea><div class="form-error"></div></div>
+            <div class="form-group"><label for="c-condicoes">Dias e horários</label><textarea id="c-condicoes" data-campo="condicoes" rows="2"></textarea><div class="form-error"></div></div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="btn-cancelar-correcao">Cancelar</button>
+                <button type="submit" class="btn btn-viridian">Salvar correção</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-rejeitar" role="dialog" aria-modal="true" aria-labelledby="modal-rej-titulo">
     <div class="modal">
         <div class="modal-head">
-            <h3>Rejeitar cadastro de voluntário</h3>
-            <button class="modal-close" data-close-modal="modal-rejeitar">✕</button>
+            <h3 id="modal-rej-titulo">Rejeitar cadastro de voluntário</h3>
+            <button class="modal-close" data-close-modal="modal-rejeitar" aria-label="Fechar">✕</button>
         </div>
-        <form id="form-rejeitar">
-            <input type="hidden" id="rej-id">
+        <form id="form-rejeitar" novalidate>
             <div class="form-group">
                 <label for="rej-motivo">Motivo (opcional)</label>
-                <textarea id="rej-motivo" placeholder="Explique brevemente o motivo da rejeição, se desejar registrar."></textarea>
+                <textarea id="rej-motivo" rows="3" maxlength="1000" placeholder="Se escrever, o motivo vai no e-mail para a pessoa."></textarea>
             </div>
             <div class="form-actions">
                 <button type="button" class="btn btn-outline" data-close-modal="modal-rejeitar">Cancelar</button>
@@ -111,11 +161,11 @@
 </div>
 
 <script src="../assets/js/utils.js"></script>
-<script src="../assets/js/data.js"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/auth.js"></script>
 <script src="../assets/js/admin-guard.js"></script>
 <script src="../assets/js/admin-modal.js"></script>
+<script src="../assets/js/mascaras.js"></script>
 <script src="../assets/js/admin-triagem-voluntarios.js"></script>
 </body>
 </html>

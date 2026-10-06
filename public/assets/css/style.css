@@ -3,6 +3,9 @@
    Baseado na identidade visual do modelo fornecido (MANAS)
    ========================================================= */
 
+/* Elemento com o atributo hidden fica escondido mesmo se a classe dele definir display. */
+[hidden]{ display:none !important; }
+
 :root{
     /* paleta original do modelo */
     --magenta:#8E3B46;

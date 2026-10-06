@@ -47,42 +47,103 @@
     <div class="container">
 
         <div id="form-wrap">
-            <form class="form-shell" id="form-voluntario" novalidate>
+            <form class="form-shell" id="form-voluntario" novalidate data-consentimento="analisar meu cadastro de voluntário e preencher o termo de adesão">
                 <div class="alert alert-info">
-                    <span>ℹ️</span>
-                    <div>Seu cadastro entrará como <strong>pendente</strong> até ser avaliado por um funcionário. Você receberá um código de protocolo para acompanhar o status.</div>
+                    <span aria-hidden="true">ℹ️</span>
+                    <div>Seu cadastro fica <b>pendente</b> até a equipe analisar. Se for aprovado na primeira etapa, você será chamado para uma <b>entrevista</b>. Ao enviar, você recebe um <b>código de protocolo</b> para acompanhar.</div>
                 </div>
+                <p class="form-hint" style="margin-bottom:18px;">Os campos com <span class="req">*</span> são obrigatórios. Estes dados são os do termo de adesão ao serviço voluntário (Lei nº 9.608/1998).</p>
 
-                <div class="form-group">
-                    <label for="v-nome">Nome completo <span class="req">*</span></label>
-                    <input type="text" id="v-nome" autocomplete="name">
-                    <div class="form-error"></div>
-                </div>
-
+                <h2 style="font-size:1.05rem;margin:8px 0 12px;">Seus dados</h2>
+                
+                    <div class="form-group">
+                        <label for="v-nome">Nome completo <span class="req">*</span></label>
+                        <input type="text" id="v-nome" data-campo="nome" autocomplete="name" maxlength="150">
+                        <div class="form-error"></div>
+                    </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="v-idade">Idade <span class="req">*</span></label>
-                        <input type="number" id="v-idade" min="14" max="110">
-                        <div class="form-hint">Menores de 18 anos precisam anexar autorização do responsável legal.</div>
+                        <label for="v-nascimento">Data de nascimento <span class="req">*</span></label>
+                        <input type="date" id="v-nascimento" data-campo="dataNascimento">
+                        <p class="form-hint">Menores de 18 anos podem se cadastrar, com autorização do responsável entregue na sede.</p>
                         <div class="form-error"></div>
                     </div>
                     <div class="form-group">
+                        <label for="v-cpf">CPF <span class="req">*</span></label>
+                        <input type="text" id="v-cpf" data-campo="cpf" data-mascara="cpf" placeholder="000.000.000-00">
+                        <div class="form-error"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="v-rg">RG <span class="req">*</span></label>
+                        <input type="text" id="v-rg" data-campo="rg" maxlength="30">
+                        <div class="form-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="v-escolaridade">Escolaridade</label>
+                        <input type="text" id="v-escolaridade" data-campo="escolaridade" maxlength="80" placeholder="ex.: ensino médio completo">
+                        <div class="form-error"></div>
+                    </div>
+                </div>
+                
+                    <div class="form-group">
+                        <label for="v-profissao">Profissão</label>
+                        <input type="text" id="v-profissao" data-campo="profissao" maxlength="80">
+                        <div class="form-error"></div>
+                    </div>
+
+                <h2 style="font-size:1.05rem;margin:18px 0 12px;">Endereço e contato</h2>
+                
+                    <div class="form-group">
+                        <label for="v-endereco">Endereço (rua e número) <span class="req">*</span></label>
+                        <input type="text" id="v-endereco" data-campo="endereco" autocomplete="street-address" maxlength="200">
+                        <div class="form-error"></div>
+                    </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="v-bairro">Bairro <span class="req">*</span></label>
+                        <input type="text" id="v-bairro" data-campo="bairro" maxlength="80">
+                        <div class="form-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="v-cep">CEP <span class="req">*</span></label>
+                        <input type="text" id="v-cep" data-campo="cep" data-mascara="cep" autocomplete="postal-code" placeholder="00000-000">
+                        <div class="form-error"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="v-cidade">Cidade <span class="req">*</span></label>
+                        <input type="text" id="v-cidade" data-campo="cidade" maxlength="80" value="Pinheiral">
+                        <div class="form-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="v-uf">Estado (UF) <span class="req">*</span></label>
+                        <select id="v-uf" data-campo="uf">
+                            <option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ" selected>RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option>
+                        </select>
+                        <div class="form-error"></div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
                         <label for="v-telefone">Telefone <span class="req">*</span></label>
-                        <input type="tel" id="v-telefone" placeholder="(00) 00000-0000">
+                        <input type="tel" id="v-telefone" data-campo="telefone" data-mascara="telefone" autocomplete="tel" placeholder="(24) 99999-9999">
+                        <div class="form-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="v-email">E-mail <span class="req">*</span></label>
+                        <input type="email" id="v-email" data-campo="email" autocomplete="email">
                         <div class="form-error"></div>
                     </div>
                 </div>
 
+                <h2 style="font-size:1.05rem;margin:18px 0 12px;">Como você quer ajudar</h2>
                 <div class="form-group">
-                    <label for="v-endereco">Endereço <span class="req">*</span></label>
-                    <input type="text" id="v-endereco" placeholder="Rua, número, bairro, cidade/UF">
-                    <div class="form-error"></div>
-                </div>
-
-                <div class="form-group">
-                    <label for="v-area">Área de interesse <span class="req">*</span></label>
-                    <select id="v-area">
-                        <option value="">Selecione...</option>
+                    <label for="v-servico">Tipo de serviço <span class="req">*</span></label>
+                    <select id="v-servico" data-campo="tipoServico">
+                        <option value="">Escolha…</option>
                         <option>Atividades recreativas</option>
                         <option>Oficinas de artesanato</option>
                         <option>Leitura e contação de histórias</option>
@@ -90,22 +151,23 @@
                         <option>Apoio em eventos e campanhas</option>
                         <option>Manutenção predial</option>
                         <option>Apoio administrativo</option>
+                        <option value="Outro">Outro</option>
                     </select>
                     <div class="form-error"></div>
                 </div>
-
-                <div class="form-group" id="grupo-autorizacao" style="display:none;">
-                    <label for="v-autorizacao">Autorização do responsável legal <span class="req">*</span></label>
-                    <input type="file" id="v-autorizacao" accept=".pdf,.jpg,.jpeg,.png">
-                    <div class="form-hint">Obrigatório para candidatos menores de 18 anos. Formatos aceitos: PDF, JPG ou PNG.</div>
+                <div class="form-group" id="grupo-servico-outro" hidden>
+                    <label for="v-servico-outro">Descreva o serviço <span class="req">*</span></label>
+                    <input type="text" id="v-servico-outro" data-campo="tipoServicoOutro" maxlength="200">
                     <div class="form-error"></div>
                 </div>
-
                 <div class="form-group">
-                    <label class="checkbox-line">
-                        <input type="checkbox" id="v-termos">
-                        <span>Declaro que as informações fornecidas são verdadeiras e autorizo o uso dos meus dados para fins de triagem e contato pela instituição. <span class="req">*</span></span>
-                    </label>
+                    <label for="v-objetivos">O que você espera desse trabalho voluntário? (opcional)</label>
+                    <textarea id="v-objetivos" data-campo="objetivos" rows="3" maxlength="2000"></textarea>
+                    <div class="form-error"></div>
+                </div>
+                <div class="form-group">
+                    <label for="v-condicoes">Dias e horários disponíveis (opcional)</label>
+                    <textarea id="v-condicoes" data-campo="condicoes" rows="2" maxlength="2000" placeholder="ex.: sábados pela manhã"></textarea>
                     <div class="form-error"></div>
                 </div>
 
@@ -115,19 +177,21 @@
             </form>
         </div>
 
-        <div id="result-wrap" style="display:none;">
-            <div class="form-shell narrow">
-                <div class="protocolo-box">
-                    <div style="font-size:2.2rem;">📨</div>
-                    <p style="font-weight:700;margin-top:8px;">Cadastro enviado com sucesso!</p>
-                    <p class="form-hint">Guarde o código abaixo para consultar o status a qualquer momento.</p>
-                    <div class="protocolo-code" id="protocolo-gerado"></div>
-                    <span class="badge badge-warning">Pendente de triagem</span>
-                </div>
-                <div class="form-actions" style="justify-content:center;margin-top:24px;">
-                    <a href="consultar-status.html" class="btn btn-outline">Consultar status</a>
-                    <a href="index.html" class="btn btn-viridian">Voltar ao início</a>
-                </div>
+        <!-- Depois do envio: protocolo em destaque (o protocolo é o canal principal; o e-mail é complementar) -->
+        <div id="sucesso" class="form-shell" hidden>
+            <div class="protocolo-box" role="status">
+                <div style="font-size:2.2rem;" aria-hidden="true">✅</div>
+                <p style="font-weight:700;margin-top:8px;">Cadastro enviado! Anote este código:</p>
+                <div class="protocolo-code" id="protocolo-gerado"></div>
+                <p class="form-hint">É com ele que você acompanha o andamento em <a href="consultar-status.html">Consultar status</a>. Guarde num lugar seguro.</p>
+                <p class="form-hint" id="aviso-email"></p>
+            </div>
+            <div class="alert alert-warning" id="aviso-menor" hidden style="margin-top:18px;"><span aria-hidden="true">📝</span><div>
+                <b>Falta a autorização do responsável.</b> Como você tem menos de 18 anos, o cadastro só pode ser aprovado depois que o responsável assinar a autorização e entregá-la na sede do Recanto.
+                <div style="margin-top:10px;"><a class="btn btn-viridian btn-sm" href="autorizacao-menor.html" id="btn-autorizacao">Abrir autorização para imprimir</a></div>
+            </div></div>
+            <div class="form-actions" style="justify-content:center;margin-top:18px;">
+                <a href="index.html" class="btn btn-outline">Voltar ao início</a>
             </div>
         </div>
 
@@ -162,9 +226,11 @@
 </footer>
 
 <script src="assets/js/utils.js"></script>
-<script src="assets/js/data.js"></script>
+<script src="assets/js/api.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/nav.js"></script>
+<script src="assets/js/mascaras.js"></script>
+<script src="assets/js/consentimento.js"></script>
 <script src="assets/js/page-voluntariado.js"></script>
 </body>
 </html>

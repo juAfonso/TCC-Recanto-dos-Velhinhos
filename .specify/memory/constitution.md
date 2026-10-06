@@ -1,6 +1,53 @@
 <!--
 Sync Impact Report
 ==================
+Mudança de versão: 2.0.0 → 3.0.0
+Data: 2026-10-05
+Tipo de bump: MAJOR (redefinição incompatível de regra do Princípio IV)
+
+STATUS DESTA EMENDA: RATIFICADA em 2026-10-05.
+Aprovada pelo responsável pelo projeto (autor do TCC), com ciência da orientação, conforme
+exige a Governança. O texto 2.0.0 do Princípio IV fica transcrito em "Antes" como histórico.
+
+Princípio alterado:
+  - IV. "Separação Clara de Contextos e Proteção de Dados Pessoais" (título mantido)
+    Antes: "O Painel Administrativo DEVE aplicar controle de acesso por perfil: funcionário,
+    voluntário e doador associado. Cada perfil enxerga apenas o que sua função exige." e
+    "Dados pessoais de voluntários, candidatos e doadores — incluindo autorizações de menores
+    de idade — SÃO acessíveis somente a perfis autorizados e nunca são expostos no Portal
+    Público." O parágrafo de abertura citava só dois módulos: Portal Público e Painel.
+    Depois: controle de acesso por tipo de acesso autenticado — conta institucional do Painel
+    e doador associado (autoatendimento); funcionários e voluntários são cadastros sem login;
+    o dado protegido do menor é o registro do recebimento da autorização, não o documento; o
+    autoatendimento é nomeado como terceiro contexto.
+
+Justificativa: o texto 2.0.0 descrevia o desenho de agosto, com três perfis entrando no
+sistema. Duas decisões já registradas no CLAUDE.md e no spec.md o mudaram: acesso ao Painel
+por conta institucional compartilhada, sem login individual de funcionário (2026-08-13,
+FR-040), e fim do autoatendimento de voluntário (2026-10-03, FR-041). Desde 2026-10-03 a
+autorização do responsável legal é entregue em papel e o sistema só registra o recebimento
+(FR-012, FR-058). A emenda não muda o desenho do sistema; alinha o princípio a ele. Sem ela,
+o Constitution Check do /speckit-plan reprovaria o desenho decidido, ou induziria a
+reintroduzir logins de funcionário e voluntário fora do escopo.
+O bump é MAJOR porque a regra de versionamento classifica assim a redefinição incompatível
+de regra, embora o efeito prático seja apenas de alinhamento.
+
+Regras mantidas sem alteração: verificação de autorização no servidor, LGPD (coleta mínima,
+finalidade declarada, acesso restrito), nenhuma exposição de dado pessoal no Portal Público.
+
+Impacto sobre trabalho já realizado:
+  - spec.md: nenhum; FR-025, FR-038, FR-040, FR-041, FR-042 e FR-058 já descrevem os dois
+    acessos (alinhados em 2026-10-05).
+  - plan.md: o Constitution Check já desenhava três zonas de acesso (pública,
+    autoatendimento, admin); será refeito no próximo /speckit-plan.
+  - Protótipo e código: nenhum impacto.
+
+Princípios inalterados: I, II, III, V, VI, VII, VIII.
+
+TODOs pendentes: nenhum.
+
+Emenda anterior (2.0.0, ratificada em 2026-09-05) — registro mantido abaixo
+==========================================================================
 Mudança de versão: 1.0.0 → 2.0.0
 Data: 2026-09-04
 Tipo de bump: MAJOR (redefinição incompatível do Princípio VII)
@@ -115,15 +162,20 @@ dado apagado é prestação de contas perdida.
 
 ### IV. Separação Clara de Contextos e Proteção de Dados Pessoais
 
-O Portal Público (sem login) e o Painel Administrativo (autenticado) são módulos distintos,
-com regras de acesso próprias e fronteiras explícitas no código.
+O Portal Público (sem login), o autoatendimento do doador associado e o Painel Administrativo
+são contextos distintos, com regras de acesso próprias e fronteiras explícitas no código.
 
 Regras não negociáveis:
 
-- O Painel Administrativo DEVE aplicar controle de acesso por perfil: funcionário, voluntário
-  e doador associado. Cada perfil enxerga apenas o que sua função exige.
-- Dados pessoais de voluntários, candidatos e doadores — incluindo autorizações de menores de
-  idade — SÃO acessíveis somente a perfis autorizados e nunca são expostos no Portal Público.
+- O sistema DEVE aplicar controle de acesso por tipo de acesso autenticado: a conta
+  institucional do Painel Administrativo, compartilhada pela equipe, e o doador associado, no
+  autoatendimento. Cada acesso enxerga apenas o que sua função exige; o doador associado vê
+  exclusivamente os próprios dados. Funcionários e voluntários existem como cadastros, sem
+  login individual.
+- Dados pessoais de voluntários, candidatos, solicitantes e doadores — incluindo o registro
+  do recebimento da autorização de menores de idade — SÃO acessíveis somente à conta
+  institucional do Painel e ao próprio titular, quando doador associado, e nunca são
+  expostos no Portal Público.
 - Autorização DEVE ser verificada no servidor. Ocultar um elemento na interface NÃO constitui
   controle de acesso.
 - O tratamento de dados pessoais DEVE observar a LGPD (Lei nº 13.709/2018): coleta mínima
@@ -272,4 +324,4 @@ princípios. Violações identificadas DEVEM ser corrigidas antes da integraçã
 formalmente como exceção aprovada, com prazo de correção. Complexidade não justificada é
 motivo suficiente para reprovar uma entrega.
 
-**Version**: 2.0.0 | **Ratified**: 2026-08-12 | **Last Amended**: 2026-09-05
+**Version**: 3.0.0 | **Ratified**: 2026-08-12 | **Last Amended**: 2026-10-05

@@ -14,7 +14,7 @@
 ## Requirement Completeness
 
 - [x] No [NEEDS CLARIFICATION] markers remain
-- [ ] Requirements are testable and unambiguous
+- [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic (no implementation details)
 - [x] All acceptance scenarios are defined
@@ -112,3 +112,6 @@
     identified" voltou a passar. Continuam abertas: validade e reenvio dos links de senha
     (detalhe técnico, fica para o `/speckit-plan`) e quem edita a página institucional (FR-001),
     que mantém "Requirements are testable and unambiguous" desmarcado.
+  - **FR-001 decidido em 2026-10-05 (Session 2026-10-05 (4)):** a página institucional é editada
+    pela equipe numa tela própria do Painel (FR-001a, CSU03 fluxo alternativo 04). Checklist em
+    16/16. A validade e o reenvio dos links de senha continuam para o `/speckit-plan`.

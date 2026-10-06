@@ -111,6 +111,10 @@
 - Q: Quando a data de um evento ou o fim do período de uma campanha passa, ele sai do Portal sozinho ou só quando um funcionário encerra? → A: **O sistema encerra sozinho** (FR-029c): o status muda para encerrado sem ação do funcionário, e a auditoria registra "encerrado automaticamente", com o próprio sistema como autor. O funcionário **continua podendo encerrar antes** da data ou do fim do período (FR-029a). Descartados: só esconder do Portal deixando o status para o funcionário, e só o encerramento manual. Observação para o plano: no plano gratuito, uma tarefa agendada da Vercel roda no máximo uma vez por dia e sem horário preciso, então o Portal também precisa esconder o que venceu, mesmo antes de o status mudar (FR-002).
 - Key Entities completadas com as entidades que o DER e os requisitos já pressupunham: Recurso, Registro de Auditoria, Falha de Envio de E-mail e Configuração. A definição de Usuário foi corrigida: é pessoa cadastrada (Pessoa, no DER), não "pessoa com acesso ao sistema".
 
+### Session 2026-10-05 (4) — Decisão depois do clarify
+
+- Q: Quem edita a página institucional (história, missão e equipe) depois da entrega? (FR-001) → A: **A equipe, por uma tela própria no Painel** (FR-001a), dentro do CSU03 (Divulgação Institucional), sem CSU novo. Ela tem campos de texto para história, missão e equipe e imagens opcionais com texto alternativo obrigatório. Motivo: o grupo entrega e sai, e sem essa tela ninguém no Recanto conseguiria mudar o texto sem mexer em HTML. Descartados: publicar o conteúdo institucional como um tipo de notícia (mistura conteúdo fixo com notícias datadas) e deixar o texto fixo no código (trava a instituição depois da entrega).
+
 ## User Scenarios & Testing (mandatory)
 
 ### User Story 1 - Portal Público Informativo (Priority: P1)
@@ -254,7 +258,7 @@ Um funcionário autorizado registra diretamente, consulta, altera ou inativa (nu
 
 ### User Story 8 - Divulgação Institucional (Priority: P3)
 
-Um funcionário publica notícias, informações institucionais e necessidades da instituição, que passam a aparecer no Portal Público. Não há sincronização com redes sociais (removida em 2026-10-03, Princípio VI): se a equipe quiser divulgar também nas redes, faz isso manualmente.
+Um funcionário publica notícias, informações institucionais e necessidades da instituição, que passam a aparecer no Portal Público, e mantém atualizada a página institucional (história, missão e equipe) por uma tela própria do Painel. Não há sincronização com redes sociais (removida em 2026-10-03, Princípio VI): se a equipe quiser divulgar também nas redes, faz isso manualmente.
 
 **Why this priority**: Reforça a comunicação institucional, mas é a funcionalidade de menor impacto direto sobre a operação (doações, voluntariado, vagas) coberta pelas demais histórias.
 
@@ -266,6 +270,8 @@ Um funcionário publica notícias, informações institucionais e necessidades d
 2. Given um funcionário anexa uma imagem a uma notícia, When ele tenta publicar sem preencher o texto alternativo da imagem, Then o sistema impede a publicação e pede o texto alternativo.
 3. Given uma notícia publicada, When um funcionário a edita, Then o Portal Público passa a exibir a versão editada.
 4. Given uma notícia publicada, When um funcionário a despublica, Then ela deixa de aparecer no Portal Público, continua consultável no Painel e pode ser publicada de novo.
+5. Given um funcionário altera o texto da missão na tela da página institucional, When ele salva, Then o Portal Público passa a exibir o novo texto e a versão anterior fica no histórico (FR-001a).
+6. Given um funcionário inclui uma imagem na página institucional sem texto alternativo, When ele tenta salvar, Then o sistema impede e pede o texto alternativo (FR-001a).
 
 ### User Story 9 - Autoatendimento do Doador Associado (Priority: P3)
 
@@ -354,6 +360,7 @@ Antes de enviar qualquer formulário que colete dados pessoais, o visitante é i
 **Portal Público**
 
 - **FR-001**: O sistema DEVE exibir uma página institucional (história, missão e equipe) acessível sem autenticação.
+- **FR-001a**: O sistema DEVE permitir que um funcionário edite no Painel o conteúdo da página institucional — textos de história, missão e equipe e imagens opcionais, cada uma com texto alternativo obrigatório (Princípio II) e o mesmo tamanho máximo das imagens de notícia (FR-032b) —, preservando o histórico das alterações (FR-037) e publicando a nova versão no Portal ao salvar (decisão de 2026-10-05).
 - **FR-002**: O sistema DEVE listar publicamente as campanhas e eventos ativos, ocultando os que já foram encerrados — manual ou automaticamente (FR-029c) — ou ainda não confirmados. Um evento cuja data já passou ou uma campanha cujo período já terminou NÃO PODE aparecer no Portal, mesmo antes de o encerramento automático ser registrado.
 - **FR-003**: O sistema DEVE listar publicamente as necessidades prioritárias de doação (itens e valores), refletindo o que a equipe interna publicou mais recentemente.
 - **FR-004**: O sistema DEVE remover automaticamente da listagem pública qualquer item necessário que tenha sido baixado por ter sido suprido.
@@ -419,7 +426,7 @@ Antes de enviar qualquer formulário que colete dados pessoais, o visitante é i
 
 **Divulgação Institucional**
 
-- **FR-032**: O sistema DEVE permitir que um funcionário publique notícias, informações institucionais e necessidades da instituição no Portal Público.
+- **FR-032**: O sistema DEVE permitir que um funcionário publique notícias, informações institucionais e necessidades da instituição no Portal Público. O conteúdo fixo da página institucional (história, missão e equipe) é editado por tela própria (FR-001a), não como notícia.
 - **FR-032a**: O sistema DEVE permitir editar e despublicar uma notícia. A notícia despublicada deixa de aparecer no Portal, continua consultável no Painel e pode ser publicada de novo; não há exclusão (Princípio III).
 - **FR-032b**: O sistema DEVE permitir anexar uma imagem a cada notícia, exigindo texto alternativo descritivo antes da publicação (Princípio II) e respeitando um tamanho máximo definido no planejamento.
 - **FR-033**: ~~Sincronizar cada publicação com as redes sociais integradas.~~ **Removido em 2026-10-03**: conflitava com o Princípio VI da constituição, que põe a integração automática com redes sociais fora de escopo. O número fica reservado para não renumerar os demais.
@@ -502,7 +509,7 @@ Antes de enviar qualquer formulário que colete dados pessoais, o visitante é i
 
 **Ajuda ao Usuário do Painel Administrativo**
 
-- **FR-060**: O sistema DEVE disponibilizar, dentro do Painel Administrativo, uma área de ajuda acessível a qualquer perfil autenticado, explicando como executar as operações do Painel em linguagem cotidiana: as três triagens (incluindo a etapa de entrevista e o recebimento da autorização do responsável legal), a conferência de doação contra o extrato bancário, o cadastro da chave Pix, a gestão de itens necessários, campanhas, notícias e usuários, e o atendimento, no Painel, dos pedidos do titular recebidos por contato.
+- **FR-060**: O sistema DEVE disponibilizar, dentro do Painel Administrativo, uma área de ajuda acessível a qualquer perfil autenticado, explicando como executar as operações do Painel em linguagem cotidiana: as três triagens (incluindo a etapa de entrevista e o recebimento da autorização do responsável legal), a conferência de doação contra o extrato bancário, o cadastro da chave Pix, a gestão de itens necessários, campanhas, notícias, página institucional e usuários, e o atendimento, no Painel, dos pedidos do titular recebidos por contato.
 - **FR-060a**: A área de ajuda DEVE conter uma seção explicitando **o que o sistema não faz**: não acessa a conta bancária da instituição, não confirma doações automaticamente, não aprova nenhuma submissão sem ação humana, não exclui fisicamente cadastros e não registra contribuições pagas na sede, em dinheiro ou por depósito — por isso os totais do Painel não representam a arrecadação da instituição. Expectativa equivocada da equipe sobre esses pontos compromete a operação tanto quanto uma funcionalidade ausente — se a equipe supuser confirmação automática de doação, nenhuma doação será conferida.
 - **FR-061**: O sistema DEVE oferecer ajuda contextual na própria tela onde a operação acontece, no mínimo na conferência de doação, na triagem (entrevista, autorização do menor e rejeição) e na anonimização, sem exigir que o usuário abra a área de ajuda (FR-060) para concluir a tarefa. Esta exigência decorre do Princípio I da constituição, segundo o qual toda tarefa administrativa frequente deve ser concluível sem consultar documentação externa — a área de ajuda é referência de consulta, não pré-requisito de uso.
 
@@ -517,6 +524,7 @@ Antes de enviar qualquer formulário que colete dados pessoais, o visitante é i
 - **Recurso**: o que uma campanha arrecada (entidade Recurso no DER, relação Arrecada). Possui tipo (dinheiro ou item) e descrição. Toda campanha tem ao menos um (FR-029). Não se confunde com os "recursos necessários" do evento, que são texto livre, nem com os "recursos esperados" da solicitação externa, que são atributo dela (FR-020). No DER, Recurso não tem relação com Item Necessário.
 - **Candidatura a Vaga**: submissão de candidato a emprego. Possui cargo pretendido, dados pessoais (incluindo CPF e data de nascimento, FR-016a), currículo anexado ou descrição textual de experiência, código de protocolo e status (em análise/chamado para entrevista/aprovada/rejeitada/encerrada a pedido do titular, com motivo opcional na rejeição).
 - **Solicitação de Evento/Campanha Externa**: submissão de terceiros propondo um evento ou uma campanha (tipo obrigatório e exclusivo). Possui dados de contato, nome do evento ou da campanha, objetivo, data ou período pretendido, recursos esperados da instituição (espaço, equipe, horário), código de protocolo e status (em análise/aprovada — aguardando contato/confirmada/rejeitada/encerrada a pedido do titular, com motivo opcional na rejeição). Só no status "confirmada" gera o Evento ou a Campanha correspondente, conforme o tipo.
+- **Conteúdo Institucional**: conteúdo fixo da página institucional (FR-001, FR-001a). Possui textos de história, missão e equipe, imagens opcionais com texto alternativo obrigatório, e autor e data da última alteração, com histórico das versões anteriores. Há um único conteúdo institucional; não é publicado nem despublicado como notícia.
 - **Notícia/Atualização Institucional**: conteúdo de divulgação publicado no Portal Público (notícias, informações institucionais e necessidades). Pode ter uma imagem com texto alternativo obrigatório (FR-032b) e status (publicada/despublicada, FR-032a). Sem sincronização com redes sociais (FR-033 removido).
 - **Autorização de Responsável Legal**: documento em papel, assinado e entregue na sede. O sistema não guarda o arquivo: registra apenas, no cadastro do voluntário menor de idade, se a autorização está pendente ou recebida, com data e conta do recebimento (FR-012, FR-058).
 - **Registro de Consentimento**: comprovação do aceite do aviso de privacidade (entidade Consentimento no DER, decisão de 2026-10-05). Pertence a exatamente uma submissão — solicitação externa, cadastro de voluntário ou candidatura (1 por submissão) ou doador associado (1 ou mais, um por versão do aviso aceita). Possui data/hora do aceite, finalidade do tratamento, versão do texto aceito e status (vigente/revogado, com data da revogação quando aplicável, FR-057).
@@ -550,7 +558,7 @@ Antes de enviar qualquer formulário que colete dados pessoais, o visitante é i
 ## Assumptions
 
 - O fuso horário de referência para datas de eventos e prazos é o horário de Brasília (America/Sao_Paulo).
-- A instituição fornece previamente os textos e imagens da página institucional (história, missão, equipe); a geração desse conteúdo não faz parte do sistema.
+- A instituição fornece os textos e imagens da página institucional (história, missão, equipe) e a própria equipe os insere e atualiza pelo Painel (FR-001a); a redação desse conteúdo não faz parte do sistema.
 - A lista de cargos disponíveis para candidatura (limpeza, cuidador, enfermagem, cozinha) é fixa nesta versão; alterá-la exige nova validação de escopo.
 - A maioridade civil brasileira (18 anos), calculada pela data de nascimento, é o critério usado para exigir ou dispensar a autorização do responsável legal no cadastro de voluntário.
 - Anexos (currículo e imagem de notícia) aceitam formatos comuns de documento e imagem, com tamanho máximo razoável definido tecnicamente na fase de planejamento. A autorização do responsável legal não é anexo: é entregue em papel na sede (FR-012).

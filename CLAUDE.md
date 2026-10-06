@@ -402,8 +402,22 @@ paralelo.
      encerrar antes. O Portal esconde o que venceu mesmo antes de o status
      mudar, porque a tarefa agendada da Vercel gratuita roda só uma vez
      por dia.
-  Ficaram para depois: validade e reenvio dos links de senha (vai para o
-  plano) e quem edita a página institucional (FR-001).
+  Ficou para depois: validade e reenvio dos links de senha (vai para o
+  plano).
+- **Página institucional editável no Painel (decidido em 2026-10-05).** A
+  equipe edita história, missão e equipe numa tela própria (FR-001a), com
+  imagens opcionais de texto alternativo obrigatório e histórico das
+  versões. Entrou no CSU03 (fluxo alternativo 04), não é CSU novo. Motivo:
+  o grupo entrega e sai; texto fixo no HTML travaria a instituição. Não é
+  notícia — não se publica nem despublica. O protótipo ainda não tem a tela.
+- **Constituição 3.0.0: emenda ao Princípio IV (ratificada em 2026-10-05)**
+  pelo responsável pelo projeto, com ciência do orientador. O texto 2.0.0
+  exigia três perfis com acesso (funcionário, voluntário e doador); o
+  sistema decidido tem dois — conta institucional do Painel e doador
+  associado no autoatendimento —, desde as decisões de 13/08 (FR-040) e
+  03/10 (sem autoatendimento de voluntário). A emenda só alinha o texto ao
+  desenho, sem mudar o sistema. Se alguém ler o Princípio IV pedindo login
+  de funcionário ou voluntário, está lendo a versão 2.0.0.
 - **Falhas de serviços externos não derrubam o registro do usuário
   (2026-09-04).** Se o e-mail de confirmação falhar, o cadastro/candidatura/
   solicitação é mantido, o sistema tenta reenviar uma vez e, persistindo a
@@ -537,6 +551,8 @@ recente do spec.md, não esta lista resumida.
    Painel. **(2026-10-05)** Trocar a caixa "urgente" de `admin/itens.html`
    pela escolha de prioridade alta/média/baixa, e ordenar por ela no Painel,
    na home e em `doacoes.html`.
+7. ~~Emenda ao Princípio IV pendente de ratificação.~~ **Resolvida em
+   2026-10-05** — ver "Constituição 3.0.0" em "Decisões já tomadas".
 
 ## Inegociável
 

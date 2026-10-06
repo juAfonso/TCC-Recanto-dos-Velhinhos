@@ -227,7 +227,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU03 |
 |---|---|
 | Nome | Divulgação Institucional |
-| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para publicar, editar e despublicar notícias, informações institucionais e necessidades da instituição no Portal Público, onde o visitante as consulta sem login, junto com a página institucional (história, missão e equipe). Não há sincronização com redes sociais, e notícias não são excluídas: são despublicadas. |
+| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para publicar, editar e despublicar notícias, informações institucionais e necessidades da instituição no Portal Público, onde o visitante as consulta sem login, e para manter a página institucional (história, missão e equipe), editada por tela própria do Painel. Não há sincronização com redes sociais, e notícias não são excluídas: são despublicadas. |
 | Ator Principal | Funcionário |
 | Ator Secundário | Visitante |
 | Pré-condições | Funcionário deve estar autenticado no Painel Administrativo pela conta institucional. |
@@ -264,18 +264,27 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | 1. No passo 3 do fluxo principal, escolhe publicar novamente uma notícia despublicada. | |
 | | 2. Volta a exibir a notícia no Portal Público e registra a conta e a data. O caso de uso se encerra. |
 
-## Fluxo Exceção 04 – Imagem sem texto alternativo
+## Fluxo Alternativo 04 – Editar página institucional
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. No passo 3 do fluxo principal ou no passo 3 do fluxo alternativo 01, anexa uma imagem sem preencher o texto alternativo. | |
+| 1. Em vez do passo 1 do fluxo principal, acessa a tela da página institucional no Painel Administrativo. | |
+| | 2. Exibe os textos atuais de história, missão e equipe e as imagens, com seus textos alternativos. |
+| 3. Altera os textos e, se quiser, inclui ou troca imagens, informando o texto alternativo de cada uma, e salva. | |
+| | 4. Grava a nova versão preservando a anterior no histórico, atualiza a página institucional no Portal Público e registra a conta e a data. O caso de uso se encerra. |
+
+## Fluxo Exceção 05 – Imagem sem texto alternativo
+
+| Ator (funcionário) | Sistema |
+|---|---|
+| 1. No passo 3 do fluxo principal ou no passo 3 dos fluxos alternativos 01 e 04, anexa uma imagem sem preencher o texto alternativo. | |
 | | 2. Impede a publicação, explica que o texto alternativo é obrigatório para leitores de tela e retorna ao passo em que a imagem foi anexada. |
 
-## Fluxo Exceção 05 – Dados inválidos
+## Fluxo Exceção 06 – Dados inválidos
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. No passo 3 do fluxo principal ou no passo 3 do fluxo alternativo 01, deixa título ou conteúdo em branco, ou anexa imagem em formato não aceito ou acima do tamanho máximo. | |
+| 1. No passo 3 do fluxo principal ou no passo 3 dos fluxos alternativos 01 e 04, deixa título ou conteúdo em branco, ou anexa imagem em formato não aceito ou acima do tamanho máximo. | |
 | | 2. Não grava, indica cada campo a corrigir e retorna ao passo em que os dados foram informados. |
 
 ## Pós-condições
@@ -284,8 +293,9 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 - **Fluxo Alternativo 01 – Editar notícia:** A notícia foi alterada e o histórico da alteração foi preservado.
 - **Fluxo Alternativo 02 – Despublicar notícia:** A notícia não aparece no Portal Público e continua consultável no Painel.
 - **Fluxo Alternativo 03 – Publicar novamente notícia despublicada:** A notícia voltou a ser exibida no Portal Público.
-- **Fluxo Exceção 04 – Imagem sem texto alternativo:** Nenhuma notícia foi publicada ou alterada.
-- **Fluxo Exceção 05 – Dados inválidos:** Nenhuma notícia foi publicada ou alterada.
+- **Fluxo Alternativo 04 – Editar página institucional:** O Portal Público exibe a nova versão da página institucional e a anterior permanece no histórico.
+- **Fluxo Exceção 05 – Imagem sem texto alternativo:** Nenhuma notícia nem página institucional foi publicada ou alterada.
+- **Fluxo Exceção 06 – Dados inválidos:** Nenhuma notícia nem página institucional foi publicada ou alterada.
 
 ---
 

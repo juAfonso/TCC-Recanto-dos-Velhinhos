@@ -70,16 +70,31 @@
         </div>
 
         <div class="admin-content">
+            <!-- Ajuda contextual da triagem (FR-061) -->
+            <details class="panel" style="margin-bottom:18px;">
+                <summary style="cursor:pointer;font-weight:700;">Como fazer a triagem de candidaturas</summary>
+                <ol style="margin:12px 0 0 20px;line-height:1.7;">
+                    <li><b>Em análise:</b> leia o currículo (arquivo ou texto). Se fizer sentido, clique em <b>Chamar para entrevista</b> — a pessoa recebe um e-mail avisando que a equipe vai entrar em contato.</li>
+                    <li><b>Entrevista:</b> depois de conversar, clique em <b>Aprovar</b> — a pessoa passa a constar como <b>funcionária</b> — ou <b>Rejeitar</b>.</li>
+                    <li><b>Quem já é voluntário:</b> ao ser aprovado como funcionário, o vínculo de voluntário é <b>encerrado</b> (não apagado). A lei não permite as duas coisas ao mesmo tempo na mesma instituição.</li>
+                    <li><b>Rejeitar:</b> o motivo é opcional. Se escrever, ele vai no e-mail para a pessoa.</li>
+                </ol>
+                <p class="form-hint" style="margin-top:8px;">O currículo é privado: só abre aqui no Painel. Nada é aprovado sozinho e nenhuma candidatura é apagada.</p>
+            </details>
+
             <div class="panel">
-                <div class="tabs-nav">
-                    <button class="tab-btn active" data-filtro="em_analise">Em análise</button>
+                <div class="tabs-nav" role="tablist">
+                    <button class="tab-btn active" data-filtro="em_analise">Em análise <span id="cont-em_analise"></span></button>
+                    <button class="tab-btn" data-filtro="entrevista">Em entrevista <span id="cont-entrevista"></span></button>
                     <button class="tab-btn" data-filtro="aprovada">Aprovadas</button>
                     <button class="tab-btn" data-filtro="rejeitada">Rejeitadas</button>
+                    <button class="tab-btn" data-filtro="todas">Todas</button>
                 </div>
                 <div class="table-wrap">
                     <table>
+                        <caption class="sr-only">Candidaturas a vagas</caption>
                         <thead>
-                            <tr><th>Protocolo</th><th>Nome</th><th>Cargo</th><th>Currículo / Experiência</th><th>Status</th><th></th></tr>
+                            <tr><th scope="col">Protocolo</th><th scope="col">Nome</th><th scope="col">Cargo</th><th scope="col">Idade</th><th scope="col">Currículo</th><th scope="col">Recebida em</th><th scope="col">Situação</th><th scope="col">Ações</th></tr>
                         </thead>
                         <tbody id="candidaturas-tbody"></tbody>
                     </table>
@@ -90,17 +105,43 @@
 </div>
 
 <!-- MODAL: rejeitar -->
-<div class="modal-overlay" id="modal-rejeitar">
+<div class="modal-overlay" id="modal-candidatura" role="dialog" aria-modal="true" aria-labelledby="modal-cand-titulo">
+    <div class="modal" style="max-width:760px;">
+        <div class="modal-head">
+            <h3 id="modal-cand-titulo">Candidatura</h3>
+            <button class="modal-close" data-close-modal="modal-candidatura" aria-label="Fechar">✕</button>
+        </div>
+        <div id="cand-detalhe">
+            <div id="cand-situacao" style="margin-bottom:14px;"></div>
+            <div class="alert alert-warning" id="cand-aviso-voluntario" hidden><span aria-hidden="true">⚠️</span><div>Esta pessoa já é <b>voluntária ativa</b>. Se for aprovada como funcionária, o vínculo de voluntário será <b>encerrado</b> (não apagado).</div></div>
+            <dl id="cand-dados" style="display:grid;grid-template-columns:minmax(140px,200px) 1fr;gap:6px 14px;font-size:.92rem;"></dl>
+            <div class="form-actions" id="cand-acoes" style="flex-wrap:wrap;margin-top:20px;"></div>
+        </div>
+        <form id="form-corrigir" novalidate hidden>
+            <p class="form-hint" style="margin-bottom:12px;">Corrigir não muda a etapa nem o arquivo do currículo. A versão anterior fica no histórico.</p>
+            <div class="form-group"><label for="c-cargo">Cargo *</label><select id="c-cargo" data-campo="cargo"><option value="cuidador">Cuidador(a)</option><option value="enfermagem">Enfermagem</option><option value="cozinha">Cozinha</option><option value="limpeza">Limpeza</option></select><div class="form-error"></div></div>
+            <div class="form-group"><label for="c-nome">Nome completo *</label><input type="text" id="c-nome" data-campo="nome" maxlength="150"><div class="form-error"></div></div>
+            <div class="form-row"><div class="form-group"><label for="c-nascimento">Data de nascimento *</label><input type="date" id="c-nascimento" data-campo="dataNascimento"><div class="form-error"></div></div><div class="form-group"><label for="c-cpf">CPF *</label><input type="text" id="c-cpf" data-campo="cpf" data-mascara="cpf"><div class="form-error"></div></div></div>
+            <div class="form-row"><div class="form-group"><label for="c-telefone">Telefone *</label><input type="text" id="c-telefone" data-campo="telefone" data-mascara="telefone"><div class="form-error"></div></div><div class="form-group"><label for="c-email">E-mail *</label><input type="text" id="c-email" data-campo="email"><div class="form-error"></div></div></div>
+            <div class="form-group"><label for="c-texto">Experiência (texto)</label><textarea id="c-texto" data-campo="curriculoTexto" rows="4" maxlength="5000"></textarea><div class="form-error"></div></div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" id="btn-cancelar-correcao">Cancelar</button>
+                <button type="submit" class="btn btn-viridian">Salvar correção</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-rejeitar" role="dialog" aria-modal="true" aria-labelledby="modal-rej-titulo">
     <div class="modal">
         <div class="modal-head">
-            <h3>Rejeitar candidatura</h3>
-            <button class="modal-close" data-close-modal="modal-rejeitar">✕</button>
+            <h3 id="modal-rej-titulo">Rejeitar candidatura</h3>
+            <button class="modal-close" data-close-modal="modal-rejeitar" aria-label="Fechar">✕</button>
         </div>
-        <form id="form-rejeitar">
-            <input type="hidden" id="rej-id">
+        <form id="form-rejeitar" novalidate>
             <div class="form-group">
                 <label for="rej-motivo">Motivo (opcional)</label>
-                <textarea id="rej-motivo" placeholder="Explique brevemente o motivo da rejeição, se desejar registrar."></textarea>
+                <textarea id="rej-motivo" rows="3" maxlength="1000" placeholder="Se escrever, o motivo vai no e-mail para a pessoa."></textarea>
             </div>
             <div class="form-actions">
                 <button type="button" class="btn btn-outline" data-close-modal="modal-rejeitar">Cancelar</button>
@@ -111,11 +152,11 @@
 </div>
 
 <script src="../assets/js/utils.js"></script>
-<script src="../assets/js/data.js"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/auth.js"></script>
 <script src="../assets/js/admin-guard.js"></script>
 <script src="../assets/js/admin-modal.js"></script>
+<script src="../assets/js/mascaras.js"></script>
 <script src="../assets/js/admin-triagem-vagas.js"></script>
 </body>
 </html>

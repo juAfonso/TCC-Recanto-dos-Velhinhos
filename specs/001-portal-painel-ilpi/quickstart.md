@@ -24,7 +24,8 @@ código de implementação aqui.
 ```
 DATABASE_URL=postgresql://…            # Neon — na sua máquina, a branch dev; na Vercel, a main
 DATABASE_URL_TESTE=postgresql://…      # Neon — branch de teste (node --test)
-BLOB_READ_WRITE_TOKEN=…                # Vercel Blob
+BLOB_PRIVADO_READ_WRITE_TOKEN=…        # Vercel Blob, store PRIVADO (currículos)
+BLOB_PUBLICO_READ_WRITE_TOKEN=…        # Vercel Blob, store PÚBLICO (imagens; fase 11)
 SESSION_SECRET=…                       # HMAC do cookie (32+ bytes aleatórios)
 CRON_SECRET=…                          # protege /api/cron/diario
 GMAIL_USER=…@gmail.com                 # conta INSTITUCIONAL, nunca pessoal

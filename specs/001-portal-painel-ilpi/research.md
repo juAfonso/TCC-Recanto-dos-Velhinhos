@@ -73,7 +73,7 @@ lenta. Já previsto nas Assumptions do spec.
 
 | Arquivo | Acesso | Limite |
 |---|---|---|
-| Currículo (FR-017) | **privado** — download só por função do Painel que verifica a sessão e devolve URL assinada de vida curta | 4 MB · PDF, DOC, DOCX, ODT |
+| Currículo (FR-017) | **privado** — só abre por função do Painel que verifica a sessão e repassa o arquivo (ver ajuste de 2026-10-06) | 4 MB · PDF, DOC, DOCX, ODT |
 | Imagem de notícia (FR-032b) e da página institucional (FR-001a) | **pública** — é conteúdo do Portal | 2 MB · JPEG, PNG, WebP |
 
 O arquivo viaja **no mesmo envio do formulário** (`multipart/form-data`, lido com
@@ -95,6 +95,18 @@ O arquivo viaja **no mesmo envio do formulário** (`multipart/form-data`, lido c
 
 **Regra derivada**: nenhuma URL de currículo aparece em resposta da zona pública nem em HTML do
 Portal.
+
+**Ajuste de 2026-10-06 (fase 7):**
+- **Dois stores no Blob, um por nível de acesso.** Na Vercel o acesso (público ou privado) é
+  escolhido ao **criar o store**, não por arquivo. Currículos vão para um store privado
+  (`BLOB_PRIVADO_READ_WRITE_TOKEN`) e imagens do Portal, a partir da fase 11, para um público
+  (`BLOB_PUBLICO_READ_WRITE_TOKEN`). Sem o token, o envio de arquivo responde
+  `503 ARQUIVOS_INDISPONIVEIS` e nada é gravado; a candidatura só com texto continua funcionando.
+- **Sem URL assinada: a função repassa o arquivo.** `GET /api/admin/candidaturas/:id/curriculo`
+  confere a sessão, busca o arquivo no store privado com o token e o devolve ao navegador
+  (`Cache-Control: private, no-store`), registrando a abertura na auditoria. Motivo: a URL nunca sai
+  do servidor — um link assinado, mesmo de vida curta, pode ser copiado e repassado. Custo aceito:
+  o arquivo passa pela função (até 4 MB, dentro do limite).
 
 ---
 

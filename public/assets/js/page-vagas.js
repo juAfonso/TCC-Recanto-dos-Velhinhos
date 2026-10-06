@@ -1,62 +1,72 @@
+/* Candidatura a vaga (US5, FR-016 a FR-018, FR-049). Envio com arquivo (multipart).
+   Currículo em arquivo OU texto; o arquivo vai a um armazenamento privado (só a equipe abre). */
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('form-vaga');
-  if (!form) return;
+  const $ = (id) => document.getElementById(id);
+  const form = $('form-vaga');
+  const QUATRO_MB = 4 * 1024 * 1024;
 
-  form.addEventListener('submit', (e) => {
+  $('cv-nascimento').max = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
+
+  // Aviso imediato de arquivo grande: evita esperar o envio para descobrir.
+  $('cv-arquivo').addEventListener('change', () => {
+    const grupo = $('cv-arquivo').closest('.form-group');
+    Utils.clearFieldError(grupo);
+    const arquivo = $('cv-arquivo').files[0];
+    if (arquivo && arquivo.size > QUATRO_MB) {
+      Utils.setFieldError(grupo, 'O arquivo tem mais de 4 MB. Envie um menor ou descreva sua experiência no campo de texto.');
+    }
+  });
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     Utils.clearAllErrors(form);
-    document.getElementById('cv-experiencia-erro').textContent = '';
-
-    const cargo = document.getElementById('cv-cargo').value;
-    const nome = document.getElementById('cv-nome').value.trim();
-    const cpf = document.getElementById('cv-cpf').value.trim();
-    const email = document.getElementById('cv-email').value.trim();
-    const telefone = document.getElementById('cv-telefone').value.trim();
-    const arquivoInput = document.getElementById('cv-arquivo');
-    const texto = document.getElementById('cv-texto').value.trim();
-    const temArquivo = arquivoInput.files && arquivoInput.files.length > 0;
-
-    let valid = true;
-    const fail = (input, msg) => { Utils.setFieldError(input.closest('.form-group'), msg); valid = false; };
-
-    if (!cargo) fail(document.getElementById('cv-cargo'), 'Selecione o cargo pretendido.');
-    if (!nome) fail(document.getElementById('cv-nome'), 'Informe seu nome completo.');
-    if (!Utils.isValidCPF(cpf)) fail(document.getElementById('cv-cpf'), 'Informe um CPF válido.');
-    if (!Utils.isValidEmail(email)) fail(document.getElementById('cv-email'), 'Informe um e-mail válido.');
-    if (!telefone) fail(document.getElementById('cv-telefone'), 'Informe um telefone de contato.');
-
-    // FR-017: exige currículo em arquivo OU descrição textual da experiência
-    if (!temArquivo && !texto) {
-      document.getElementById('cv-experiencia-erro').textContent =
-        'Anexe um currículo em arquivo ou descreva sua experiência em texto — ao menos uma das duas formas é obrigatória.';
-      document.getElementById('cv-experiencia-erro').style.display = 'block';
-      valid = false;
-    }
-
-    if (!valid) {
-      Utils.toast('Verifique os campos destacados no formulário.', 'danger');
+    const aceite = form.querySelector('input[name=aceito]');
+    if (!Consentimento.dados(form).aceito) {
+      Utils.setFieldError(aceite.closest('.form-group'), 'Para enviar, marque que concorda com o aviso de privacidade.');
+      aceite.focus();
       return;
     }
+    const arquivo = $('cv-arquivo').files[0];
+    if (!arquivo && !$('cv-texto').value.trim()) {
+      Utils.setFieldError($('cv-texto').closest('.form-group'), 'Envie o arquivo do currículo ou descreva sua experiência aqui.');
+      $('cv-texto').focus();
+      return;
+    }
+    if (arquivo && arquivo.size > QUATRO_MB) { $('cv-arquivo').focus(); return; }
 
-    const db = DB.load();
-    const protocolo = Utils.generateProtocol();
+    const fd = new FormData();
+    fd.set('cargo', $('cv-cargo').value);
+    fd.set('nome', $('cv-nome').value.trim());
+    fd.set('dataNascimento', $('cv-nascimento').value);
+    fd.set('cpf', $('cv-cpf').value);
+    fd.set('telefone', $('cv-telefone').value);
+    fd.set('email', $('cv-email').value.trim());
+    fd.set('curriculoTexto', $('cv-texto').value.trim());
+    if (arquivo) fd.set('curriculo', arquivo);
+    Consentimento.anexar(form, fd);
 
-    db.candidaturas.push({
-      id: Utils.generateId('cv'),
-      protocolo,
-      cargo, nome, cpf, email, telefone,
-      curriculoNome: temArquivo ? arquivoInput.files[0].name : '',
-      descricaoExperiencia: texto,
-      status: 'em_analise',
-      criadoEm: new Date().toISOString()
-    });
-
-    DB.save(db);
-
-    document.getElementById('form-wrap').style.display = 'none';
-    document.getElementById('result-wrap').style.display = 'block';
-    document.getElementById('protocolo-gerado').textContent = protocolo;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    Utils.toast('Candidatura enviada com sucesso!');
+    const botao = form.querySelector('[type=submit]');
+    botao.disabled = true;
+    botao.textContent = 'Enviando…';
+    try {
+      const r = await Api.enviarFormulario('/api/public/candidaturas', fd, { form });
+      $('form-wrap').hidden = true;
+      $('sucesso').hidden = false;
+      $('protocolo-gerado').textContent = r.protocolo;
+      $('aviso-email').textContent = r.emailEnviado
+        ? 'Também mandamos o código para o seu e-mail (confira a caixa de spam).'
+        : 'Não conseguimos enviar o e-mail agora, mas a candidatura foi registrada. Anote o código acima.';
+      $('sucesso').scrollIntoView({ behavior: 'smooth' });
+    } catch (erro) {
+      if (erro.campos.length) {
+        const primeiro = form.querySelector('.has-error input, .has-error select, .has-error textarea');
+        if (primeiro) primeiro.focus();
+      } else if (erro.status !== 429) {
+        Utils.toast(erro.message, 'danger');
+      }
+    } finally {
+      botao.disabled = false;
+      botao.textContent = 'Enviar candidatura';
+    }
   });
 });

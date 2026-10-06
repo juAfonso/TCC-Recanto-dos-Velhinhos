@@ -345,7 +345,7 @@ Sem relação com `item_necessario`, como no DER.
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `historia`, `missao`, `equipe` | `text` | |
+| `historia`, `missao`, `equipe`, `acolhimento`, `bazar` | `text` | `acolhimento` e `bazar` desde 2026-10-06 (migração 006, Session 2026-10-06 (2) do spec) |
 | `atualizado_por`, `atualizado_em` | | versões anteriores em `historico_alteracao` |
 
 `conteudo_institucional_imagem`: `arquivo_id`, `texto_alternativo` (obrigatório), `ordem`, `ativo`, `criado_por`/`criado_em`, `desativado_por`/`desativado_em` — tirar uma imagem da página é desativar.

@@ -30,7 +30,7 @@ TCC do IFRJ Campus Pinheiral.
 ```
 recanto-frontend/
 ├── index.html                  → Home do Portal Público
-├── institucional.html          → História, missão e equipe (FR-001)
+├── institucional.html          → História, missão, equipe, acolhimento e bazar (FR-001)
 ├── campanhas.html               → Campanhas e eventos ativos (FR-002)
 ├── doacoes.html                 → Itens necessários + doação Pix (FR-003 a FR-010)
 ├── voluntariado.html            → Cadastro de voluntário com triagem (FR-011 a FR-015)

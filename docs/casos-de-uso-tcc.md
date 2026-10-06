@@ -227,7 +227,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU03 |
 |---|---|
 | Nome | Divulgação Institucional |
-| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para publicar, editar e despublicar notícias, informações institucionais e necessidades da instituição no Portal Público, onde o visitante as consulta sem login, e para manter a página institucional (história, missão e equipe), editada por tela própria do Painel. Não há sincronização com redes sociais, e notícias não são excluídas: são despublicadas. |
+| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para publicar, editar e despublicar notícias, informações institucionais e necessidades da instituição no Portal Público, onde o visitante as consulta sem login, e para manter a página institucional (história, missão, equipe, acolhimento de residentes e bazar), editada por tela própria do Painel. Não há sincronização com redes sociais, e notícias não são excluídas: são despublicadas. |
 | Ator Principal | Funcionário |
 | Ator Secundário | Visitante |
 | Pré-condições | Funcionário deve estar autenticado no Painel Administrativo pela conta institucional. |
@@ -269,7 +269,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Ator (funcionário) | Sistema |
 |---|---|
 | 1. Em vez do passo 1 do fluxo principal, acessa a tela da página institucional no Painel Administrativo. | |
-| | 2. Exibe os textos atuais de história, missão e equipe e as imagens, com seus textos alternativos. |
+| | 2. Exibe os textos atuais de história, missão, equipe, acolhimento de residentes e bazar e as imagens, com seus textos alternativos. |
 | 3. Altera os textos e, se quiser, inclui ou troca imagens, informando o texto alternativo de cada uma, e salva. | |
 | | 4. Grava a nova versão preservando a anterior no histórico, atualiza a página institucional no Portal Público e registra a conta e a data. O caso de uso se encerra. |
 

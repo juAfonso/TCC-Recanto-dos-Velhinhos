@@ -113,7 +113,7 @@
 
 ### Session 2026-10-05 (4) — Decisão depois do clarify
 
-- Q: Quem edita a página institucional (história, missão e equipe) depois da entrega? (FR-001) → A: **A equipe, por uma tela própria no Painel** (FR-001a), dentro do CSU03 (Divulgação Institucional), sem CSU novo. Ela tem campos de texto para história, missão e equipe e imagens opcionais com texto alternativo obrigatório. Motivo: o grupo entrega e sai, e sem essa tela ninguém no Recanto conseguiria mudar o texto sem mexer em HTML. Descartados: publicar o conteúdo institucional como um tipo de notícia (mistura conteúdo fixo com notícias datadas) e deixar o texto fixo no código (trava a instituição depois da entrega).
+- Q: Quem edita a página institucional (história, missão, equipe, acolhimento de residentes e bazar) depois da entrega? (FR-001) → A: **A equipe, por uma tela própria no Painel** (FR-001a), dentro do CSU03 (Divulgação Institucional), sem CSU novo. Ela tem campos de texto para história, missão e equipe e imagens opcionais com texto alternativo obrigatório. Motivo: o grupo entrega e sai, e sem essa tela ninguém no Recanto conseguiria mudar o texto sem mexer em HTML. Descartados: publicar o conteúdo institucional como um tipo de notícia (mistura conteúdo fixo com notícias datadas) e deixar o texto fixo no código (trava a instituição depois da entrega).
 
 ### Session 2026-10-06 — Ajustes vindos do `/speckit-analyze`
 
@@ -121,11 +121,15 @@
 - Q: A declaração de doação pode ser corrigida pela equipe, como "qualquer dado" do FR-037? → A: **Não.** O que foi conferido contra o extrato é registro de conferência (Princípio III); alterar o valor apagaria a prova. Declaração errada é marcada como não localizada (FR-008). Os dados das três submissões com triagem passam a ser corrigíveis no Painel.
 - A conta do doador associado não depende de triagem: esclarecido na constituição 3.0.1 (Princípio VIII), sem mudança no spec.
 
+### Session 2026-10-06 (2) — Texto institucional entregue pelo Recanto
+
+- Q: O texto institucional entregue pelo Recanto tem, além de história, missão e equipe, as seções "Acolhimento de residentes" (quem é acolhido e como saber de vaga) e "Nosso bazar" (dia, horário e o que se doa). Onde ficam? (FR-001, FR-001a) → A: **Duas seções novas da página institucional, editáveis pela equipe como as outras.** O dia do bazar e a situação de vagas mudam, e texto fixo no HTML obrigaria a mexer no código. Descartado: juntar no texto da história (página desorganizada) e fixar no HTML (a equipe não conseguiria editar). A seção de acolhimento é **só texto informativo**: não cria cadastro de residentes, que continua fora do escopo. A "equipe" passa a mostrar quem conduz a instituição (diretoria voluntária), conforme o texto entregue.
+
 ## User Scenarios & Testing (mandatory)
 
 ### User Story 1 - Portal Público Informativo (Priority: P1)
 
-Um visitante acessa o site sem precisar de login e encontra a página institucional (história, missão e equipe), a lista de campanhas e eventos ativos, e a lista de necessidades prioritárias de doação (itens e valores), sempre refletindo o que a equipe da instituição publicou mais recentemente.
+Um visitante acessa o site sem precisar de login e encontra a página institucional (história, missão, equipe, acolhimento de residentes e bazar), a lista de campanhas e eventos ativos, e a lista de necessidades prioritárias de doação (itens e valores), sempre refletindo o que a equipe da instituição publicou mais recentemente.
 
 **Why this priority**: É o substituto direto do uso atual de planilhas e Instagram — a menor fatia que já entrega valor real (visibilidade pública organizada) sem depender de nenhum outro módulo. Sem isso, nenhum outro fluxo do portal faz sentido.
 
@@ -133,7 +137,7 @@ Um visitante acessa o site sem precisar de login e encontra a página institucio
 
 **Acceptance Scenarios**:
 
-1. Given a instituição publicou seu histórico, missão e equipe, When um visitante acessa a página institucional, Then o conteúdo é exibido corretamente sem exigir login.
+1. Given a instituição publicou seu histórico, missão, equipe, acolhimento de residentes e bazar, When um visitante acessa a página institucional, Then o conteúdo é exibido corretamente sem exigir login.
 2. Given existem campanhas/eventos ativos e itens necessários cadastrados, When um visitante acessa a página correspondente, Then a lista exibida reflete exatamente os registros vigentes, sem itens já suprimidos ou eventos encerrados.
 3. Given um item necessário é baixado (suprido) no Painel Administrativo, When o visitante recarrega o Portal Público, Then aquele item não aparece mais na listagem.
 
@@ -264,7 +268,7 @@ Um funcionário autorizado registra diretamente, consulta, altera ou inativa (nu
 
 ### User Story 8 - Divulgação Institucional (Priority: P3)
 
-Um funcionário publica notícias, informações institucionais e necessidades da instituição, que passam a aparecer no Portal Público, e mantém atualizada a página institucional (história, missão e equipe) por uma tela própria do Painel. Não há sincronização com redes sociais (removida em 2026-10-03, Princípio VI): se a equipe quiser divulgar também nas redes, faz isso manualmente.
+Um funcionário publica notícias, informações institucionais e necessidades da instituição, que passam a aparecer no Portal Público, e mantém atualizada a página institucional (história, missão, equipe, acolhimento de residentes e bazar) por uma tela própria do Painel. Não há sincronização com redes sociais (removida em 2026-10-03, Princípio VI): se a equipe quiser divulgar também nas redes, faz isso manualmente.
 
 **Why this priority**: Reforça a comunicação institucional, mas é a funcionalidade de menor impacto direto sobre a operação (doações, voluntariado, vagas) coberta pelas demais histórias.
 
@@ -365,8 +369,8 @@ Antes de enviar qualquer formulário que colete dados pessoais, o visitante é i
 
 **Portal Público**
 
-- **FR-001**: O sistema DEVE exibir uma página institucional (história, missão e equipe) acessível sem autenticação.
-- **FR-001a**: O sistema DEVE permitir que um funcionário edite no Painel o conteúdo da página institucional — textos de história, missão e equipe e imagens opcionais, cada uma com texto alternativo obrigatório (Princípio II) e o mesmo tamanho máximo das imagens de notícia (FR-032b) —, preservando o histórico das alterações (FR-037) e publicando a nova versão no Portal ao salvar (decisão de 2026-10-05).
+- **FR-001**: O sistema DEVE exibir uma página institucional (história, missão, equipe, acolhimento de residentes e bazar) acessível sem autenticação.
+- **FR-001a**: O sistema DEVE permitir que um funcionário edite no Painel o conteúdo da página institucional — textos de história, missão, equipe, acolhimento de residentes e bazar e imagens opcionais, cada uma com texto alternativo obrigatório (Princípio II) e o mesmo tamanho máximo das imagens de notícia (FR-032b) —, preservando o histórico das alterações (FR-037) e publicando a nova versão no Portal ao salvar (decisão de 2026-10-05).
 - **FR-002**: O sistema DEVE listar publicamente as campanhas e eventos ativos, ocultando os que já foram encerrados — manual ou automaticamente (FR-029c) — ou ainda não confirmados. Um evento cuja data já passou ou uma campanha cujo período já terminou NÃO PODE aparecer no Portal, mesmo antes de o encerramento automático ser registrado.
 - **FR-003**: O sistema DEVE listar publicamente as necessidades prioritárias de doação (itens e valores), refletindo o que a equipe interna publicou mais recentemente.
 - **FR-004**: O sistema DEVE remover automaticamente da listagem pública qualquer item necessário que tenha sido baixado por ter sido suprido.
@@ -432,7 +436,7 @@ Antes de enviar qualquer formulário que colete dados pessoais, o visitante é i
 
 **Divulgação Institucional**
 
-- **FR-032**: O sistema DEVE permitir que um funcionário publique notícias, informações institucionais e necessidades da instituição no Portal Público. O conteúdo fixo da página institucional (história, missão e equipe) é editado por tela própria (FR-001a), não como notícia.
+- **FR-032**: O sistema DEVE permitir que um funcionário publique notícias, informações institucionais e necessidades da instituição no Portal Público. O conteúdo fixo da página institucional (história, missão, equipe, acolhimento de residentes e bazar) é editado por tela própria (FR-001a), não como notícia.
 - **FR-032a**: O sistema DEVE permitir editar e despublicar uma notícia. A notícia despublicada deixa de aparecer no Portal, continua consultável no Painel e pode ser publicada de novo; não há exclusão (Princípio III).
 - **FR-032b**: O sistema DEVE permitir anexar uma imagem a cada notícia, exigindo texto alternativo descritivo antes da publicação (Princípio II) e respeitando um tamanho máximo definido no planejamento.
 - **FR-033**: ~~Sincronizar cada publicação com as redes sociais integradas.~~ **Removido em 2026-10-03**: conflitava com o Princípio VI da constituição, que põe a integração automática com redes sociais fora de escopo. O número fica reservado para não renumerar os demais.
@@ -530,7 +534,7 @@ Antes de enviar qualquer formulário que colete dados pessoais, o visitante é i
 - **Recurso**: o que uma campanha arrecada (entidade Recurso no DER, relação Arrecada). Possui tipo (dinheiro ou item) e descrição. Toda campanha tem ao menos um (FR-029). Não se confunde com os "recursos necessários" do evento, que são texto livre, nem com os "recursos esperados" da solicitação externa, que são atributo dela (FR-020). No DER, Recurso não tem relação com Item Necessário.
 - **Candidatura a Vaga**: submissão de candidato a emprego. Possui cargo pretendido, dados pessoais (incluindo CPF e data de nascimento, FR-016a), currículo anexado ou descrição textual de experiência, código de protocolo e status (em análise/chamado para entrevista/aprovada/rejeitada/encerrada a pedido do titular, com motivo opcional na rejeição).
 - **Solicitação de Evento/Campanha Externa**: submissão de terceiros propondo um evento ou uma campanha (tipo obrigatório e exclusivo). Possui dados de contato, nome do evento ou da campanha, objetivo, data ou período pretendido, recursos esperados da instituição (espaço, equipe, horário), código de protocolo e status (em análise/aprovada — aguardando contato/confirmada/rejeitada/encerrada a pedido do titular, com motivo opcional na rejeição). Só no status "confirmada" gera o Evento ou a Campanha correspondente, conforme o tipo.
-- **Conteúdo Institucional**: conteúdo fixo da página institucional (FR-001, FR-001a). Possui textos de história, missão e equipe, imagens opcionais com texto alternativo obrigatório, e autor e data da última alteração, com histórico das versões anteriores. Há um único conteúdo institucional; não é publicado nem despublicado como notícia.
+- **Conteúdo Institucional**: conteúdo fixo da página institucional (FR-001, FR-001a). Possui textos de história, missão, equipe, acolhimento de residentes e bazar, imagens opcionais com texto alternativo obrigatório, e autor e data da última alteração, com histórico das versões anteriores. Há um único conteúdo institucional; não é publicado nem despublicado como notícia.
 - **Notícia/Atualização Institucional**: conteúdo de divulgação publicado no Portal Público (notícias, informações institucionais e necessidades). Pode ter uma imagem com texto alternativo obrigatório (FR-032b) e status (publicada/despublicada, FR-032a). Sem sincronização com redes sociais (FR-033 removido).
 - **Autorização de Responsável Legal**: documento em papel, assinado e entregue na sede. O sistema não guarda o arquivo: registra apenas, no cadastro do voluntário menor de idade, se a autorização está pendente ou recebida, com data e conta do recebimento (FR-012, FR-058).
 - **Registro de Consentimento**: comprovação do aceite do aviso de privacidade (entidade Consentimento no DER, decisão de 2026-10-05). Pertence a exatamente uma submissão — solicitação externa, cadastro de voluntário ou candidatura (1 por submissão) ou doador associado (1 ou mais, um por versão do aviso aceita). Possui data/hora do aceite, finalidade do tratamento, versão do texto aceito e status (vigente/revogado, com data da revogação quando aplicável, FR-057).
@@ -564,7 +568,7 @@ Antes de enviar qualquer formulário que colete dados pessoais, o visitante é i
 ## Assumptions
 
 - O fuso horário de referência para datas de eventos e prazos é o horário de Brasília (America/Sao_Paulo).
-- A instituição fornece os textos e imagens da página institucional (história, missão, equipe) e a própria equipe os insere e atualiza pelo Painel (FR-001a); a redação desse conteúdo não faz parte do sistema.
+- A instituição fornece os textos e imagens da página institucional (história, missão, equipe, acolhimento de residentes e bazar) e a própria equipe os insere e atualiza pelo Painel (FR-001a); a redação desse conteúdo não faz parte do sistema.
 - A lista de cargos disponíveis para candidatura (limpeza, cuidador, enfermagem, cozinha) é fixa nesta versão; alterá-la exige nova validação de escopo.
 - A maioridade civil brasileira (18 anos), calculada pela data de nascimento, é o critério usado para exigir ou dispensar a autorização do responsável legal no cadastro de voluntário.
 - Anexos (currículo e imagem de notícia) aceitam formatos comuns de documento e imagem, com tamanho máximo razoável definido tecnicamente na fase de planejamento. A autorização do responsável legal não é anexo: é entregue em papel na sede (FR-012).

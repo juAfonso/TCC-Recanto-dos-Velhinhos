@@ -131,7 +131,7 @@ prioridade e notícias, sem login (FR-001–FR-004).
 `campanhas.html`, `noticias.html` e a lista de itens de `doacoes.html` em celular e desktop, sem
 login, e conferir que refletem o banco (quickstart V1, passos 1 e 4).
 
-- [X] T038 [P] [US1] Criar `api/public/institucional.js` (`GET`): história, missão, equipe e só as imagens `ativo = true`, com `texto_alternativo` e URL pública (FR-001)
+- [X] T038 [P] [US1] Criar `api/public/institucional.js` (`GET`): história, missão, equipe, acolhimento, bazar e só as imagens `ativo = true`, com `texto_alternativo` e URL pública (FR-001)
 - [X] T039 [P] [US1] Criar `api/public/eventos-campanhas.js` (`GET`): eventos `ativo` com `data >= hojeBrasilia()` e campanhas `ativo` com hoje dentro do período, com os recursos `ativo = true`; campanha sem meta sai sem `meta` e `arrecadado` (FR-002, FR-029b, research D12)
 - [X] T040 [P] [US1] Criar `api/public/itens-necessarios.js` (`GET`): itens `ativo` ordenados alta → média → baixa, com nome, quantidade, unidade e prioridade (FR-003, FR-026)
 - [X] T041 [P] [US1] Criar `api/public/noticias.js` (`GET`): só `publicada`, mais recentes primeiro, com imagem pública e `imagem_alt`
@@ -311,7 +311,7 @@ institucional editável (FR-032, FR-032a, FR-032b, FR-001a).
 
 - [ ] T107 [P] [US8] Criar `api/admin/noticias/index.js` (`GET`, `POST` multipart: título, corpo, imagem opcional com `imagemAlt` obrigatório) e `api/admin/noticias/[id].js` (`PUT` multipart, com histórico)
 - [ ] T108 [P] [US8] Criar `api/admin/noticias/[id]/despublicar.js` e `[id]/publicar.js` (FR-032a)
-- [ ] T109 [P] [US8] Criar `api/admin/institucional.js` (`GET`/`PUT` multipart: história, missão, equipe, imagens com texto alternativo obrigatório; imagem retirada é **desativada**, nunca apagada; estado anterior em `historico_alteracao` — FR-001a)
+- [ ] T109 [P] [US8] Criar `api/admin/institucional.js` (`GET`/`PUT` multipart: história, missão, equipe, acolhimento, bazar, imagens com texto alternativo obrigatório; imagem retirada é **desativada**, nunca apagada; estado anterior em `historico_alteracao` — FR-001a)
 - [ ] T110 [US8] Reescrever `public/admin/noticias.html` e `public/assets/js/admin-noticias.js`: criar, editar, despublicar, publicar de novo, imagem com campo de texto alternativo obrigatório
 - [ ] T111 [P] [US8] Criar `public/admin/institucional.html` e `public/assets/js/admin-institucional.js`: edição dos três textos e das imagens com texto alternativo
 

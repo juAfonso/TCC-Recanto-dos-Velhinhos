@@ -44,12 +44,13 @@
 </section>
 
 <!-- Conteúdo editável pela equipe no Painel (FR-001a); preenchido por page-institucional.js.
-     Cada seção só aparece se tiver texto. -->
+     Cada seção só aparece se tiver texto. Os títulos são fixos; o conteúdo, não.
+     Acolhimento e bazar desde 2026-10-06 (Session 2026-10-06 (2) do spec). -->
 <section class="section" id="sec-historia" hidden>
     <div class="container">
         <div class="titulo-section left">
             <span>NOSSA HISTÓRIA</span>
-            <h2>Como tudo começou</h2>
+            <h2>Mais de quatro décadas de acolhimento</h2>
         </div>
         <div id="inst-historia" style="max-width:820px;color:var(--muted);font-size:1rem;"></div>
     </div>
@@ -69,27 +70,47 @@
     <div class="container">
         <div class="titulo-section left">
             <span>NOSSO PROPÓSITO</span>
-            <h2>Missão</h2>
+            <h2>Missão, Visão e Valores</h2>
         </div>
-        <div class="card" id="inst-missao" style="max-width:820px;"></div>
+        <div class="cards" id="inst-missao"></div>
     </div>
 </section>
 
-<section class="section">
+<section class="section" id="sec-equipe">
     <div class="container">
         <div class="titulo-section left">
-            <span>NOSSA EQUIPE</span>
-            <h2>Quem cuida com a gente</h2>
+            <span>QUEM CONDUZ</span>
+            <h2>Uma diretoria formada por voluntários</h2>
         </div>
         <div id="inst-equipe" style="max-width:820px;color:var(--muted);font-size:1rem;margin-bottom:24px;" hidden></div>
         <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(240px,320px));">
             <div class="card" style="text-align:center;">
                 <div class="avatar-circle" style="margin:0 auto 16px;" aria-hidden="true">+</div>
                 <h3>Junte-se a nós</h3>
-                <p class="card-meta"><a href="vagas.html" style="color:var(--viridian);font-weight:700;">Ver vagas abertas →</a></p>
                 <p class="card-meta"><a href="voluntariado.html" style="color:var(--viridian);font-weight:700;">Seja voluntário →</a></p>
+                <p class="card-meta"><a href="vagas.html" style="color:var(--viridian);font-weight:700;">Trabalhe conosco →</a></p>
             </div>
         </div>
+    </div>
+</section>
+
+<section class="section section-soft" id="sec-acolhimento" hidden>
+    <div class="container">
+        <div class="titulo-section left">
+            <span>ACOLHIMENTO DE RESIDENTES</span>
+            <h2>Como funciona</h2>
+        </div>
+        <div id="inst-acolhimento" style="max-width:820px;color:var(--muted);font-size:1rem;"></div>
+    </div>
+</section>
+
+<section class="section" id="sec-bazar" hidden>
+    <div class="container">
+        <div class="titulo-section left">
+            <span>NOSSO BAZAR</span>
+            <h2>Bazar mensal na sede</h2>
+        </div>
+        <div id="inst-bazar" style="max-width:820px;color:var(--muted);font-size:1rem;"></div>
     </div>
 </section>
 

@@ -146,7 +146,8 @@ public/                              # protótipo, já no repositório desde 202
     ├── vendor/qrcode.js             # já existe (D9)
     └── img/
 
-api/
+api/index.js                         # ÚNICA função (2026-10-06): despacha /api/... para rotas/
+rotas/                               # antes api/ — mesma estrutura, sem virar função cada uma
 ├── _lib/                            # módulos compartilhados (o "_" impede virar rota)
 │   ├── db.js · sessao.js · acesso.js · auditoria.js · historico.js
 │   ├── protocolo.js · email.js · blob.js · limite.js · validacao.js

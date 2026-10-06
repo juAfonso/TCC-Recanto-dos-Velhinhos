@@ -12,7 +12,9 @@ import { Pool } from '@neondatabase/serverless';
 
 const PASTA = path.join(path.dirname(fileURLToPath(import.meta.url)), 'migrations');
 
-export async function aplicarMigracoes(url, { silencioso = false } = {}) {
+// `producao: true` marca o banco como produção logo na criação das tabelas, antes de qualquer
+// seed: assim um `seed --demo` apontado por engano para ele é recusado (incidente de 2026-10-06).
+export async function aplicarMigracoes(url, { silencioso = false, producao = false } = {}) {
   const log = silencioso ? () => {} : console.log;
   const pool = new Pool({ connectionString: url });
   const conexao = await pool.connect();
@@ -43,6 +45,15 @@ export async function aplicarMigracoes(url, { silencioso = false } = {}) {
       novas++;
     }
     log(novas ? `${novas} migração(ões) aplicada(s).` : 'Nada a aplicar: o banco já está atualizado.');
+    if (producao) {
+      const { rows: [marca] } = await conexao.query(
+        `INSERT INTO configuracao (chave, valor, atualizado_por) VALUES ('ambiente', 'producao', 'sistema')
+         ON CONFLICT (chave) DO UPDATE SET chave = EXCLUDED.chave RETURNING valor`);
+      if (marca.valor !== 'producao') {
+        throw new Error(`ATENÇÃO: este banco está marcado como "${marca.valor}", não como produção. Confira a DATABASE_URL_PRODUCAO.`);
+      }
+      log('Banco marcado como produção.');
+    }
   } finally {
     conexao.release();
     await pool.end();
@@ -58,7 +69,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     process.exit(1);
   }
   console.log(`Aplicando migrações em ${nomeVar}…`);
-  aplicarMigracoes(url).catch((erro) => {
+  aplicarMigracoes(url, { producao: nomeVar === 'DATABASE_URL_PRODUCAO' }).catch((erro) => {
     console.error(erro.message);
     process.exit(1);
   });

@@ -45,6 +45,12 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   de teste de cada pessoa o limite de ~10 do plano gratuito estourou (deploy
   falhou em "Provisioning Integrations"). Os previews também nasciam com banco
   vazio, sem utilidade. Para testar uma branch, use `npm run dev`.
+  **A API é uma função só (decidido em 2026-10-06).** O Hobby aceita no
+  máximo 12 funções por deploy, e a fase 4 chegou a 19: o deploy de produção
+  falhou e o site ficou na fase 3. Agora só `api/index.js` é função; as rotas
+  ficam em **`rotas/`** (antes `api/`), com a mesma estrutura e os mesmos
+  endereços. **Rota nova vai em `rotas/`, nunca em `api/`** — senão volta a
+  contar no limite. Plano Pro descartado (custo mensal). research D1.
 - **Banco:** Neon (PostgreSQL) — relacional, plano gratuito, confirmado que
   não exige cartão de crédito. Mantém o modelo relacional já implícito no PRD.
 - ~~C#, MySQL, Visual Studio~~ — stack original do TCC, **abandonada** em
@@ -124,6 +130,14 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
      máquina de quem programa, com `npm run seed -- --demo`) e `teste`
      (apagada e recriada a cada `npm test`). Nunca rodar `--demo` na `main`:
      o seed marca cada banco como `demo` ou `producao` e recusa misturar.
+     **Incidente de 2026-10-06:** a `main` recém-migrada (ainda sem marca)
+     recebeu um `seed --demo` de algum computador cuja `DATABASE_URL`
+     apontava para ela — com a senha de demonstração, que está no repositório.
+     Como não havia dado real, a `main` foi zerada e recriada. Desde então,
+     `npm run migrate -- --producao` (com `DATABASE_URL_PRODUCAO`) **marca o
+     banco como produção já na criação das tabelas**, e o seed recusa `--demo`
+     se a `DATABASE_URL` for igual à `DATABASE_URL_PRODUCAO`. **A URL da `main`
+     não deve estar no `.env.local` de ninguém como `DATABASE_URL`.**
   2. **`npm run dev` no lugar do `vercel dev`.** Um servidor pequeno em
      `scripts/dev.js`, sem dependência, serve `public/` e as funções de
      `api/` como a Vercel. Motivo: o Vercel CLI exige instalação global e

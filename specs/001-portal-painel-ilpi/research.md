@@ -41,6 +41,13 @@ chamadas `fetch`. O formato Web padrão é suportado pela Vercel sem configuraç
 **Custo aceito**: HTML de navbar/rodapé repetido entre páginas; `assets/js/nav.js` continua
 injetando a navegação, como no protótipo.
 
+**Revisto em 2026-10-06 — uma função só.** O plano Hobby da Vercel aceita no máximo **12 funções por
+deploy**, e a fase 4 já somava 19 (o deploy de produção falhou). Agora só `api/index.js` é função: um
+rewrite no `vercel.json` manda todo `/api/...` para ela, que acha o arquivo em **`rotas/`** (mesma
+convenção de pastas e `[id].js`, via `rotas/_lib/roteador.js`) e o executa. Os endereços públicos não
+mudaram. `npm run dev` e os testes passam pela mesma função. Alternativa descartada: plano Pro
+(custo mensal para a instituição).
+
 ---
 
 ## D2 — Acesso ao banco a partir de funções serverless

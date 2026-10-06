@@ -17,7 +17,7 @@
 
 import { fileURLToPath } from 'node:url';
 import { Pool } from '@neondatabase/serverless';
-import { gerarHash, gerarSenhaAleatoria } from '../api/_lib/senha.js';
+import { gerarHash, gerarSenhaAleatoria } from '../rotas/_lib/senha.js';
 
 export const CONTA_INSTITUCIONAL = 'recantodosvelhinhos.pinheiral@gmail.com';
 export const CONTATO_INICIAL = 'Telefone (24) 3016-4023 · E-mail recantodosvelhinhos.pinheiral@gmail.com';
@@ -190,6 +190,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     process.exit(1);
   }
   const nomeVar = producao ? 'DATABASE_URL_PRODUCAO' : 'DATABASE_URL';
+  if (demo && process.env.DATABASE_URL_PRODUCAO && process.env.DATABASE_URL === process.env.DATABASE_URL_PRODUCAO) {
+    console.error('A DATABASE_URL é a mesma da produção: --demo recusado. Aponte a DATABASE_URL para a branch dev.');
+    process.exit(1);
+  }
   const url = process.env[nomeVar];
   if (!url) {
     console.error(`${nomeVar} não definida. Confira o .env.local (modelo em .env.example).`);

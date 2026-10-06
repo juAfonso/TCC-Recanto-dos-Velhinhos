@@ -2,14 +2,15 @@
 //
 // Faz no computador o mesmo que a Vercel faz em produção, sem instalar o Vercel CLI:
 // - arquivos de public/ servidos como páginas estáticas;
-// - /api/... executa a função correspondente em api/ (formato Web: GET/POST/PUT recebendo Request);
+// - /api/... passa pela MESMA função da produção (api/index.js), que despacha para rotas/;
 // - segmentos dinâmicos ([id].js) chegam como parâmetro de consulta, como na Vercel.
+// Mudou um arquivo de rotas/? Reinicie o npm run dev (Ctrl+C e de novo) para carregar.
 // Só para desenvolvimento. Não vai para produção (a Vercel ignora a pasta scripts/).
 
 import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
-import { acharFuncao, RAIZ } from './rotas.js';
-import { pathToFileURL } from 'node:url';
+import { RAIZ } from '../rotas/_lib/roteador.js';
+import * as api from '../api/index.js';
 import path from 'node:path';
 
 const PUBLICO = path.join(RAIZ, 'public');
@@ -30,18 +31,11 @@ async function lerCorpo(req) {
 }
 
 async function servirApi(req, res, url) {
-  const achado = await acharFuncao(url.pathname);
-  if (!achado) return responder(res, 404, { erro: { codigo: 'NAO_ENCONTRADO', mensagem: 'Rota não encontrada.' } });
-
-  // ?v= força recarregar a função quando o arquivo muda (os módulos de _lib/ pedem reiniciar).
-  const { mtimeMs } = await stat(achado.arquivo);
-  const modulo = await import(`${pathToFileURL(achado.arquivo).href}?v=${mtimeMs}`);
-  const handler = modulo[req.method];
+  const handler = api[req.method];
   if (typeof handler !== 'function') {
     return responder(res, 405, { erro: { codigo: 'METODO_NAO_PERMITIDO', mensagem: 'Método não permitido.' } });
   }
 
-  for (const [k, v] of Object.entries(achado.parametros)) url.searchParams.set(k, v);
   const cabecalhos = new Headers();
   for (const [k, v] of Object.entries(req.headers)) if (v !== undefined) cabecalhos.set(k, Array.isArray(v) ? v.join(', ') : v);
   cabecalhos.set('x-forwarded-for', req.socket.remoteAddress ?? '127.0.0.1');

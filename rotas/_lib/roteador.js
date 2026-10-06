@@ -1,16 +1,19 @@
-// Encontra o arquivo de api/ que atende uma rota, seguindo a convenção da Vercel:
-//   /api/admin/sessao            → api/admin/sessao.js
-//   /api/admin/doacoes           → api/admin/doacoes/index.js
-//   /api/admin/doacoes/7/confirmar → api/admin/doacoes/[id]/confirmar.js  (parametros = { id: '7' })
-// Pastas e arquivos que começam com "_" (api/_lib) nunca viram rota.
-// Usado pelo servidor de desenvolvimento (scripts/dev.js) e pelos testes (tests/_apoio.js).
+// Encontra o arquivo de rotas/ que atende um endereço /api/..., na convenção da Vercel:
+//   /api/admin/sessao              → rotas/admin/sessao.js
+//   /api/admin/doacoes             → rotas/admin/doacoes/index.js
+//   /api/admin/doacoes/7/confirmar → rotas/admin/doacoes/[id]/confirmar.js  (parametros = { id: '7' })
+// Pastas e arquivos que começam com "_" (rotas/_lib) nunca viram rota.
+//
+// Por que existe (2026-10-06): o plano gratuito da Vercel aceita no máximo 12 funções por deploy,
+// e o projeto terá dezenas de rotas. Então só api/index.js é função; ele usa este roteador para
+// chamar o arquivo certo. O mesmo roteador serve ao npm run dev e aos testes.
 
 import { stat, readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-export const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const API = path.join(RAIZ, 'api');
+export const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+const ROTAS = path.join(RAIZ, 'rotas');
 
 const existe = (p) => stat(p).then((s) => s, () => null);
 
@@ -47,5 +50,5 @@ async function procurar(segmentos, pasta, parametros) {
 export function acharFuncao(caminho) {
   const segmentos = caminho.split('/').filter(Boolean);
   if (segmentos[0] !== 'api') return Promise.resolve(null);
-  return procurar(segmentos.slice(1), API, {});
+  return procurar(segmentos.slice(1), ROTAS, {});
 }

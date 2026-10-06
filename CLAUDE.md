@@ -1,6 +1,6 @@
 # SAGE — Memória do Projeto
 
-> Última atualização: 2026-10-05
+> Última atualização: 2026-10-06
 > TCC do IFRJ Campus Pinheiral — sistema web para a ILPI "Recanto dos Velhinhos
 > Francisco Gonçalves Barbosa". Repositório: `TCC-Recanto-dos-Velhinhos`
 > (GitHub, usuário juAfonso).
@@ -87,6 +87,14 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   sai da instituição, o envio para); e a senha de aplicativo é credencial —
   vai em variável de ambiente, nunca no repositório. Plano B, se o Google
   bloquear: Brevo/SendGrid enviando de subdomínio do próprio provedor.
+  **Conta definida em 2026-10-06:** `recantodosvelhinhos.pinheiral@gmail.com`,
+  que é ao mesmo tempo o **contato público** do Recanto e a **conta de envio**
+  do sistema (`GMAIL_USER`). A instituição está ciente do uso para envios
+  automáticos. Telefone oficial: **(24) 3016-4023** — o (24) 3356-2801 e o
+  `contato@recantodosvelhinhos.org.br` do protótipo estavam errados (o
+  Recanto não tem domínio). Esses valores são o ponto de partida do
+  `contato_instituicao` no `db/seed.js`; depois disso, quem edita é a equipe
+  pelo Painel, nunca o código.
 - **É a terceira dependência npm do projeto**, quebrando a regra de duas. O
   Princípio I exige justificativa escrita para cada uma, e ela está no
   `research.md` D5: escrever SMTP à mão sobre `node:tls` custaria mais do que

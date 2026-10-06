@@ -39,6 +39,12 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   conhecidas e já registradas no spec.md: sem domínio próprio, sem SLA/suporte
   pago, e possível hibernação do banco após inatividade (pode afetar
   pontualmente prazos como o de disponibilização do comprovante Pix).
+  **Só a `main` é publicada (decidido em 2026-10-06).** O `vercel.json` desliga
+  os deploys de preview das outras branches (`git.deploymentEnabled`). Motivo:
+  cada preview criava uma branch no Neon, e com `main`, `dev` e as branches
+  de teste de cada pessoa o limite de ~10 do plano gratuito estourou (deploy
+  falhou em "Provisioning Integrations"). Os previews também nasciam com banco
+  vazio, sem utilidade. Para testar uma branch, use `npm run dev`.
 - **Banco:** Neon (PostgreSQL) — relacional, plano gratuito, confirmado que
   não exige cartão de crédito. Mantém o modelo relacional já implícito no PRD.
 - ~~C#, MySQL, Visual Studio~~ — stack original do TCC, **abandonada** em

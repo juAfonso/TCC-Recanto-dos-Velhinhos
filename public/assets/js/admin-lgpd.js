@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td class="cell-muted">${Utils.formatDate(i.desde)}</td>
           <td><button class="btn btn-danger-outline btn-sm" data-anonimizar="${i.id}" data-alvo="${i.alvo}" data-nome="${e(i.nome)}">Anonimizar…</button></td>
         </tr>`).join('')
-        || '<tr><td colspan="5"><div class="empty-state"><span class="icon" aria-hidden="true">✅</span><p>Nenhum registro com prazo vencido.</p></div></td></tr>';
+        || '<tr><td colspan="5"><div class="empty-state"><p>Nenhum registro com prazo vencido.</p></div></td></tr>';
     } catch (erro) {
       tbody.innerHTML = `<tr><td colspan="5">${e(erro.message)}</td></tr>`;
     }

@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const destaque = [...campanhas].sort((a, b) => pct(b) - pct(a)).slice(0, 2);
         campanhasEl.innerHTML = destaque.length
           ? `<div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));">${destaque.map(PortalCards.campanha).join('')}</div>`
-          : '<p style="text-align:center;">Nenhuma campanha ativa no momento.</p>';
+          : '<p class="cell-muted" style="text-align:center;">Nenhuma campanha ativa no momento.</p>';
       })
       .catch(() => { campanhasEl.innerHTML = PortalCards.erro(); });
   }

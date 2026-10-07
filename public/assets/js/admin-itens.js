@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ? '<span class="cell-flag" title="Quantidade sem atualização há muitos dias" aria-label="Sem atualização recente">●</span> ' : '';
     const situacao = i.status === 'ativo'
       ? '<span class="badge badge-success">No site</span>'
-      : `<span class="badge badge-neutral">Suprido</span><div class="cell-muted" style="font-size:.75rem;">baixa em ${Utils.formatDate(i.baixaEm)}</div>`;
+      : `<span class="badge badge-neutral">Suprido</span><div class="cell-muted cell-baixa" style="font-size:.75rem;">baixa em ${Utils.formatDate(i.baixaEm)}</div>`;
     const acoes = i.status === 'ativo'
       ? `<button class="btn btn-outline btn-sm" data-editar="${i.id}">Editar</button>
          <button class="btn btn-danger-outline btn-sm" data-baixa="${i.id}">Dar baixa</button>`

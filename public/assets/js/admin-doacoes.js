@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       doacoes = r.doacoes;
       renderStats(r.resumo);
       tbody.innerHTML = doacoes.map(linha).join('')
-        || `<tr><td colspan="6"><div class="empty-state"><span class="icon" aria-hidden="true">💸</span><p>${filtro === 'pendente' ? 'Nenhuma doação aguardando conferência.' : 'Nenhuma doação nesta lista.'}</p></div></td></tr>`;
+        || `<tr><td colspan="6"><div class="empty-state"><p>${filtro === 'pendente' ? 'Nenhuma doação aguardando conferência.' : 'Nenhuma doação nesta lista.'}</p></div></td></tr>`;
     } catch (erro) {
       tbody.innerHTML = `<tr><td colspan="6">${e(erro.message)}</td></tr>`;
     }

@@ -49,7 +49,6 @@
         <div id="form-wrap">
             <form class="form-shell" id="form-voluntario" novalidate data-consentimento="analisar meu cadastro de voluntário e preencher o termo de adesão">
                 <div class="alert alert-info">
-                    <span aria-hidden="true">ℹ️</span>
                     <div>Seu cadastro fica <b>pendente</b> até a equipe analisar. Se for aprovado na primeira etapa, você será chamado para uma <b>entrevista</b>. Ao enviar, você recebe um <b>código de protocolo</b> para acompanhar.</div>
                 </div>
                 <p class="form-hint" style="margin-bottom:18px;">Os campos com <span class="req">*</span> são obrigatórios. Estes dados são os do termo de adesão ao serviço voluntário (Lei nº 9.608/1998).</p>
@@ -180,17 +179,16 @@
         <!-- Depois do envio: protocolo em destaque (o protocolo é o canal principal; o e-mail é complementar) -->
         <div id="sucesso" class="form-shell" hidden>
             <div class="protocolo-box" role="status">
-                <div style="font-size:2.2rem;" aria-hidden="true">✅</div>
                 <p style="font-weight:700;margin-top:8px;">Cadastro enviado! Anote este código:</p>
                 <div class="protocolo-code" id="protocolo-gerado"></div>
                 <p class="form-hint">É com ele que você acompanha o andamento em <a href="consultar-status.html">Consultar status</a>. Guarde num lugar seguro.</p>
                 <p class="form-hint" id="aviso-email"></p>
             </div>
-            <div class="alert alert-info" style="margin-top:18px;"><span aria-hidden="true">🖨️</span><div>
+            <div class="alert alert-info" style="margin-top:18px;"><div>
                 <b>Termo de adesão.</b> O serviço voluntário é formalizado por um termo assinado por você e pelo Recanto (Lei nº 9.608/1998). Imprima e leve à sede: ele é assinado quando o cadastro for aprovado.
                 <div style="margin-top:10px;"><a class="btn btn-viridian btn-sm" href="termo-adesao.html" target="_blank" rel="opener">Imprimir termo de adesão</a></div>
             </div></div>
-            <div class="alert alert-warning" id="aviso-menor" hidden><span aria-hidden="true">📝</span><div>
+            <div class="alert alert-warning" id="aviso-menor" hidden><div>
                 <b>Falta a autorização do responsável.</b> Como você tem menos de 18 anos, o cadastro só pode ser aprovado depois que o responsável assinar a autorização e o termo, e entregá-los na sede do Recanto.
                 <div style="margin-top:10px;"><a class="btn btn-viridian btn-sm" href="autorizacao-menor.html" target="_blank" rel="opener" id="btn-autorizacao">Imprimir autorização do responsável</a></div>
             </div></div>

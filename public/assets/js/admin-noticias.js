@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
               : `<button class="btn btn-outline btn-sm" data-publicar="${n.id}">Publicar de novo</button>`}
           </div></td>
         </tr>`).join('')
-        || '<tr><td colspan="5"><div class="empty-state"><span class="icon" aria-hidden="true">📰</span><p>Nenhuma notícia ainda.</p></div></td></tr>';
+        || '<tr><td colspan="5"><div class="empty-state"><p>Nenhuma notícia ainda.</p></div></td></tr>';
     } catch (erro) {
       tbody.innerHTML = `<tr><td colspan="5">${e(erro.message)}</td></tr>`;
     }

@@ -245,10 +245,12 @@ Regras:
 | `PUT` | `/api/admin/eventos-campanhas/:id` | mesmas validações |
 | `PUT` | `/api/admin/campanhas/:id/arrecadado` | só com meta (FR-029b) |
 | `POST` | `/api/admin/eventos-campanhas/:id/encerrar` | a qualquer momento; já encerrado: `200` sem alteração (FR-029a) |
-| `GET`/`POST` 📎 | `/api/admin/noticias` | imagem exige `imagemAlt` (FR-032b) |
-| `PUT` 📎 | `/api/admin/noticias/:id` | |
+| `GET`/`POST` 📎 | `/api/admin/noticias` | todas, publicadas e despublicadas; `POST` com `titulo`, `corpo`, `imagem` opcional e `imagemAlt` obrigatório se houver imagem (FR-032b); nasce publicada |
+| `GET` · `PUT` 📎 | `/api/admin/noticias/:id` | `PUT` edita texto e imagem: `imagem` nova substitui, `removerImagem=1` tira; a anterior é desvinculada, nunca apagada; estado anterior no histórico |
 | `POST` | `/api/admin/noticias/:id/despublicar` · `/publicar` | FR-032a |
-| `GET`/`PUT` 📎 | `/api/admin/institucional` | textos e imagens, texto alternativo obrigatório, versão anterior no histórico (FR-001a) |
+| `GET`/`PUT` | `/api/admin/institucional` | `PUT` em JSON com as cinco seções (vazia some do Portal); versão anterior no histórico (FR-001a). `GET` traz imagens ativas e versões anteriores |
+| `POST` 📎 | `/api/admin/institucional/imagens` | uma imagem por envio (`imagem`, `imagemAlt`), porque o corpo na Vercel vai até 4,5 MB; até 6 ativas → `409 LIMITE_DE_IMAGENS` (2026-10-07) |
+| `PUT` · `POST …/desativar` | `/api/admin/institucional/imagens/:id` | corrige o texto alternativo · retira do Portal sem apagar |
 
 ### Usuários (CSU04)
 

@@ -69,10 +69,11 @@ const Api = (() => {
   }
 
   // Envio com arquivo (multipart/form-data): o navegador monta o cabeçalho.
+  // opcoes.metodo: 'PUT' para editar com arquivo (padrão POST).
   async function enviarFormulario(url, formData, opcoes = {}) {
     let resposta;
     try {
-      resposta = await fetch(url, { method: 'POST', credentials: 'same-origin', body: formData });
+      resposta = await fetch(url, { method: opcoes.metodo || 'POST', credentials: 'same-origin', body: formData });
     } catch (e) {
       throw new ApiErro(0, { erro: { codigo: 'SEM_CONEXAO', mensagem: 'Sem conexão com o servidor. Confira sua internet e tente de novo.' } });
     }

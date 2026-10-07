@@ -46,11 +46,13 @@ export async function chamar(caminho, { metodo = 'GET', corpo, cookie, cabecalho
 
   const headers = new Headers({ 'x-forwarded-for': '203.0.113.7', ...cabecalhos });
   if (cookie) headers.set('cookie', cookie);
-  if (corpo !== undefined) headers.set('content-type', 'application/json');
+  // FormData vai como multipart (o Request monta o cabeçalho); o resto, como JSON.
+  const multipart = corpo instanceof FormData;
+  if (corpo !== undefined && !multipart) headers.set('content-type', 'application/json');
   const resposta = await handler(new Request(url, {
     method: metodo,
     headers,
-    body: corpo !== undefined ? JSON.stringify(corpo) : undefined,
+    body: corpo === undefined ? undefined : multipart ? corpo : JSON.stringify(corpo),
   }));
   const texto = await resposta.text();
   return {

@@ -33,6 +33,7 @@ Cada linha "pendente" precisa de uma pessoa do grupo.
 | Campo sem rótulo (`label`, `aria-label` ou `title`) | ✅ nenhum | 2026-10-07 |
 | Botão ou link sem nome acessível | ✅ nenhum | 2026-10-07 |
 | Contraste do botão "Fazer uma doação" (campanhas, início, institucional) | ✅ corrigido: o texto ficava verde sobre magenta; agora branco (7,3:1) | 2026-10-07 |
+| Zoom de 200% em todas as telas | ✅ conferido pelo grupo. Achado e corrigido: o menu do celular passava da altura da tela e os últimos itens ficavam inalcançáveis; agora ele rola por dentro | 2026-10-07 |
 
 A checagem olha a tela como ela carrega. Textos que só aparecem depois de uma ação (modais,
 mensagens de erro) foram revistos no código de cada fase, não por este script.
@@ -42,6 +43,8 @@ mensagens de erro) foram revistos no código de cada fase, não por este script.
 Para cada tela: zoom de 200% sem perder conteúdo; navegar só com o teclado (Tab, Enter, Esc)
 com o foco sempre visível; mensagens de erro junto do campo; contraste dos textos claros.
 Sugestão: usar o leitor de tela NVDA (gratuito) em pelo menos doação, voluntariado e login.
+
+Zoom de 200%: conferido em todas as telas em 2026-10-07 (ver acima). Falta o resto:
 
 | Tela | Zoom 200% | Teclado e foco | Erros junto do campo | Quem / data |
 |---|---|---|---|---|

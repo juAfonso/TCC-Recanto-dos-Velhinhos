@@ -1,0 +1,85 @@
+Sua privacidade é importante para nós. Este aviso explica quais dados pessoais o Recanto dos Velhinhos Francisco Gonçalves Barbosa coleta neste site, para que os usa, com quem os compartilha, por quanto tempo os guarda e como você pode exercer seus direitos, conforme a Lei nº 13.709/2018 (Lei Geral de Proteção de Dados — LGPD).
+
+Responsável pelos seus dados
+Recanto dos Velhinhos Francisco Gonçalves Barbosa, CNPJ 28.056.695/0001-42, com sede na Rua Francisco Ribeiro de Abreu, 102, Posto Zootécnico, Pinheiral/RJ, CEP 27198-360.
+
+Quais dados coletamos
+Só coletamos os dados que você mesmo informa ao preencher um formulário. Antes de cada envio, pedimos que você leia este aviso e concorde com ele, e registramos a data e a hora, a finalidade e a versão do aviso que você aceitou.
+
+Cadastro de voluntário
+Nome, data de nascimento, CPF, RG, endereço completo, telefone, e-mail e o tipo de serviço que deseja prestar. Se você quiser, também escolaridade, profissão, seus objetivos e os dias e horários disponíveis. São os dados do termo de adesão exigido pela Lei nº 9.608/1998 (Lei do Voluntariado).
+
+Candidatura a vaga de trabalho
+Cargo pretendido, nome, CPF, data de nascimento, telefone, e-mail e currículo, enviado como arquivo ou descrito em texto.
+
+Doação associativa (identificada)
+Nome, CPF, telefone e e-mail, além do valor escolhido e da data e hora em que você clicou em "Já fiz o Pix". Esses dados criam sua conta na área do doador, onde você acompanha as doações já conferidas pela equipe. A senha é criada por você, pelo link enviado ao seu e-mail.
+
+Proposta de evento ou campanha
+Seus dados de contato (nome da pessoa ou organização, e-mail e telefone) e as informações da proposta: nome da iniciativa, objetivo, data ou período pretendido e o que você pede ao Recanto.
+
+Sobre as doações
+Não coletamos nem guardamos dados de cartão, senhas bancárias ou qualquer informação financeira sua. O site apenas mostra a chave Pix e o QR code da instituição; o pagamento é feito inteiramente no aplicativo do seu banco, fora deste site.
+
+Você pode doar sem se identificar (doação espontânea). Nesse caso, nenhum dado pessoal seu é coletado.
+
+Não emitimos recibo nem declaração de doação pelo site.
+
+Dados de menores de idade
+Menores de 18 anos podem se cadastrar como voluntários, mas o cadastro só é aprovado depois que o responsável legal assina a autorização e a entrega em papel na sede do Recanto. Essa autorização não é enviada pelo site e fica guardada pela secretaria. Os dados do menor são vistos só pela administração e nunca aparecem no site.
+
+Para que usamos seus dados
+• Analisar sua inscrição como voluntário, sua candidatura a vaga ou sua proposta de evento ou campanha.
+• Entrar em contato com você sobre o seu pedido, inclusive para combinar entrevista.
+• Enviar por e-mail a confirmação do envio, com o código de protocolo, e o resultado de cada etapa da análise.
+• Preparar o termo de adesão do voluntário e, para menores, a autorização do responsável, para assinatura em papel.
+• Conferir as doações associativas no extrato bancário da instituição e mostrar a você, na área do doador, as que já foram conferidas.
+• Manter o histórico das atividades da instituição.
+
+Seus dados não são usados para nenhuma finalidade comercial ou publicitária.
+
+Com quem compartilhamos
+Seus dados não são vendidos nem cedidos a outras instituições, empresas ou pessoas.
+
+Para o site funcionar, usamos serviços de tecnologia que guardam ou processam os dados apenas em nosso nome e para as finalidades deste aviso: Vercel (hospedagem do site e dos arquivos, como currículos), Neon (banco de dados) e Google (envio de e-mails pelo Gmail da instituição). Esses serviços mantêm servidores fora do Brasil, o que significa que seus dados podem ser armazenados no exterior.
+
+Dentro do Recanto, só a equipe da administração, com a senha do painel da instituição, tem acesso aos seus dados.
+
+Cookies e registros técnicos
+Usamos só os cookies necessários ao funcionamento do site: o que mantém você conectado à área do doador enquanto navega. Ele acaba quando você fecha o navegador ou depois de 8 horas. Não usamos cookies de publicidade nem de rastreamento, e não acompanhamos sua navegação em outros sites.
+
+Para evitar abusos, como tentativas repetidas de senha ou de consulta de protocolo, o site conta as tentativas vindas de cada conexão. Essa contagem é guardada de forma cifrada, sem o endereço da conexão em texto, e apagada em até um dia.
+
+Por quanto tempo guardamos
+Guardamos seus dados só pelo tempo necessário às finalidades acima e às obrigações legais da instituição:
+• Cadastros de voluntário e candidaturas não aprovados: 6 meses depois da conclusão da análise.
+• Propostas de evento ou campanha não aprovadas ou encerradas: 6 meses depois da conclusão.
+• Currículo de quem foi contratado: 6 meses depois da contratação.
+• Voluntário aprovado: enquanto durar o voluntariado.
+• Doador associado: enquanto você mantiver a conta, ou até pedir a anonimização.
+
+Encerrado o prazo, a equipe anonimiza os dados: eles se tornam ilegíveis e deixam de identificar você. Das doações, ficam apenas o valor, a data e a situação, sem nenhum dado pessoal, para o histórico da instituição.
+
+Seus direitos
+A qualquer momento, e sem custo, você pode pedir:
+• Confirmação de que tratamos seus dados e acesso a eles.
+• Correção de dados incompletos, errados ou desatualizados.
+• Anonimização, tornando seus dados pessoais ilegíveis em nosso sistema.
+• Informação sobre com quem compartilhamos seus dados.
+• Revogação do consentimento que você deu.
+Você também tem os demais direitos do art. 18 da LGPD.
+
+Como pedir: entre em contato com a administração do Recanto pelo e-mail recantodosvelhinhos.pinheiral@gmail.com ou pelo telefone (24) 3016-4023. Os pedidos não são feitos pelo site. Para proteger você, vamos confirmar sua identidade antes de atender.
+
+Se você revogar o consentimento: um cadastro, candidatura ou proposta ainda em análise é encerrado; o voluntário ativo é inativado; e a conta de doador associado é desativada. A revogação não apaga os dados — para isso, peça também a anonimização.
+
+Em alguns casos, parte dos dados precisa ser mantida para cumprir uma obrigação legal (por exemplo, registros trabalhistas de quem foi funcionário). Quando isso acontecer, informaremos o que foi mantido e por quê.
+
+Segurança
+O acesso aos dados pessoais é restrito à equipe da administração e conferido a cada operação. Toda ação feita no painel da instituição fica registrada, com data e hora. As senhas são guardadas de forma que nem a própria instituição consegue lê-las. Currículos não ficam acessíveis publicamente.
+
+Alterações neste aviso
+Qualquer alteração é publicada nesta mesma página, com a versão e a data no topo. As versões anteriores ficam guardadas, e cada aceite registra a versão que a pessoa leu. Se você for doador associado, pediremos que confirme a nova versão na sua próxima doação.
+
+Contato
+Para dúvidas sobre este aviso ou sobre o tratamento dos seus dados, fale com a administração do Recanto pelo e-mail recantodosvelhinhos.pinheiral@gmail.com ou pelo telefone (24) 3016-4023.

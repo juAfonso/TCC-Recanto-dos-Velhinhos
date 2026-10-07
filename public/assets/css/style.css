@@ -228,7 +228,14 @@ button{ cursor:pointer; font-family:inherit; }
         transition:max-height .3s ease;
         box-shadow:0 10px 20px rgba(0,0,0,.08);
     }
-    .menu.open{ max-height:520px; }
+    /* Nunca maior que o espaço abaixo da navbar, e com rolagem própria: com zoom de 200%
+       ou celular deitado, os últimos itens ficavam fora da tela (Princípios II e V). */
+    .menu.open{
+        max-height:calc(100vh - var(--header-h));
+        max-height:calc(100dvh - var(--header-h));
+        overflow-y:auto;
+        overscroll-behavior:contain;
+    }
     .menu li{ width:100%; }
     .menu a{ display:block; width:100%; padding:16px 6%; border-bottom:1px solid var(--line) !important; }
     .nav-dropdown-panel{

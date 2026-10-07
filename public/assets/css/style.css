@@ -905,6 +905,7 @@ select {
     padding:10px 18px;
     min-width:260px;
 }
+.form-group.has-error .search-box{ border-color:var(--danger); }
 .search-box input{
     border:none;
     outline:none;

@@ -346,9 +346,9 @@ limite de tentativas (FR-044, FR-044a).
 
 **Independent Test**: quickstart V5 passo 6.
 
-- [ ] T116 [US10] Criar `api/public/status/[protocolo].js` (`GET`): procura nas três tabelas pelo prefixo; devolve `tipo`, `status`, `rotuloStatus` em português (incluindo "Chamado para entrevista", "Aprovada — aguardando contato" e "Encerrada a pedido do titular") e data; inexistente e mal formado → mesma resposta `404 NAO_ENCONTRADO`; limite de 10 por IP em 15 min
-- [ ] T117 [US10] Estender `tests/protocolo.test.js` (FR-044a, parte 2): resposta para protocolo inexistente bem formado e para texto mal formado com mesmo status, mesmo corpo e mesmos cabeçalhos relevantes; 11ª consulta do mesmo IP em 15 min → `429`. Depende de T037, T116
-- [ ] T118 [US10] Atualizar `public/consultar-status.html` e `public/assets/js/page-consultar-status.js`: remover doação como tipo consultável, mostrar só tipo, status e data, explicar o limite de tentativas
+- [X] T116 [US10] Criar `api/public/status/[protocolo].js` (`GET`): procura nas três tabelas pelo prefixo; devolve `tipo`, `status`, `rotuloStatus` em português (incluindo "Chamado para entrevista", "Aprovada — aguardando contato" e "Encerrada a pedido do titular") e data; inexistente e mal formado → mesma resposta `404 NAO_ENCONTRADO`; limite de 10 por IP em 15 min — *em `rotas/public/status/[protocolo].js`; o limite conta toda consulta, antes de procurar; o mal formado também consulta o banco, para o tempo de resposta não denunciar a diferença*
+- [X] T117 [US10] Estender `tests/protocolo.test.js` (FR-044a, parte 2): resposta para protocolo inexistente bem formado e para texto mal formado com mesmo status, mesmo corpo e mesmos cabeçalhos relevantes; 11ª consulta do mesmo IP em 15 min → `429`. Depende de T037, T116
+- [X] T118 [US10] Atualizar `public/consultar-status.html` e `public/assets/js/page-consultar-status.js`: remover doação como tipo consultável, mostrar só tipo, status e data, explicar o limite de tentativas — *mostra a situação em português simples; avisa que doação não tem protocolo e que há limite de consultas*
 
 **Checkpoint**: todas as histórias implementadas.
 

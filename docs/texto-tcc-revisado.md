@@ -1,8 +1,8 @@
 # Texto do TCC revisado — seções 8, 11, 12, 19.1 e 19.2
 
-> **Data:** 2026-10-04
+> **Data:** 2026-10-06 (primeira versão em 2026-10-04)
 > **Origem:** versão conferida pelo grupo, corrigida na redação e alinhada ao
-> `specs/001-portal-painel-ilpi/spec.md` (Sessions 2026-10-03 (2) e 2026-10-04).
+> `specs/001-portal-painel-ilpi/spec.md` (Sessions de 2026-10-03 (2) a 2026-10-06 (2)).
 > Em caso de divergência, o `spec.md` prevalece. Este arquivo é a redação para colar no documento.
 
 ## O que mudou em relação à versão do grupo
@@ -37,6 +37,16 @@ os demais são correções de redação ou de coerência.
 | Objetivo 1 | "perfis de usuários — doadores associados —" | Funcionários, voluntários e doadores associados | Deixava de fora dois dos três perfis. |
 | Requisito "Anonimização" | "elimina os dados pessoais, mas anonimizando os outros dados" | Redação reescrita | A frase era circular. |
 | Divulgação | — | Sem sincronização com redes sociais | Removida do escopo (Princípio VI). |
+| História 5, testes 5 e 6 **(decidido em 2026-10-05)** | Evento e campanha iguais | Tipos diferentes na mesma tela: evento com data e recursos em texto; campanha com período, recursos a arrecadar e meta opcional. Aviso de conflito só para evento | Alinhamento com o DER conceitual. |
+| Teste 6 **(decidido em 2026-10-05)** | Só encerramento manual | Evento ou campanha vencido é encerrado automaticamente; o funcionário pode encerrar antes | Ninguém precisa lembrar de encerrar o que já passou. |
+| Requisito "Divulgação", história e teste 7 **(decidido em 2026-10-05/06)** | Página institucional fixa | A equipe edita no Painel história, missão, equipe, acolhimento de residentes e bazar | O grupo entrega e sai; texto fixo no HTML travaria a instituição. Acolhimento é só texto: cadastro de residentes continua fora do escopo. |
+| Teste 2 **(decidido em 2026-10-05/06)** | — | CPF ou e-mail já cadastrado na associativa sem login: mensagem neutra, nada é registrado | O formulário não pode revelar quem é associado nem deixar lançar doação no histórico de outra pessoa. |
+| Teste 4 **(decidido em 2026-10-06)** | — | Declaração de doação não se edita | O que foi conferido contra o extrato é prova da conferência; declaração errada é marcada como não localizada. |
+| Teste 8 **(decidido em 2026-10-06)** | — | Voluntário cadastrado no Painel coleta o termo de adesão inteiro; menor fica pendente até a autorização | A Lei 9.608/1998 vale para qualquer caminho de cadastro. |
+| Teste 11 **(decidido em 2026-10-05)** | — | Funcionário ativo não pode ser aprovado como voluntário | Funcionário e voluntário são papéis exclusivos (risco de vínculo trabalhista). |
+| Requisito "Preservação de registros" **(decidido em 2026-10-05)** | 6 meses só para não aprovados | 6 meses para tudo cuja finalidade acabou: também solicitação externa rejeitada/encerrada e currículo de quem foi aprovado. Doador associado não tem prazo automático | Mesmo critério da LGPD para todos os casos. |
+| Teste 25 **(decidido em 2026-10-05)** | Revogação só marcada | Efeito por papel: triagem encerrada a pedido do titular, voluntário inativado, conta de doador inativada; sem anonimizar | Revogar e anonimizar são pedidos diferentes. |
+| Teste 26 **(decidido em 2026-10-05)** | Reter doações com justificativa | Das doações confirmadas ficam só valor, data/hora, tipo e status, ligados a "doador anonimizado", sem justificativa | Quem pagou já consta do extrato bancário; o sistema não precisa reter dado pessoal. |
 
 Os problemas do protótipo apontados pelo grupo estão refletidos aqui quando mudam requisito; as
 correções de tela estão listadas como pendência no CLAUDE.md.
@@ -167,9 +177,11 @@ funcionário, voluntário e doador associado, com busca por nome, CPF ou e-mail.
 associado pode ser acumulado com qualquer um deles.
 
 **Preservação de registros** — Nenhum registro é excluído definitivamente: a remoção de acesso
-ocorre por inativação, que pode ser desfeita, preservando o histórico necessário à prestação de
-contas da instituição. Os dados pessoais de candidaturas e cadastros de voluntário não aprovados são
-anonimizados seis meses após a conclusão da triagem.
+ocorre por inativação, que pode ser desfeita, preservando o histórico da instituição. Os dados
+pessoais cuja finalidade se encerrou — candidaturas, cadastros de voluntário e solicitações externas
+não aprovados ou encerrados — são sinalizados para anonimização seis meses após a conclusão da
+triagem; o currículo de quem foi aprovado, seis meses após a efetivação. Dados de doador associado
+só são anonimizados a pedido do titular. O prazo é configuração editável pela equipe.
 
 **Doação financeira via Pix** — Geração, no portal público, de QR code e código "copia e cola" do Pix
 a partir da chave cadastrada pela administração e do valor escolhido pelo doador, permitindo que ele
@@ -178,18 +190,21 @@ botão "Já fiz o Pix". O doador associado se cadastra na primeira doação e, n
 área de autoatendimento sem informar seus dados de novo.
 
 **Conferência de doações** — Registro de toda declaração de doação com status pendente, valor e
-data/hora, sem emissão de recibo, e conferência posterior pela administração contra o extrato bancário da instituição — pelo
-valor e pela data/hora e, na doação associativa, também pelo nome do doador —, com confirmação ou
-marcação como não localizada, com motivo opcional.
+data/hora, sem emissão de recibo, e conferência posterior pela administração contra o extrato
+bancário da instituição — pelo valor e pela data/hora e, na doação associativa, também pelo nome do
+doador —, com confirmação ou marcação como não localizada, com motivo opcional. A declaração não pode
+ser editada depois de registrada.
 
 **Gestão de campanhas e eventos** — Cadastro, alteração e encerramento de eventos — com nome, data,
 descrição e recursos necessários — e de campanhas — com nome, período, descrição, recursos a
 arrecadar e, opcionalmente, meta em dinheiro com valor arrecadado informado pela equipe —, na mesma
-tela, com aviso de conflito de datas entre eventos e publicação automática no portal público.
+tela, com aviso de conflito de datas entre eventos, publicação automática no portal público e
+encerramento automático do que já passou da data ou do período.
 
-**Divulgação institucional** — Publicação, edição e despublicação de notícias, informações
-institucionais e necessidades da instituição no portal público, com uma imagem por notícia
-acompanhada de texto alternativo, ampliando a visibilidade da instituição perante a comunidade.
+**Divulgação institucional** — Publicação, edição e despublicação de notícias e de necessidades da
+instituição no portal público, com uma imagem por notícia acompanhada de texto alternativo, e edição
+pela equipe, no Painel, da página institucional (história, missão, equipe, acolhimento de residentes
+e bazar), ampliando a visibilidade da instituição perante a comunidade.
 
 **Cadastro de voluntários** — Cadastro de voluntários pelo portal público, com triagem pela
 administração, incluindo etapa de entrevista, antes da atuação junto aos residentes. Para candidatos
@@ -239,7 +254,8 @@ seus dados ou revogação do consentimento.
 
 **Anonimização de dados** — Atendimento, pela administração, de pedidos de anonimização, tornando
 ilegíveis os dados pessoais identificáveis do titular e preservando o registro, o histórico e a
-trilha de auditoria.
+trilha de auditoria. Das doações confirmadas de um doador anonimizado ficam apenas valor, data/hora,
+tipo e status.
 
 **Controle de acesso** — Restrição do acesso a dados pessoais de candidatos, voluntários e doadores
 exclusivamente a perfis autorizados, com negação e registro de toda tentativa de acesso a
@@ -264,12 +280,14 @@ orientações na própria tela nas operações menos autoexplicativas.
 4. Eu, como funcionário, gostaria de conferir as declarações de doação pendentes contra o extrato
    bancário da instituição, confirmando-as ou marcando-as como não localizadas, para manter o
    registro correto das doações que chegaram, já que o sistema não tem acesso à conta bancária.
-5. Eu, como funcionário, gostaria de cadastrar um novo evento ou campanha, informando data, descrição
-   e recursos necessários.
+5. Eu, como funcionário, gostaria de cadastrar um novo evento — informando data, descrição e
+   recursos necessários — ou uma nova campanha — informando período, descrição, recursos a arrecadar
+   e, se houver, meta em dinheiro.
 6. Eu, como funcionário, gostaria de encerrar uma campanha ou evento ativo, para que ele deixe de ser
    exibido no portal público, preservando seu histórico.
 7. Eu, como funcionário, gostaria de divulgar uma notícia ou necessidade institucional, publicando-a
-   no site com uma imagem, e de editá-la ou retirá-la do site quando necessário.
+   no site com uma imagem, e de editá-la ou retirá-la do site quando necessário, além de atualizar o
+   texto da página institucional sem depender de alteração no código.
 8. Eu, como funcionário administrativo, gostaria de registrar um funcionário ou voluntário no
    sistema.
 9. Eu, como funcionário, gostaria de inativar um usuário, removendo seu acesso sem apagar seus dados
@@ -352,6 +370,10 @@ orientações na própria tela nas operações menos autoexplicativas.
    sistema nega o acesso.
 4. O doador associado entra no autoatendimento, gera o QR code, paga e clica em "Já fiz o Pix", e o
    sistema registra a nova declaração vinculada ao seu cadastro sem pedir seus dados de novo.
+5. Sem entrar no autoatendimento, um visitante escolhe a doação associativa e informa um CPF ou
+   e-mail que já pertence a um doador associado; o sistema não gera o QR code nem registra nada e
+   exibe a mesma mensagem neutra que exibiria a qualquer visitante, orientando a entrar no
+   autoatendimento ou a fazer a doação espontânea.
 
 ### 3. Cadastro da chave Pix institucional
 
@@ -369,16 +391,18 @@ orientações na própria tela nas operações menos autoexplicativas.
 3. O funcionário não localiza a entrada no extrato e marca a declaração como não localizada,
    informando o motivo se quiser, e o sistema preserva integralmente o registro.
 4. O funcionário tenta confirmar uma doação já confirmada, e o sistema não altera o registro.
+5. O funcionário procura uma forma de editar o valor de uma declaração, e o sistema não oferece essa
+   opção; uma declaração errada é marcada como não localizada.
 
 ### 5. Cadastro de evento ou campanha
 
-1. O funcionário informa uma data disponível, descrição e recursos necessários, e o sistema grava o
-   evento e o publica automaticamente no portal público.
-2. O funcionário informa uma data em que já existe evento confirmado, e o sistema exibe um aviso de
-   conflito, permitindo que ele altere a data ou prossiga mesmo assim.
+1. O funcionário escolhe o tipo "evento", informa uma data disponível, descrição e recursos
+   necessários, e o sistema grava o evento e o publica automaticamente no portal público.
+2. O funcionário informa para um evento uma data em que já existe evento confirmado, e o sistema
+   exibe um aviso de conflito, permitindo que ele altere a data ou prossiga mesmo assim.
 3. O funcionário informa uma data que já passou, e o sistema pede a correção.
-4. O funcionário cadastra uma campanha sem meta em dinheiro, e o portal público a exibe sem barra de
-   arrecadação.
+4. O funcionário escolhe o tipo "campanha", informa o período, a descrição e ao menos um recurso a
+   arrecadar, sem meta em dinheiro, e o portal público a exibe sem barra de arrecadação.
 5. O funcionário atualiza o valor arrecadado de uma campanha com meta, e o portal público passa a
    exibir o novo progresso.
 
@@ -387,6 +411,8 @@ orientações na própria tela nas operações menos autoexplicativas.
 1. O funcionário encerra uma campanha ativa, e o sistema atualiza seu status para "encerrada",
    removendo-a da listagem pública e preservando seu histórico.
 2. O funcionário tenta encerrar uma campanha já encerrada, e o sistema não altera o registro.
+3. A data de um evento passa sem que ninguém o encerre, e o sistema o encerra automaticamente,
+   retirando-o do portal público e registrando na auditoria que o encerramento foi automático.
 
 ### 7. Divulgação de notícia institucional
 
@@ -396,6 +422,8 @@ orientações na própria tela nas operações menos autoexplicativas.
 3. O funcionário edita uma notícia publicada, e o portal público passa a exibir a versão editada.
 4. O funcionário despublica uma notícia, e o sistema a retira do portal público, mantendo-a no
    Painel para ser publicada de novo se necessário.
+5. O funcionário altera no Painel o texto da seção "Nosso bazar" da página institucional, e o portal
+   público passa a exibir o novo texto, com a versão anterior preservada no histórico.
 
 ### 8. Registro de funcionário ou voluntário
 
@@ -403,6 +431,9 @@ orientações na própria tela nas operações menos autoexplicativas.
    e o sistema grava o registro com sucesso.
 2. O funcionário tenta registrar um funcionário ou voluntário cujo CPF já existe, e o sistema exibe
    o registro existente em vez de criar um novo.
+3. O funcionário registra um voluntário diretamente no Painel, e o sistema exige os mesmos dados do
+   termo de adesão do formulário público; sendo maior de idade, o voluntário já fica ativo; sendo
+   menor, fica pendente até a autorização do responsável ser marcada como recebida.
 
 ### 9. Inativação de usuário
 
@@ -441,6 +472,8 @@ orientações na própria tela nas operações menos autoexplicativas.
 4. O funcionário rejeita um cadastro, informando o motivo se quiser, e o sistema atualiza o status
    para "rejeitado"; os dados são preservados por 6 meses a partir da rejeição e, depois disso,
    sinalizados para anonimização.
+5. O funcionário tenta aprovar como voluntário uma pessoa que é funcionária ativa, e o sistema
+   impede a aprovação, porque funcionário e voluntário são papéis exclusivos.
 
 ### 12. Candidatura a vaga
 
@@ -567,15 +600,21 @@ orientações na própria tela nas operações menos autoexplicativas.
    identidade e corrige o dado no Painel, e o sistema grava a correção preservando o histórico da
    alteração e registrando a ação na auditoria.
 2. O titular pede, pelo contato da instituição, a revogação do consentimento; o funcionário registra
-   a revogação no Painel, e o sistema marca o consentimento como revogado, com a data, e interrompe
-   o uso dos dados para as finalidades revogadas, sem excluir o registro.
+   a revogação no Painel, e o sistema marca o consentimento como revogado, com a data, e aplica o
+   efeito conforme o caso — submissão em triagem passa a "encerrada a pedido do titular", voluntário
+   ativo é inativado e doador associado tem a conta inativada —, sem excluir nem anonimizar o
+   registro.
 
 ### 26. Atendimento de anonimização
 
 1. O funcionário atende um pedido de anonimização, e o sistema torna ilegíveis os dados pessoais
    identificáveis do titular, preservando o registro, o histórico e a trilha de auditoria.
-2. O titular possui doações confirmadas sujeitas a retenção legal, e o sistema permite reter apenas
-   esses dados, anonimizar os demais e registrar a justificativa da retenção.
+2. O titular é doador associado com doações confirmadas, e o sistema mantém dessas doações apenas
+   valor, data/hora, tipo e status, ligadas a "doador anonimizado", sem reter nome, CPF ou outro
+   dado pessoal.
+3. Parte dos dados de outro tipo de cadastro é necessária ao cumprimento de obrigação legal, e o
+   sistema retém apenas esses dados, anonimiza os demais e exige o registro da justificativa da
+   retenção.
 
 ### 27. Área de ajuda do Painel
 

@@ -473,6 +473,14 @@ Passo a passo de comandos e validação em
      doador. O DER está versionado em `docs/der-conceitual-recanto.drawio`.
   Pendente no DER: explicar no texto que a Restrição 1 (todo mundo tem um
   papel) vale para a união das duas especializações parciais.
+  **Admissão continua (0,1) do lado de `Cand_Voluntario` (2026-10-06).**
+  No DER, `Cand_Voluntario` é só a submissão pública com triagem; o
+  voluntário cadastrado direto no Painel não passa por ela, como o
+  funcionário. O `cadastro_voluntario` de origem `painel` (FR-023) é
+  detalhe de implementação que guarda o termo de adesão, não candidatura.
+  Explicado na observação do DER e em `docs/tabelas-banco-de-dados.md`.
+  Descartado: tirar esse registro do spec e guardar o termo de adesão em
+  `pessoa`/`papel` (reabriria o FR-023 e o plano).
 - **Formulário de voluntário (decidido em 2026-10-06, fase 6).** Obrigatórios:
   identificação, endereço, contato e tipo de serviço; escolaridade, profissão,
   objetivos e dias/horários são opcionais (a equipe completa na entrevista).

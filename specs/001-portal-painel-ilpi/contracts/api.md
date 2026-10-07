@@ -187,8 +187,8 @@ Toda ação que muda estado grava em `registro_auditoria` com a conta e a data (
 | Método | Rota | Notas |
 |---|---|---|
 | `GET` | `/api/admin/dashboard` | contagens: itens de prioridade alta, itens sem atualização (FR-028), submissões pendentes nas três filas, doações pendentes, falhas de e-mail não tratadas, registros na fila de retenção (FR-036, SC-007) |
-| `GET` | `/api/admin/auditoria` | mais recentes primeiro, paginado (FR-035) |
-| `GET` | `/api/admin/falhas-email` · `POST …/:id/reenviar` · `POST …/:id/tratada` | FR-049a |
+| `GET` | `/api/admin/auditoria?pagina=&acao=` | mais recentes primeiro, 50 por página (FR-035); `acao` filtra pelo prefixo (ex.: `pessoa`) |
+| `GET` | `/api/admin/falhas-email?situacao=pendentes\|todas` · `POST …/:id/reenviar` · `POST …/:id/tratada` | FR-049a. O reenvio refaz o texto com os dados atuais da submissão e dá a falha original como tratada; link de senha não é reenviado (`422`, o doador usa "Esqueci minha senha") |
 | `GET`/`PUT` | `/api/admin/configuracao` | prazos e contato (D10) |
 | `GET`/`POST` | `/api/admin/aviso-privacidade` | `POST` publica **nova versão**; versões antigas não se editam |
 
@@ -254,12 +254,12 @@ Regras:
 
 | Método | Rota | Notas |
 |---|---|---|
-| `GET` | `/api/admin/pessoas?busca=&situacao=` | nome, CPF ou e-mail (FR-023); `situacao` = `todos` (padrão) \| `ativos` \| `inativos` — inativos sempre consultáveis (constituição, Princípio III); cada resultado traz `ativo` |
-| `GET` | `/api/admin/pessoas/:id` | todos os dados, papéis, submissões, consentimentos, histórico |
-| `POST` | `/api/admin/pessoas` | cadastro direto, sem triagem; CPF existente: `409 CPF_JA_CADASTRADO` com o id para abrir o registro (FR-023). **Funcionário**: nome, CPF, data de nascimento, e-mail, telefone. **Voluntário** (2026-10-06): os mesmos campos do FR-011; cria `cadastro_voluntario` com `origem = painel` — maior de idade já `aprovado`, com pessoa e papel; menor `pendente` com autorização pendente, aprovado por `POST /api/admin/voluntarios/:id/aprovar` depois de `autorizacao-recebida`, sem exigir entrevista |
-| `PUT` | `/api/admin/pessoas/:id` | correção, com histórico (FR-037) |
-| `POST` | `/api/admin/pessoas/:id/papeis` | adiciona papel; respeita exclusividade (FR-048) |
-| `POST` | `/api/admin/pessoas/:id/inativar` · `/reativar` | submissão em triagem: `409` + `confirmarAviso` (FR-023a) |
+| `GET` | `/api/admin/pessoas?busca=&situacao=&papel=` | nome, CPF ou e-mail (FR-023); `situacao` = `todos` (padrão) \| `ativos` \| `inativos` — inativos sempre consultáveis (constituição, Princípio III); `papel` filtra por tipo; cada resultado traz `ativo` (= algum papel ativo) e os papéis. Anonimizados não entram (são consultados em `/api/admin/lgpd/titulares`) |
+| `GET` | `/api/admin/pessoas/:id` | todos os dados, papéis, submissões (pelo vínculo ou pelo mesmo CPF), consentimentos, contagem de doações associativas, histórico de correções |
+| `POST` | `/api/admin/pessoas` | cadastro direto, sem triagem; CPF existente: `409 CPF_JA_CADASTRADO` com o `id` dentro de `erro`, para abrir o registro (FR-023). Voluntário com cadastro em triagem pelo mesmo CPF: `409 VOLUNTARIO_EM_TRIAGEM`. Sem consentimento e sem e-mail (2026-10-07). **Funcionário**: nome, CPF, data de nascimento, e-mail, telefone. **Voluntário** (2026-10-06): os mesmos campos do FR-011; cria `cadastro_voluntario` com `origem = painel` — maior de idade já `aprovado`, com pessoa e papel; menor `pendente` com autorização pendente, aprovado por `POST /api/admin/voluntarios/:id/aprovar` depois de `autorizacao-recebida`, sem exigir entrevista |
+| `PUT` | `/api/admin/pessoas/:id` | correção de nome, data de nascimento, e-mail e telefone, com histórico (FR-037); o CPF não muda; anonimizado → `409` |
+| `POST` | `/api/admin/pessoas/:id/papeis` | `{ tipo }` — `funcionario` (voluntário ativo → `409` + `confirmarAviso`; com `confirmar: true` o papel de voluntário é encerrado, FR-048) ou `voluntario` com os campos do FR-011 (cadastro `origem = painel`; funcionário ativo → `422`). `doador_associado` → `422 PAPEL_NAO_PERMITIDO` (2026-10-07) |
+| `POST` | `/api/admin/pessoas/:id/inativar` · `/reativar` | `{ papel }` — um papel por vez (2026-10-07). Inativar com submissão em triagem: `409` + `confirmarAviso` (FR-023a), segue com `confirmar: true`. Reativar: só papel `inativo`; voluntário com consentimento revogado → `409 CONSENTIMENTO_REVOGADO` |
 
 Não existe rota de exclusão (FR-024).
 

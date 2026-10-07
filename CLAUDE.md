@@ -1,6 +1,6 @@
 # SAGE — Memória do Projeto
 
-> Última atualização: 2026-10-06
+> Última atualização: 2026-10-07
 > TCC do IFRJ Campus Pinheiral — sistema web para a ILPI "Recanto dos Velhinhos
 > Francisco Gonçalves Barbosa". Repositório: `TCC-Recanto-dos-Velhinhos`
 > (GitHub, usuário juAfonso).
@@ -323,8 +323,8 @@ Passo a passo de comandos e validação em
   site**. O cadastro feito direto por um funcionário no Painel (FR-023) não
   passa por triagem, porque já é ação explícita da equipe; o voluntário
   cadastrado assim preenche o termo de adesão inteiro, e o menor fica
-  pendente até a autorização do responsável ser recebida. Essa tela entra na
-  **fase 10** (US7); até lá, quem a equipe quiser incluir passa pelo site.
+  pendente até a autorização do responsável ser recebida. Essa tela foi
+  feita na **fase 10** (US7), em `admin/usuarios.html`.
   ~~Rejeição exige motivo registrado nas três triagens.~~ **Revertido em
   2026-10-03: o motivo da rejeição é opcional nas três triagens** (ver
   "Alinhamento com o texto do TCC").
@@ -493,6 +493,16 @@ Passo a passo de comandos e validação em
   Session 2026-10-07 do spec.md. **O texto do aviso de privacidade é do
   grupo**; a equipe o publica pela tela "Privacidade (LGPD)" do Painel, que
   cria versão nova sem editar a antiga.
+- **Gestão de usuários no Painel (decidido em 2026-10-07, fase 10).**
+  (1) **O Painel não cria doador associado**: ele só nasce com a primeira
+  doação associativa (decisão de 04/10); o FR-023 foi ajustado. (2)
+  **Inativar é papel por papel**: a pessoa pode deixar de ser voluntária e
+  continuar doadora; ela aparece inativa quando nenhum papel está ativo.
+  Papel encerrado não volta, e voluntário com consentimento revogado não é
+  reativado (faz novo cadastro). (3) **Funcionário cadastrado no Painel não
+  registra consentimento** nem recebe e-mail: a base é o vínculo de
+  trabalho. Tornar funcionário quem é voluntário ativo encerra o papel de
+  voluntário, depois de confirmação. Session 2026-10-07 (2) do spec.md.
 - **Termo de adesão para imprimir (decidido em 2026-10-06, FR-012a).** Todo
   voluntário imprime o termo da Lei 9.608 já preenchido logo após o envio;
   o menor também a autorização do responsável. A equipe imprime o termo de

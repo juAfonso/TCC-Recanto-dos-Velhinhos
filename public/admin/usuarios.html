@@ -54,6 +54,9 @@
 </svg> Notícias</a>
             <div class="nav-section-label">Proteção de dados</div>
             <a href="lgpd.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shield-lock-fill" viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.8 11.8 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7 7 0 0 0 1.048-.625 11.8 11.8 0 0 0 2.517-2.453c1.678-2.195 3.061-5.513 2.465-9.99a1.54 1.54 0 0 0-1.044-1.263 63 63 0 0 0-2.887-.87C9.843.266 8.69 0 8 0m0 5a1.5 1.5 0 0 1 .5 2.915l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99A1.5 1.5 0 0 1 8 5"/></svg> Privacidade (LGPD)</a>
+            <div class="nav-section-label">Sistema</div>
+            <a href="auditoria.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-journal-text" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/><path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/><path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z"/></svg> Registros e e-mails</a>
+            <a href="configuracoes.html"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/></svg> Configurações</a>
         </nav>
         <div class="side-foot">
             <strong id="admin-session-name">Conta Administrativa</strong>
@@ -72,84 +75,185 @@
         </div>
 
         <div class="admin-content">
+            <!-- Ajuda contextual (FR-061) -->
+            <details class="panel" style="margin-bottom:18px;">
+                <summary style="cursor:pointer;font-weight:700;">Como funciona esta tela</summary>
+                <ul style="margin:12px 0 0 20px;line-height:1.7;">
+                    <li>Cada pessoa aparece <b>uma vez só</b>, pelo CPF, com os papéis que tem: funcionário, voluntário e doador associado. <b>Funcionário e voluntário não podem ser a mesma pessoa ao mesmo tempo.</b></li>
+                    <li><b>Cadastrar aqui não passa por triagem</b>: é você quem está registrando. Voluntário cadastrado aqui preenche o termo de adesão; o <b>menor de idade</b> fica pendente até a autorização do responsável chegar na sede.</li>
+                    <li><b>Doador associado não é cadastrado aqui</b>: a conta nasce com a primeira doação associativa feita no site.</li>
+                    <li><b>Não existe excluir.</b> Para tirar alguém, <b>inative o papel</b> — os dados ficam guardados e dá para reativar. Apagar dados pessoais só por pedido do titular, na tela <a href="lgpd.html">Privacidade (LGPD)</a>.</li>
+                </ul>
+            </details>
+
             <div class="panel">
-                <div class="table-toolbar">
+                <form class="table-toolbar" id="form-busca" role="search" style="flex-wrap:wrap;gap:10px;">
                     <div class="search-box">
-                        <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-</svg></span>
-                        <input type="text" id="busca-usuario" placeholder="Buscar por nome, CPF ou e-mail...">
+                        <span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/></svg></span>
+                        <label for="busca-usuario" class="sr-only">Buscar por nome, CPF ou e-mail</label>
+                        <input type="search" id="busca-usuario" placeholder="Buscar por nome, CPF ou e-mail...">
                     </div>
-                    <div class="tabs-nav" style="border-bottom:none;margin-bottom:0;">
-                        <button class="tab-btn active" data-perfil="todos">Todos</button>
-                        <button class="tab-btn" data-perfil="funcionario">Funcionários</button>
-                        <button class="tab-btn" data-perfil="voluntario">Voluntários</button>
-                        <button class="tab-btn" data-perfil="doador">Doadores</button>
-                    </div>
-                </div>
+                    <label class="sr-only" for="filtro-situacao">Situação</label>
+                    <select id="filtro-situacao" style="width:auto;">
+                        <option value="todos">Ativos e inativos</option>
+                        <option value="ativos">Só ativos</option>
+                        <option value="inativos">Só inativos</option>
+                    </select>
+                    <label class="sr-only" for="filtro-papel">Papel</label>
+                    <select id="filtro-papel" style="width:auto;">
+                        <option value="">Todos os papéis</option>
+                        <option value="funcionario">Funcionários</option>
+                        <option value="voluntario">Voluntários</option>
+                        <option value="doador_associado">Doadores associados</option>
+                    </select>
+                    <button type="button" class="btn btn-viridian btn-sm" id="btn-cadastrar">+ Cadastrar pessoa</button>
+                </form>
                 <div class="table-wrap">
                     <table>
+                        <caption class="sr-only">Pessoas cadastradas</caption>
                         <thead>
-                            <tr><th>Nome</th><th>CPF</th><th>E-mail</th><th>Perfil</th><th>Status</th><th></th></tr>
+                            <tr><th scope="col">Nome</th><th scope="col">CPF</th><th scope="col">E-mail</th><th scope="col">Telefone</th><th scope="col">Papéis</th><th scope="col">Ações</th></tr>
                         </thead>
                         <tbody id="usuarios-tbody"></tbody>
                     </table>
                 </div>
+                <p class="form-hint" id="mais-resultados" hidden>Mostrando os 200 primeiros. Refine a busca para encontrar quem falta.</p>
             </div>
         </div>
     </main>
 </div>
 
-<!-- MODAL: editar usuário -->
-<div class="modal-overlay" id="modal-usuario">
-    <div class="modal">
+<!-- MODAL: detalhe da pessoa (FR-037a) e correção (FR-037) -->
+<div class="modal-overlay" id="modal-pessoa" role="dialog" aria-modal="true" aria-labelledby="modal-pessoa-titulo">
+    <div class="modal" style="max-width:780px;">
         <div class="modal-head">
-            <h3>Editar usuário</h3>
-            <button class="modal-close" data-close-modal="modal-usuario">✕</button>
+            <h3 id="modal-pessoa-titulo">Pessoa</h3>
+            <button class="modal-close" data-close-modal="modal-pessoa" aria-label="Fechar">✕</button>
         </div>
-        <form id="form-usuario" novalidate>
-            <input type="hidden" id="us-id">
-            <div class="form-group">
-                <label for="us-nome">Nome completo <span class="req">*</span></label>
-                <input type="text" id="us-nome">
-                <div class="form-error"></div>
+
+        <div id="pessoa-detalhe">
+            <div id="pessoa-situacao" style="margin-bottom:14px;"></div>
+            <dl id="pessoa-dados" style="display:grid;grid-template-columns:minmax(140px,200px) 1fr;gap:6px 14px;font-size:.92rem;"></dl>
+
+            <h4 style="margin:20px 0 8px;">Papéis</h4>
+            <div class="table-wrap">
+                <table>
+                    <caption class="sr-only">Papéis da pessoa</caption>
+                    <thead><tr><th scope="col">Papel</th><th scope="col">Situação</th><th scope="col">Desde</th><th scope="col">Ações</th></tr></thead>
+                    <tbody id="pessoa-papeis"></tbody>
+                </table>
             </div>
+
+            <div id="pessoa-extras"></div>
+
+            <div class="form-actions" id="pessoa-acoes" style="flex-wrap:wrap;margin-top:20px;"></div>
+            <p class="form-hint" style="margin-top:8px;">Não há como excluir uma pessoa: inative o papel. Para apagar dados pessoais a pedido do titular, use <a href="lgpd.html">Privacidade (LGPD)</a>.</p>
+        </div>
+
+        <form id="form-corrigir" novalidate hidden>
+            <p class="form-hint" style="margin-bottom:12px;">O CPF não muda: ele identifica a pessoa. A versão anterior fica guardada no histórico.</p>
+            <div class="form-group"><label for="c-nome">Nome completo <span class="req">*</span></label><input type="text" id="c-nome" data-campo="nome" maxlength="150"><div class="form-error"></div></div>
             <div class="form-row">
-                <div class="form-group">
-                    <label for="us-cpf">CPF</label>
-                    <input type="text" id="us-cpf" disabled>
-                </div>
-                <div class="form-group">
-                    <label for="us-perfil">Perfil</label>
-                    <input type="text" id="us-perfil" disabled>
-                </div>
+                <div class="form-group"><label for="c-nascimento">Data de nascimento</label><input type="date" id="c-nascimento" data-campo="dataNascimento"><div class="form-error"></div></div>
+                <div class="form-group"><label for="c-telefone">Telefone <span class="req">*</span></label><input type="text" id="c-telefone" data-campo="telefone" data-mascara="telefone"><div class="form-error"></div></div>
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="us-email">E-mail <span class="req">*</span></label>
-                    <input type="email" id="us-email">
-                    <div class="form-error"></div>
-                </div>
-                <div class="form-group">
-                    <label for="us-telefone">Telefone <span class="req">*</span></label>
-                    <input type="tel" id="us-telefone">
-                    <div class="form-error"></div>
-                </div>
-            </div>
+            <div class="form-group"><label for="c-email">E-mail <span class="req">*</span></label><input type="email" id="c-email" data-campo="email" maxlength="254"><div class="form-error"></div></div>
             <div class="form-actions">
-                <button type="button" class="btn btn-outline" data-close-modal="modal-usuario">Cancelar</button>
-                <button type="submit" class="btn btn-viridian">Salvar alterações</button>
+                <button type="button" class="btn btn-outline" id="btn-cancelar-correcao">Cancelar</button>
+                <button type="submit" class="btn btn-viridian">Salvar correção</button>
             </div>
         </form>
     </div>
 </div>
 
+<!-- MODAL: cadastrar funcionário ou voluntário (FR-023), também usado para adicionar papel -->
+<div class="modal-overlay" id="modal-cadastro" role="dialog" aria-modal="true" aria-labelledby="modal-cadastro-titulo">
+    <div class="modal" style="max-width:780px;">
+        <div class="modal-head">
+            <h3 id="modal-cadastro-titulo">Cadastrar pessoa</h3>
+            <button class="modal-close" data-close-modal="modal-cadastro" aria-label="Fechar">✕</button>
+        </div>
+        <form id="form-cadastro" novalidate>
+            <fieldset class="form-group" id="grupo-perfil" data-campo="perfil" style="border:0;padding:0;">
+                <legend style="font-weight:700;margin-bottom:6px;">Papel <span class="req">*</span></legend>
+                <label style="margin-right:18px;"><input type="radio" name="perfil" value="funcionario" checked> Funcionário</label>
+                <label><input type="radio" name="perfil" value="voluntario"> Voluntário</label>
+                <div class="form-error"></div>
+            </fieldset>
+            <p class="form-hint" id="dica-perfil" style="margin-bottom:12px;"></p>
+
+            <div class="form-group"><label for="n-nome">Nome completo <span class="req">*</span></label><input type="text" id="n-nome" data-campo="nome" maxlength="150"><div class="form-error"></div></div>
+            <div class="form-row">
+                <div class="form-group"><label for="n-cpf">CPF <span class="req">*</span></label><input type="text" id="n-cpf" data-campo="cpf" data-mascara="cpf"><div class="form-error"></div></div>
+                <div class="form-group"><label for="n-nascimento">Data de nascimento <span class="req">*</span></label><input type="date" id="n-nascimento" data-campo="dataNascimento"><div class="form-error"></div></div>
+            </div>
+            <div class="alert alert-warning" id="aviso-menor" hidden style="margin-bottom:12px;"><span aria-hidden="true">⚠️</span><div>Menor de idade: o cadastro fica <b>pendente</b> até a autorização assinada pelo responsável ser entregue na sede. Depois de salvar, imprima a autorização para o responsável assinar.</div></div>
+            <div class="form-row">
+                <div class="form-group"><label for="n-telefone">Telefone <span class="req">*</span></label><input type="text" id="n-telefone" data-campo="telefone" data-mascara="telefone"><div class="form-error"></div></div>
+                <div class="form-group"><label for="n-email">E-mail <span class="req">*</span></label><input type="email" id="n-email" data-campo="email" maxlength="254"><div class="form-error"></div></div>
+            </div>
+
+            <!-- Campos do termo de adesão (FR-011), só para voluntário -->
+            <div id="campos-voluntario" hidden>
+                <div class="form-row">
+                    <div class="form-group"><label for="n-rg">RG <span class="req">*</span></label><input type="text" id="n-rg" data-campo="rg" maxlength="30"><div class="form-error"></div></div>
+                    <div class="form-group"><label for="n-escolaridade">Escolaridade</label><input type="text" id="n-escolaridade" data-campo="escolaridade" maxlength="80"><div class="form-error"></div></div>
+                </div>
+                <div class="form-group"><label for="n-profissao">Profissão</label><input type="text" id="n-profissao" data-campo="profissao" maxlength="80"><div class="form-error"></div></div>
+                <div class="form-group"><label for="n-endereco">Endereço <span class="req">*</span></label><input type="text" id="n-endereco" data-campo="endereco" maxlength="200"><div class="form-error"></div></div>
+                <div class="form-row">
+                    <div class="form-group"><label for="n-bairro">Bairro <span class="req">*</span></label><input type="text" id="n-bairro" data-campo="bairro" maxlength="80"><div class="form-error"></div></div>
+                    <div class="form-group"><label for="n-cep">CEP <span class="req">*</span></label><input type="text" id="n-cep" data-campo="cep" data-mascara="cep"><div class="form-error"></div></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label for="n-cidade">Cidade <span class="req">*</span></label><input type="text" id="n-cidade" data-campo="cidade" maxlength="80" value="Pinheiral"><div class="form-error"></div></div>
+                    <div class="form-group"><label for="n-uf">UF <span class="req">*</span></label><select id="n-uf" data-campo="uf"><option>AC</option><option>AL</option><option>AP</option><option>AM</option><option>BA</option><option>CE</option><option>DF</option><option>ES</option><option>GO</option><option>MA</option><option>MT</option><option>MS</option><option>MG</option><option>PA</option><option>PB</option><option>PR</option><option>PE</option><option>PI</option><option selected>RJ</option><option>RN</option><option>RS</option><option>RO</option><option>RR</option><option>SC</option><option>SP</option><option>SE</option><option>TO</option></select><div class="form-error"></div></div>
+                </div>
+                <div class="form-group">
+                    <label for="n-servico">Tipo de serviço <span class="req">*</span></label>
+                    <select id="n-servico" data-campo="tipoServico">
+                        <option value="">Escolha…</option>
+                        <option>Atividades recreativas</option>
+                        <option>Oficinas de artesanato</option>
+                        <option>Leitura e contação de histórias</option>
+                        <option>Acompanhamento aos idosos</option>
+                        <option>Apoio em eventos e campanhas</option>
+                        <option>Manutenção predial</option>
+                        <option>Apoio administrativo</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                    <div class="form-error"></div>
+                </div>
+                <div class="form-group" id="grupo-servico-outro" hidden><label for="n-servico-outro">Descreva o serviço <span class="req">*</span></label><input type="text" id="n-servico-outro" data-campo="tipoServicoOutro" maxlength="200"><div class="form-error"></div></div>
+                <div class="form-group"><label for="n-objetivos">Objetivos</label><textarea id="n-objetivos" data-campo="objetivos" rows="2" maxlength="2000"></textarea><div class="form-error"></div></div>
+                <div class="form-group"><label for="n-condicoes">Dias e horários</label><textarea id="n-condicoes" data-campo="condicoes" rows="2" maxlength="2000"></textarea><div class="form-error"></div></div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" data-close-modal="modal-cadastro">Cancelar</button>
+                <button type="submit" class="btn btn-viridian">Salvar cadastro</button>
+            </div>
+        </form>
+
+        <!-- Depois de cadastrar voluntário: imprimir os documentos (FR-012a) -->
+        <div id="cadastro-feito" hidden>
+            <div class="alert alert-success" id="cadastro-feito-texto"></div>
+            <div class="form-actions" style="flex-wrap:wrap;">
+                <button type="button" class="btn btn-outline" id="btn-imprimir-termo">Imprimir termo de adesão</button>
+                <button type="button" class="btn btn-outline" id="btn-imprimir-autorizacao" hidden>Imprimir autorização do responsável</button>
+                <button type="button" class="btn btn-viridian" data-close-modal="modal-cadastro">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="../assets/js/utils.js"></script>
-<script src="../assets/js/data.js"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/auth.js"></script>
 <script src="../assets/js/admin-guard.js"></script>
 <script src="../assets/js/admin-modal.js"></script>
+<script src="../assets/js/mascaras.js"></script>
+<script src="../assets/js/impressao-voluntario.js"></script>
 <script src="../assets/js/admin-usuarios.js"></script>
 </body>
 </html>

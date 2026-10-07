@@ -491,8 +491,11 @@ Passo a passo de comandos e validação em
   migração 007). (2) Anonimizar a **pessoa** alcança, na mesma operação, os
   cadastros de voluntário e as candidaturas dela (vínculo ou mesmo CPF).
   Session 2026-10-07 do spec.md. **O texto do aviso de privacidade é do
-  grupo**; a equipe o publica pela tela "Privacidade (LGPD)" do Painel, que
-  cria versão nova sem editar a antiga.
+  grupo**, ajustado ao sistema em `docs/aviso-privacidade.md` (2026-10-07),
+  com o prazo de resposta ao titular de **15 dias** (LGPD art. 19, II — o
+  rascunho dizia 60). Falta a aprovação da instituição; depois, a equipe o
+  publica pela tela "Privacidade (LGPD)" do Painel, que cria versão nova sem
+  editar a antiga. Mudou dado coletado ou prazo no sistema → muda o aviso.
 - **Termo de adesão para imprimir (decidido em 2026-10-06, FR-012a).** Todo
   voluntário imprime o termo da Lei 9.608 já preenchido logo após o envio;
   o menor também a autorização do responsável. A equipe imprime o termo de
@@ -595,6 +598,10 @@ Passo a passo de comandos e validação em
   **A chave não fica no repositório.** É cadastrada pela equipe no Painel
   (`admin/pix.html`, FR-007) e vive na tabela `chave_pix_institucional`.
   Nunca escrever a chave no código nem em arquivo versionado.
+  **Exceção decidida em 2026-10-07:** o CNPJ pode aparecer em
+  `docs/aviso-privacidade.md`, porque o aviso precisa identificar o
+  responsável pelos dados e o CNPJ é público. A regra continua valendo para
+  código, seed e configuração: a chave Pix vem sempre da tabela.
 - **Três decisões de equipe fechadas em 2026-09-23** (não dependiam da
   instituição, estavam só esperando o grupo decidir):
   1. **FR-014 — a equipe de triagem não recebe e-mail.** Nova submissão de

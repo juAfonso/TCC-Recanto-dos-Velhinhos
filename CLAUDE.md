@@ -319,6 +319,12 @@ Passo a passo de comandos e validação em
   existindo para voluntariado, candidatura e solicitação externa.
 - **Voluntários e candidatos a vaga passam por triagem/aprovação obrigatória**
   da administração antes de ficarem ativos. Não há autoaprovação.
+  **Esclarecido em 2026-10-06:** a triagem vale para quem se inscreve **pelo
+  site**. O cadastro feito direto por um funcionário no Painel (FR-023) não
+  passa por triagem, porque já é ação explícita da equipe; o voluntário
+  cadastrado assim preenche o termo de adesão inteiro, e o menor fica
+  pendente até a autorização do responsável ser recebida. Essa tela entra na
+  **fase 10** (US7); até lá, quem a equipe quiser incluir passa pelo site.
   ~~Rejeição exige motivo registrado nas três triagens.~~ **Revertido em
   2026-10-03: o motivo da rejeição é opcional nas três triagens** (ver
   "Alinhamento com o texto do TCC").
@@ -472,6 +478,12 @@ Passo a passo de comandos e validação em
   Tipo de serviço por lista + "Outro". **Sem idade mínima**: todo menor entra
   com autorização do responsável pendente, entregue em papel na sede.
   Session 2026-10-06 (3) do spec.md.
+- **Formulário de solicitação externa (decidido em 2026-10-06, fase 8).**
+  E-mail **e** telefone obrigatórios; data do evento (ou início da campanha)
+  **a partir de amanhã**, sem antecedência mínima; "o que pede ao Recanto"
+  (recursos esperados) **opcional**. Aprovar não publica; a confirmação, com
+  os dados combinados, cria e publica o evento ou a campanha.
+  Session 2026-10-06 (5) do spec.md.
 - **Termo de adesão para imprimir (decidido em 2026-10-06, FR-012a).** Todo
   voluntário imprime o termo da Lei 9.608 já preenchido logo após o envio;
   o menor também a autorização do responsável. A equipe imprime o termo de
@@ -684,10 +696,10 @@ recente do spec.md, não esta lista resumida.
    já refletidas no spec e ainda não feitas no front: ~~doação sem
    protocolo e sem anexo, sem o botão que simula a confirmação~~ (**feito
    em 2026-10-06**, fase 4); meta opcional e valor arrecadado manual nas
-   campanhas (Portal desde a fase 3; tela do Painel **feita na fase 5**); nome do evento na solicitação externa; máscara de telefone em
+   campanhas (Portal desde a fase 3; tela do Painel **feita na fase 5**); ~~nome do evento na solicitação externa~~ (**feito na fase 8**); máscara de telefone em
    todos os formulários e telefone visível ao admin fora da edição; editar,
-   despublicar e imagem em notícias; CPF e data de nascimento na
-   candidatura. Depende do back: abrir anexos e ler a descrição inteira no
+   despublicar e imagem em notícias; ~~CPF e data de nascimento na
+   candidatura~~ (**feito na fase 7**). Depende do back: abrir anexos e ler a descrição inteira no
    Painel. **(2026-10-05)** Trocar a caixa "urgente" de `admin/itens.html`
    pela escolha de prioridade alta/média/baixa, e ordenar por ela no Painel,
    na home e em `doacoes.html` (home e `doacoes.html` feitas na fase 3;

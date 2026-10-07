@@ -70,16 +70,31 @@
         </div>
 
         <div class="admin-content">
+            <!-- Ajuda contextual (FR-061) -->
+            <details class="panel" style="margin-bottom:18px;">
+                <summary style="cursor:pointer;font-weight:700;">Como funciona a triagem de propostas externas</summary>
+                <ol style="margin:12px 0 0 20px;line-height:1.7;">
+                    <li><b>Em análise:</b> leia a proposta. <b>Aprovar não publica nada</b> — só avisa a pessoa, por e-mail, que a equipe vai entrar em contato.</li>
+                    <li><b>Aguardando contato:</b> ligue ou escreva para combinar data, horário e o que for preciso. Depois clique em <b>Confirmar e publicar</b> e preencha os dados <b>combinados</b> (podem ser diferentes do pedido). Só aí o evento ou a campanha aparece no site.</li>
+                    <li><b>Data ocupada:</b> se já houver evento no mesmo dia, o sistema avisa. É só um aviso: a equipe decide se dá para fazer os dois.</li>
+                    <li><b>Rejeitar:</b> pode ser em análise ou depois do contato. O motivo é opcional; se escrever, ele vai no e-mail para a pessoa.</li>
+                </ol>
+                <p class="form-hint" style="margin-top:8px;">Nenhuma proposta é aprovada ou publicada sozinha, e nenhuma é apagada.</p>
+            </details>
+
             <div class="panel">
-                <div class="tabs-nav">
-                    <button class="tab-btn active" data-filtro="em_analise">Em análise</button>
-                    <button class="tab-btn" data-filtro="aprovada">Aprovadas</button>
+                <div class="tabs-nav" role="tablist">
+                    <button class="tab-btn active" data-filtro="em_analise">Em análise <span id="cont-em_analise"></span></button>
+                    <button class="tab-btn" data-filtro="aguardando_contato">Aguardando contato <span id="cont-aguardando_contato"></span></button>
+                    <button class="tab-btn" data-filtro="confirmada">Confirmadas</button>
                     <button class="tab-btn" data-filtro="rejeitada">Rejeitadas</button>
+                    <button class="tab-btn" data-filtro="todas">Todas</button>
                 </div>
                 <div class="table-wrap">
                     <table>
+                        <caption class="sr-only">Propostas externas de evento ou campanha</caption>
                         <thead>
-                            <tr><th>Protocolo</th><th>Contato</th><th>Tipo</th><th>Objetivo</th><th>Data pretendida</th><th>Status</th><th></th></tr>
+                            <tr><th scope="col">Protocolo</th><th scope="col">Proposta</th><th scope="col">Tipo</th><th scope="col">Quem propõe</th><th scope="col">Data pedida</th><th scope="col">Recebida em</th><th scope="col">Situação</th><th scope="col">Ações</th></tr>
                         </thead>
                         <tbody id="solicitacoes-tbody"></tbody>
                     </table>
@@ -89,20 +104,84 @@
     </main>
 </div>
 
-<!-- MODAL: rejeitar (motivo obrigatório — FR-022) -->
-<div class="modal-overlay" id="modal-rejeitar">
+<div class="modal-overlay" id="modal-solicitacao" role="dialog" aria-modal="true" aria-labelledby="modal-sol-titulo">
+    <div class="modal" style="max-width:760px;">
+        <div class="modal-head">
+            <h3 id="modal-sol-titulo">Proposta</h3>
+            <button class="modal-close" data-close-modal="modal-solicitacao" aria-label="Fechar">✕</button>
+        </div>
+        <div id="sol-detalhe">
+            <div id="sol-situacao" style="margin-bottom:14px;"></div>
+            <div class="alert alert-warning" id="sol-aviso-conflito" hidden><span aria-hidden="true">⚠️</span><div id="sol-aviso-conflito-texto"></div></div>
+            <dl id="sol-dados" style="display:grid;grid-template-columns:minmax(140px,200px) 1fr;gap:6px 14px;font-size:.92rem;"></dl>
+            <div class="form-actions" id="sol-acoes" style="flex-wrap:wrap;margin-top:20px;"></div>
+        </div>
+
+        <!-- Confirmar: dados COMBINADOS com o solicitante (FR-022) -->
+        <form id="form-confirmar" novalidate hidden>
+            <p class="form-hint" style="margin-bottom:12px;">Preencha com o que foi <b>combinado</b> com a pessoa. Ao salvar, <b id="conf-tipo-texto">o evento</b> é publicado no site.</p>
+            <div class="form-group"><label for="conf-nome">Nome <span class="req">*</span></label><input type="text" id="conf-nome" data-campo="nome" maxlength="150"><div class="form-error"></div></div>
+            <div class="form-group"><label for="conf-descricao">Descrição para o site <span class="req">*</span></label><textarea id="conf-descricao" data-campo="descricao" rows="3" maxlength="4000"></textarea><div class="form-error"></div></div>
+            <div id="conf-evento">
+                <div class="form-group"><label for="conf-data">Data do evento <span class="req">*</span></label><input type="date" id="conf-data" data-campo="data"><div class="form-error"></div></div>
+                <div class="form-group"><label for="conf-recursos-texto">Do que o evento precisa (opcional)</label><textarea id="conf-recursos-texto" rows="2" maxlength="2000" placeholder="ex.: cadeiras extras, lanche, caixa de som"></textarea><div class="form-error"></div></div>
+            </div>
+            <div id="conf-campanha" hidden>
+                <div class="form-row"><div class="form-group"><label for="conf-inicio">Início <span class="req">*</span></label><input type="date" id="conf-inicio" data-campo="periodoInicio"><div class="form-error"></div></div><div class="form-group"><label for="conf-fim">Fim <span class="req">*</span></label><input type="date" id="conf-fim" data-campo="periodoFim"><div class="form-error"></div></div></div>
+                <fieldset class="form-group" style="border:0;padding:0;">
+                    <legend style="font-weight:700;margin-bottom:8px;">O que a campanha arrecada <span class="req">*</span></legend>
+                    <div id="lista-recursos"></div>
+                    <button type="button" class="btn btn-outline btn-sm" id="btn-add-recurso">+ Adicionar recurso</button>
+                    <div class="form-error" data-campo="recursos"></div>
+                </fieldset>
+                <div class="form-group">
+                    <label for="conf-meta">Meta em dinheiro (R$) — opcional</label>
+                    <input type="text" id="conf-meta" data-campo="meta" inputmode="decimal" placeholder="Deixe em branco se não houver meta">
+                    <div class="form-error"></div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" data-voltar>Voltar</button>
+                <button type="submit" class="btn btn-viridian">Confirmar e publicar</button>
+            </div>
+        </form>
+
+        <!-- Corrigir os dados da proposta (FR-037) -->
+        <form id="form-corrigir" novalidate hidden>
+            <p class="form-hint" style="margin-bottom:12px;">Corrigir não muda a etapa nem o que já foi publicado. A versão anterior fica no histórico.</p>
+            <fieldset class="form-group" style="border:0;padding:0;">
+                <legend style="font-weight:700;margin-bottom:6px;">Tipo <span class="req">*</span></legend>
+                <div data-campo="tipo" style="display:flex;gap:18px;flex-wrap:wrap;">
+                    <label class="checkbox-line"><input type="radio" name="c-tipo" value="evento"> <span>Evento</span></label>
+                    <label class="checkbox-line"><input type="radio" name="c-tipo" value="campanha"> <span>Campanha</span></label>
+                </div>
+                <div class="form-error"></div>
+            </fieldset>
+            <div class="form-group"><label for="c-iniciativa">Nome do evento ou da campanha <span class="req">*</span></label><input type="text" id="c-iniciativa" data-campo="nomeIniciativa" maxlength="150"><div class="form-error"></div></div>
+            <div id="c-grupo-data"><div class="form-group"><label for="c-data">Data pretendida <span class="req">*</span></label><input type="date" id="c-data" data-campo="dataPretendida"><div class="form-error"></div></div></div>
+            <div class="form-row" id="c-grupo-periodo"><div class="form-group"><label for="c-inicio">Início <span class="req">*</span></label><input type="date" id="c-inicio" data-campo="periodoInicio"><div class="form-error"></div></div><div class="form-group"><label for="c-fim">Fim <span class="req">*</span></label><input type="date" id="c-fim" data-campo="periodoFim"><div class="form-error"></div></div></div>
+            <div class="form-group"><label for="c-objetivo">Objetivo <span class="req">*</span></label><textarea id="c-objetivo" data-campo="objetivo" rows="3" maxlength="4000"></textarea><div class="form-error"></div></div>
+            <div class="form-group"><label for="c-recursos">O que pede ao Recanto (opcional)</label><textarea id="c-recursos" data-campo="recursosEsperados" rows="2" maxlength="2000"></textarea><div class="form-error"></div></div>
+            <div class="form-group"><label for="c-nome">Nome da pessoa ou organização <span class="req">*</span></label><input type="text" id="c-nome" data-campo="nomeContato" maxlength="150"><div class="form-error"></div></div>
+            <div class="form-row"><div class="form-group"><label for="c-email">E-mail <span class="req">*</span></label><input type="text" id="c-email" data-campo="email"><div class="form-error"></div></div><div class="form-group"><label for="c-telefone">Telefone <span class="req">*</span></label><input type="text" id="c-telefone" data-campo="telefone" data-mascara="telefone"><div class="form-error"></div></div></div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-outline" data-voltar>Cancelar</button>
+                <button type="submit" class="btn btn-viridian">Salvar correção</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="modal-rejeitar" role="dialog" aria-modal="true" aria-labelledby="modal-rej-titulo">
     <div class="modal">
         <div class="modal-head">
-            <h3>Rejeitar solicitação externa</h3>
-            <button class="modal-close" data-close-modal="modal-rejeitar">✕</button>
+            <h3 id="modal-rej-titulo">Rejeitar proposta</h3>
+            <button class="modal-close" data-close-modal="modal-rejeitar" aria-label="Fechar">✕</button>
         </div>
         <form id="form-rejeitar" novalidate>
-            <input type="hidden" id="rej-id">
-            <div class="alert alert-warning"><span>⚠️</span><div>Para solicitações externas, informar o motivo da rejeição é obrigatório (FR-022).</div></div>
             <div class="form-group">
-                <label for="rej-motivo">Motivo da rejeição <span class="req">*</span></label>
-                <textarea id="rej-motivo" placeholder="Explique o motivo da rejeição..."></textarea>
-                <div class="form-error"></div>
+                <label for="rej-motivo">Motivo (opcional)</label>
+                <textarea id="rej-motivo" rows="3" maxlength="1000" placeholder="Se escrever, o motivo vai no e-mail para a pessoa."></textarea>
             </div>
             <div class="form-actions">
                 <button type="button" class="btn btn-outline" data-close-modal="modal-rejeitar">Cancelar</button>
@@ -113,11 +192,11 @@
 </div>
 
 <script src="../assets/js/utils.js"></script>
-<script src="../assets/js/data.js"></script>
 <script src="../assets/js/api.js"></script>
 <script src="../assets/js/auth.js"></script>
 <script src="../assets/js/admin-guard.js"></script>
 <script src="../assets/js/admin-modal.js"></script>
+<script src="../assets/js/mascaras.js"></script>
 <script src="../assets/js/admin-triagem-eventos.js"></script>
 </body>
 </html>

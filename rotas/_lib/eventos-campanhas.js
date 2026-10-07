@@ -6,6 +6,7 @@
 import * as v from './validacao.js';
 import { hojeBrasilia } from './datas.js';
 import { falhar } from './http.js';
+import { registrarAuditoria } from './auditoria.js';
 
 const texto = (valor, max) => String(valor ?? '').trim().slice(0, max);
 
@@ -75,6 +76,38 @@ export async function conferirConflito(executor, data, { excetoId = null, confir
       `Já existe evento marcado para esta data: ${nomes}. Você pode alterar a data ou prosseguir mesmo assim.`);
   }
   return outros;
+}
+
+// Cria o evento já ativo (publicado, FR-031). Usado pelo Painel e pela confirmação de uma
+// solicitação externa (`origemId`, FR-022). Roda dentro da transação de quem chama.
+export async function criarEvento(tx, evento, { conta, origemId = null, confirmarAviso = false }) {
+  const conflitos = await conferirConflito(tx, evento.data, { confirmarAviso });
+  const [novo] = await tx.query(
+    `INSERT INTO evento (nome, descricao, recursos_necessarios, data, solicitacao_origem_id, criado_por)
+     VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+    [evento.nome, evento.descricao, evento.recursos || null, evento.data, origemId, conta.identificador]);
+  await registrarAuditoria({
+    autorTipo: 'conta_institucional', autorId: conta.id, acao: 'evento.criar', entidadeTipo: 'evento', entidadeId: novo.id,
+    detalhe: { conflitoConfirmado: conflitos.length > 0, deSolicitacao: Boolean(origemId) },
+  }, tx);
+  return novo.id;
+}
+
+export async function criarCampanha(tx, campanha, { conta, origemId = null }) {
+  const autor = conta.identificador;
+  const [nova] = await tx.query(
+    `INSERT INTO campanha (nome, descricao, periodo_inicio, periodo_fim, meta_valor, solicitacao_origem_id, criado_por)
+     VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
+    [campanha.nome, campanha.descricao, campanha.periodoInicio, campanha.periodoFim, campanha.meta, origemId, autor]);
+  for (const r of campanha.recursos) {
+    await tx.query(`INSERT INTO recurso (campanha_id, tipo, descricao, criado_por) VALUES ($1, $2, $3, $4)`,
+      [nova.id, r.tipo, r.descricao, autor]);
+  }
+  await registrarAuditoria({
+    autorTipo: 'conta_institucional', autorId: conta.id, acao: 'campanha.criar', entidadeTipo: 'campanha', entidadeId: nova.id,
+    detalhe: { comMeta: campanha.meta !== null, recursos: campanha.recursos.length, deSolicitacao: Boolean(origemId) },
+  }, tx);
+  return nova.id;
 }
 
 // Acha o registro pelo id em evento ou campanha. Devolve { tabela, registro } ou falha 404.

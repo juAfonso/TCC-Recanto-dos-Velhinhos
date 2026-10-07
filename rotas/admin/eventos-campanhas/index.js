@@ -4,9 +4,8 @@
 
 import { sql, transacao } from '../../_lib/db.js';
 import { exigirAdmin } from '../../_lib/acesso.js';
-import { registrarAuditoria } from '../../_lib/auditoria.js';
 import { hojeBrasilia } from '../../_lib/datas.js';
-import { validarEvento, validarCampanha, conferirConflito } from '../../_lib/eventos-campanhas.js';
+import { validarEvento, validarCampanha, criarEvento, criarCampanha } from '../../_lib/eventos-campanhas.js';
 import { json, lerJson, falhar, rota } from '../../_lib/http.js';
 
 export const GET = rota(async (request) => {
@@ -56,42 +55,16 @@ export const GET = rota(async (request) => {
 export const POST = rota(async (request) => {
   const { conta } = await exigirAdmin(request);
   const corpo = await lerJson(request);
-  const autor = conta.identificador;
 
   if (corpo.tipo === 'evento') {
     const evento = validarEvento(corpo);
-    const id = await transacao(async (tx) => {
-      const conflitos = await conferirConflito(tx, evento.data, { confirmarAviso: corpo.confirmarAviso === true });
-      const [novo] = await tx.query(
-        `INSERT INTO evento (nome, descricao, recursos_necessarios, data, criado_por)
-         VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-        [evento.nome, evento.descricao, evento.recursos || null, evento.data, autor]);
-      await registrarAuditoria({
-        autorTipo: 'conta_institucional', autorId: conta.id, acao: 'evento.criar', entidadeTipo: 'evento', entidadeId: novo.id,
-        detalhe: { conflitoConfirmado: conflitos.length > 0 },
-      }, tx);
-      return novo.id;
-    });
+    const id = await transacao((tx) => criarEvento(tx, evento, { conta, confirmarAviso: corpo.confirmarAviso === true }));
     return json({ id, tipo: 'evento' }, 201);
   }
 
   if (corpo.tipo === 'campanha') {
     const campanha = validarCampanha(corpo);
-    const id = await transacao(async (tx) => {
-      const [nova] = await tx.query(
-        `INSERT INTO campanha (nome, descricao, periodo_inicio, periodo_fim, meta_valor, criado_por)
-         VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-        [campanha.nome, campanha.descricao, campanha.periodoInicio, campanha.periodoFim, campanha.meta, autor]);
-      for (const r of campanha.recursos) {
-        await tx.query(`INSERT INTO recurso (campanha_id, tipo, descricao, criado_por) VALUES ($1, $2, $3, $4)`,
-          [nova.id, r.tipo, r.descricao, autor]);
-      }
-      await registrarAuditoria({
-        autorTipo: 'conta_institucional', autorId: conta.id, acao: 'campanha.criar', entidadeTipo: 'campanha', entidadeId: nova.id,
-        detalhe: { comMeta: campanha.meta !== null, recursos: campanha.recursos.length },
-      }, tx);
-      return nova.id;
-    });
+    const id = await transacao((tx) => criarCampanha(tx, campanha, { conta }));
     return json({ id, tipo: 'campanha' }, 201);
   }
 

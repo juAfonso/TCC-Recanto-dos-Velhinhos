@@ -135,6 +135,12 @@
 
 - Q: O voluntário e a equipe devem poder imprimir o termo de adesão exigido pela Lei 9.608/1998? → A: **Sim (FR-012a).** Todo voluntário imprime o termo já preenchido **logo após o envio** e o leva à sede, onde é assinado quando o cadastro for aprovado; o menor imprime também a autorização do responsável (FR-012). A equipe imprime o termo preenchido no detalhe de cada cadastro. Descartados: ficha de cadastro sem valor de termo e modelo em branco (a equipe pediu só o termo preenchido). O termo deixa uma linha para o CNPJ, preenchida à mão.
 
+### Session 2026-10-06 (5) — Formulário de solicitação externa (fase 8)
+
+- Q: Quais dados de contato são obrigatórios na solicitação externa? → A: **E-mail e telefone, os dois** (FR-020). O e-mail recebe o protocolo e os resultados (FR-049, FR-049b); o telefone é o caminho para combinar os detalhes depois da aprovação. Descartado: aceitar só um dos dois (quem não desse e-mail ficaria sem protocolo nem resultado por e-mail).
+- Q: Que data a pessoa pode pedir? → A: **A partir de amanhã**, sem antecedência mínima: a data do evento, ou o início do período da campanha. A equipe recusa ou combina outra data se a proposta vier em cima da hora. Na correção pelo Painel, uma data já gravada pode ficar como está.
+- Q: Os recursos esperados (o que a pessoa pede ao Recanto) são obrigatórios? → A: **Opcionais.** Muitas propostas não pedem nada além do espaço, e o detalhe é combinado no contato.
+
 ## User Scenarios & Testing (mandatory)
 
 ### User Story 1 - Portal Público Informativo (Priority: P1)
@@ -419,7 +425,7 @@ Antes de enviar qualquer formulário que colete dados pessoais, o visitante é i
 
 **Solicitação Externa de Evento ou Campanha**
 
-- **FR-020**: O sistema DEVE permitir que pessoas ou organizações externas solicitem um evento ou uma campanha, escolhendo obrigatoriamente o tipo e informando dados de contato (nome da pessoa ou organização, e-mail e telefone), nome do evento ou da campanha, objetivo, data ou período pretendido e os recursos que esperam da instituição (espaço, equipe, horário). Os recursos esperados são atributo da solicitação e não se confundem com os recursos a arrecadar de uma campanha (decisão de 2026-10-05).
+- **FR-020**: O sistema DEVE permitir que pessoas ou organizações externas solicitem um evento ou uma campanha, escolhendo obrigatoriamente o tipo e informando dados de contato (nome da pessoa ou organização, e-mail e telefone), nome do evento ou da campanha, objetivo, data ou período pretendido e, opcionalmente, os recursos que esperam da instituição (espaço, equipe, horário). Os recursos esperados são atributo da solicitação e não se confundem com os recursos a arrecadar de uma campanha (decisão de 2026-10-05). E-mail e telefone são ambos obrigatórios, e a data (ou o início do período) deve ser a partir do dia seguinte (decisões de 2026-10-06).
 - **FR-021**: O sistema DEVE registrar toda solicitação externa com status em análise até avaliação por um funcionário.
 - **FR-022**: O sistema DEVE permitir que um funcionário aprove uma solicitação em análise — mudando o status para "aprovada — aguardando contato", sem publicar nada — ou a rejeite, com motivo **opcional**. Diante de uma solicitação aguardando contato, o funcionário DEVE poder confirmar o evento/campanha, depois de combinar os detalhes com o solicitante fora do sistema, ou rejeitá-la. Só a confirmação gera o evento ou a campanha, conforme o tipo da solicitação, com os dados combinados, e o publica no Portal Público (FR-031); na campanha, o funcionário informa na confirmação os recursos a arrecadar. Decisão de 2026-10-03, que substitui a publicação automática na aprovação.
 

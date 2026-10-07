@@ -47,80 +47,94 @@
     <div class="container">
 
         <div id="form-wrap">
-            <form class="form-shell" id="form-solicitacao" novalidate>
+            <form class="form-shell" id="form-solicitacao" novalidate data-consentimento="analisar a proposta e entrar em contato para combinar os detalhes">
                 <div class="alert alert-info">
-                    <span>ℹ️</span>
-                    <div>Sua solicitação entrará como <strong>em análise</strong>. Se aprovada, o evento/campanha é publicado automaticamente no Portal Público.</div>
+                    <span aria-hidden="true">ℹ️</span>
+                    <div>A proposta fica <b>em análise</b>. Se a equipe aprovar, ela <b>entra em contato</b> para combinar os detalhes, e só então o evento ou a campanha aparece no site. Ao enviar, você recebe um <b>código de protocolo</b> para acompanhar.</div>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="se-nome">Nome / organização <span class="req">*</span></label>
-                        <input type="text" id="se-nome">
-                        <div class="form-error"></div>
+                <fieldset class="form-group" style="border:0;padding:0;">
+                    <legend style="font-weight:700;margin-bottom:6px;">O que você quer propor? <span class="req">*</span></legend>
+                    <div data-campo="tipo" style="display:flex;gap:18px;flex-wrap:wrap;">
+                        <label style="display:flex;gap:8px;align-items:center;font-weight:400;"><input type="radio" name="tipo" value="evento"> Um <b>evento</b> (acontece num dia)</label>
+                        <label style="display:flex;gap:8px;align-items:center;font-weight:400;"><input type="radio" name="tipo" value="campanha"> Uma <b>campanha</b> (dura um período)</label>
                     </div>
-                    <div class="form-group">
-                        <label for="se-tipo">Tipo <span class="req">*</span></label>
-                        <select id="se-tipo">
-                            <option value="">Selecione...</option>
-                            <option value="evento">Evento</option>
-                            <option value="campanha">Campanha</option>
-                        </select>
-                        <div class="form-error"></div>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="se-email">E-mail de contato <span class="req">*</span></label>
-                        <input type="email" id="se-email">
-                        <div class="form-error"></div>
-                    </div>
-                    <div class="form-group">
-                        <label for="se-telefone">Telefone de contato <span class="req">*</span></label>
-                        <input type="tel" id="se-telefone" placeholder="(00) 00000-0000">
-                        <div class="form-error"></div>
-                    </div>
-                </div>
+                    <div class="form-error"></div>
+                </fieldset>
 
                 <div class="form-group">
-                    <label for="se-data">Data pretendida <span class="req">*</span></label>
-                    <input type="date" id="se-data">
-                    <div class="form-hint" id="se-data-hint"></div>
+                    <label for="se-iniciativa" id="se-iniciativa-rotulo">Nome do evento ou da campanha <span class="req">*</span></label>
+                    <input type="text" id="se-iniciativa" data-campo="nomeIniciativa" maxlength="150" placeholder="Ex.: Coral de Natal, Campanha do Agasalho">
                     <div class="form-error"></div>
+                </div>
+
+                <div class="form-group" id="grupo-data" hidden>
+                    <label for="se-data">Data pretendida <span class="req">*</span></label>
+                    <input type="date" id="se-data" data-campo="dataPretendida">
+                    <p class="form-hint">A partir de amanhã. A data final é combinada com a equipe.</p>
+                    <div class="form-error"></div>
+                </div>
+                <div class="form-row" id="grupo-periodo" hidden>
+                    <div class="form-group">
+                        <label for="se-inicio">Início <span class="req">*</span></label>
+                        <input type="date" id="se-inicio" data-campo="periodoInicio">
+                        <p class="form-hint">A partir de amanhã.</p>
+                        <div class="form-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="se-fim">Fim <span class="req">*</span></label>
+                        <input type="date" id="se-fim" data-campo="periodoFim">
+                        <div class="form-error"></div>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="se-objetivo">Objetivo <span class="req">*</span></label>
-                    <textarea id="se-objetivo" placeholder="Descreva o objetivo do evento ou campanha proposta..."></textarea>
+                    <textarea id="se-objetivo" data-campo="objetivo" rows="4" maxlength="4000" placeholder="Conte o que é a proposta e por que ela faz bem aos residentes."></textarea>
                     <div class="form-error"></div>
                 </div>
 
                 <div class="form-group">
-                    <label for="se-recursos">Recursos esperados <span class="req">*</span></label>
-                    <textarea id="se-recursos" placeholder="Ex.: espaço físico, apoio de voluntários, divulgação, equipamentos..."></textarea>
+                    <label for="se-recursos">O que você precisa do Recanto (opcional)</label>
+                    <textarea id="se-recursos" data-campo="recursosEsperados" rows="3" maxlength="2000" placeholder="Ex.: espaço do salão, horário da tarde, ajuda de voluntários para divulgar."></textarea>
                     <div class="form-error"></div>
                 </div>
 
+                <h2 style="font-size:1.1rem;margin:22px 0 10px;">Contato</h2>
+                <div class="form-group">
+                    <label for="se-nome">Nome da pessoa ou da organização <span class="req">*</span></label>
+                    <input type="text" id="se-nome" data-campo="nomeContato" autocomplete="name" maxlength="150">
+                    <div class="form-error"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="se-email">E-mail <span class="req">*</span></label>
+                        <input type="email" id="se-email" data-campo="email" autocomplete="email">
+                        <div class="form-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="se-telefone">Telefone <span class="req">*</span></label>
+                        <input type="tel" id="se-telefone" data-campo="telefone" data-mascara="telefone" autocomplete="tel" placeholder="(24) 99999-9999">
+                        <div class="form-error"></div>
+                    </div>
+                </div>
+
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-viridian">Enviar solicitação</button>
+                    <button type="submit" class="btn btn-viridian">Enviar proposta</button>
                 </div>
             </form>
         </div>
 
-        <div id="result-wrap" style="display:none;">
-            <div class="form-shell narrow">
-                <div class="protocolo-box">
-                    <div style="font-size:2.2rem;">📨</div>
-                    <p style="font-weight:700;margin-top:8px;">Solicitação enviada com sucesso!</p>
-                    <p class="form-hint">Guarde o código abaixo para consultar o status a qualquer momento.</p>
-                    <div class="protocolo-code" id="protocolo-gerado"></div>
-                    <span class="badge badge-warning">Em análise</span>
-                </div>
-                <div class="form-actions" style="justify-content:center;margin-top:24px;">
-                    <a href="consultar-status.html" class="btn btn-outline">Consultar status</a>
-                    <a href="index.html" class="btn btn-viridian">Voltar ao início</a>
-                </div>
+        <div id="sucesso" class="form-shell" hidden>
+            <div class="protocolo-box" role="status">
+                <div style="font-size:2.2rem;" aria-hidden="true">📨</div>
+                <p style="font-weight:700;margin-top:8px;">Proposta enviada! Anote este código:</p>
+                <div class="protocolo-code" id="protocolo-gerado"></div>
+                <p class="form-hint">É com ele que você acompanha o andamento em <a href="consultar-status.html">Consultar status</a>. Guarde num lugar seguro.</p>
+                <p class="form-hint" id="aviso-email"></p>
+            </div>
+            <div class="form-actions" style="justify-content:center;margin-top:18px;">
+                <a href="index.html" class="btn btn-outline">Voltar ao início</a>
             </div>
         </div>
 
@@ -155,9 +169,11 @@
 </footer>
 
 <script src="assets/js/utils.js"></script>
-<script src="assets/js/data.js"></script>
+<script src="assets/js/api.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/nav.js"></script>
+<script src="assets/js/mascaras.js"></script>
+<script src="assets/js/consentimento.js"></script>
 <script src="assets/js/page-solicitar-evento.js"></script>
 </body>
 </html>

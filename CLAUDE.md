@@ -768,10 +768,13 @@ recente do spec.md, não esta lista resumida.
    - **Variáveis do banco na Vercel** marcadas "Needs Attention": tirar o
      ambiente Development e, se quiserem, trocar a senha e salvar como
      Sensitive. Adiado pelo grupo em 2026-10-07.
-   - **Levar ao PRD e à seção 19 do TCC** o que ampliou ou mudou os casos de
-     uso: termo de adesão para imprimir (CSU05), nome do CSU09
-     ("Autoatendimento do Doador Associado") e os 11 casos de uso revisados
-     de `docs/casos-de-uso-tcc.md`.
+   - **Colar no PRD e no documento do TCC** os textos já prontos em `docs/`
+     (atualizados em 2026-10-07): os 11 casos de uso de
+     `docs/casos-de-uso-tcc.md`, com as decisões das fases 10 a 14 (seção 19),
+     e os objetivos específicos e requisitos de
+     `docs/requisitos-tcc-revisado.md`, reorganizados pelo critério "RF = o
+     que o sistema faz; RNF = características e restrições". Falta só colar;
+     o texto não precisa mais ser escrito.
 
 ## Inegociável
 

@@ -3,6 +3,9 @@
 Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — CSU01 a CSU11
 
 > Revisão de 2026-10-05: alinhada ao `specs/001-portal-painel-ilpi/spec.md` e às decisões do grupo de 03 e 04/10.
+> Atualizada em 2026-10-07 com as decisões das fases 10 a 14: inativação por papel e Painel sem criação de
+> doador associado (CSU04), termo de adesão para imprimir (CSU05), área do doador só de consulta e aceite de
+> nova versão do aviso (CSU09), retirada da chave Pix (CSU01) e galeria de até seis imagens (CSU03).
 > Em todos os casos, o fluxo principal descreve só o caminho em que nada dá errado e termina quando o sistema
 > registra a submissão; decisões humanas com mais de um resultado possível (aprovar, rejeitar, confirmar, não
 > localizar) são fluxos alternativos; validações e erros são fluxos de exceção. Em caso de divergência, o
@@ -71,12 +74,12 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | 3. Informa o motivo, se quiser, e confirma a marcação. | |
 | | 4. Altera o status para não localizada, preserva o registro sem exclusão física e registra a conta, a data e, quando informado, o motivo na auditoria. O caso de uso se encerra. |
 
-## Fluxo Exceção 05 – Nenhuma chave Pix cadastrada
+## Fluxo Exceção 05 – Nenhuma chave Pix ativa
 
 | Ator (doador) | Sistema |
 |---|---|
 | 1. No passo 1 do fluxo principal, acessa a página pública de doações. | |
-| | 2. Verifica que não há chave Pix ativa cadastrada, informa que a doação digital está temporariamente indisponível, exibe o contato da instituição e não apresenta o QR code nem o botão "Já fiz o Pix". O caso de uso se encerra. |
+| | 2. Verifica que não há chave Pix ativa — nunca cadastrada ou retirada do Portal pelo funcionário na tela da chave Pix —, informa que a doação digital está temporariamente indisponível, exibe o contato da instituição e não apresenta o QR code nem o botão "Já fiz o Pix". O caso de uso se encerra. |
 
 ## Fluxo Exceção 06 – Valor inválido
 
@@ -248,7 +251,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | 1. No passo 3 do fluxo principal, escolhe editar uma notícia existente. | |
 | | 2. Exibe os dados atuais e solicita as alterações. |
 | 3. Modifica os dados desejados e confirma. | |
-| | 4. Grava as alterações preservando o histórico, atualiza a notícia no Portal Público, se publicada, e registra a conta e a data. O caso de uso se encerra. |
+| | 4. Grava as alterações preservando o histórico, atualiza a notícia no Portal Público, se publicada, e registra a conta e a data. Imagem trocada ou retirada é apenas desvinculada da notícia, sem apagar o arquivo. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 02 – Despublicar notícia
 
@@ -270,8 +273,8 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 |---|---|
 | 1. Em vez do passo 1 do fluxo principal, acessa a tela da página institucional no Painel Administrativo. | |
 | | 2. Exibe os textos atuais de história, missão, equipe, acolhimento de residentes e bazar e as imagens, com seus textos alternativos. |
-| 3. Altera os textos e, se quiser, inclui ou troca imagens, informando o texto alternativo de cada uma, e salva. | |
-| | 4. Grava a nova versão preservando a anterior no histórico, atualiza a página institucional no Portal Público e registra a conta e a data. O caso de uso se encerra. |
+| 3. Altera os textos e salva. Se quiser, inclui imagens, uma por vez e até seis, informando o texto alternativo de cada uma, corrige o texto alternativo de uma imagem ou retira uma imagem da página. As imagens são opcionais. | |
+| | 4. Grava a nova versão dos textos preservando a anterior no histórico, atualiza a página institucional no Portal Público e registra a conta e a data. Imagem retirada é desativada, sem apagar o arquivo. O caso de uso se encerra. |
 
 ## Fluxo Exceção 05 – Imagem sem texto alternativo
 
@@ -304,10 +307,10 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU04 |
 |---|---|
 | Nome | Manter Usuários |
-| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para consultar, cadastrar, alterar, inativar e reativar usuários dos perfis funcionário, voluntário e doador associado. O sistema não permite exclusão física de nenhum usuário: a inativação só remove o acesso, não apaga dados e pode ser desfeita. Funcionário e voluntário são papéis exclusivos; o de doador associado pode ser acumulado com qualquer um deles. |
+| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para consultar, cadastrar, alterar, inativar e reativar usuários dos perfis funcionário, voluntário e doador associado. Cada pessoa tem um único cadastro, pelo CPF, com um ou mais papéis. O sistema não permite exclusão física de nenhum usuário: a inativação é feita papel por papel, não apaga dados e pode ser desfeita. Funcionário e voluntário são papéis exclusivos; o de doador associado pode ser acumulado com qualquer um deles e não é cadastrado pelo Painel: nasce com a primeira doação associativa (CSU01). |
 | Ator Principal | Funcionário |
 | Ator Secundário | — |
-| Pré-condições | Funcionário deve estar autenticado no Painel Administrativo pela conta institucional, com nível de permissão para gestão de usuários. |
+| Pré-condições | Funcionário deve estar autenticado no Painel Administrativo pela conta institucional. |
 
 ## Fluxo Principal
 
@@ -316,7 +319,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | 1. Acessa a gestão de usuários e informa o nome, o CPF ou o e-mail do usuário que deseja consultar. | |
 | | 2. Exibe os usuários correspondentes, incluindo os inativos, com seus perfis e status, e a opção de cadastrar novo usuário. |
 | 3. Indica o usuário desejado. | |
-| | 4. Exibe todos os dados cadastrais coletados, o histórico e as submissões vinculadas ao usuário, e as opções alterar, inativar ou reativar. O caso de uso se encerra. |
+| | 4. Exibe todos os dados cadastrais coletados, os papéis com a situação de cada um, o histórico de correções, as submissões e os consentimentos vinculados ao usuário, e as opções alterar dados, adicionar papel e, para cada papel, inativar ou reativar. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 01 – Cadastrar usuário
 
@@ -324,15 +327,17 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 |---|---|
 | 1. No passo 3 do fluxo principal, em vez de indicar um usuário, escolhe cadastrar novo usuário e informa, para o perfil funcionário, nome, CPF, data de nascimento, e-mail e telefone; para o perfil voluntário, os mesmos dados do termo de adesão pedidos no CSU05. | |
 | | 2. Verifica se o CPF já existe; existindo, executa o fluxo alternativo 02. |
-| | 3. Grava o usuário sem passar por triagem, porque o cadastro já é ação explícita de um funcionário, e registra a conta e a data. Funcionário e voluntário maior de idade ficam ativos. Voluntário menor de idade fica pendente, com a autorização do responsável legal pendente, e só é aprovado depois de ela ser marcada como recebida (CSU05, fluxos alternativos 04 e 03). O caso de uso se encerra. |
+| | 3. Grava o usuário sem passar por triagem, porque o cadastro já é ação explícita de um funcionário, e registra a conta e a data. O cadastro de funcionário não registra consentimento nem envia e-mail, porque se baseia no vínculo de trabalho. Funcionário e voluntário maior de idade ficam ativos. Voluntário menor de idade fica pendente, com a autorização do responsável legal pendente, e só é aprovado depois de ela ser marcada como recebida (CSU05, fluxos alternativos 04 e 03). Para o voluntário, oferece a impressão do termo de adesão e, se menor, da autorização do responsável. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 02 – CPF já cadastrado
 
 | Ator (funcionário) | Sistema |
 |---|---|
 | | 1. No passo 2 do fluxo alternativo 01, identifica que o CPF informado já pertence a um usuário e exibe o registro existente, sem criar outro. |
-| 2. Se for o caso, opta por adicionar o novo perfil ao cadastro existente. | |
-| | 3. Adiciona o perfil ao cadastro e registra a conta e a data. Se o perfil adicionado for o de funcionário e a pessoa for voluntária, encerra o papel de voluntário, sem apagar o registro, porque os dois papéis são exclusivos. O caso de uso se encerra. |
+| 2. Se for o caso, opta por adicionar ao cadastro existente o papel de funcionário ou o de voluntário. | |
+| | 3. Se o papel adicionado for o de funcionário e a pessoa for voluntária ativa, avisa que o papel de voluntário será encerrado e pede confirmação. |
+| 4. Confirma. | |
+| | 5. Adiciona o papel e registra a conta e a data; quando for o caso, encerra o papel de voluntário, sem apagar o registro, porque os dois papéis são exclusivos. Para o papel de voluntário, coleta os dados do termo de adesão (CSU05). O caso de uso se encerra. |
 
 ## Fluxo Alternativo 03 – Alterar dados
 
@@ -343,21 +348,21 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | 3. Modifica os dados desejados e confirma. | |
 | | 4. Grava as alterações preservando o histórico e registra a conta e a data. O caso de uso se encerra. |
 
-## Fluxo Alternativo 04 – Inativar usuário
+## Fluxo Alternativo 04 – Inativar papel
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. No passo 4 do fluxo principal, escolhe inativar o usuário. | |
-| | 2. Solicita confirmação, explicando que a inativação remove o acesso, não apaga dados e pode ser desfeita; se o usuário tiver submissão em triagem, avisa sobre a pendência. |
+| 1. No passo 4 do fluxo principal, escolhe inativar um dos papéis do usuário (por exemplo, deixar de ser voluntário e continuar doador associado). | |
+| | 2. Solicita confirmação, explicando que a inativação não apaga dados e pode ser desfeita; se o usuário tiver submissão em triagem, avisa sobre a pendência. |
 | 3. Confirma a inativação. | |
-| | 4. Altera o status para inativo, mantém o registro, os dados e o histórico consultáveis e registra a conta e a data. O caso de uso se encerra. |
+| | 4. Altera a situação do papel para inativo, mantém o registro, os dados e o histórico consultáveis e registra a conta e a data. Papel de doador associado inativado perde na hora o acesso ao autoatendimento (CSU09). O usuário passa a constar como inativo quando nenhum papel está ativo. O caso de uso se encerra. |
 
-## Fluxo Alternativo 05 – Reativar usuário
+## Fluxo Alternativo 05 – Reativar papel
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. No passo 4 do fluxo principal, sendo o usuário inativo, escolhe reativá-lo. | |
-| | 2. Altera o status para ativo e registra a conta e a data. O caso de uso se encerra. |
+| 1. No passo 4 do fluxo principal, sendo o papel inativo, escolhe reativá-lo. | |
+| | 2. Verifica as restrições do fluxo de exceção 10; não havendo impedimento, altera a situação do papel para ativo e registra a conta e a data. O caso de uso se encerra. |
 
 ## Fluxo Exceção 06 – Dados inválidos
 
@@ -382,23 +387,39 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 ## Fluxo Exceção 09 – Tentativa de acesso sem permissão
 
-| Ator (usuário autenticado) | Sistema |
+| Ator (visitante ou doador associado) | Sistema |
 |---|---|
-| 1. No passo 1 do fluxo principal, um perfil sem permissão para gestão de usuários tenta acessá-la. | |
+| 1. Sem estar autenticado pela conta institucional, tenta acessar a gestão de usuários. | |
 | | 2. Nega o acesso sem expor detalhes internos do motivo e registra a tentativa no histórico de auditoria. O caso de uso se encerra. |
+
+## Fluxo Exceção 10 – Reativação não permitida
+
+| Ator (funcionário) | Sistema |
+|---|---|
+| 1. No passo 1 do fluxo alternativo 05, tenta reativar um papel encerrado (voluntário efetivado como funcionário, doador associado que revogou o consentimento), o papel de voluntário de quem revogou o consentimento, ou o papel de voluntário de quem é funcionário ativo. | |
+| | 2. Impede a reativação e explica o motivo: papel encerrado não volta; quem revogou o consentimento precisa fazer novo cadastro; funcionário e voluntário são papéis exclusivos. O caso de uso se encerra. |
+
+## Fluxo Exceção 11 – Tentativa de cadastrar doador associado
+
+| Ator (funcionário) | Sistema |
+|---|---|
+| 1. No passo 1 do fluxo alternativo 01 ou no passo 2 do fluxo alternativo 02, tenta cadastrar uma pessoa como doadora associada. | |
+| | 2. Não oferece esse papel e informa que o cadastro de doador associado nasce com a primeira doação associativa feita no Portal (CSU01). O caso de uso se encerra. |
 
 ## Pós-condições
 
-- **Fluxo principal:** Os dados do usuário foram exibidos a um perfil autorizado.
-- **Fluxo Alternativo 01 – Cadastrar usuário:** Um novo usuário ativo foi gravado no sistema.
+- **Fluxo principal:** Os dados do usuário foram exibidos à equipe pela conta institucional.
+- **Fluxo Alternativo 01 – Cadastrar usuário:** Um novo usuário foi gravado no sistema, ativo ou, se voluntário menor de idade, pendente da autorização do responsável.
 - **Fluxo Alternativo 02 – CPF já cadastrado:** Não há registro duplicado; se a pessoa passou de voluntária a funcionária, o papel de voluntário foi encerrado e seu histórico permanece.
 - **Fluxo Alternativo 03 – Alterar dados:** Os dados foram modificados e o histórico da alteração foi preservado.
-- **Fluxo Alternativo 04 – Inativar usuário:** O usuário está inativo, sem acesso, com registro, dados e histórico preservados.
-- **Fluxo Alternativo 05 – Reativar usuário:** O usuário voltou a estar ativo.
+- **Fluxo Alternativo 04 – Inativar papel:** O papel está inativo, com registro, dados e histórico preservados; se era o de doador associado, a pessoa perdeu o acesso ao autoatendimento.
+- **Fluxo Alternativo 05 – Reativar papel:** O papel voltou a estar ativo.
 - **Fluxo Exceção 06 – Dados inválidos:** Nenhum dado foi gravado.
 - **Fluxo Exceção 07 – Voluntário que já é funcionário:** O cadastro permaneceu inalterado.
 - **Fluxo Exceção 08 – Tentativa de exclusão definitiva:** Nenhum registro foi excluído.
 - **Fluxo Exceção 09 – Tentativa de acesso sem permissão:** O acesso foi negado e a tentativa consta na auditoria.
+- **Fluxo Exceção 10 – Reativação não permitida:** O papel permaneceu como estava.
+- **Fluxo Exceção 11 – Tentativa de cadastrar doador associado:** Nenhum papel foi adicionado.
 
 ---
 
@@ -407,7 +428,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU05 |
 |---|---|
 | Nome | Cadastrar Voluntário |
-| Sumário | Este caso de uso descreve os passos percorridos pelo visitante para se cadastrar como voluntário e pela equipe para triar esse cadastro, com etapa de entrevista. Não existe autoaprovação: todo cadastro passa por triagem humana. Os dados coletados são os do termo de adesão da Lei nº 9.608/1998. A autorização do responsável legal de menor de idade é entregue em papel na sede da instituição. |
+| Sumário | Este caso de uso descreve os passos percorridos pelo visitante para se cadastrar como voluntário e pela equipe para triar esse cadastro, com etapa de entrevista. Não existe autoaprovação: todo cadastro feito pelo Portal passa por triagem humana. Os dados coletados são os do termo de adesão da Lei nº 9.608/1998, que o sistema oferece já preenchido para impressão e assinatura. A autorização do responsável legal de menor de idade é entregue em papel na sede da instituição. O cadastro feito diretamente pela equipe no Painel está no CSU04. |
 | Ator Principal | Visitante (candidato a voluntário) |
 | Ator Secundário | Funcionário |
 | Pré-condições | Visitante deve estar na página pública de voluntariado. O aviso de privacidade deve estar publicado. |
@@ -416,11 +437,11 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (visitante) | Sistema |
 |---|---|
-| 1. Acessa a página de voluntariado e preenche nome, data de nascimento, escolaridade, profissão, RG, CPF, endereço, bairro, CEP, cidade, UF, telefone, e-mail e o tipo de serviço que vai prestar, com seus objetivos e condições. | |
+| 1. Acessa a página de voluntariado e preenche nome, data de nascimento, RG, CPF, endereço, bairro, CEP, cidade, UF, telefone, e-mail e o tipo de serviço que vai prestar, escolhido numa lista ou descrito em "Outro"; se quiser, também escolaridade, profissão, objetivos e dias e horários disponíveis, que a equipe pode completar na entrevista. | |
 | | 2. Verifica a data de nascimento; sendo menor de idade, executa o fluxo alternativo 01. Exibe o resumo do tratamento dos dados e a opção de aceite do aviso de privacidade. |
 | 3. Aceita o aviso de privacidade e confirma o envio. | |
 | | 4. Registra o cadastro com status pendente, grava o consentimento com data/hora, finalidade e versão do aviso, gera o código de protocolo e sinaliza o cadastro no Painel Administrativo. |
-| | 5. Exibe o protocolo, orientando o visitante a anotá-lo, e envia e-mail de confirmação informando que a análise pode levar alguns dias. O caso de uso se encerra. |
+| | 5. Exibe o protocolo, orientando o visitante a anotá-lo, oferece o termo de adesão já preenchido para impressão e assinatura e envia e-mail de confirmação informando que a análise pode levar alguns dias. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 01 – Voluntário menor de idade
 
@@ -502,9 +523,16 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | | 1. No passo 5 do fluxo principal ou ao final dos fluxos alternativos 02, 03 e 05, não consegue enviar o e-mail de confirmação ou de resultado. |
 | | 2. Mantém o cadastro e a decisão registrados, tenta reenviar automaticamente uma vez após um intervalo e, persistindo a falha, registra-a para reenvio ou contato manual pela equipe. O registro nunca é revertido. O caso de uso se encerra. |
 
+## Fluxo Alternativo 12 – Imprimir o termo de adesão pelo Painel
+
+| Ator (funcionário) | Sistema |
+|---|---|
+| 1. A partir do passo 4 do fluxo principal, em qualquer etapa da triagem, escolhe imprimir o termo de adesão do cadastro e, se menor de idade, a autorização do responsável legal. | |
+| | 2. Exibe os documentos já preenchidos com os dados do cadastro, prontos para impressão e assinatura, e registra a conta e a data. O caso de uso se encerra. |
+
 ## Pós-condições
 
-- **Fluxo principal:** O cadastro está registrado como pendente, com consentimento e protocolo, aguardando triagem.
+- **Fluxo principal:** O cadastro está registrado como pendente, com consentimento e protocolo, aguardando triagem; o termo de adesão foi oferecido para impressão.
 - **Fluxo Alternativo 01 – Voluntário menor de idade:** O cadastro do menor fica com a autorização pendente; nenhum documento do menor é armazenado no sistema.
 - **Fluxo Alternativo 02 – Chamar para entrevista:** O cadastro consta como chamado para entrevista.
 - **Fluxo Alternativo 03 – Aprovar após entrevista:** A pessoa está cadastrada como voluntária ativa e a aprovação consta na auditoria.
@@ -516,6 +544,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 - **Fluxo Exceção 09 – Pessoa que já é funcionária:** O cadastro permaneceu sem aprovação.
 - **Fluxo Exceção 10 – Envio sem aceite do aviso de privacidade:** Nenhum cadastro foi registrado.
 - **Fluxo Exceção 11 – Falha no envio de e-mail:** O registro permanece e a falha de envio está sinalizada à equipe.
+- **Fluxo Alternativo 12 – Imprimir o termo de adesão pelo Painel:** Os documentos do voluntário foram impressos para assinatura em papel; nenhum documento assinado é guardado no sistema.
 
 ---
 
@@ -758,7 +787,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU09 |
 |---|---|
 | Nome | Autoatendimento do Doador Associado |
-| Sumário | Este caso de uso descreve os passos percorridos pelo doador associado para consultar, com login próprio, exclusivamente os seus próprios dados e o histórico das doações já confirmadas, e para doar sem informar os dados de novo. O voluntário não tem autoatendimento nesta versão. |
+| Sumário | Este caso de uso descreve os passos percorridos pelo doador associado para consultar, com login próprio, exclusivamente os seus próprios dados e o histórico das doações já confirmadas, e para doar sem informar os dados de novo. A área é só de consulta: a correção de dados é pedida à secretaria, que a faz no Painel (CSU04), e a troca de senha é feita por "Esqueci minha senha". O voluntário não tem autoatendimento nesta versão. |
 | Ator Principal | Doador associado |
 | Ator Secundário | — |
 | Pré-condições | O doador deve possuir cadastro de doador associado, criado na primeira doação associativa (CSU01). |
@@ -776,7 +805,8 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Ator (doador associado) | Sistema |
 |---|---|
 | 1. No passo 3 do fluxo principal, escolhe fazer uma nova doação. | |
-| | 2. Executa o fluxo alternativo 02 do CSU01, com a doação já vinculada ao cadastro. O caso de uso se encerra. |
+| | 2. Se houver versão do aviso de privacidade publicada depois do último aceite do doador, exibe o link da nova versão e pede que ele confirme que a leu e concorda antes de gerar o QR code; o aceite é registrado como mais um consentimento do doador, com data e versão. |
+| | 3. Executa o fluxo alternativo 02 do CSU01, com a doação já vinculada ao cadastro. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 02 – Definir a senha da conta nova
 
@@ -798,8 +828,8 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (doador associado) | Sistema |
 |---|---|
-| 1. No passo 1 do fluxo principal, informa e-mail ou senha incorretos, ou tenta entrar antes de definir a senha pelo link recebido. | |
-| | 2. No passo 2, nega o acesso, sem informar qual dos dados está errado, e retorna ao passo 1 do fluxo principal. |
+| 1. No passo 1 do fluxo principal, informa e-mail ou senha incorretos, tenta entrar antes de definir a senha pelo link recebido ou tem o papel de doador associado inativado pela equipe. | |
+| | 2. No passo 2, nega o acesso com a mesma mensagem em todos os casos, sem informar qual dos dados está errado, e retorna ao passo 1 do fluxo principal. Após cinco tentativas erradas seguidas, bloqueia novas tentativas por 15 minutos. |
 
 ## Fluxo Exceção 05 – Tentativa de acessar dados de terceiro
 
@@ -811,7 +841,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 ## Pós-condições
 
 - **Fluxo principal:** O doador consultou exclusivamente os próprios dados e doações confirmadas.
-- **Fluxo Alternativo 01 – Doar sem informar os dados de novo:** A nova declaração pendente está vinculada ao cadastro do doador.
+- **Fluxo Alternativo 01 – Doar sem informar os dados de novo:** A nova declaração pendente está vinculada ao cadastro do doador e, se havia aviso de privacidade novo, o aceite dessa versão foi registrado.
 - **Fluxo Alternativo 02 – Definir a senha da conta nova:** A conta do doador associado está ativa para o autoatendimento.
 - **Fluxo Alternativo 03 – Redefinir senha esquecida:** A senha foi redefinida sem intervenção da equipe e o link de uso único foi consumido.
 - **Fluxo Exceção 04 – Credenciais inválidas:** O acesso foi negado.
@@ -902,7 +932,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 |---|---|
 | 1. No passo 1 do fluxo principal, pede a revogação do consentimento em vez da anonimização. | |
 | 2. (Funcionário) Executa o passo 2 do fluxo principal e registra a revogação no Painel. | |
-| | 3. Altera o status do consentimento para revogado, com data e conta, e aplica o efeito conforme o que ele cobre: submissão ainda em triagem (cadastro de voluntário, candidatura ou solicitação externa) passa a "encerrada a pedido do titular", sai da fila de triagem e entra no prazo de retenção (CSU05, CSU06, CSU08); voluntário ativo é inativado; doador associado tem a conta inativada e deixa de poder vincular novas doações, mantidas as já confirmadas. Não anonimiza nem exclui o registro; se o titular também quiser os dados apagados, é o fluxo principal. O caso de uso se encerra. |
+| | 3. Altera o status do consentimento para revogado, com data e conta, e aplica o efeito conforme o que ele cobre: submissão ainda em triagem (cadastro de voluntário, candidatura ou solicitação externa) passa a "encerrada a pedido do titular", sai da fila de triagem e entra no prazo de retenção (CSU05, CSU06, CSU08); voluntário ativo é inativado; doador associado tem o papel encerrado, perde o acesso ao autoatendimento e deixa de poder vincular novas doações, mantidas as já confirmadas. Não anonimiza nem exclui o registro; se o titular também quiser os dados apagados, é o fluxo principal. O caso de uso se encerra. |
 
 ## Fluxo Exceção 04 – Identidade do titular não comprovada
 

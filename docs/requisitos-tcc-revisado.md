@@ -3,6 +3,15 @@
 > Revisado em 2026-10-07 contra o sistema entregue (fases 1 a 14) e as decisões do `CLAUDE.md`.
 > Texto pronto para colar. As notas entre colchetes no fim de cada bloco dizem o que mudou em
 > relação à versão do grupo; apague-as ao colar.
+>
+> Critério da divisão (feedback revisado em 2026-10-07): requisito funcional responde "o que o
+> sistema permite fazer"; requisito não funcional responde "com quais características e restrições".
+> Por isso, as regras de retenção e o limite de tentativas ficaram só nos RNFs, e os RFs de LGPD
+> ficaram só com as funções (registrar consentimento, publicar o aviso, registrar revogação,
+> anonimizar). Os objetivos de conformidade com a LGPD e de interface acessível continuam nos
+> **objetivos específicos**, que dizem o que o trabalho pretende alcançar e podem incluir metas de
+> qualidade; se o orientador preferir objetivos só funcionais, esses dois saem, porque os RNFs
+> já os cobrem.
 
 ---
 
@@ -58,7 +67,7 @@
 - Acesso a dados pessoais de voluntários, candidatos e doadores restrito a perfis autorizados, sem exposição no portal público.
 - Limite de tentativas: o login é bloqueado por 15 minutos após cinco erros seguidos, e as consultas públicas de protocolo são limitadas por conexão.
 - Sessão encerrada ao fechar o navegador e, em qualquer caso, após 8 horas.
-- Códigos de protocolo gerados de forma imprevisível, para impedir a descoberta de solicitações de terceiros.
+- Códigos de protocolo gerados de forma imprevisível, para impedir a descoberta de solicitações de terceiros; a consulta responde da mesma forma a protocolo inexistente e a protocolo mal formado.
 
 [Mudou: entraram limite de tentativas, duração da sessão e protocolo imprevisível.]
 
@@ -68,6 +77,9 @@
 - Consentimento registrado com data, finalidade e versão do aviso aceito.
 - Dados de menores de idade com acesso restrito a perfis autorizados. A autorização do responsável legal é entregue em papel na sede da instituição; o sistema registra apenas o seu recebimento e não guarda cópia do documento.
 - Arquivos enviados pelo público acessíveis apenas mediante verificação de permissão, nunca por endereço público direto.
+- Retenção limitada à finalidade: os dados de candidaturas, cadastros de voluntário e solicitações externas não aprovados ou encerrados são anonimizados seis meses após a conclusão da triagem; o currículo de quem foi contratado, seis meses após a efetivação. Dados de doador associado só são anonimizados a pedido do titular. O prazo é configuração editável pela equipe.
+
+[Mudou: a regra de retenção veio do RF "Preservação de registros", que misturava função e política (feedback de 2026-10-07).]
 
 ### Integridade e rastreabilidade
 
@@ -116,9 +128,15 @@ Cadastro, consulta, alteração e inativação de registros dos perfis funcioná
 
 [Mudou: inativação por papel, cadastro direto de voluntário e origem do doador associado (decisões de 2026-10-06 e 2026-10-07).]
 
-### Preservação de registros
+### Inativação e reativação
 
-Nenhum registro é excluído definitivamente: a remoção de acesso ocorre por inativação, que pode ser desfeita, preservando o histórico da instituição. Os dados pessoais cuja finalidade se encerrou — candidaturas, cadastros de voluntário e solicitações externas não aprovados ou encerrados — são sinalizados para anonimização seis meses após a conclusão da triagem; o currículo de quem foi aprovado, seis meses após a efetivação. Dados de doador associado só são anonimizados a pedido do titular. O prazo é configuração editável pela equipe.
+Inativação e reativação, pela administração, de cada papel de uma pessoa, sem apagar dados, como única forma de remover o acesso ou o vínculo com a instituição; o sistema não oferece exclusão de registros.
+
+### Fila de retenção
+
+Sinalização, à administração, dos registros cujo prazo de retenção venceu, para que sejam anonimizados um a um.
+
+[Mudou: o antigo RF "Preservação de registros" foi dividido. Ficaram como RF as duas funções (inativar e reativar; sinalizar o prazo vencido). A regra "nenhum registro é excluído" já está no RNF de integridade, e a política de prazos foi para o RNF de privacidade (feedback de 2026-10-07).]
 
 ### Correção de dados
 
@@ -178,9 +196,9 @@ Atualização, pela administração, da lista de itens de que a instituição ne
 
 ### Acompanhamento de solicitações
 
-Consulta pública do andamento de submissões — cadastro de voluntário, candidatura e proposta de evento — mediante código de protocolo, sem necessidade de login e sem exposição de dados pessoais, exibindo apenas o tipo, a situação e a data. Protocolo inexistente e protocolo mal formado recebem a mesma resposta, e o número de consultas sucessivas da mesma origem é limitado.
+Consulta pública do andamento de submissões — cadastro de voluntário, candidatura e proposta de evento — mediante código de protocolo, sem necessidade de login e sem exposição de dados pessoais, exibindo apenas o tipo, a situação e a data.
 
-[Mudou: entrou o FR-044a.]
+[Mudou: a resposta idêntica para protocolo inexistente ou mal formado e o limite de consultas (FR-044a) são restrições de segurança e ficaram só no RNF de segurança (feedback de 2026-10-07).]
 
 ### Autoatendimento
 

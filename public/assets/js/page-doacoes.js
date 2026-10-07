@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const formDoador = $('form-doador');
   let chavePix = null;
   let rascunho = { tipo: 'espontanea', valor: null, doador: null };
+  // Doador associado logado (US9): doa sem redigitar dados. Se houver aviso de privacidade novo,
+  // aceita a versão nova aqui mesmo (decisão de 2026-10-07).
+  let logado = null;
 
   const steps = document.querySelectorAll('.donation-step');
   const stepperItems = document.querySelectorAll('#donation-stepper .step');
@@ -71,8 +74,38 @@ document.addEventListener('DOMContentLoaded', () => {
     $('card-espontanea').classList.toggle('selected', tipo === 'espontanea');
     $('card-associativa').classList.toggle('selected', tipo === 'associativa');
   }
-  document.querySelectorAll('input[name="tipoDoacao"]').forEach(r => r.addEventListener('change', syncRadioCards));
+  document.querySelectorAll('input[name="tipoDoacao"]').forEach(r => r.addEventListener('change', () => { syncRadioCards(); mostrarAceiteNovo(); }));
   syncRadioCards();
+
+  function mostrarAceiteNovo() {
+    const caixa = $('aceite-aviso-novo');
+    if (caixa) caixa.hidden = !(logado && logado.avisoPendente && tipoEscolhido() === 'associativa');
+  }
+
+  Auth.verificarDoador().then((r) => {
+    if (!r.logado) return;
+    logado = r;
+    const primeiro = Utils.escapeHtml(r.nome.split(' ')[0]);
+    $('card-associativa').querySelector('.desc').innerHTML =
+      `Você entrou como <b>${primeiro}</b>: a doação vai para o seu histórico, sem precisar digitar seus dados.`;
+    document.querySelector('input[name="tipoDoacao"][value="associativa"]').checked = true;
+    syncRadioCards();
+    $('donation-stepper').querySelector('.step[data-step="2"]').hidden = true;
+    if (r.avisoPendente) {
+      const caixa = document.createElement('div');
+      caixa.className = 'form-group';
+      caixa.id = 'aceite-aviso-novo';
+      caixa.innerHTML = `
+        <label class="checkbox-line" for="aceite-novo">
+          <input type="checkbox" id="aceite-novo" data-campo="aceito">
+          O Recanto atualizou o <a href="aviso-privacidade.html" target="_blank" rel="noopener">aviso de privacidade</a>.
+          Li a nova versão e concordo com o uso dos meus dados para identificar minhas doações associativas.
+        </label>
+        <div class="form-error"></div>`;
+      $('valorDoacao').closest('.form-group').after(caixa);
+    }
+    mostrarAceiteNovo();
+  });
 
   /* Valor: aceita "25", "25,50" ou "25.50"; mínimo R$ 1 (FR-007) */
   function lerValor() {
@@ -91,7 +124,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (erro) { Utils.setFieldError(grupo, erro); $('valorDoacao').focus(); return; }
 
     rascunho = { tipo: tipoEscolhido(), valor, doador: null };
-    if (rascunho.tipo === 'espontanea') {
+    if (rascunho.tipo === 'associativa' && logado) {
+      const aceite = $('aceite-novo');
+      if (aceite && !aceite.checked) {
+        Utils.setFieldError(aceite.closest('.form-group'), 'Para continuar, marque que leu e concorda com a nova versão do aviso.');
+        aceite.focus();
+        return;
+      }
+      gerarPix();
+      irPara(3);
+    } else if (rascunho.tipo === 'espontanea') {
       gerarPix();
       irPara(3);
     } else {
@@ -146,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function mostrarAvisoAssociado(mensagem) {
     $('aviso-associado-texto').innerHTML = `${Utils.escapeHtml(mensagem)}
       <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
-        <a class="btn btn-outline btn-sm" href="login.html">Entrar na área do doador</a>
+        <a class="btn btn-outline btn-sm" href="login.html#doador">Entrar na área do doador</a>
         <button type="button" class="btn btn-outline btn-sm" id="btn-trocar-espontanea">Fazer doação espontânea</button>
       </div>`;
     $('aviso-associado').style.display = 'flex';
@@ -177,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(() => Utils.toast('Selecionamos o código: use Ctrl+C (ou "Copiar" no celular).', 'warning'));
   });
 
-  $('btn-step3-back').addEventListener('click', () => irPara(rascunho.tipo === 'associativa' ? 2 : 1));
+  $('btn-step3-back').addEventListener('click', () => irPara(rascunho.tipo === 'associativa' && !logado ? 2 : 1));
 
   /* "Já fiz o Pix": registra a declaração pendente (FR-008). Data/hora é a do servidor. */
   $('btn-ja-fiz-pix').addEventListener('click', async () => {
@@ -185,7 +227,9 @@ document.addEventListener('DOMContentLoaded', () => {
     botao.disabled = true;
     botao.textContent = 'Registrando…';
     const corpo = { tipo: rascunho.tipo, valor: rascunho.valor };
-    if (rascunho.tipo === 'associativa') {
+    if (rascunho.tipo === 'associativa' && logado) {
+      if (logado.avisoPendente) corpo.consentimento = { avisoVersao: logado.avisoPendente.versao, aceito: Boolean($('aceite-novo')?.checked) };
+    } else if (rascunho.tipo === 'associativa') {
       corpo.doador = rascunho.doador;
       corpo.consentimento = Consentimento.dados(formDoador);
     }
@@ -193,11 +237,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const r = await Api.post('/api/public/doacoes', corpo, { form: formDoador });
       $('mensagem-final').textContent = rascunho.tipo === 'espontanea'
         ? `${r.mensagem} Como é uma doação espontânea, ela não pode ser acompanhada depois.`
-        : r.mensagem;
+        : logado ? `${r.mensagem} Depois de conferida, ela aparece na sua área do doador.` : r.mensagem;
+      if (logado && logado.avisoPendente) { logado.avisoPendente = null; $('aceite-aviso-novo')?.remove(); }
       irPara(4);
     } catch (erro) {
       if (erro.codigo === 'ASSOCIADO_DEVE_ENTRAR') { irPara(2); mostrarAvisoAssociado(erro.message); }
-      else if (erro.campos.length) { irPara(rascunho.tipo === 'associativa' ? 2 : 1); }
+      else if (erro.campos.length) { irPara(rascunho.tipo === 'associativa' && !logado ? 2 : 1); }
       else if (erro.status !== 429) { Utils.toast(erro.message, 'danger'); }
     } finally {
       botao.disabled = false;
@@ -209,8 +254,9 @@ document.addEventListener('DOMContentLoaded', () => {
   $('btn-nova-doacao').addEventListener('click', () => {
     rascunho = { tipo: 'espontanea', valor: null, doador: null };
     $('valorDoacao').value = '';
-    document.querySelector('input[name="tipoDoacao"][value="espontanea"]').checked = true;
+    document.querySelector(`input[name="tipoDoacao"][value="${logado ? 'associativa' : 'espontanea'}"]`).checked = true;
     syncRadioCards();
+    mostrarAceiteNovo();
     formDoador.reset();
     irPara(1);
   });

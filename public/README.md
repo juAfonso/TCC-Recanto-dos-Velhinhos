@@ -81,13 +81,10 @@ mantendo a mesma identidade em todas as novas telas criadas:
 
 ## Credenciais de demonstração
 
-**Painel Administrativo** (conta administrativa compartilhada — FR-040):
-- Usuário: `admin`
-- Senha: `admin123`
-
-**Autoatendimento** (voluntário e doador associado — FR-041):
-- Voluntária: `isadora.voluntaria@gmail.com` / senha `voluntario123`
-- Doadora: `ana.doadora@gmail.com` / senha `doador123`
+Não há mais credenciais fixas no front (removidas em 2026-10-07). No banco de
+desenvolvimento, `npm run seed -- --demo` cria a conta do Painel e uma doadora de
+demonstração (valores em `db/seed.js`). Em produção, a senha do Painel é gerada pelo
+seed e mostrada uma única vez; a do doador, criada por ele pelo link enviado ao e-mail.
 
 ## Fluxos já implementados no front-end
 
@@ -141,8 +138,6 @@ Também pendentes:
   que é inadequado para uma ILPI.
 - **Preencher `assets/img` com fotos reais** da instituição, equipe e campanhas, cada uma com
   texto alternativo descritivo (Princípio II).
-- **Trocar as credenciais de demonstração.** As senhas listadas acima existem apenas na
-  camada mock. Elas **não podem** ser reaproveitadas no `db/seed.js` real nem chegar a
-  produção.
+- ~~**Trocar as credenciais de demonstração.**~~ Feito em 2026-10-07.
 - Adicionar as telas novas previstas no plano: `aviso-privacidade.html`,
   `solicitar-direitos.html`, `admin/pix.html` e `admin/solicitacoes-titular.html`.

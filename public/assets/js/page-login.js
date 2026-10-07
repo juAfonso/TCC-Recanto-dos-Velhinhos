@@ -1,11 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* já autenticado? redireciona direto (o Painel é confirmado pelo servidor) */
-  const existing = Auth.getSession();
-  if (existing && existing.tipo !== 'admin') {
-    window.location.href = 'autoatendimento.html';
-    return;
-  }
+  /* já autenticado? redireciona direto (quem decide é o servidor) */
+  Auth.verificarDoador().then((r) => {
+    if (r.logado) window.location.href = 'autoatendimento.html';
+  });
   Auth.verificarAdmin().then((identificador) => {
     if (identificador) window.location.href = 'admin/dashboard.html';
   });
@@ -21,6 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelector(`.tab-panel[data-tab="${btn.dataset.tab}"]`).classList.add('active');
     });
   });
+
+  /* login.html#doador abre direto na aba do doador */
+  if (location.hash === '#doador') document.querySelector('.tab-btn[data-tab="auto"]').click();
 
   /* login admin */
   const formAdmin = document.getElementById('form-admin-login');
@@ -44,21 +45,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* login autoatendimento */
-  document.getElementById('form-auto-login').addEventListener('submit', (e) => {
+  /* login do doador associado (FR-041) */
+  const formAuto = document.getElementById('form-auto-login');
+  formAuto.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const emailInput = document.getElementById('auto-email');
-    const passInput = document.getElementById('auto-pass');
-    Utils.clearFieldError(emailInput.closest('.form-group'));
-    Utils.clearFieldError(passInput.closest('.form-group'));
-
-    const usuario = Auth.loginAutoatendimento(emailInput.value.trim(), passInput.value);
-    if (usuario) {
-      Utils.toast(`Bem-vindo(a), ${usuario.nome.split(' ')[0]}!`);
+    const botao = formAuto.querySelector('[type="submit"]');
+    Utils.clearAllErrors(formAuto);
+    botao.disabled = true;
+    botao.textContent = 'Entrando…';
+    try {
+      await Auth.loginDoador(document.getElementById('auto-email').value.trim(), document.getElementById('auto-pass').value, formAuto);
       window.location.href = 'autoatendimento.html';
-    } else {
-      Utils.setFieldError(passInput.closest('.form-group'), 'E-mail ou senha inválidos, ou cadastro ainda não aprovado.');
-      Utils.toast('Não foi possível entrar. Verifique e-mail e senha.', 'danger');
+    } catch (erro) {
+      if (erro.status !== 429) Utils.toast(erro.message, 'danger');
+      botao.disabled = false;
+      botao.textContent = 'Entrar na minha área';
     }
   });
 

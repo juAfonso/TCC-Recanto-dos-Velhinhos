@@ -330,10 +330,10 @@ redigitar, redefinição de senha (FR-041, FR-042, FR-046).
 
 **Independent Test**: quickstart V3 passos 2, 3 e 6 e V10.
 
-- [ ] T112 [US9] Criar `api/auth/login.js` (`POST { email, senha }`: nega com a mesma mensagem se senha errada, senha não definida, pessoa inativa ou papel de doador não ativo; limite de 5 falhas em 15 min) e `api/auth/logout.js`
-- [ ] T113 [P] [US9] Criar `api/me/index.js` (`GET`, dados cadastrais da pessoa da sessão) e `api/me/doacoes.js` (`GET`, **só** `confirmada`, valor e data)
-- [ ] T114 [US9] Atualizar a aba de doador de `public/login.html` e `public/assets/js/page-login.js` para `/api/auth/login`, com o link "esqueci minha senha / não recebi o link" chamando `/api/auth/link-senha`
-- [ ] T115 [US9] Reescrever `public/autoatendimento.html` e `public/assets/js/page-autoatendimento.js`: só doador associado; dados cadastrais; histórico de confirmadas; aviso de que pagamentos na sede ou por depósito não aparecem; botão "doar de novo" levando a `doacoes.html` já logado; **remover** a parte de voluntário
+- [X] T112 [US9] Criar `api/auth/login.js` (`POST { email, senha }`: nega com a mesma mensagem se senha errada, senha não definida, pessoa inativa ou papel de doador não ativo; limite de 5 falhas em 15 min) e `api/auth/logout.js` — *em `rotas/auth/`; também `GET /api/auth/sessao`, que diz se há doador logado sem auditar negação*
+- [X] T113 [P] [US9] Criar `api/me/index.js` (`GET`, dados cadastrais da pessoa da sessão) e `api/me/doacoes.js` (`GET`, **só** `confirmada`, valor e data) — *em `rotas/me/`; `avisoPendente` no `GET /api/me` (2026-10-07)*
+- [X] T114 [US9] Atualizar a aba de doador de `public/login.html` e `public/assets/js/page-login.js` para `/api/auth/login`, com o link "esqueci minha senha / não recebi o link" chamando `/api/auth/link-senha` — *contas de demonstração removidas da tela; `login.html#doador` abre a aba do doador*
+- [X] T115 [US9] Reescrever `public/autoatendimento.html` e `public/assets/js/page-autoatendimento.js`: só doador associado; dados cadastrais; histórico de confirmadas; aviso de que pagamentos na sede ou por depósito não aparecem; botão "doar de novo" levando a `doacoes.html` já logado; **remover** a parte de voluntário — *só consulta (2026-10-07); `doacoes.html` reconhece o doador logado, pula o passo dos dados e pede o aceite do aviso novo quando houver. Testes em `tests/autoatendimento.test.js`*
 
 **Checkpoint**: doador acompanha as próprias contribuições sem falar com a equipe (SC-012).
 

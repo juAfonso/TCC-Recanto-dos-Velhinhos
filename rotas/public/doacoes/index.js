@@ -1,7 +1,8 @@
 // POST /api/public/doacoes — o clique em "Já fiz o Pix" (FR-005, FR-006, FR-006a, FR-008).
 //
 // - espontânea: só { tipo, valor }. Nenhum dado pessoal, sem consentimento (FR-051).
-// - associativa com sessão de doador: só { tipo, valor }; o vínculo vem da sessão.
+// - associativa com sessão de doador: só { tipo, valor }; o vínculo vem da sessão. Se houver
+//   aviso de privacidade novo ainda não aceito, também { consentimento } (2026-10-07).
 // - associativa sem sessão: { doador, consentimento } também. Repete a verificação do FR-006b,
 //   cria ou reaproveita a pessoa, grava o consentimento e manda o link de definição de senha
 //   ao e-mail do cadastro (D11, D15).
@@ -13,7 +14,7 @@
 import { sql, transacao } from '../../_lib/db.js';
 import { doadorDaSessao } from '../../_lib/acesso.js';
 import { verificarAssociativa, prepararDoador, emitirLink, origemDoSite, MENSAGEM_NEUTRA } from '../../_lib/conta-doador.js';
-import { validarAceite, registrarConsentimento } from '../../_lib/consentimento.js';
+import { validarAceite, registrarConsentimento, avisoPendenteDo } from '../../_lib/consentimento.js';
 import { registrarAuditoria } from '../../_lib/auditoria.js';
 import { verificarLimite, ipDe } from '../../_lib/limite.js';
 import * as v from '../../_lib/validacao.js';
@@ -58,9 +59,21 @@ export const POST = rota(async (request) => {
 
   // Associativa de quem já entrou no autoatendimento.
   const logado = await doadorDaSessao(request);
+  // Se a equipe publicou um aviso de privacidade novo, ele aceita a versão nova junto com a
+  // doação; o aceite vira mais um consentimento do doador (decisão de 2026-10-07).
   if (logado) {
-    const id = await registrar({ tipo, valor, pessoaId: logado.id, criadoPor: 'doador', executor });
-    await registrarAuditoria({ autorTipo: 'doador', autorId: logado.id, acao: 'doacao.declarar', entidadeTipo: 'doacao', entidadeId: id, detalhe: { tipo } });
+    const pendente = await avisoPendenteDo(logado.id);
+    const avisoVersao = pendente ? await validarAceite(corpo.consentimento) : null;
+    await transacao(async (tx) => {
+      if (avisoVersao) {
+        await registrarConsentimento({ alvo: 'pessoa', alvoId: logado.id, avisoVersao, finalidade: 'doacao_associativa' }, tx);
+      }
+      const id = await registrar({ tipo, valor, pessoaId: logado.id, criadoPor: 'doador', executor: tx });
+      await registrarAuditoria({
+        autorTipo: 'doador', autorId: logado.id, acao: 'doacao.declarar', entidadeTipo: 'doacao', entidadeId: id,
+        detalhe: { tipo, aceitouAvisoNovo: Boolean(avisoVersao) },
+      }, tx);
+    });
     return json({ status: 'pendente', mensagem: OBRIGADO }, 201);
   }
 

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const navActions = document.querySelector('.nav-actions');
   if (navActions && typeof Auth !== 'undefined') {
     const session = Auth.getSession();
-    if (session && (session.tipo === 'voluntario' || session.tipo === 'doador')) {
+    if (session && session.tipo === 'doador') {
       const btn = navActions.querySelector('.btn-login');
       if (btn) {
         btn.textContent = 'Minha área';

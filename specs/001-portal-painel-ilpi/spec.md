@@ -158,6 +158,11 @@
 - Q: Quantas imagens a página institucional pode ter (FR-001a)? → A: **Uma galeria opcional de até 6 imagens**, no fim da página, na ordem em que foram incluídas. Nenhuma imagem é obrigatória: a página funciona só com os textos. Cada imagem tem texto alternativo obrigatório e o mesmo tamanho máximo das imagens de notícia (FR-032b). Retirar uma imagem a desativa, sem apagar o arquivo. Descartado: uma imagem por seção (exigiria migração e mudar a página pública).
 - Consequência registrada: trocar ou tirar a imagem de uma notícia só a **desvincula**; o arquivo continua no Blob público (Princípio III). Quem tiver o endereço antigo ainda consegue abri-lo, o que é aceitável porque a imagem já foi pública.
 
+### Session 2026-10-07 (4) — Autoatendimento do doador (fase 12)
+
+- Q: Quando a equipe publica uma versão nova do aviso de privacidade, o doador associado já logado precisa aceitá-la? → A: **Sim, na próxima doação.** Antes de gerar o Pix, a página mostra o link da versão nova e pede a confirmação; o aceite vira mais um consentimento do doador (um por versão aceita, como no DER). A área do doador avisa que há versão nova. Descartado: manter o aceite antigo (o histórico não mostraria que ele conheceu a versão nova).
+- Q: O doador associado pode alterar os próprios dados na área do doador? → A: **Não, só consulta** (FR-041). Para corrigir, fala com a secretaria, que corrige no Painel com histórico (FR-037). Evita que uma sessão esquecida aberta permita trocar o e-mail de login de outra pessoa. Para trocar a senha, usa "Esqueci minha senha".
+
 ## User Scenarios & Testing (mandatory)
 
 ### User Story 1 - Portal Público Informativo (Priority: P1)

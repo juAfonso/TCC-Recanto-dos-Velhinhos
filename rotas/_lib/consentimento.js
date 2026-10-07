@@ -11,6 +11,16 @@ export async function avisoVigente() {
   return aviso ?? null;
 }
 
+// Doador associado: a versão vigente que ele ainda não aceitou, ou null (decisão de 2026-10-07 —
+// um consentimento por versão aceita, como no DER). Revogado não conta como aceito.
+export async function avisoPendenteDo(pessoaId) {
+  const vigente = await avisoVigente();
+  if (!vigente) return null;
+  const [aceite] = await sql`
+    SELECT 1 FROM consentimento WHERE pessoa_id = ${pessoaId} AND aviso_versao = ${vigente.versao} AND revogado_em IS NULL`;
+  return aceite ? null : { versao: vigente.versao, publicadoEm: vigente.publicado_em };
+}
+
 // Devolve a versão aceita ou interrompe com 422.
 export async function validarAceite(corpo) {
   const vigente = await avisoVigente();

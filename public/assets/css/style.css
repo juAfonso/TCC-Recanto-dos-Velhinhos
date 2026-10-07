@@ -741,6 +741,11 @@ button{ cursor:pointer; font-family:inherit; }
 .radio-card:hover{ border-color:var(--cyclamen); }
 .radio-card input{ margin-top:3px; accent-color:var(--viridian); }
 .radio-card.selected{ border-color:var(--viridian); background:var(--bg-soft); }
+/* No teclado, o Tab entra no grupo pela opção marcada e as setas trocam de opção: o cartão
+   em foco precisa aparecer, e a dica das setas surge só quando o foco está no grupo (Princípio II). */
+.radio-card:focus-within{ outline:3px solid var(--viridian); outline-offset:2px; }
+.dica-setas{ display:none; font-size:.78rem; color:var(--muted); margin-top:8px; }
+fieldset:focus-within > .dica-setas{ display:block; }
 .radio-card strong{ display:block; font-size:.9rem; }
 .radio-card span.desc{ font-size:.78rem; color:var(--muted); }
 

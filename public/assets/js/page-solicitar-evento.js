@@ -1,69 +1,68 @@
+/* Proposta externa de evento ou campanha (US6, FR-020, FR-021, FR-049).
+   Evento pede uma data; campanha, um período. Aprovar não publica: a equipe entra em contato antes. */
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('form-solicitacao');
-  if (!form) return;
+  const $ = (id) => document.getElementById(id);
+  const form = $('form-solicitacao');
 
-  const dataInput = document.getElementById('se-data');
-  const dataHint = document.getElementById('se-data-hint');
+  // Datas a partir de amanhã (fuso de Brasília), como a API confere.
+  const amanha = new Date(Date.now() + 86400000).toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
+  ['se-data', 'se-inicio', 'se-fim'].forEach((id) => { $(id).min = amanha; });
+  $('se-inicio').addEventListener('change', () => { $('se-fim').min = $('se-inicio').value || amanha; });
 
-  function checkConflito() {
-    const db = DB.load();
-    const val = dataInput.value;
-    if (!val) { dataHint.textContent = ''; return; }
-    const conflita = db.campanhas.some(c => c.status === 'ativo' && c.data.slice(0, 10) === val);
-    dataHint.textContent = conflita
-      ? '⚠️ Já existe um evento/campanha confirmado nesta data. A equipe avaliará a possibilidade de conciliação.'
-      : 'Data disponível, sem conflitos com eventos já confirmados.';
-    dataHint.style.color = conflita ? 'var(--warning)' : 'var(--success)';
-  }
-  dataInput.addEventListener('change', checkConflito);
+  const tipo = () => form.querySelector('input[name=tipo]:checked')?.value || '';
+  form.querySelectorAll('input[name=tipo]').forEach((r) => r.addEventListener('change', () => {
+    $('grupo-data').hidden = tipo() !== 'evento';
+    $('grupo-periodo').hidden = tipo() !== 'campanha';
+    $('se-iniciativa-rotulo').firstChild.textContent = tipo() === 'campanha' ? 'Nome da campanha ' : 'Nome do evento ';
+    Utils.clearFieldError(r.closest('.form-group'));
+  }));
 
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     Utils.clearAllErrors(form);
-
-    const nome = document.getElementById('se-nome').value.trim();
-    const tipo = document.getElementById('se-tipo').value;
-    const email = document.getElementById('se-email').value.trim();
-    const telefone = document.getElementById('se-telefone').value.trim();
-    const data = dataInput.value;
-    const objetivo = document.getElementById('se-objetivo').value.trim();
-    const recursos = document.getElementById('se-recursos').value.trim();
-
-    let valid = true;
-    const fail = (input, msg) => { Utils.setFieldError(input.closest('.form-group'), msg); valid = false; };
-
-    if (!nome) fail(document.getElementById('se-nome'), 'Informe seu nome ou o nome da organização.');
-    if (!tipo) fail(document.getElementById('se-tipo'), 'Selecione o tipo de proposta.');
-    if (!Utils.isValidEmail(email)) fail(document.getElementById('se-email'), 'Informe um e-mail válido.');
-    if (!telefone) fail(document.getElementById('se-telefone'), 'Informe um telefone de contato.');
-    if (!data) fail(dataInput, 'Informe a data pretendida.');
-    if (!objetivo) fail(document.getElementById('se-objetivo'), 'Descreva o objetivo da proposta.');
-    if (!recursos) fail(document.getElementById('se-recursos'), 'Descreva os recursos esperados.');
-
-    if (!valid) {
-      Utils.toast('Verifique os campos destacados no formulário.', 'danger');
+    const aceite = form.querySelector('input[name=aceito]');
+    if (!Consentimento.dados(form).aceito) {
+      Utils.setFieldError(aceite.closest('.form-group'), 'Para enviar, marque que concorda com o aviso de privacidade.');
+      aceite.focus();
       return;
     }
 
-    const db = DB.load();
-    const protocolo = Utils.generateProtocol();
+    const corpo = {
+      tipo: tipo(),
+      nomeIniciativa: $('se-iniciativa').value.trim(),
+      dataPretendida: $('se-data').value,
+      periodoInicio: $('se-inicio').value,
+      periodoFim: $('se-fim').value,
+      objetivo: $('se-objetivo').value.trim(),
+      recursosEsperados: $('se-recursos').value.trim(),
+      nomeContato: $('se-nome').value.trim(),
+      email: $('se-email').value.trim(),
+      telefone: $('se-telefone').value,
+      consentimento: Consentimento.dados(form),
+    };
 
-    db.solicitacoesExternas.push({
-      id: Utils.generateId('se'),
-      protocolo,
-      nomeContato: nome, email, telefone, tipo, objetivo,
-      dataPretendida: new Date(data).toISOString(),
-      recursos,
-      status: 'em_analise',
-      criadoEm: new Date().toISOString()
-    });
-
-    DB.save(db);
-
-    document.getElementById('form-wrap').style.display = 'none';
-    document.getElementById('result-wrap').style.display = 'block';
-    document.getElementById('protocolo-gerado').textContent = protocolo;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    Utils.toast('Solicitação enviada com sucesso!');
+    const botao = form.querySelector('[type=submit]');
+    botao.disabled = true;
+    botao.textContent = 'Enviando…';
+    try {
+      const r = await Api.post('/api/public/solicitacoes', corpo, { form });
+      $('form-wrap').hidden = true;
+      $('sucesso').hidden = false;
+      $('protocolo-gerado').textContent = r.protocolo;
+      $('aviso-email').textContent = r.emailEnviado
+        ? 'Também mandamos o código para o seu e-mail (confira a caixa de spam).'
+        : 'Não conseguimos enviar o e-mail agora, mas a proposta foi registrada. Anote o código acima.';
+      $('sucesso').scrollIntoView({ behavior: 'smooth' });
+    } catch (erro) {
+      if (erro.campos.length) {
+        const primeiro = form.querySelector('.has-error input, .has-error select, .has-error textarea');
+        if (primeiro) primeiro.focus();
+      } else if (erro.status !== 429) {
+        Utils.toast(erro.message, 'danger');
+      }
+    } finally {
+      botao.disabled = false;
+      botao.textContent = 'Enviar proposta';
+    }
   });
 });

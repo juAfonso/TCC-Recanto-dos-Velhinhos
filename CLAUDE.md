@@ -71,7 +71,8 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
 - **Upload de arquivos:** Vercel Blob. Cobre currículos (privados) e a
   imagem de cada notícia (pública, FR-032b). **Dois stores (decidido em
   2026-10-06):** na Vercel o acesso é escolhido ao criar o store, então há um
-  privado (`SAGE-CURRICULOS`, currículos) e um público (imagens, fase 11).
+  privado (`SAGE-CURRICULOS`, currículos) e um público (imagens, fase 11 —
+  **ainda a criar** em 2026-10-07; o código já está pronto).
   Na Vercel a autenticação é por OIDC (`BLOB_STORE_ID`, sem token guardado);
   token só no `.env.local`, para testar arquivo no `npm run dev`. O currículo **não** usa URL
   assinada: a função do Painel confere o login e repassa o arquivo, para o
@@ -493,6 +494,14 @@ Passo a passo de comandos e validação em
   Session 2026-10-07 do spec.md. **O texto do aviso de privacidade é do
   grupo**; a equipe o publica pela tela "Privacidade (LGPD)" do Painel, que
   cria versão nova sem editar a antiga.
+- **Divulgação institucional (decidido em 2026-10-07, fase 11).** A página
+  institucional tem **galeria opcional de até 6 imagens**; nenhuma é
+  obrigatória. Imagem de notícia trocada ou retirada é só desvinculada: o
+  arquivo fica no Blob público. Imagens sobem **uma por envio**, porque o
+  corpo de requisição na Vercel vai até 4,5 MB. **O store público do Blob
+  ainda não foi criado**: até ele existir, incluir imagem responde "não
+  conseguimos receber imagens agora" (o resto funciona). Session 2026-10-07
+  (3) do spec.md.
 - **Gestão de usuários no Painel (decidido em 2026-10-07, fase 10).**
   (1) **O Painel não cria doador associado**: ele só nasce com a primeira
   doação associativa (decisão de 04/10); o FR-023 foi ajustado. (2)
@@ -716,8 +725,8 @@ recente do spec.md, não esta lista resumida.
    protocolo e sem anexo, sem o botão que simula a confirmação~~ (**feito
    em 2026-10-06**, fase 4); meta opcional e valor arrecadado manual nas
    campanhas (Portal desde a fase 3; tela do Painel **feita na fase 5**); ~~nome do evento na solicitação externa~~ (**feito na fase 8**); máscara de telefone em
-   todos os formulários e telefone visível ao admin fora da edição; editar,
-   despublicar e imagem em notícias; ~~CPF e data de nascimento na
+   todos os formulários e telefone visível ao admin fora da edição; ~~editar,
+   despublicar e imagem em notícias~~ (**feito na fase 11**); ~~CPF e data de nascimento na
    candidatura~~ (**feito na fase 7**). Depende do back: abrir anexos e ler a descrição inteira no
    Painel. **(2026-10-05)** Trocar a caixa "urgente" de `admin/itens.html`
    pela escolha de prioridade alta/média/baixa, e ordenar por ela no Painel,

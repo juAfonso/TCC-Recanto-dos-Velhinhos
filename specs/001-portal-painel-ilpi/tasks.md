@@ -313,11 +313,11 @@ institucional editável (FR-032, FR-032a, FR-032b, FR-001a).
 
 **Independent Test**: quickstart V12 e spec → User Story 8 → Independent Test.
 
-- [ ] T107 [P] [US8] Criar `api/admin/noticias/index.js` (`GET`, `POST` multipart: título, corpo, imagem opcional com `imagemAlt` obrigatório) e `api/admin/noticias/[id].js` (`PUT` multipart, com histórico)
-- [ ] T108 [P] [US8] Criar `api/admin/noticias/[id]/despublicar.js` e `[id]/publicar.js` (FR-032a)
-- [ ] T109 [P] [US8] Criar `api/admin/institucional.js` (`GET`/`PUT` multipart: história, missão, equipe, acolhimento, bazar, imagens com texto alternativo obrigatório; imagem retirada é **desativada**, nunca apagada; estado anterior em `historico_alteracao` — FR-001a)
-- [ ] T110 [US8] Reescrever `public/admin/noticias.html` e `public/assets/js/admin-noticias.js`: criar, editar, despublicar, publicar de novo, imagem com campo de texto alternativo obrigatório
-- [ ] T111 [P] [US8] Criar `public/admin/institucional.html` e `public/assets/js/admin-institucional.js`: edição dos três textos e das imagens com texto alternativo
+- [X] T107 [P] [US8] Criar `api/admin/noticias/index.js` (`GET`, `POST` multipart: título, corpo, imagem opcional com `imagemAlt` obrigatório) e `api/admin/noticias/[id].js` (`PUT` multipart, com histórico) — *em `rotas/admin/noticias/`; GET da notícia com histórico de edições*
+- [X] T108 [P] [US8] Criar `api/admin/noticias/[id]/despublicar.js` e `[id]/publicar.js` (FR-032a)
+- [X] T109 [P] [US8] Criar `api/admin/institucional.js` (`GET`/`PUT` multipart: história, missão, equipe, acolhimento, bazar, imagens com texto alternativo obrigatório; imagem retirada é **desativada**, nunca apagada; estado anterior em `historico_alteracao` — FR-001a) — *dividida: `PUT` dos textos em JSON e imagens em `rotas/admin/institucional/imagens/` (uma por envio, limite de 4,5 MB da Vercel; galeria de até 6, decisão de 2026-10-07)*
+- [X] T110 [US8] Reescrever `public/admin/noticias.html` e `public/assets/js/admin-noticias.js`: criar, editar, despublicar, publicar de novo, imagem com campo de texto alternativo obrigatório — *sem sincronização com redes sociais (FR-033 removido)*
+- [X] T111 [P] [US8] Criar `public/admin/institucional.html` e `public/assets/js/admin-institucional.js`: edição dos três textos e das imagens com texto alternativo — *edita as cinco seções e mostra as versões anteriores. Testes em `tests/conteudo.test.js`. O envio de imagem depende do store público do Blob, ainda não criado*
 
 **Checkpoint**: a instituição publica e mantém o próprio conteúdo depois da entrega.
 

@@ -153,6 +153,11 @@
 - Q: O funcionário cadastrado no Painel registra consentimento (LGPD)? → A: **Não.** A base do cadastro é o vínculo de trabalho, não o consentimento: nenhum aceite é gravado e nenhum e-mail é enviado. O voluntário cadastrado no Painel também não registra aceite eletrônico nem recebe e-mail: o termo de adesão é impresso e assinado na sede (FR-012a).
 - Consequência registrada: tornar funcionário quem é voluntário ativo **encerra** o papel de voluntário, como na efetivação de candidatura (FR-048), depois de o Painel avisar e o funcionário confirmar.
 
+### Session 2026-10-07 (3) — Divulgação institucional (fase 11)
+
+- Q: Quantas imagens a página institucional pode ter (FR-001a)? → A: **Uma galeria opcional de até 6 imagens**, no fim da página, na ordem em que foram incluídas. Nenhuma imagem é obrigatória: a página funciona só com os textos. Cada imagem tem texto alternativo obrigatório e o mesmo tamanho máximo das imagens de notícia (FR-032b). Retirar uma imagem a desativa, sem apagar o arquivo. Descartado: uma imagem por seção (exigiria migração e mudar a página pública).
+- Consequência registrada: trocar ou tirar a imagem de uma notícia só a **desvincula**; o arquivo continua no Blob público (Princípio III). Quem tiver o endereço antigo ainda consegue abri-lo, o que é aceitável porque a imagem já foi pública.
+
 ## User Scenarios & Testing (mandatory)
 
 ### User Story 1 - Portal Público Informativo (Priority: P1)

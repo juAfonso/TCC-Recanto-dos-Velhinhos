@@ -79,9 +79,21 @@ document.addEventListener('DOMContentLoaded', () => {
       cidadeEl.value = pix.cidade;
     }
     renderUltimaAtualizacao(pix);
+    document.getElementById('btn-desativar-pix').hidden = !pix;
     syncTipo();
     renderPreview();
   }
+
+  // Tira a chave do site (FR-007a): o Portal passa a mostrar só o contato da secretaria.
+  document.getElementById('btn-desativar-pix').addEventListener('click', async () => {
+    if (!confirm('Tirar a chave do site? A doação por Pix deixa de aparecer para o público até uma chave ser salva de novo. Nada é apagado.')) return;
+    try {
+      await Api.post('/api/admin/pix/desativar');
+      Utils.toast('Chave retirada. O site agora mostra que a doação está indisponível.');
+      form.reset();
+      carregar();
+    } catch (erro) { Utils.toast(erro.message, 'danger'); }
+  });
 
   tipoEl.addEventListener('change', () => { syncTipo(); renderPreview(); });
   [chaveEl, nomeEl, cidadeEl].forEach(el => el.addEventListener('input', renderPreview));

@@ -201,6 +201,7 @@ Toda ação que muda estado grava em `registro_auditoria` com a conta e a data (
 | `POST` | `/api/admin/doacoes/:id/confirmar` | `409 DOACAO_JA_CONFERIDA` se não estiver `pendente`; nada muda (FR-050) |
 | `POST` | `/api/admin/doacoes/:id/nao-localizar` | `{ motivo?: string, motivoPadrao?: true }` — motivo **opcional**; `motivoPadrao` grava o texto do FR-008a |
 | `GET`/`PUT` | `/api/admin/pix` | chave, tipo, nome do recebedor, cidade (FR-007) |
+| `POST` | `/api/admin/pix/desativar` | tira a chave do site sem apagar (FR-007a): o Portal mostra só o contato; `409` se não houver chave ativa (2026-10-07, achado no quickstart V4) |
 
 **Não existe rota que edite uma declaração de doação** (FR-037, exceção de 2026-10-06): o que foi
 conferido contra o extrato é registro de conferência. Declaração errada é marcada como não

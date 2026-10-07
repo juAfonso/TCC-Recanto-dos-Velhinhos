@@ -726,12 +726,15 @@ recente do spec.md, não esta lista resumida.
    técnicas do plano (research D15). Não reabrir sem fato novo. O protótipo continua precisando acompanhar (triagens com
    entrevista, autoatendimento só do doador, página de autorização para
    imprimir) — a lista completa de telas está em `plan.md`.
-6. **(2026-10-04)** Correções do protótipo apontadas na revisão do grupo,
+6. ~~**(2026-10-04)** Correções do protótipo apontadas na revisão do grupo.~~
+   **Resolvida em 2026-10-07** (fase 14): todas feitas; detalhe abaixo.
+   Correções do protótipo apontadas na revisão do grupo,
    já refletidas no spec e ainda não feitas no front: ~~doação sem
    protocolo e sem anexo, sem o botão que simula a confirmação~~ (**feito
    em 2026-10-06**, fase 4); meta opcional e valor arrecadado manual nas
    campanhas (Portal desde a fase 3; tela do Painel **feita na fase 5**); ~~nome do evento na solicitação externa~~ (**feito na fase 8**); máscara de telefone em
-   todos os formulários e telefone visível ao admin fora da edição; ~~editar,
+   todos os formulários e telefone visível ao admin fora da edição (**conferido
+   na fase 14**); ~~editar,
    despublicar e imagem em notícias~~ (**feito na fase 11**); ~~CPF e data de nascimento na
    candidatura~~ (**feito na fase 7**). Depende do back: abrir anexos e ler a descrição inteira no
    Painel. **(2026-10-05)** Trocar a caixa "urgente" de `admin/itens.html`
@@ -740,6 +743,27 @@ recente do spec.md, não esta lista resumida.
    Painel feito na fase 5).
 7. ~~Emenda ao Princípio IV pendente de ratificação.~~ **Resolvida em
    2026-10-05** — ver "Constituição 3.0.0" em "Decisões já tomadas".
+8. **(2026-10-07) O que ficou depois das 13 fases** — o sistema está
+   completo no código; falta o que depende de pessoas ou de conta externa:
+   - **Portões manuais da constituição** (acessibilidade, responsividade nos
+     quatro navegadores, cenários V1–V12 do quickstart e QR com a chave real
+     depois de cada troca): resultado parcial em
+     `specs/001-portal-painel-ilpi/checklists/portoes.md`.
+   - **Aviso de privacidade aprovado pela instituição**: enquanto o texto
+     publicado for o rascunho do grupo (a tela de LGPD avisa), publicar a
+     versão aprovada pelo Recanto.
+   - **Fotos reais** do Recanto, incluídas pela equipe na tela "Página
+     institucional" (até 6, com texto alternativo).
+   - **Testar envio de imagem** depois de o store público do Blob estar
+     conectado (criado em 2026-10-07) — no site publicado, ou no
+     `npm run dev` com `BLOB_PUBLICO_READ_WRITE_TOKEN`.
+   - **Variáveis do banco na Vercel** marcadas "Needs Attention": tirar o
+     ambiente Development e, se quiserem, trocar a senha e salvar como
+     Sensitive. Adiado pelo grupo em 2026-10-07.
+   - **Levar ao PRD e à seção 19 do TCC** o que ampliou ou mudou os casos de
+     uso: termo de adesão para imprimir (CSU05), nome do CSU09
+     ("Autoatendimento do Doador Associado") e os 11 casos de uso revisados
+     de `docs/casos-de-uso-tcc.md`.
 
 ## Inegociável
 

@@ -1232,7 +1232,7 @@ tbody tr:hover{ background:var(--bg-soft); }
     text-align:center;
 }
 .contato h3{ color:var(--magenta); margin-bottom:10px; font-size:1rem; }
-.contato a{ color:var(--viridian); text-decoration:none; font-weight:600; }
+.contato a:not(.btn){ color:var(--viridian); text-decoration:none; font-weight:600; }
 
 footer.site-footer{
     background:#20343b;
@@ -1276,3 +1276,6 @@ footer.site-footer{
     .admin-topbar{ padding:16px 18px; }
 }
 
+
+/* E-mail e endereço longos quebram a linha em vez de alargar a página no celular (Princípio V). */
+.form-shell, .info-value { overflow-wrap: break-word; }

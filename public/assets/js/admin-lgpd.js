@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const r = await Api.get(`/api/admin/lgpd/titulares?q=${encodeURIComponent(q)}`, { form: $('form-busca') });
       ultimaBusca = q;
       caixa.innerHTML = r.registros.map(cartao).join('')
-        || '<p class="cell-muted" style="margin-top:10px;">Nada encontrado. Confira o CPF (11 números) ou o e-mail completo.</p>';
+        || '<p class="cell-muted" style="margin-top:10px;">Nada encontrado. Confira a grafia do nome (sem abreviar), o CPF com os 11 números ou o e-mail completo.</p>';
     } catch (erro) {
       caixa.innerHTML = erro.campos.length ? '' : `<p>${e(erro.message)}</p>`;
     }

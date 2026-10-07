@@ -10,6 +10,7 @@ const AcoesAuditoria = (() => {
     'painel.login': 'Entrada no Painel',
     'painel.logout': 'Saída do Painel',
     'pix.atualizar': 'Chave Pix alterada',
+    'pix.desativar': 'Chave Pix retirada do site',
     'doador.login': 'Doador entrou na área do doador',
     'doador.logout': 'Doador saiu da área do doador',
     'doador.definir_senha': 'Doador criou a senha',

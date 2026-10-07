@@ -88,16 +88,14 @@
                     <li><b>Dado que a lei manda guardar</b> (por exemplo, nome e CPF de ex-funcionário): marque o que fica e escreva qual obrigação exige. O resto é anonimizado.</li>
                 </ol>
             </details>
-
             <div class="panel" style="margin-bottom:18px;">
                 <h2 style="font-size:1.1rem;margin-bottom:10px;">Buscar o titular</h2>
                 <form id="form-busca" class="form-row" style="align-items:flex-end;" novalidate>
-                    <div class="form-group" style="flex:1;">
-                        <label for="busca-q">Nome, CPF ou e-mail</label>
-                        <input type="search" id="busca-q" data-campo="q" autocomplete="off" style="width:100%;">
-                        <div class="form-error"></div>
+                    <div class="search-box">
+                        <span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/></svg></span>
+                        <label for="busca-q" class="sr-only">Buscar por nome, CPF ou e-mail</label>
+                        <input type="search" id="busca-q" placeholder="Buscar por nome, CPF ou e-mail...">
                     </div>
-                    <div class="form-group" style="flex:0 0 auto;"><button type="submit" class="btn btn-viridian">Buscar</button></div>
                 </form>
                 <div id="resultados" aria-live="polite"></div>
             </div>

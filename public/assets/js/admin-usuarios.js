@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `<span class="badge ${x.status === 'ativo' ? 'badge-info' : 'badge-neutral'}">${PAPEL[x.tipo]}${x.status === 'inativo' ? ' (inativo)' : ''}</span>`).join(' ') || '—'}</td>
           <td><button class="btn btn-outline btn-sm" data-abrir="${p.id}">Abrir</button></td>
         </tr>`).join('')
-        || '<tr><td colspan="6"><div class="empty-state"><span class="icon" aria-hidden="true">👥</span><p>Ninguém encontrado com essa busca.</p></div></td></tr>';
+        || '<tr><td colspan="6"><div class="empty-state"><p>Ninguém encontrado com essa busca.</p></div></td></tr>';
     } catch (erro) {
       tbody.innerHTML = `<tr><td colspan="6">${e(erro.message)}</td></tr>`;
     }

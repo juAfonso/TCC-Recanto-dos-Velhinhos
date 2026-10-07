@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${selo(v.status)}${seloAutorizacao(v)}</td>
           <td><button class="btn btn-outline btn-sm" data-abrir="${v.id}">Ver e decidir</button></td>
         </tr>`).join('')
-        || '<tr><td colspan="7"><div class="empty-state"><span class="icon" aria-hidden="true">🙋</span><p>Nenhum cadastro nesta lista.</p></div></td></tr>';
+        || '<tr><td colspan="7"><div class="empty-state"><p>Nenhum cadastro nesta lista.</p></div></td></tr>';
     } catch (erro) {
       tbody.innerHTML = `<tr><td colspan="7">${e(erro.message)}</td></tr>`;
     }

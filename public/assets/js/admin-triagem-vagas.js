@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${selo(c.status)}</td>
           <td><button class="btn btn-outline btn-sm" data-abrir="${c.id}">Ver e decidir</button></td>
         </tr>`).join('')
-        || '<tr><td colspan="8"><div class="empty-state"><span class="icon" aria-hidden="true">📄</span><p>Nenhuma candidatura nesta lista.</p></div></td></tr>';
+        || '<tr><td colspan="8"><div class="empty-state"><p>Nenhuma candidatura nesta lista.</p></div></td></tr>';
     } catch (erro) {
       tbody.innerHTML = `<tr><td colspan="8">${e(erro.message)}</td></tr>`;
     }

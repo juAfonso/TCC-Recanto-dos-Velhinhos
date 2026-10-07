@@ -25,11 +25,11 @@ const PortalCards = (() => {
       <div class="card item-card">
         <div>
           <span class="badge ${p.cls}">${p.rotulo}</span>
+          <span class="qtd">${quantidade(i.quantidade)} ${e(i.unidade)}</span>
           <h3 style="margin-top:10px;">${e(i.nome)}</h3>
           <p>${p.frase}</p>
           ${comData ? `<p class="card-meta">Atualizado em ${Utils.formatDate(i.atualizadoEm)}</p>` : ''}
         </div>
-        <span class="qtd">${quantidade(i.quantidade)} ${e(i.unidade)}</span>
       </div>`;
   }
 
@@ -86,8 +86,7 @@ const PortalCards = (() => {
   function noticia(n, { resumo = false } = {}) {
     const url = n.imagem ? urlSegura(n.imagem.url) : '';
     const capa = url
-      ? `<img src="${url}" alt="${e(n.imagem.alt)}" class="noticia-thumb" style="object-fit:cover;width:100%;" loading="lazy">`
-      : '<div class="noticia-thumb" aria-hidden="true">📰</div>';
+      ? `<img src="${url}" alt="${e(n.imagem.alt)}" class="noticia-thumb" style="object-fit:cover;width:100%;" loading="lazy">` : '';
     const corpo = resumo
       ? `<p>${e(n.corpo.slice(0, 110))}${n.corpo.length > 110 ? '…' : ''}</p>`
       : Utils.paragrafos(n.corpo);
@@ -106,7 +105,7 @@ const PortalCards = (() => {
   }
 
   function vazio(mensagem) {
-    return `<div class="empty-state"><span class="icon" aria-hidden="true">📭</span><p>${e(mensagem)}</p></div>`;
+    return `<div class="empty-state"><p>${e(mensagem)}</p></div>`;
   }
 
   function erro() {

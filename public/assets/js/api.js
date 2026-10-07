@@ -17,6 +17,7 @@ class ApiErro extends Error {
     this.codigo = erro.codigo || 'ERRO';
     this.campos = erro.campos || [];
     this.mensagens = erro.mensagens || {};
+    this.dados = erro; // campos extras do erro: id do registro existente, confirmarAviso…
   }
 }
 

@@ -6,7 +6,7 @@ import { test, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { prepararBanco, chamar, criarConta, criarDoador, contarAuditoria } from './_apoio.js';
 
-const ROTAS = ['/api/admin/dashboard', '/api/admin/doacoes', '/api/admin/pessoas'];
+const ROTAS = ['/api/admin/dashboard', '/api/admin/doacoes', '/api/admin/pessoas', '/api/admin/auditoria', '/api/admin/configuracao', '/api/admin/falhas-email'];
 let doador;
 let conta;
 let contaInativa;

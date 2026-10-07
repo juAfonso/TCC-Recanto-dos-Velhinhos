@@ -1,0 +1,69 @@
+/* =========================================================
+   admin-acoes.js — nome legível de cada ação da auditoria (FR-035)
+   Usado pela Visão Geral e pela tela de Registros.
+   Ação sem nome aqui aparece com o código mesmo — melhor do que esconder.
+   ========================================================= */
+
+const AcoesAuditoria = (() => {
+  const NOMES = {
+    'acesso.negado': 'Tentativa de acesso negada',
+    'painel.login': 'Entrada no Painel',
+    'painel.logout': 'Saída do Painel',
+    'pix.atualizar': 'Chave Pix alterada',
+    'doacao.declarar': 'Doação declarada no site',
+    'doacao.confirmar': 'Doação confirmada',
+    'doacao.nao_localizar': 'Doação marcada como não localizada',
+    'item.criar': 'Item necessário cadastrado',
+    'item.editar': 'Item necessário alterado',
+    'item.baixa': 'Item necessário dado como suprido',
+    'evento.criar': 'Evento criado',
+    'evento.editar': 'Evento alterado',
+    'evento.encerrar': 'Evento encerrado',
+    'evento.encerrar_auto': 'Evento encerrado automaticamente (data passou)',
+    'campanha.criar': 'Campanha criada',
+    'campanha.editar': 'Campanha alterada',
+    'campanha.encerrar': 'Campanha encerrada',
+    'campanha.encerrar_auto': 'Campanha encerrada automaticamente (data passou)',
+    'campanha.arrecadado': 'Valor arrecadado da campanha atualizado',
+    'voluntario.cadastrar': 'Cadastro de voluntário enviado pelo site',
+    'voluntario.cadastrar_painel': 'Voluntário cadastrado no Painel',
+    'voluntario.entrevista': 'Voluntário chamado para entrevista',
+    'voluntario.aprovado': 'Voluntário aprovado',
+    'voluntario.rejeitado': 'Voluntário rejeitado',
+    'voluntario.encerrado_titular': 'Cadastro de voluntário encerrado a pedido',
+    'voluntario.corrigir': 'Dados de voluntário corrigidos',
+    'voluntario.autorizacao_recebida': 'Autorização do responsável recebida',
+    'voluntario.imprimir_documentos': 'Termo de voluntário impresso',
+    'candidatura.enviar': 'Candidatura enviada pelo site',
+    'candidatura.entrevista': 'Candidato chamado para entrevista',
+    'candidatura.aprovada': 'Candidatura aprovada',
+    'candidatura.rejeitada': 'Candidatura rejeitada',
+    'candidatura.encerrada_titular': 'Candidatura encerrada a pedido',
+    'candidatura.corrigir': 'Dados de candidatura corrigidos',
+    'candidatura.abrir_curriculo': 'Currículo aberto',
+    'solicitacao.enviar': 'Solicitação externa enviada pelo site',
+    'solicitacao.aguardando_contato': 'Solicitação externa aprovada (aguardando contato)',
+    'solicitacao.confirmada': 'Solicitação externa confirmada e publicada',
+    'solicitacao.rejeitada': 'Solicitação externa rejeitada',
+    'solicitacao.encerrada_titular': 'Solicitação externa encerrada a pedido',
+    'solicitacao.corrigir': 'Dados de solicitação externa corrigidos',
+    'pessoa.cadastrar': 'Funcionário cadastrado no Painel',
+    'pessoa.corrigir': 'Dados de pessoa corrigidos',
+    'pessoa.adicionar_papel': 'Papel adicionado a uma pessoa',
+    'pessoa.inativar': 'Papel inativado',
+    'pessoa.reativar': 'Papel reativado',
+    'consentimento.revogar': 'Revogação de consentimento registrada',
+    'anonimizacao.executar': 'Dados anonimizados',
+    'aviso_privacidade.publicar': 'Nova versão do aviso de privacidade publicada',
+    'falha_email.reenviar': 'E-mail reenviado',
+    'falha_email.tratada': 'Falha de e-mail marcada como tratada',
+    'configuracao.alterar': 'Configuração alterada',
+  };
+
+  const AUTOR = { doador: 'Doador associado', sistema: 'Sistema (automático)', anonimo: 'Visitante do site' };
+
+  return {
+    nome: (acao) => NOMES[acao] || acao,
+    autor: (r) => (r.autorTipo === 'conta_institucional' ? (r.autor || 'Conta do Painel') : AUTOR[r.autorTipo] || r.autorTipo),
+  };
+})();

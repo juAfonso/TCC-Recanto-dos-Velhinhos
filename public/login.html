@@ -23,7 +23,7 @@
 
             <div class="tabs-nav" style="justify-content:center;">
                 <button class="tab-btn active" data-tab="admin">Painel Administrativo</button>
-                <button class="tab-btn" data-tab="auto">Autoatendimento</button>
+                <button class="tab-btn" data-tab="auto">Área do doador</button>
             </div>
 
             <div class="tab-panel active" data-tab="admin">
@@ -47,12 +47,12 @@
                 <form id="form-auto-login" novalidate>
                     <div class="form-group">
                         <label for="auto-email">E-mail <span class="req">*</span></label>
-                        <input type="email" id="auto-email" autocomplete="username">
+                        <input type="email" id="auto-email" data-campo="email" autocomplete="username">
                         <div class="form-error"></div>
                     </div>
                     <div class="form-group">
                         <label for="auto-pass">Senha <span class="req">*</span></label>
-                        <input type="password" id="auto-pass" autocomplete="current-password">
+                        <input type="password" id="auto-pass" data-campo="senha" autocomplete="current-password">
                         <div class="form-error"></div>
                     </div>
                     <div style="text-align:right;margin-bottom:14px;">
@@ -60,18 +60,13 @@
                     </div>
                     <button type="submit" class="btn btn-viridian btn-block">Entrar na minha área</button>
                 </form>
-                <div class="demo-creds">
-                    <strong>Contas de demonstração</strong><br>
-                    Voluntária: <strong>isadora.voluntaria@gmail.com</strong> · senha: <strong>voluntario123</strong><br>
-                    Doadora: <strong>ana.doadora@gmail.com</strong> · senha: <strong>doador123</strong>
-                </div>
+                <p class="form-hint" style="margin-top:14px;">A área do doador é para quem faz <b>doação associativa</b>. A conta é criada junto com a primeira doação associativa, e a senha, pelo link enviado ao seu e-mail. Não recebeu o link? Use "Esqueci minha senha".</p>
             </div>
         </div>
     </div>
 </div>
 
 <script src="assets/js/utils.js"></script>
-<script src="assets/js/data.js"></script>
 <script src="assets/js/api.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/mostrar-senha.js"></script>

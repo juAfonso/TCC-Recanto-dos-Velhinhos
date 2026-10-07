@@ -161,6 +161,7 @@ Cinco falhas em 15 min por IP e conta → `429` (D13).
 |---|---|---|
 | `POST` | `/api/auth/login` | `{ email, senha }`; nega se senha não definida, pessoa inativa ou papel de doador não ativo, **com a mesma mensagem** de senha errada |
 | `POST` | `/api/auth/logout` | |
+| `GET` | `/api/auth/sessao` | `{ logado: false }` ou `{ logado: true, nome, avisoPendente }`. Para páginas públicas saberem se há doador logado; **não** nega nem audita (visitante sem login é o normal) |
 | `POST` | `/api/auth/link-senha` | `{ email }` — envia link de **definição** (sem senha ainda) ou **redefinição**; resposta sempre `200` idêntica (FR-046, D11) |
 | `POST` | `/api/auth/definir-senha` | `{ token, senha }` — consome token válido; encerra sessões abertas; `400 LINK_INVALIDO_OU_EXPIRADO` com orientação para pedir outro |
 
@@ -170,10 +171,10 @@ Cinco falhas em 15 min por IP e conta → `429` (D13).
 
 | Método | Rota | Retorna |
 |---|---|---|
-| `GET` | `/api/me` | dados cadastrais próprios |
+| `GET` | `/api/me` | dados cadastrais próprios, só consulta (2026-10-07); `avisoPendente` = versão vigente do aviso ainda não aceita, ou `null` |
 | `GET` | `/api/me/doacoes` | **só doações `confirmada`** — valor e data (FR-041); pendentes e não localizadas nunca aparecem |
 
-Doar logado usa `POST /api/public/doacoes` com o cookie (vínculo pela sessão).
+Doar logado usa `POST /api/public/doacoes` com o cookie (vínculo pela sessão). Com aviso de privacidade novo não aceito, o corpo leva `consentimento: { avisoVersao, aceito }`; sem ele, `422 CONSENTIMENTO_OBRIGATORIO` (2026-10-07).
 
 ---
 

@@ -29,65 +29,65 @@
 </header>
 
 <section class="page-hero">
-    <span class="subtitle">AUTOATENDIMENTO</span>
-    <h1 id="area-titulo">Minha Área</h1>
-    <p>Consulte seus próprios dados e histórico. Por segurança, você só tem acesso às suas informações.</p>
+    <span class="subtitle">ÁREA DO DOADOR</span>
+    <h1>Minha área — Doador(a) associado(a)</h1>
+    <p>Seus dados e as suas doações confirmadas. Por segurança, você só vê as suas próprias informações.</p>
 </section>
 
 <section class="section">
     <div class="container">
 
         <div class="profile-header">
-            <div class="avatar-circle" id="avatar-iniciais">--</div>
+            <div class="avatar-circle" id="avatar-iniciais" aria-hidden="true">--</div>
             <div>
-                <h2 id="perfil-nome" style="font-size:1.3rem;">—</h2>
-                <span class="badge badge-success" id="perfil-tipo-badge">—</span>
+                <h2 id="perfil-nome" style="font-size:1.3rem;">Carregando…</h2>
+                <span class="badge badge-success">Doador(a) associado(a)</span>
             </div>
         </div>
 
-        <!-- VOLUNTÁRIO -->
-        <div id="painel-voluntario" style="display:none;" class="panel">
-            <div class="panel-head"><h2>Meus dados cadastrais</h2></div>
+        <div class="alert alert-info" id="aviso-novo" hidden style="margin-bottom:18px;"><span aria-hidden="true">ℹ️</span><div>
+            O Recanto publicou uma <b>nova versão do aviso de privacidade</b>. Leia em <a href="aviso-privacidade.html" target="_blank" rel="noopener">aviso de privacidade</a>; na sua próxima doação vamos pedir que você confirme que concorda.
+        </div></div>
+
+        <div class="panel">
+            <div class="panel-head">
+                <h2>Minhas doações confirmadas</h2>
+                <a class="btn btn-viridian btn-sm" href="doacoes.html#doar">Fazer nova doação</a>
+            </div>
+            <div class="stat-grid" style="margin-bottom:16px;">
+                <div class="stat-card">
+                    <span class="stat-label">Total confirmado via Pix</span>
+                    <span class="stat-value" id="doador-total">—</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Doações confirmadas</span>
+                    <span class="stat-value" id="doador-confirmadas">—</span>
+                </div>
+            </div>
+            <div class="alert alert-info" style="margin-bottom:14px;"><span aria-hidden="true">ℹ️</span><div>
+                Aqui aparecem só as doações feitas <b>por Pix e declaradas neste site</b>, depois que a equipe confere no extrato do banco — por isso uma doação recente pode levar alguns dias para aparecer.
+                Contribuições pagas na sede ou por depósito ficam registradas na secretaria do Recanto e não aparecem aqui. Não emitimos recibo pelo site.
+                Dúvidas: <span id="contato-recanto">fale com a secretaria do Recanto</span>.
+            </div></div>
+            <div class="table-wrap">
+                <table>
+                    <caption class="sr-only">Doações confirmadas</caption>
+                    <thead><tr><th scope="col">Data</th><th scope="col">Valor</th></tr></thead>
+                    <tbody id="doador-historico"><tr><td colspan="2" class="cell-muted">Carregando…</td></tr></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-head"><h2>Meus dados</h2></div>
             <div class="info-grid">
-                <div class="info-field"><div class="info-label">Nome</div><div class="info-value" id="vol-nome"></div></div>
-                <div class="info-field"><div class="info-label">Telefone</div><div class="info-value" id="vol-telefone"></div></div>
-                <div class="info-field"><div class="info-label">Área de interesse</div><div class="info-value" id="vol-area"></div></div>
-                <div class="info-field"><div class="info-label">Status de voluntariado</div><div class="info-value" id="vol-status"></div></div>
-                <div class="info-field"><div class="info-label">Voluntário(a) desde</div><div class="info-value" id="vol-desde"></div></div>
+                <div class="info-field"><div class="info-label">Nome</div><div class="info-value" id="dado-nome">—</div></div>
+                <div class="info-field"><div class="info-label">CPF</div><div class="info-value" id="dado-cpf">—</div></div>
+                <div class="info-field"><div class="info-label">E-mail</div><div class="info-value" id="dado-email">—</div></div>
+                <div class="info-field"><div class="info-label">Telefone</div><div class="info-value" id="dado-telefone">—</div></div>
+                <div class="info-field"><div class="info-label">Doador(a) associado(a) desde</div><div class="info-value" id="dado-desde">—</div></div>
             </div>
-        </div>
-
-        <!-- DOADOR -->
-        <div id="painel-doador" style="display:none;">
-            <div class="panel">
-                <div class="panel-head">
-                    <h2>Resumo das minhas doações</h2>
-                </div>
-                <div class="stat-grid" style="margin-bottom:0;">
-                    <div class="stat-card">
-                        <span class="stat-label">Total doado via Pix</span>
-                        <span class="stat-value" id="doador-total">R$ 0</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Doações confirmadas</span>
-                        <span class="stat-value" id="doador-confirmadas">0</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-label">Doações pendentes</span>
-                        <span class="stat-value" id="doador-pendentes">0</span>
-                    </div>
-                </div>
-            </div>
-            <div class="panel">
-                <div class="panel-head"><h2>Histórico de doações</h2></div>
-                <p class="form-hint">Aqui aparecem só as doações feitas por Pix e declaradas neste site. Contribuições pagas na sede ou por depósito ficam registradas na secretaria do Recanto. Em caso de dúvida, fale com a secretaria pelo telefone (24) 3016-4023.</p>
-                <div class="table-wrap">
-                    <table>
-                        <thead><tr><th>Data</th><th>Valor</th><th>Status</th></tr></thead>
-                        <tbody id="doador-historico"></tbody>
-                    </table>
-                </div>
-            </div>
+            <p class="form-hint" style="margin-top:12px;">Algum dado errado? Peça a correção à secretaria do Recanto. Para trocar a senha, saia e use "Esqueci minha senha" na tela de login.</p>
         </div>
 
     </div>
@@ -122,7 +122,7 @@
 </footer>
 
 <script src="assets/js/utils.js"></script>
-<script src="assets/js/data.js"></script>
+<script src="assets/js/api.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/nav.js"></script>
 <script src="assets/js/page-autoatendimento.js"></script>

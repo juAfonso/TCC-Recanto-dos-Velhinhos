@@ -4,11 +4,11 @@
    - Painel Administrativo: conta institucional compartilhada (FR-040),
      com sessão em cookie assinado pelo servidor. Quem decide se a pessoa
      está logada é sempre o servidor (/api/admin/sessao), nunca o navegador.
-   - Autoatendimento do doador associado (FR-041): AINDA SIMULADO sobre o
-     data.js, até a história US9 ligar estas funções à API.
+   - Autoatendimento do doador associado (FR-041): login próprio, com o
+     mesmo cookie assinado (contexto "doador"). Também decidido no servidor.
 
    O sessionStorage guarda só uma "lembrança" para exibição (nome na tela,
-   autor no histórico simulado do data.js). Não dá acesso a nada.
+   "Minha área" no menu). Não dá acesso a nada.
    ========================================================= */
 
 const SESSION_KEY = 'sage_session_v1';
@@ -58,42 +58,51 @@ const Auth = (() => {
     }
   }
 
-  /* ---------- Autoatendimento (simulado — US9) ---------- */
+  /* ---------- Autoatendimento do doador associado (servidor — US9) ---------- */
 
-  function loginAutoatendimento(email, senha) {
-    const db = DB.load();
-    const usuario = db.usuarios.find(u =>
-      u.email.toLowerCase() === (email || '').toLowerCase() &&
-      u.senha === senha &&
-      (u.perfil === 'voluntario' || u.perfil === 'doador') &&
-      u.status === 'ativo'
-    );
-    if (usuario) {
-      setSession({ tipo: usuario.perfil, nome: usuario.nome, email: usuario.email, usuarioId: usuario.id });
-      return usuario;
-    }
-    return null;
+  // Lança ApiErro se e-mail/senha estiverem errados (a tela mostra a mensagem).
+  async function loginDoador(email, senha, form) {
+    const resposta = await Api.post('/api/auth/login', { email, senha }, { form });
+    setSession({ tipo: 'doador', nome: resposta.nome });
+    return resposta;
   }
 
-  /* Protege a área de autoatendimento */
-  function requireAutoatendimento() {
-    const s = getSession();
-    if (!s || (s.tipo !== 'voluntario' && s.tipo !== 'doador')) {
+  async function logoutDoador() {
+    try { await Api.post('/api/auth/logout', {}); } catch (e) { /* sai mesmo assim */ }
+    logout();
+  }
+
+  // { logado, nome, avisoPendente } — pergunta ao servidor, sem registrar negação.
+  async function verificarDoador() {
+    try {
+      const r = await Api.get('/api/auth/sessao');
+      if (r.logado) setSession({ tipo: 'doador', nome: r.nome });
+      else if (getSession()?.tipo === 'doador') logout();
+      return r;
+    } catch (e) {
+      return { logado: false };
+    }
+  }
+
+  /* Protege a área de autoatendimento: sem doador logado, vai para o login. */
+  async function requireAutoatendimento() {
+    const r = await verificarDoador();
+    if (!r.logado) {
       window.location.href = computeLoginPath();
       return null;
     }
-    return s;
+    return r;
   }
 
   function computeLoginPath() {
     // funciona tanto a partir da raiz quanto de /admin/
     const inAdmin = window.location.pathname.includes('/admin/');
-    return inAdmin ? '../login.html' : 'login.html';
+    return inAdmin ? '../login.html' : 'login.html#doador';
   }
 
   return {
     getSession, setSession, logout,
     loginAdmin, logoutAdmin, verificarAdmin,
-    loginAutoatendimento, requireAutoatendimento, computeLoginPath
+    loginDoador, logoutDoador, verificarDoador, requireAutoatendimento, computeLoginPath
   };
 })();

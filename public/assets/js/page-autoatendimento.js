@@ -1,54 +1,41 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const session = Auth.requireAutoatendimento();
-  if (!session) return; // redirecionado para login
+/* Área do doador associado (US9 — FR-041, FR-042): dados próprios (só consulta) e histórico
+   das doações CONFIRMADAS. Quem decide o acesso é o servidor; sem sessão, vai para o login.
+   Voluntário não tem autoatendimento (decisão de 2026-10-03). */
+document.addEventListener('DOMContentLoaded', async () => {
+  const $ = (id) => document.getElementById(id);
 
-  const db = DB.load();
-  const usuario = db.usuarios.find(u => u.id === session.usuarioId);
-  if (!usuario) { Auth.logout(); window.location.href = 'login.html'; return; }
+  $('btn-logout').addEventListener('click', async () => {
+    await Auth.logoutDoador();
+    window.location.href = 'index.html';
+  });
 
-  const iniciais = usuario.nome.split(' ').map(p => p[0]).slice(0, 2).join('').toUpperCase();
-  document.getElementById('avatar-iniciais').textContent = iniciais;
-  document.getElementById('perfil-nome').textContent = usuario.nome;
+  const sessao = await Auth.requireAutoatendimento();
+  if (!sessao) return; // redirecionado para o login
 
-  if (usuario.perfil === 'voluntario') {
-    document.getElementById('area-titulo').textContent = 'Minha Área — Voluntário(a)';
-    document.getElementById('perfil-tipo-badge').textContent = 'Voluntário(a) Ativo(a)';
-    document.getElementById('painel-voluntario').style.display = 'block';
+  try {
+    const [eu, historico] = await Promise.all([Api.get('/api/me'), Api.get('/api/me/doacoes')]);
 
-    const cadastro = db.voluntarios.find(v => v.usuarioId === usuario.id);
+    $('avatar-iniciais').textContent = eu.nome.split(' ').filter(Boolean).map((p) => p[0]).slice(0, 2).join('').toUpperCase();
+    $('perfil-nome').textContent = eu.nome;
+    $('dado-nome').textContent = eu.nome;
+    $('dado-cpf').textContent = Utils.maskCPF(eu.cpf);
+    $('dado-email').textContent = eu.email || '—';
+    $('dado-telefone').textContent = (eu.telefone || '').replace(/^(\d{2})(\d{4,5})(\d{4})$/, '($1) $2-$3') || '—';
+    $('dado-desde').textContent = eu.associadoDesde ? Utils.formatDate(eu.associadoDesde) : '—';
+    $('aviso-novo').hidden = !eu.avisoPendente;
 
-    document.getElementById('vol-nome').textContent = usuario.nome;
-    document.getElementById('vol-telefone').textContent = usuario.telefone;
-    document.getElementById('vol-area').textContent = (cadastro && cadastro.areaInteresse) || usuario.areaInteresse || '—';
-    document.getElementById('vol-status').innerHTML = Utils.statusBadge('aprovado');
-    document.getElementById('vol-desde').textContent = Utils.formatDate(usuario.criadoEm);
-
-  } else if (usuario.perfil === 'doador') {
-    document.getElementById('area-titulo').textContent = 'Minha Área — Doador(a) Associado(a)';
-    document.getElementById('perfil-tipo-badge').textContent = 'Doador(a) Associado(a)';
-    document.getElementById('painel-doador').style.display = 'block';
-
-    // FR-042: só as doações do próprio doador, nunca de terceiros
-    const doacoes = db.doacoes.filter(d => d.doadorId === usuario.id)
-      .sort((a, b) => new Date(b.criadoEm) - new Date(a.criadoEm));
-
-    const total = doacoes.filter(d => d.status === 'confirmada').reduce((s, d) => s + d.valor, 0);
-    document.getElementById('doador-total').textContent = Utils.formatCurrency(total);
-    document.getElementById('doador-confirmadas').textContent = doacoes.filter(d => d.status === 'confirmada').length;
-    document.getElementById('doador-pendentes').textContent = doacoes.filter(d => d.status === 'pendente').length;
-
-    const tbody = document.getElementById('doador-historico');
-    tbody.innerHTML = doacoes.map(d => `
-      <tr>
-        <td>${Utils.formatDateTime(d.criadoEm)}</td>
-        <td>${Utils.formatCurrency(d.valor)}</td>
-        <td>${Utils.statusBadge(d.status)}</td>
-      </tr>
-    `).join('') || `<tr><td colspan="3" class="cell-muted">Você ainda não fez nenhuma doação associativa.</td></tr>`;
+    $('doador-total').textContent = Utils.formatCurrency(historico.total);
+    $('doador-confirmadas').textContent = historico.doacoes.length;
+    $('doador-historico').innerHTML = historico.doacoes.map((d) => `
+      <tr><td>${Utils.formatDate(d.data)}</td><td>${Utils.formatCurrency(d.valor)}</td></tr>`).join('')
+      || '<tr><td colspan="2" class="cell-muted">Nenhuma doação confirmada ainda. Depois que você doa, a equipe confere no extrato e a doação aparece aqui.</td></tr>';
+  } catch (erro) {
+    if (erro.status === 403) { window.location.href = Auth.computeLoginPath(); return; }
+    Utils.toast(erro.message, 'danger');
   }
 
-  document.getElementById('btn-logout').addEventListener('click', () => {
-    Auth.logout();
-    window.location.href = 'login.html';
-  });
+  // Contato da secretaria, o mesmo do aviso de privacidade (editável no Painel).
+  Api.get('/api/public/aviso-privacidade')
+    .then((a) => { if (a.contato) $('contato-recanto').textContent = a.contato; })
+    .catch(() => { /* fica o texto padrão */ });
 });

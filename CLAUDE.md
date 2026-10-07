@@ -494,6 +494,12 @@ Passo a passo de comandos e validação em
   Session 2026-10-07 do spec.md. **O texto do aviso de privacidade é do
   grupo**; a equipe o publica pela tela "Privacidade (LGPD)" do Painel, que
   cria versão nova sem editar a antiga.
+- **Autoatendimento do doador (decidido em 2026-10-07, fase 12).** (1)
+  **Aviso de privacidade novo é aceito na próxima doação**: o doador logado
+  confirma a versão nova antes do Pix, e o aceite vira mais um
+  consentimento (um por versão, como no DER). (2) **A área do doador é só
+  consulta**: correção de dados pela secretaria, no Painel; troca de senha
+  por "Esqueci minha senha". Session 2026-10-07 (4) do spec.md.
 - **Divulgação institucional (decidido em 2026-10-07, fase 11).** A página
   institucional tem **galeria opcional de até 6 imagens**; nenhuma é
   obrigatória. Imagem de notícia trocada ou retirada é só desvinculada: o
@@ -705,10 +711,10 @@ recente do spec.md, não esta lista resumida.
 3. Fotos institucionais reais ainda precisam vir do Recanto (o hero já é
    a fachada real desde 2026-10-05), cada uma com texto alternativo
    (Princípio II).
-4. As credenciais de demonstração do `public/README.md` (`admin`/`admin123`
+4. ~~As credenciais de demonstração do `public/README.md` (`admin`/`admin123`
    e as de autoatendimento) existem só na camada mock e **não podem**
-   sobreviver ao `db/seed.js` real. **(2026-10-06)** `admin/admin123` já
-   saiu da tela de login (fase 2); as de autoatendimento saem na US9.
+   sobreviver ao `db/seed.js` real.~~ **Resolvido em 2026-10-07** (fase 12):
+   saíram da tela de login e do `public/README.md`.
 5. ~~Plano desatualizado em relação ao spec.~~ **Resolvido em 2026-10-05**:
    `/speckit-plan` refeito — `plan.md`, `research.md` (D1–D18),
    `data-model.md`, `contracts/api.md` e `quickstart.md` seguem o spec de

@@ -49,7 +49,8 @@
             <form id="form-consulta" novalidate>
                 <div class="form-group">
                     <label for="protocolo-input">Código de protocolo <span class="req">*</span></label>
-                    <input type="text" id="protocolo-input" placeholder="Ex.: REC-7F3K-8M2Q" style="text-transform:uppercase;">
+                    <input type="text" id="protocolo-input" data-campo="protocolo" placeholder="Ex.: VOL-7K2M9XQ4RT" style="text-transform:uppercase;" autocomplete="off" spellcheck="false" aria-describedby="protocolo-dica">
+                    <p class="form-hint" id="protocolo-dica">O código começa com VOL (voluntário), CAN (candidatura) ou SOL (solicitação de evento ou campanha). Doações não têm protocolo. Por segurança, são até 10 consultas a cada 15 minutos.</p>
                     <div class="form-error"></div>
                 </div>
                 <div class="form-actions" style="justify-content:center;">
@@ -58,7 +59,7 @@
             </form>
         </div>
 
-        <div id="resultado" style="max-width:520px;margin:26px auto 0;"></div>
+        <div id="resultado" style="max-width:520px;margin:26px auto 0;" aria-live="polite"></div>
     </div>
 </section>
 
@@ -91,7 +92,7 @@
 </footer>
 
 <script src="assets/js/utils.js"></script>
-<script src="assets/js/data.js"></script>
+<script src="assets/js/api.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/nav.js"></script>
 <script src="assets/js/page-consultar-status.js"></script>

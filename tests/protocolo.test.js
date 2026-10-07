@@ -1,10 +1,14 @@
 // FR-043 (parte 1) — protocolos únicos, no formato e alfabeto definidos, sem ordem
-// previsível (research D6, contracts/api.md, teste 2). A parte 2 (consulta com resposta
-// idêntica para inexistente e mal formado, FR-044a) vem com a rota de consulta (T117).
+// previsível (research D6, contracts/api.md, teste 2). Parte 2 (FR-044, FR-044a): a consulta
+// pública responde igual a protocolo inexistente e mal formado, não mostra dado pessoal e limita
+// as tentativas por IP.
 
-import { test } from 'node:test';
+import { test, before } from 'node:test';
 import assert from 'node:assert/strict';
+import { prepararBanco, chamar, sql } from './_apoio.js';
 import { gerarProtocolo, formatoValido, normalizarProtocolo } from '../rotas/_lib/protocolo.js';
+
+before(prepararBanco);
 
 const QUANTIDADE = 10_000;
 const FORMATO = /^(VOL|CAN|SOL)-[0-9A-HJKMNP-TV-Z]{10}$/;
@@ -42,4 +46,41 @@ test('o que a pessoa digita é normalizado antes de conferir', () => {
 
 test('prefixo desconhecido não gera protocolo', () => {
   assert.throws(() => gerarProtocolo('DOA'));
+});
+
+// Cada teste usa um IP próprio, para o limite de um não contaminar o outro.
+const consultar = (protocolo, ip) =>
+  chamar(`/api/public/status/${encodeURIComponent(protocolo)}`, { cabecalhos: { 'x-forwarded-for': ip } });
+
+test('consulta mostra só tipo, status e data — nenhum dado pessoal (FR-044)', async () => {
+  const protocolo = gerarProtocolo('CAN');
+  await sql`
+    INSERT INTO candidatura (protocolo, cargo, nome, cpf, data_nascimento, telefone, email, curriculo_texto, status, criado_por)
+    VALUES (${protocolo}, 'cozinha', 'Pessoa Sigilosa', '39053344705', '1990-01-01', '24999998888',
+            'sigilo@exemplo.invalid', 'Experiência.', 'entrevista', 'teste')`;
+  const r = await consultar(protocolo.toLowerCase(), '198.51.100.1');
+  assert.equal(r.status, 200);
+  assert.deepEqual(Object.keys(r.corpo).sort(), ['data', 'rotuloStatus', 'status', 'tipo']);
+  assert.equal(r.corpo.tipo, 'candidatura');
+  assert.equal(r.corpo.rotuloStatus, 'Chamado para entrevista');
+  const texto = JSON.stringify(r.corpo);
+  for (const pessoal of ['Sigilosa', '39053344705', 'sigilo@', '24999998888']) assert.ok(!texto.includes(pessoal));
+});
+
+test('protocolo inexistente e mal formado recebem a mesma resposta (FR-044a)', async () => {
+  const inexistente = await consultar(gerarProtocolo('VOL'), '198.51.100.2');
+  const malFormado = await consultar('isso-nao-e-protocolo', '198.51.100.2');
+  assert.equal(inexistente.status, 404);
+  assert.equal(malFormado.status, inexistente.status);
+  assert.deepEqual(malFormado.corpo, inexistente.corpo);
+  for (const cabecalho of ['content-type', 'cache-control']) {
+    assert.equal(malFormado.headers.get(cabecalho), inexistente.headers.get(cabecalho), cabecalho);
+  }
+});
+
+test('a 11ª consulta do mesmo IP em 15 minutos é barrada (FR-044a)', async () => {
+  for (let i = 0; i < 10; i++) assert.equal((await consultar(gerarProtocolo('SOL'), '198.51.100.3')).status, 404);
+  const decima = await consultar(gerarProtocolo('SOL'), '198.51.100.3');
+  assert.equal(decima.status, 429);
+  assert.equal((await consultar(gerarProtocolo('SOL'), '198.51.100.4')).status, 404, 'outro IP segue normal');
 });

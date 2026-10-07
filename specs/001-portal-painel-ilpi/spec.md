@@ -141,6 +141,11 @@
 - Q: Que data a pessoa pode pedir? → A: **A partir de amanhã**, sem antecedência mínima: a data do evento, ou o início do período da campanha. A equipe recusa ou combina outra data se a proposta vier em cima da hora. Na correção pelo Painel, uma data já gravada pode ficar como está.
 - Q: Os recursos esperados (o que a pessoa pede ao Recanto) são obrigatórios? → A: **Opcionais.** Muitas propostas não pedem nada além do espaço, e o detalhe é combinado no contato.
 
+### Session 2026-10-07 — Anonimização (fase 9)
+
+- Q: Como a anonimização trata dados que a lei manda guardar (FR-055)? → A: **A equipe escolhe os campos e justifica.** Ao anonimizar pessoa, cadastro de voluntário ou candidatura, o funcionário pode marcar **nome, CPF e/ou data de nascimento** para manter; marcando qualquer um, a justificativa é obrigatória (ex.: registros trabalhistas de ex-funcionário). Contatos, endereço, RG e currículo nunca são retidos. Cada anonimização fica registrada com os campos retidos, a justificativa, a conta e a data. Descartado: anonimizar sempre tudo (descumpriria o FR-055 no caso de ex-funcionário).
+- Q: Anonimizar a **pessoa** alcança os cadastros que ela enviou pelo site? → A: **Sim.** Na mesma operação, os cadastros de voluntário e as candidaturas ligados a ela ou com o mesmo CPF também são anonimizados — senão endereço e RG continuariam legíveis no cadastro de voluntário. A proposta externa (sem CPF) é anonimizada à parte. Submissão ainda em triagem que for anonimizada sai da fila como "encerrada a pedido do titular".
+
 ## User Scenarios & Testing (mandatory)
 
 ### User Story 1 - Portal Público Informativo (Priority: P1)

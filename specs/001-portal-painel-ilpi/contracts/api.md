@@ -72,7 +72,7 @@ negação de acesso.
 | `GET` | `/api/public/eventos-campanhas` | eventos com `data >= hoje` e campanhas com hoje no período, `status = ativo` (FR-002, D12); campanha sem meta vem sem `meta` nem `arrecadado` (FR-029b) |
 | `GET` | `/api/public/itens-necessarios` | itens ativos, ordenados alta → média → baixa (FR-003, FR-026) |
 | `GET` | `/api/public/noticias` | só `publicada` (FR-032a) |
-| `GET` | `/api/public/aviso-privacidade` | texto e versão vigentes (FR-053) |
+| `GET` | `/api/public/aviso-privacidade` | texto e versão vigentes, e o contato da instituição para os pedidos do titular (FR-053, FR-054) |
 
 ### Doação (CSU01)
 
@@ -268,14 +268,16 @@ Não existe rota de exclusão (FR-024).
 | Método | Rota | Notas |
 |---|---|---|
 | `POST` | `/api/admin/consentimentos/:id/revogar` | aplica o efeito do FR-057 conforme o dono do consentimento: submissão em triagem → `encerrado_titular`; voluntário ativo → papel inativo; doador → papel encerrado. Não anonimiza. |
-| `POST` | `/api/admin/anonimizacoes` | `{ alvo: "pessoa" \| "cadastro_voluntario" \| "candidatura" \| "curriculo" \| "solicitacao", id, justificativaRetencao? }` (FR-055, FR-056) |
+| `POST` | `/api/admin/anonimizacoes` | `{ alvo: "pessoa" \| "cadastro_voluntario" \| "candidatura" \| "curriculo" \| "solicitacao", id, reter?, justificativaRetencao? }` (FR-055, FR-056). `reter` ⊂ `nome`, `cpf`, `data_nascimento` (só pessoa, cadastro e candidatura); com `reter`, sem justificativa → `422 JUSTIFICATIVA_OBRIGATORIA`; campo fora da lista → `400 CAMPO_NAO_RETIVEL`; já anonimizado → `409 JA_ANONIMIZADO`. `pessoa` alcança cadastros e candidaturas dela (vínculo ou mesmo CPF) — decisões de 2026-10-07 |
+| `GET` | `/api/admin/lgpd/titulares?q=` | busca do titular por nome, CPF ou e-mail em pessoas e nas três submissões, com papéis, consentimentos e a anonimização registrada (FR-054). Mínimo de 3 caracteres |
 | `GET` | `/api/admin/retencao` | fila de registros vencidos, conforme a tabela de retenção do `data-model.md` |
 
 `anonimizacoes`, em transação única: campos pessoais viram `[anonimizado]`; currículo removido do
 Blob; `historico_alteracao`, `falha_email` e consentimentos ligados também anonimizados (D16);
 doações da pessoa ficam com valor, data, tipo e status, sem justificativa (FR-055); a linha, o
 histórico e a auditoria permanecem. `justificativaRetencao` só é exigida quando o funcionário marca
-campos retidos por obrigação legal **fora** das doações.
+campos retidos por obrigação legal **fora** das doações. Cada execução grava uma linha em
+`anonimizacao` (campos retidos, justificativa, conta, data), somente inclusão.
 
 ### Ajuda (FR-060, FR-060a, FR-061)
 

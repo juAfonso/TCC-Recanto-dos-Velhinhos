@@ -1,5 +1,5 @@
 /* =========================================================
-   api.js — chamadas ao servidor (substitui aos poucos o data.js)
+   api.js — chamadas ao servidor
 
    Api.get/post/put(url, corpo) e Api.enviarFormulario(url, formData).
    Em caso de erro, lança ApiErro { status, codigo, mensagem, campos }

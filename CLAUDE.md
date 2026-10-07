@@ -484,6 +484,15 @@ Passo a passo de comandos e validação em
   (recursos esperados) **opcional**. Aprovar não publica; a confirmação, com
   os dados combinados, cria e publica o evento ou a campanha.
   Session 2026-10-06 (5) do spec.md.
+- **Anonimização (decidido em 2026-10-07, fase 9).** (1) Dado que a lei
+  manda guardar: a equipe pode **reter nome, CPF e/ou data de nascimento**,
+  e aí a **justificativa é obrigatória**; contatos, endereço, RG e currículo
+  nunca ficam. Cada anonimização é registrada (tabela `anonimizacao`,
+  migração 007). (2) Anonimizar a **pessoa** alcança, na mesma operação, os
+  cadastros de voluntário e as candidaturas dela (vínculo ou mesmo CPF).
+  Session 2026-10-07 do spec.md. **O texto do aviso de privacidade é do
+  grupo**; a equipe o publica pela tela "Privacidade (LGPD)" do Painel, que
+  cria versão nova sem editar a antiga.
 - **Termo de adesão para imprimir (decidido em 2026-10-06, FR-012a).** Todo
   voluntário imprime o termo da Lei 9.608 já preenchido logo após o envio;
   o menor também a autorização do responsável. A equipe imprime o termo de

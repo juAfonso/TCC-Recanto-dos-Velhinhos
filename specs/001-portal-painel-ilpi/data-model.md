@@ -221,6 +221,19 @@ que exatamente uma está preenchida.
 
 `UNIQUE (pessoa_id, aviso_versao)` para doador; `UNIQUE` em cada uma das outras três FKs.
 
+### `anonimizacao` (FR-055, 2026-10-07)
+
+Uma linha por anonimização executada; somente inclusão (gatilho, como a auditoria). Não guarda dado
+pessoal — só o **nome** dos campos retidos.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `entidade_tipo`, `entidade_id` | | `pessoa` \| `cadastro_voluntario` \| `candidatura` \| `curriculo` \| `solicitacao_externa` |
+| `origem_id` | `uuid` FK NULL | a anonimização da pessoa que alcançou este cadastro |
+| `campos_retidos` | `text[]` | subconjunto de `nome`, `cpf`, `data_nascimento` |
+| `justificativa` | `text` NULL | obrigatória quando `campos_retidos` não está vazio (CHECK) |
+| `executado_por`, `executado_em` | | conta e data |
+
 ### `aviso_privacidade` (FR-053)
 
 | Campo | Tipo | Notas |

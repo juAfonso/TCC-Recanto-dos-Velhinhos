@@ -12,12 +12,14 @@ export const GET = rota(async (request) => {
   await exigirAdmin(request);
   const hoje = hojeBrasilia();
 
-  const eventos = await sql`
+  // As duas listas não dependem uma da outra: buscar juntas poupa uma ida ao banco.
+  const [eventos, campanhas] = await Promise.all([
+    sql`
     SELECT id, nome, descricao, recursos_necessarios, to_char(data, 'YYYY-MM-DD') AS data, status,
            solicitacao_origem_id IS NOT NULL AS externa, criado_por, criado_em,
            atualizado_por, atualizado_em, encerrado_por, encerrado_em
-    FROM evento ORDER BY (status = 'ativo') DESC, data`;
-  const campanhas = await sql`
+    FROM evento ORDER BY (status = 'ativo') DESC, data`,
+    sql`
     SELECT c.id, c.nome, c.descricao, to_char(c.periodo_inicio, 'YYYY-MM-DD') AS periodo_inicio,
            to_char(c.periodo_fim, 'YYYY-MM-DD') AS periodo_fim, c.meta_valor, c.arrecadado_valor,
            c.arrecadado_por, c.arrecadado_em, c.status, c.solicitacao_origem_id IS NOT NULL AS externa,
@@ -25,7 +27,8 @@ export const GET = rota(async (request) => {
            COALESCE(json_agg(json_build_object('id', r.id, 'tipo', r.tipo, 'descricao', r.descricao) ORDER BY r.criado_em)
                     FILTER (WHERE r.id IS NOT NULL), '[]') AS recursos
     FROM campanha c LEFT JOIN recurso r ON r.campanha_id = c.id AND r.ativo
-    GROUP BY c.id ORDER BY (c.status = 'ativo') DESC, c.periodo_fim`;
+    GROUP BY c.id ORDER BY (c.status = 'ativo') DESC, c.periodo_fim`,
+  ]);
 
   const comum = (x) => ({
     id: x.id, nome: x.nome, descricao: x.descricao, status: x.status, externa: x.externa,

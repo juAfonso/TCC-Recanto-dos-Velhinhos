@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function carregar() {
+    tbody.innerHTML = '<tr><td colspan="6" class="cell-muted">Carregando…</td></tr>';
     try {
       const r = await Api.get('/api/admin/eventos-campanhas');
       // Ativos primeiro, pela data mais próxima; depois o histórico.

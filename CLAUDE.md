@@ -1,6 +1,6 @@
 # SAGE — Memória do Projeto
 
-> Última atualização: 2026-10-07
+> Última atualização: 2026-10-09
 > TCC do IFRJ Campus Pinheiral — sistema web para a ILPI "Recanto dos Velhinhos
 > Francisco Gonçalves Barbosa". Repositório: `TCC-Recanto-dos-Velhinhos`
 > (GitHub, usuário juAfonso).
@@ -172,6 +172,15 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   pasta `admin/` separada. Ele será integrado ao projeto Spec Kit como base
   do plano técnico — não é descartável, é ponto de partida.
   **Está no repositório em `public/` desde 2026-09-04.**
+- **Menu lateral do Painel num arquivo só (decidido em 2026-10-09).** O menu
+  estava copiado nas 15 telas de `admin/`. Agora fica em
+  `public/admin/menu.html`, e o `admin-guard.js` o busca e o coloca no
+  `<aside id="admin-menu">` de cada tela, marcando o link da página aberta.
+  **Item novo no menu se inclui só no `menu.html`**; tela nova do Painel usa
+  o `<aside>` vazio e carrega o `admin-guard.js`, como as outras. A tela já
+  ficava escondida até o servidor confirmar a sessão, então o menu não
+  "pisca". Descartado montar o menu em JS (texto do HTML dentro de string,
+  pior de editar) e gerar as páginas num build (o projeto não tem build).
 - **Versão do front (atualizado em 2026-09-05):** vale a entregue como
   `recanto-frontend-completo`, que substituiu a primeira versão. Ela traz
   identidade visual verde, logo real (`assets/img/logo-icon.png`) usado no

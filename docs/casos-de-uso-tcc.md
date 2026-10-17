@@ -6,6 +6,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 > Atualizada em 2026-10-07 com as decisões das fases 10 a 14: inativação por papel e Painel sem criação de
 > doador associado (CSU04), termo de adesão para imprimir (CSU05), área do doador só de consulta e aceite de
 > nova versão do aviso (CSU09), retirada da chave Pix (CSU01) e galeria de até seis imagens (CSU03).
+> Atualizada em 2026-10-17: a notícia abre numa janela por cima da página no Portal (CSU03, fluxo alternativo 05).
 > Em todos os casos, o fluxo principal descreve só o caminho em que nada dá errado e termina quando o sistema
 > registra a submissão; decisões humanas com mais de um resultado possível (aprovar, rejeitar, confirmar, não
 > localizar) são fluxos alternativos; validações e erros são fluxos de exceção. Em caso de divergência, o
@@ -230,7 +231,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU03 |
 |---|---|
 | Nome | Divulgação Institucional |
-| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para publicar, editar e despublicar notícias, informações institucionais e necessidades da instituição no Portal Público, onde o visitante as consulta sem login, e para manter a página institucional (história, missão, equipe, acolhimento de residentes e bazar), editada por tela própria do Painel. Não há sincronização com redes sociais, e notícias não são excluídas: são despublicadas. |
+| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para publicar, editar e despublicar notícias, informações institucionais e necessidades da instituição no Portal Público, onde o visitante as consulta sem login, e para manter a página institucional (história, missão, equipe, acolhimento de residentes e bazar), editada por tela própria do Painel. No Portal, cada notícia aparece como um resumo, e o visitante a lê inteira numa janela aberta por cima da página. Não há sincronização com redes sociais, e notícias não são excluídas: são despublicadas. |
 | Ator Principal | Funcionário |
 | Ator Secundário | Visitante |
 | Pré-condições | Funcionário deve estar autenticado no Painel Administrativo pela conta institucional. |
@@ -276,14 +277,25 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | 3. Altera os textos e salva. Se quiser, inclui imagens, uma por vez e até seis, informando o texto alternativo de cada uma, corrige o texto alternativo de uma imagem ou retira uma imagem da página. As imagens são opcionais. | |
 | | 4. Grava a nova versão dos textos preservando a anterior no histórico, atualiza a página institucional no Portal Público e registra a conta e a data. Imagem retirada é desativada, sem apagar o arquivo. O caso de uso se encerra. |
 
-## Fluxo Exceção 05 – Imagem sem texto alternativo
+## Fluxo Alternativo 05 – Ler notícia no Portal Público
+
+| Ator (visitante) | Sistema |
+|---|---|
+| 1. A partir do passo 4 do fluxo principal, com a notícia publicada, acessa a página inicial ou a página de notícias do Portal Público, sem login. | |
+| | 2. Exibe as notícias publicadas, cada uma com título, data, imagem com seu texto alternativo, se houver, e um resumo do conteúdo. |
+| 3. Escolhe "Ler mais" em uma notícia. | |
+| | 4. Abre a notícia numa janela por cima da página, com a imagem em tamanho maior e o texto inteiro, sem sair da página em que o visitante estava. |
+| 5. Fecha a janela, pelo botão de fechar, pela tecla Esc ou clicando fora dela. | |
+| | 6. Fecha a janela e devolve o visitante ao ponto da página em que estava. O caso de uso se encerra. |
+
+## Fluxo Exceção 06 – Imagem sem texto alternativo
 
 | Ator (funcionário) | Sistema |
 |---|---|
 | 1. No passo 3 do fluxo principal ou no passo 3 dos fluxos alternativos 01 e 04, anexa uma imagem sem preencher o texto alternativo. | |
 | | 2. Impede a publicação, explica que o texto alternativo é obrigatório para leitores de tela e retorna ao passo em que a imagem foi anexada. |
 
-## Fluxo Exceção 06 – Dados inválidos
+## Fluxo Exceção 07 – Dados inválidos
 
 | Ator (funcionário) | Sistema |
 |---|---|
@@ -297,8 +309,9 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 - **Fluxo Alternativo 02 – Despublicar notícia:** A notícia não aparece no Portal Público e continua consultável no Painel.
 - **Fluxo Alternativo 03 – Publicar novamente notícia despublicada:** A notícia voltou a ser exibida no Portal Público.
 - **Fluxo Alternativo 04 – Editar página institucional:** O Portal Público exibe a nova versão da página institucional e a anterior permanece no histórico.
-- **Fluxo Exceção 05 – Imagem sem texto alternativo:** Nenhuma notícia nem página institucional foi publicada ou alterada.
-- **Fluxo Exceção 06 – Dados inválidos:** Nenhuma notícia nem página institucional foi publicada ou alterada.
+- **Fluxo Alternativo 05 – Ler notícia no Portal Público:** O visitante leu a notícia inteira sem sair da página; nada foi gravado no sistema.
+- **Fluxo Exceção 06 – Imagem sem texto alternativo:** Nenhuma notícia nem página institucional foi publicada ou alterada.
+- **Fluxo Exceção 07 – Dados inválidos:** Nenhuma notícia nem página institucional foi publicada ou alterada.
 
 ---
 

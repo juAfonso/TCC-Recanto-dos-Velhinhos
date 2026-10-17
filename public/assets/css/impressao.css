@@ -52,6 +52,8 @@
 .termo-sede { font-size: .75rem; font-weight: 700; text-align: center; margin-top: 4px !important; }
 .termo h1 { text-transform: uppercase; text-align: center; font-size: 1rem; margin: 10px 0 14px; }
 .termo-lei { background: #ddd; padding: 4px 6px; text-align: justify; }
+/* O cinza é do termo original; sem isto o navegador não imprime fundo ("gráficos de plano de fundo" vem desligado). */
+.termo-lei { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .campos { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px 16px; margin-top: 16px; }
 .campo { display: flex; gap: 6px; border-bottom: 1px solid #333; min-height: 30px; align-items: flex-end; }
 .campo span { flex: none; }

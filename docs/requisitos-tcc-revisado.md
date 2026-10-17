@@ -168,9 +168,9 @@ Publicação, edição e despublicação de notícias no portal público, com um
 
 ### Cadastro de voluntários
 
-Cadastro de voluntários pelo portal público, com os dados do termo de adesão previsto na Lei nº 9.608/1998, e triagem pela administração, incluindo etapa de entrevista, antes da atuação junto aos residentes. Após o envio, o termo de adesão é disponibilizado já preenchido para impressão e assinatura. Para candidatos menores de idade, também é disponibilizada para impressão a autorização do responsável legal, e a aprovação depende da entrega dessa autorização assinada na sede da instituição.
+Cadastro de voluntários pelo portal público, com os dados do termo de adesão que a instituição já usa, previsto na Lei nº 9.608/1998, e triagem pela administração, incluindo etapa de entrevista, antes da atuação junto aos residentes. Após o envio, o termo de adesão é disponibilizado já preenchido para impressão e assinatura. O termo é o mesmo para maior e menor de idade: no caso de menor, o responsável legal também o assina, e a aprovação depende da entrega desse termo assinado na sede da instituição.
 
-[Mudou: entraram os dados do termo de adesão e as páginas para imprimir (FR-011, FR-012a).]
+[Mudou: entraram os dados do termo de adesão e o termo para imprimir, um só para maior e menor (FR-011, FR-012, FR-012a).]
 
 ### Candidatura a vagas de emprego
 

@@ -399,6 +399,10 @@ falha. O teste D8-3 verifica exatamente isso.
 
 ## D17 — Página de autorização do menor para impressão (nova, FR-012)
 
+> **Revisto em 2026-10-16:** a página de autorização separada saiu. O responsável assina o próprio
+> termo de adesão do Recanto (`termo-adesao.html`, FR-012a), um só para maior e menor. O mecanismo
+> abaixo (dados do formulário ou do Painel, `window.print()`, nenhuma rota pública) continua o mesmo.
+
 **Decisão**: depois do envio do cadastro de menor, o navegador monta a página de autorização com os
 dados **que já estão no formulário**, e o responsável usa `window.print()` (imprimir ou salvar em
 PDF). Nenhum endpoint público devolve dados pessoais a partir do protocolo. Se a família perder a

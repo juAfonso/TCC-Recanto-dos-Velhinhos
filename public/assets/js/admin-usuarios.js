@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   $('pessoa-extras').addEventListener('click', (ev) => {
     const b = ev.target.closest('[data-imprimir]');
-    if (b) imprimir(b.dataset.imprimir, 'termo-adesao.html');
+    if (b) imprimir(b.dataset.imprimir);
   });
 
   $('pessoa-acoes').addEventListener('click', async (ev) => {
@@ -296,8 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cadastroFeito = r;
       $('cadastro-feito-texto').innerHTML = r.status === 'aprovado'
         ? `<div>Voluntário(a) cadastrado(a) e já ativo(a). Protocolo <b>${e(r.protocolo)}</b>. Imprima o termo de adesão para a pessoa assinar.</div>`
-        : `<div>Cadastro registrado como <b>pendente</b> (protocolo <b>${e(r.protocolo)}</b>): é menor de idade. Imprima o termo e a autorização; quando a autorização assinada chegar, marque como recebida e aprove em <a href="triagem-voluntarios.html">Triagem › Voluntários</a>.</div>`;
-      $('btn-imprimir-autorizacao').hidden = r.autorizacaoStatus !== 'pendente';
+        : `<div>Cadastro registrado como <b>pendente</b> (protocolo <b>${e(r.protocolo)}</b>): é menor de idade. Imprima o termo de adesão: o responsável também o assina. Quando o termo assinado chegar, marque como recebida e aprove em <a href="triagem-voluntarios.html">Triagem › Voluntários</a>.</div>`;
       formN.hidden = true;
       $('cadastro-feito').hidden = false;
     } catch (erro) {
@@ -312,15 +311,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  $('btn-imprimir-termo').addEventListener('click', () => imprimir(cadastroFeito.cadastroVoluntarioId, 'termo-adesao.html'));
-  $('btn-imprimir-autorizacao').addEventListener('click', () => imprimir(cadastroFeito.cadastroVoluntarioId, 'autorizacao-menor.html'));
+  $('btn-imprimir-termo').addEventListener('click', () => imprimir(cadastroFeito.cadastroVoluntarioId));
 
   // Mesmo caminho da triagem: dados do Painel → sessionStorage → aba de impressão (D17).
-  async function imprimir(cadastroId, pagina) {
+  async function imprimir(cadastroId) {
     try {
       const d = await Api.get(`/api/admin/voluntarios/${cadastroId}/impressao`);
       ImpressaoVoluntario.guardar(d);
-      const aba = window.open(`../${pagina}`, '_blank');
+      const aba = window.open('../termo-adesao.html', '_blank');
       if (!aba) Utils.toast('O navegador bloqueou a janela. Permita pop-ups para este site e tente de novo.', 'warning');
       setTimeout(() => { try { sessionStorage.removeItem(ImpressaoVoluntario.CHAVE); } catch (err) { /* nada */ } }, 5000);
     } catch (erro) {

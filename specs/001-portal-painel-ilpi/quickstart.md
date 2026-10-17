@@ -120,8 +120,8 @@ Desative a chave. **Esperado**: aviso de indisponibilidade e contato; sem QR nem
 
 ### V6 — Voluntário menor de idade (FR-012)
 
-Cadastre com data de nascimento de 16 anos. **Esperado**: página de autorização pronta para
-imprimir, com os dados preenchidos; no Painel, "autorização pendente" e aprovação bloqueada. Marque
+Cadastre com data de nascimento de 16 anos. **Esperado**: aviso de autorização pendente e termo de
+adesão pronto para imprimir (o mesmo do adulto, com o campo do responsável), com os dados preenchidos; no Painel, "autorização pendente" e aprovação bloqueada. Marque
 como recebida → aprovação liberada. Nenhum arquivo foi enviado ao Blob.
 
 ### V7 — Papéis exclusivos no mesmo CPF (FR-048)

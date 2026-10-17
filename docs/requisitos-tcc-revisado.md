@@ -226,7 +226,7 @@ Registro de consentimento explícito em todo formulário público que colete dad
 
 ### Anonimização de dados
 
-Atendimento, pela administração, de pedidos de anonimização, tornando ilegíveis os dados pessoais identificáveis do titular e preservando o registro, o histórico e a trilha de auditoria. Quando a lei exigir a guarda de parte dos dados, a administração indica quais permanecem e registra a justificativa. Das doações confirmadas de um doador anonimizado ficam apenas valor, data/hora, tipo e status.
+Atendimento, pela administração, de pedidos de anonimização, tornando ilegíveis os dados pessoais identificáveis do titular e preservando o registro, o histórico e a trilha de auditoria. Quando a lei exigir a guarda de parte dos dados, a administração pode reter apenas nome, CPF e data de nascimento, registrando a justificativa; contatos, endereço, RG e currículo nunca são retidos. A anonimização de uma pessoa alcança, na mesma operação, os seus cadastros de voluntário e as suas candidaturas. Das doações confirmadas de um doador anonimizado ficam apenas valor, data/hora, tipo e status.
 
 [Mudou: entrou a retenção justificada (decisão de 2026-10-07).]
 

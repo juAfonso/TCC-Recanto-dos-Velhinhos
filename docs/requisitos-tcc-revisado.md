@@ -124,13 +124,13 @@
 
 ### Gestão de usuários
 
-Cadastro, consulta, alteração e inativação de registros dos perfis funcionário, voluntário e doador associado, com busca por nome, CPF ou e-mail. Cada pessoa tem um único cadastro, identificado pelo CPF; funcionário e voluntário são papéis exclusivos, e o de doador associado pode ser acumulado com qualquer um deles. A inativação é feita papel por papel e pode ser desfeita. O voluntário cadastrado diretamente pela administração dispensa a triagem, mas preenche os dados do termo de adesão; o menor de idade permanece pendente até o responsável assinar o termo de adesão na sede. O doador associado não é cadastrado pela administração: seu cadastro nasce com a primeira doação associativa.
+Cadastro, consulta, alteração e inativação de registros dos perfis funcionário, voluntário e doador associado, com busca por nome, CPF ou e-mail. Cada pessoa tem um único cadastro, identificado pelo CPF; funcionário e voluntário são papéis exclusivos, e o de doador associado pode ser acumulado com qualquer um deles. A inativação é feita papel por papel e pode ser desfeita, salvo nos casos previstos em Inativação e reativação. O voluntário cadastrado diretamente pela administração dispensa a triagem, mas preenche os dados do termo de adesão; o menor de idade permanece pendente até o responsável assinar o termo de adesão na sede. O doador associado não é cadastrado pela administração: seu cadastro nasce com a primeira doação associativa.
 
 [Mudou: inativação por papel, cadastro direto de voluntário e origem do doador associado (decisões de 2026-10-06 e 2026-10-07).]
 
 ### Inativação e reativação
 
-Inativação e reativação, pela administração, de cada papel de uma pessoa, sem apagar dados, como única forma de remover o acesso ou o vínculo com a instituição; o sistema não oferece exclusão de registros.
+Inativação e reativação, pela administração, de cada papel de uma pessoa, sem apagar dados, como única forma de remover o acesso ou o vínculo com a instituição; o sistema não oferece exclusão de registros. A reativação é impedida quando o papel foi encerrado (voluntário efetivado como funcionário ou doador associado que revogou o consentimento), quando o voluntário revogou o consentimento, caso em que é preciso um novo cadastro, e quando a pessoa é funcionária ativa, porque funcionário e voluntário são papéis exclusivos.
 
 ### Fila de retenção
 
@@ -226,7 +226,7 @@ Registro de consentimento explícito em todo formulário público que colete dad
 
 ### Anonimização de dados
 
-Atendimento, pela administração, de pedidos de anonimização, tornando ilegíveis os dados pessoais identificáveis do titular e preservando o registro, o histórico e a trilha de auditoria. Quando a lei exigir a guarda de parte dos dados, a administração indica quais permanecem e registra a justificativa. Das doações confirmadas de um doador anonimizado ficam apenas valor, data/hora, tipo e status.
+Atendimento, pela administração, de pedidos de anonimização, tornando ilegíveis os dados pessoais identificáveis do titular e preservando o registro, o histórico e a trilha de auditoria. Quando a lei exigir a guarda de parte dos dados, a administração pode reter apenas nome, CPF e data de nascimento, registrando a justificativa; contatos, endereço, RG e currículo nunca são retidos. A anonimização de uma pessoa alcança, na mesma operação, os seus cadastros de voluntário e as suas candidaturas. Das doações confirmadas de um doador anonimizado ficam apenas valor, data/hora, tipo e status.
 
 [Mudou: entrou a retenção justificada (decisão de 2026-10-07).]
 

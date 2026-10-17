@@ -6,7 +6,9 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 > Atualizada em 2026-10-07 com as decisões das fases 10 a 14: inativação por papel e Painel sem criação de
 > doador associado (CSU04), termo de adesão para imprimir (CSU05), área do doador só de consulta e aceite de
 > nova versão do aviso (CSU09), retirada da chave Pix (CSU01) e galeria de até seis imagens (CSU03).
-> Atualizada em 2026-10-17: a notícia abre numa janela por cima da página no Portal (CSU03, fluxo alternativo 05).
+> Atualizada em 2026-10-17: a notícia abre numa janela por cima da página no Portal (CSU03, fluxo alternativo 05);
+> reativação impedida no sumário do CSU04; recursos esperados opcionais e data a partir do dia seguinte (CSU08);
+> dados que podem ser retidos e alcance da anonimização (CSU11).
 > Em todos os casos, o fluxo principal descreve só o caminho em que nada dá errado e termina quando o sistema
 > registra a submissão; decisões humanas com mais de um resultado possível (aprovar, rejeitar, confirmar, não
 > localizar) são fluxos alternativos; validações e erros são fluxos de exceção. Em caso de divergência, o
@@ -320,7 +322,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU04 |
 |---|---|
 | Nome | Manter Usuários |
-| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para consultar, cadastrar, alterar, inativar e reativar usuários dos perfis funcionário, voluntário e doador associado. Cada pessoa tem um único cadastro, pelo CPF, com um ou mais papéis. O sistema não permite exclusão física de nenhum usuário: a inativação é feita papel por papel, não apaga dados e pode ser desfeita. Funcionário e voluntário são papéis exclusivos; o de doador associado pode ser acumulado com qualquer um deles e não é cadastrado pelo Painel: nasce com a primeira doação associativa (CSU01). |
+| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para consultar, cadastrar, alterar, inativar e reativar usuários dos perfis funcionário, voluntário e doador associado. Cada pessoa tem um único cadastro, pelo CPF, com um ou mais papéis. O sistema não permite exclusão física de nenhum usuário: a inativação é feita papel por papel, não apaga dados e pode ser desfeita, salvo quando o papel foi encerrado, o voluntário revogou o consentimento ou a pessoa é funcionária ativa (fluxo de exceção 10). Funcionário e voluntário são papéis exclusivos; o de doador associado pode ser acumulado com qualquer um deles e não é cadastrado pelo Painel: nasce com a primeira doação associativa (CSU01). |
 | Ator Principal | Funcionário |
 | Ator Secundário | — |
 | Pré-condições | Funcionário deve estar autenticado no Painel Administrativo pela conta institucional. |
@@ -727,7 +729,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (solicitante) | Sistema |
 |---|---|
-| 1. Escolhe se propõe um evento ou uma campanha e preenche dados de contato, nome do evento ou da campanha, objetivo, data ou período pretendido e os recursos que espera da instituição (como espaço, equipe ou horário), aceita o aviso de privacidade e confirma o envio. | |
+| 1. Escolhe se propõe um evento ou uma campanha e preenche nome da pessoa ou organização, e-mail e telefone, nome do evento ou da campanha, objetivo e data do evento ou período da campanha, a partir do dia seguinte; se quiser, informa também os recursos que espera da instituição (como espaço, equipe ou horário), que são opcionais. Aceita o aviso de privacidade e confirma o envio. | |
 | | 2. Registra a solicitação com status em análise, grava o consentimento, gera o código de protocolo e sinaliza a solicitação no Painel Administrativo. |
 | | 3. Exibe o protocolo, orientando o solicitante a anotá-lo, e envia e-mail de confirmação. O caso de uso se encerra. |
 
@@ -766,7 +768,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (solicitante) | Sistema |
 |---|---|
-| 1. No passo 1 do fluxo principal, envia a solicitação sem escolher entre evento e campanha, com campo obrigatório em branco ou com telefone, e-mail ou data inválidos. | |
+| 1. No passo 1 do fluxo principal, envia a solicitação sem escolher entre evento e campanha, com campo obrigatório em branco, com telefone ou e-mail inválido, ou com data do evento ou início da campanha anterior ao dia seguinte. | |
 | | 2. Impede o envio, indica cada campo a corrigir e retorna ao passo 1 do fluxo principal. |
 
 ## Fluxo Exceção 06 – Envio sem aceite do aviso de privacidade
@@ -919,9 +921,9 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 |---|---|
 | 1. Consulta o aviso de privacidade no Portal Público, sem login, e, pelo contato informado nele, pede à instituição a anonimização dos seus dados (fora do sistema). | |
 | 2. (Funcionário) Confere a identidade do titular, fora do sistema, e localiza o cadastro no Painel Administrativo. | |
-| | 3. Exibe os registros vinculados ao titular e, se ele é doador associado, as doações confirmadas, que serão mantidas sem nenhum dado pessoal. |
+| | 3. Exibe os registros vinculados ao titular, incluindo os cadastros de voluntário e as candidaturas ligados a ele ou feitos com o mesmo CPF, e, se ele é doador associado, as doações confirmadas, que serão mantidas sem nenhum dado pessoal. |
 | 4. (Funcionário) Executa a anonimização. | |
-| | 5. Torna ilegíveis os dados pessoais identificáveis, remove os arquivos restritos vinculados, preserva o registro, o histórico e a auditoria sem exclusão física, e registra a conta e a data. As doações confirmadas permanecem só com valor, data/hora, tipo e status, vinculadas a "doador anonimizado", sem justificativa de retenção. |
+| | 5. Na mesma operação, torna ilegíveis os dados pessoais identificáveis da pessoa e de todos esses cadastros e candidaturas, remove os arquivos restritos vinculados, preserva o registro, o histórico e a auditoria sem exclusão física, e registra a conta e a data. As doações confirmadas permanecem só com valor, data/hora, tipo e status, vinculadas a "doador anonimizado", sem justificativa de retenção. |
 | 6. (Funcionário) Informa o titular, pelo mesmo contato, que o pedido foi atendido. O caso de uso se encerra. | |
 
 ## Fluxo Alternativo 01 – Correção de dados
@@ -960,7 +962,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Ator (funcionário) | Sistema |
 |---|---|
 | 1. No passo 3 do fluxo principal, constata que parte dos dados de um cadastro é necessária ao cumprimento de obrigação legal ou regulatória. Não se aplica às doações confirmadas, que já são mantidas sem dado pessoal (passo 5). | |
-| | 2. Permite reter exclusivamente esses dados e anonimizar os demais, exigindo o registro da justificativa da retenção. |
+| | 2. Permite reter apenas nome, CPF e data de nascimento, um ou mais deles, e anonimizar os demais, exigindo o registro da justificativa da retenção. Contatos, endereço, RG e currículo nunca podem ser retidos. |
 | 3. Registra a justificativa e executa a anonimização dos demais dados. | |
 | | 4. Armazena a justificativa, procede conforme o passo 5 do fluxo principal e retorna ao passo 6, em que o funcionário informa ao titular o que foi retido e por quê. |
 

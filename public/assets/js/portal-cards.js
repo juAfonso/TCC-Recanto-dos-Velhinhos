@@ -139,7 +139,12 @@ const PortalCards = (() => {
       <h2 id="noticia-janela-titulo">${e(n.titulo)}</h2>
       <p class="noticia-janela-data">${Utils.formatDate(n.publicadaEm)}</p>
       <div class="noticia-janela-texto">${Utils.paragrafos(n.corpo)}</div>`;
-    d.addEventListener('close', () => { if (origem && origem.isConnected) origem.focus(); }, { once: true });
+    // Enquanto a notícia está aberta, só ela rola: a página por trás fica parada.
+    document.documentElement.classList.add('noticia-aberta');
+    d.addEventListener('close', () => {
+      document.documentElement.classList.remove('noticia-aberta');
+      if (origem && origem.isConnected) origem.focus({ preventScroll: true });
+    }, { once: true });
     d.showModal();
     d.scrollTop = 0;
   }

@@ -1,6 +1,6 @@
 # SAGE — Memória do Projeto
 
-> Última atualização: 2026-10-09
+> Última atualização: 2026-10-16
 > TCC do IFRJ Campus Pinheiral — sistema web para a ILPI "Recanto dos Velhinhos
 > Francisco Gonçalves Barbosa". Repositório: `TCC-Recanto-dos-Velhinhos`
 > (GitHub, usuário juAfonso).
@@ -536,10 +536,27 @@ Passo a passo de comandos e validação em
   trabalho. Tornar funcionário quem é voluntário ativo encerra o papel de
   voluntário, depois de confirmação. Session 2026-10-07 (2) do spec.md.
 - **Termo de adesão para imprimir (decidido em 2026-10-06, FR-012a).** Todo
-  voluntário imprime o termo da Lei 9.608 já preenchido logo após o envio;
-  o menor também a autorização do responsável. A equipe imprime o termo de
-  qualquer cadastro pelo Painel. **Ampliou o CSU05**: falta levar ao PRD e à
-  seção 19 do TCC. Session 2026-10-06 (4) do spec.md.
+  voluntário imprime o termo da Lei 9.608 já preenchido logo após o envio.
+  A equipe imprime o termo de qualquer cadastro pelo Painel. **Ampliou o
+  CSU05** (fluxo alternativo 12 em `docs/casos-de-uso-tcc.md`): falta levar
+  ao PRD e à seção 19 do TCC. Session 2026-10-06 (4) do spec.md.
+- **[Reversão] Termo do Recanto, único para maior e menor (decidido em
+  2026-10-16).** O sistema imprime o termo de adesão que o Recanto **já
+  usa** (`public/termo-adesao.html`), com o cabeçalho, o CNPJ, a sede na
+  R. Francisco Ribeiro de Abreu, **102** e a presidente Eliege de Faria
+  Barbosa, como no papel. O termo já tem "Assinatura do Responsável (caso o
+  voluntário seja menor de idade)", então **a página de autorização separada
+  (`autorizacao-menor.html`) saiu**: a assinatura do responsável no termo é
+  a autorização. Reverte a separação de termo e autorização de 2026-10-06.
+  Continua igual: "autorização pendente" até a equipe marcar o recebimento,
+  e nenhum documento de menor no Blob. Vale no Portal, na triagem e no
+  cadastro direto do Painel. A **data de nascimento** continua coletada
+  (identifica o menor), mas não é impressa; os demais campos do formulário
+  já são os do termo. Custo aceito: nome, documento e parentesco do
+  responsável não são mais pedidos no papel. O CNPJ impresso é dado público
+  da instituição; a regra de não versionar a chave Pix continua valendo para
+  o cadastro da chave (`admin/pix.html`). Se a presidência mudar, troca-se
+  o nome no HTML. Session 2026-10-16 do spec.md.
 - **Prioridade do item necessário: alta, média ou baixa (decidido em
   2026-10-05).** O CSU07 falava em "prioridade" sem valores, e o protótipo
   usava só "urgente sim/não". Os de prioridade alta são os "itens mais

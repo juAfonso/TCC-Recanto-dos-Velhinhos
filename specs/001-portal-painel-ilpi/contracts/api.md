@@ -129,7 +129,7 @@ Comuns às três:
   destaca **"anote este código"**; `emailEnviado: false` não muda nada além de um aviso discreto.
 - O registro é gravado antes do e-mail; falha de envio segue a política D5 e **nunca** desfaz o
   registro (FR-049a).
-- A página de autorização do menor é montada no navegador com os dados do próprio formulário (D17).
+- O termo de adesão (que, no menor, o responsável também assina) é montado no navegador com os dados do próprio formulário (D17, revisto em 2026-10-16).
 
 ### Consulta de status (CSU10)
 
@@ -221,7 +221,7 @@ Filas: `voluntarios`, `candidaturas`, `solicitacoes`.
 | `POST` | `/api/admin/solicitacoes/:id/confirmar` | solicitação | aguardando contato → confirmada; corpo com os dados combinados e, na campanha, os recursos; cria e publica evento/campanha |
 | `POST` | `/api/admin/{fila}/:id/rejeitar` | todas | `{ motivo?: string }` — **opcional** |
 | `POST` | `/api/admin/voluntarios/:id/autorizacao-recebida` | voluntário menor | pendente → recebida (FR-012) |
-| `GET` | `/api/admin/voluntarios/:id/impressao` | voluntário | dados para imprimir o termo de adesão (FR-012a) e, se menor, a autorização (FR-012, D17); auditado. Substituiu `/autorizacao` em 2026-10-06 |
+| `GET` | `/api/admin/voluntarios/:id/impressao` | voluntário | dados para imprimir o termo de adesão, único para maior e menor desde 2026-10-16 (FR-012a, D17); auditado. Substituiu `/autorizacao` em 2026-10-06 |
 | `GET` | `/api/admin/candidaturas/:id/curriculo` | candidatura | devolve o próprio arquivo, sem expor a URL do Blob (D3, ajuste de 2026-10-06); `503 ARQUIVOS_INDISPONIVEIS` sem o token do store privado |
 | `PUT` | `/api/admin/{fila}/:id` | todas | **corrige dados** sem mudar status (FR-037, 2026-10-06); estado anterior em `historico_alteracao`; mesmas validações do envio; registro anonimizado → `409 REGISTRO_ANONIMIZADO`; no voluntário aprovado e na candidatura aprovada, nome, e-mail e telefone corrigidos também na `pessoa` |
 

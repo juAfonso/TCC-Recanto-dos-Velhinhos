@@ -133,7 +133,7 @@
                 <div class="form-group"><label for="n-cpf">CPF <span class="req">*</span></label><input type="text" id="n-cpf" data-campo="cpf" data-mascara="cpf"><div class="form-error"></div></div>
                 <div class="form-group"><label for="n-nascimento">Data de nascimento <span class="req">*</span></label><input type="date" id="n-nascimento" data-campo="dataNascimento"><div class="form-error"></div></div>
             </div>
-            <div class="alert alert-warning" id="aviso-menor" hidden style="margin-bottom:12px;"><span aria-hidden="true">⚠️</span><div>Menor de idade: o cadastro fica <b>pendente</b> até a autorização assinada pelo responsável ser entregue na sede. Depois de salvar, imprima a autorização para o responsável assinar.</div></div>
+            <div class="alert alert-warning" id="aviso-menor" hidden style="margin-bottom:12px;"><span aria-hidden="true">⚠️</span><div>Menor de idade: o cadastro fica <b>pendente</b> até o termo de adesão assinado pelo responsável ser entregue na sede. Depois de salvar, imprima o termo de adesão: o responsável também o assina.</div></div>
             <div class="form-row">
                 <div class="form-group"><label for="n-telefone">Telefone <span class="req">*</span></label><input type="text" id="n-telefone" data-campo="telefone" data-mascara="telefone"><div class="form-error"></div></div>
                 <div class="form-group"><label for="n-email">E-mail <span class="req">*</span></label><input type="email" id="n-email" data-campo="email" maxlength="254"><div class="form-error"></div></div>
@@ -181,12 +181,11 @@
             </div>
         </form>
 
-        <!-- Depois de cadastrar voluntário: imprimir os documentos (FR-012a) -->
+        <!-- Depois de cadastrar voluntário: imprimir o termo de adesão (FR-012a) -->
         <div id="cadastro-feito" hidden>
             <div class="alert alert-success" id="cadastro-feito-texto"></div>
             <div class="form-actions" style="flex-wrap:wrap;">
                 <button type="button" class="btn btn-outline" id="btn-imprimir-termo">Imprimir termo de adesão</button>
-                <button type="button" class="btn btn-outline" id="btn-imprimir-autorizacao" hidden>Imprimir autorização do responsável</button>
                 <button type="button" class="btn btn-viridian" data-close-modal="modal-cadastro">Fechar</button>
             </div>
         </div>

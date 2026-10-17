@@ -18,52 +18,92 @@
 <div class="alert alert-info aviso-tela"><span aria-hidden="true">ℹ️</span><div>
     Imprima este termo (ou salve em PDF) e leve-o à sede do Recanto. Ele é assinado por você e pela instituição
     <b>quando o cadastro for aprovado</b>. Nada desta página é enviado pela internet.
+    <p id="aviso-menor" hidden style="margin-top:8px;">
+        <b>Menor de 18 anos:</b> o responsável legal assina este mesmo termo, no campo
+        "Assinatura do Responsável", e ele é entregue na sede. O cadastro só pode ser aprovado
+        depois que a equipe receber o termo assinado pelo responsável.
+    </p>
 </div></div>
 
+<!-- Texto do termo que o Recanto já usa (decidido em 2026-10-16): um só documento para maior e menor. -->
 <main class="termo">
     <p id="sem-dados" hidden>Não encontramos os dados do cadastro neste navegador. Peça à equipe do Recanto para imprimir o termo pelo Painel.</p>
     <div id="conteudo" hidden>
+        <header class="termo-cabecalho">
+            <img src="assets/img/logo-icon.png" alt="" width="64" height="64">
+            <div>
+                <p class="termo-instituicao">Recanto dos Velhinhos Francisco Gonçalves Barbosa</p>
+                <p class="termo-registro">
+                    Fundado em 07/01/1983. Registrado no Conselho Nacional de Assistência Social sob o nº CCEAS0077/2003,
+                    em 21/08/2003. Utilidade Pública Federal: Decreto de 03/04/2000, Utilidade Pública Estadual: Lei n.º 3.961,
+                    de 17/09/2002, Utilidade Pública Municipal: Lei n.º 45, de 14/05/1998. Registrado no Cartório do 1.º Ofício
+                    da Comarca de Piraí, Registro de Pessoas Jurídicas, Livro A, fls. 37, sob o n.º 16 em 13/04/1983,
+                    Rerratificação de Estatuto no Livro “A-1”, às fls. 072/074, nº de ordem AV.02-016 em 30/12/2003 -
+                    CNPJ: 28.056.695/0001-42
+                </p>
+                <p class="termo-sede">SEDE: Rua Francisco Ribeiro de Abreu, 102 – Pinheiral – RJ – CEP 27197-000 TEL: (24) 3016-4023</p>
+            </div>
+        </header>
+
         <h1>Termo de adesão ao serviço voluntário</h1>
-        <p class="rotulo">Lei nº 9.608, de 18 de fevereiro de 1998 · Protocolo <b id="t-protocolo"></b></p>
 
-        <h2>Instituição</h2>
-        <p>
-            <b>Recanto dos Velhinhos Francisco Gonçalves Barbosa</b>, entidade filantrópica sem fins lucrativos,
-            com sede na R. Francisco Ribeiro de Abreu, 60 — Centro, Pinheiral/RJ, CEP 27197-000.
+        <p class="termo-lei">
+            Considera-se serviço voluntário, para fins desta Lei, a atividade não remunerada, prestada por pessoas
+            físicas à entidade pública de qualquer natureza, ou a instituição privada de fins não lucrativos, que tenha
+            objetivos cívicos, culturais, educacionais, científicos, recreativos ou de assistência social, inclusive
+            mutualidade. (Art. 1, Lei nº 9.608 Lei do Serviço Voluntário) Parágrafo Único: O serviço voluntário não gera
+            vínculo empregatício, nem obrigação de natureza trabalhista, previdenciária e afins.
         </p>
-        <div class="rotulo">CNPJ</div><div class="linha"></div>
 
-        <h2>Voluntário(a)</h2>
-        <dl id="t-dados"></dl>
+        <div class="campos">
+            <div class="campo largo"><span>Nome:</span> <b id="t-nome"></b></div>
+            <div class="campo c3"><span>Escolaridade:</span> <b id="t-escolaridade"></b></div>
+            <div class="campo c3"><span>Profissão:</span> <b id="t-profissao"></b></div>
+            <div class="campo c3"><span>Identidade:</span> <b id="t-rg"></b></div>
+            <div class="campo c3"><span>CPF:</span> <b id="t-cpf"></b></div>
+            <div class="campo largo"><span>Endereço:</span> <b id="t-endereco"></b></div>
+            <div class="campo c2"><span>Bairro:</span> <b id="t-bairro"></b></div>
+            <div class="campo c2"><span>CEP:</span> <b id="t-cep"></b></div>
+            <div class="campo c2"><span>Tel:</span> <b id="t-telefone"></b></div>
+            <div class="campo c2"><span>Cidade:</span> <b id="t-cidade"></b></div>
+            <div class="campo c1"><span>UF:</span> <b id="t-uf"></b></div>
+            <div class="campo c3"><span>e-mail:</span> <b id="t-email"></b></div>
+        </div>
 
-        <h2>Serviço voluntário</h2>
-        <dl>
-            <dt>Serviço a prestar</dt><dd id="t-servico"></dd>
+        <p style="margin-top:18px;">Tipo de serviço que o voluntário vai prestar (preencher com o objetivo e as condições de seu exercício):</p>
+        <dl class="termo-servico">
+            <dt>Serviço</dt><dd id="t-servico"></dd>
+            <dt>Objetivo</dt><dd id="t-objetivos"></dd>
             <dt>Dias e horários</dt><dd id="t-condicoes"></dd>
         </dl>
-        <p class="rotulo" style="margin-top:6px;">Se os dias e horários estiverem em branco, combine e escreva na entrevista:</p>
+        <div class="linha"></div>
         <div class="linha"></div>
 
-        <h2>Declaração</h2>
+        <p style="margin-top:18px;">Instituição onde o voluntário vai prestar o serviço:</p>
         <p>
-            O(a) voluntário(a) acima identificado(a) declara aderir ao serviço voluntário no Recanto dos Velhinhos
-            Francisco Gonçalves Barbosa, de forma espontânea e sem remuneração, nos termos da Lei nº 9.608/1998.
-            Declara estar ciente de que o serviço voluntário <b>não gera vínculo empregatício</b> nem obrigação de
-            natureza trabalhista, previdenciária ou afim; de que eventuais despesas realizadas no desempenho das
-            atividades só serão ressarcidas se previamente autorizadas pela instituição; e de que este termo pode
-            ser encerrado a qualquer momento, por qualquer das partes, mediante comunicação.
-        </p>
-        <p id="t-aviso-menor" hidden>
-            Por se tratar de menor de 18 anos, este termo só vale acompanhado da <b>autorização do responsável legal</b>,
-            que também o assina abaixo.
+            Nome: <b>RECANTO DOS VELHINHOS FRANCISCO GONÇALVES BARBOSA</b><br>
+            Endereço: Rua Francisco Ribeiro de Abreu, 102 – Centro – Pinheiral – RJ.<br>
+            CNPJ: 28.056.695/0001-42
         </p>
 
+        <p>Declaro que estou ciente e aceito os termos da Lei do Serviço Voluntário, nº 9.608, de 18 de fevereiro de 1998.</p>
+
+        <p class="termo-data">Pinheiral, _____ de _______________________ de 20_____.</p>
+
         <div class="assinaturas">
-            <div><div class="linha"></div><div class="rotulo">Assinatura do(a) voluntário(a)</div></div>
-            <div><div class="linha"></div><div class="rotulo">Assinatura do(a) representante da instituição</div></div>
-            <div id="t-assinatura-responsavel" hidden><div class="linha"></div><div class="rotulo">Assinatura do(a) responsável legal</div></div>
-            <div><div class="linha"></div><div class="rotulo">Local e data</div></div>
+            <div><div class="linha"></div><div class="rotulo"><i>Assinatura do Voluntário</i></div></div>
+            <div><div class="linha"></div><div class="rotulo">Assinatura do Responsável<br><i>(caso o voluntário seja menor de idade)</i></div></div>
         </div>
+        <div class="assinatura-presidente">
+            <div class="linha"></div>
+            <div class="rotulo"><i>Eliege de Faria Barbosa<br>Presidente</i></div>
+        </div>
+        <div class="assinaturas">
+            <div><div class="linha"></div><div class="rotulo"><i>Testemunha — Nome</i></div></div>
+            <div><div class="linha"></div><div class="rotulo"><i>Testemunha — Nome</i></div></div>
+        </div>
+
+        <p class="rotulo termo-protocolo">Protocolo do cadastro no SAGE: <b id="t-protocolo"></b></p>
     </div>
 </main>
 

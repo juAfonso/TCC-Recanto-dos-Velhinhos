@@ -148,6 +148,16 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
      banco como produção já na criação das tabelas**, e o seed recusa `--demo`
      se a `DATABASE_URL` for igual à `DATABASE_URL_PRODUCAO`. **A URL da `main`
      não deve estar no `.env.local` de ninguém como `DATABASE_URL`.**
+     **A `main` ainda está em fase de teste (registrado em 2026-10-17).** O
+     grupo testa direto na produção, e tudo o que existe lá hoje é teste:
+     pessoas, triagens, eventos, doações declaradas, aceites e falhas de
+     e-mail. Ninguém deve tratar esses dados como reais. **Antes de o Recanto
+     começar a operar, a `main` é zerada e recriada** (`npm run migrate --
+     --producao` e seed de produção, sem `--demo`), como no incidente acima.
+     Não apagar registro por registro: isso esbarra na regra de nunca excluir
+     usuário e deixa sobras na auditoria. Depois de recriar: anotar a senha
+     nova do Painel (mostrada uma vez só), cadastrar a chave Pix, publicar o
+     aviso de privacidade aprovado e conferir os textos institucionais.
   2. **`npm run dev` no lugar do `vercel dev`.** Um servidor pequeno em
      `scripts/dev.js`, sem dependência, serve `public/` e as funções de
      `api/` como a Vercel. Motivo: o Vercel CLI exige instalação global e

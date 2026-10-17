@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
 <header>
     <nav class="navbar">
@@ -36,6 +37,7 @@
         </div>
     </nav>
 </header>
+<main id="conteudo" tabindex="-1">
 
 <section class="page-hero">
     <span class="subtitle">AJUDE AGORA</span>
@@ -172,7 +174,7 @@
                     <p class="form-hint">Ou copie o código Pix copia e cola e cole no app do banco:</p>
                     <div style="display:flex;justify-content:center;gap:8px;max-width:420px;margin:0 auto 10px;">
                         <label for="pixCode" class="sr-only">Código Pix copia e cola</label>
-                        <input type="text" id="pixCode" readonly style="text-align:center;font-size:.78rem;">
+                        <input type="text" id="pixCode" readonly style="flex:1;min-width:0;font-size:.78rem;">
                         <button type="button" class="btn btn-outline btn-sm" id="btn-copy-pix">Copiar</button>
                     </div>
                     <div class="alert alert-warning" style="text-align:left;margin-top:20px;"><span aria-hidden="true"><i class="bi bi-hourglass"></i></span><div>
@@ -206,6 +208,8 @@
         </div>
     </div>
 </section>
+
+</main>
 
 <footer class="site-footer">
     <div class="footer-grid">

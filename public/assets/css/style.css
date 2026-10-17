@@ -89,6 +89,20 @@ button{ cursor:pointer; font-family:inherit; }
     outline-offset:2px;
 }
 
+.skip-link{
+    position:absolute;
+    top:-100px; left:12px;
+    z-index:2000;
+    padding:10px 16px;
+    background:var(--viridian);
+    color:#fff;
+    font-weight:700;
+    border-radius:var(--radius-sm);
+    text-decoration:none;
+}
+.skip-link:focus{ top:12px; }
+#conteudo:focus{ outline:none; }
+
 /* =========================================================
    NAVBAR (Portal Público)
    ========================================================= */
@@ -148,6 +162,7 @@ button{ cursor:pointer; font-family:inherit; }
     padding:8px 2px;
     border-bottom:2px solid transparent;
     transition:.2s;
+    white-space:nowrap;
 }
 
 .menu a:hover,
@@ -212,7 +227,9 @@ button{ cursor:pointer; font-family:inherit; }
     color:var(--viridian);
 }
 
-@media(max-width:960px){
+/* O menu completo precisa de ~1.100 px numa linha só. Abaixo disso ele quebrava
+   ("Campanhas & Eventos" e "Participar ▾" em duas linhas), então vira hambúrguer. */
+@media(max-width:1180px){
     .menu-toggle{ display:block; }
     .menu{
         position:fixed;
@@ -403,6 +420,7 @@ button{ cursor:pointer; font-family:inherit; }
     color:var(--viridian);
 }
 .btn-outline:hover{ background:var(--viridian) !important; color:#fff; }
+.valor-preset[aria-pressed="true"]{ background:var(--viridian) !important; color:#fff; }
 
 .btn-danger-outline{
     background:transparent;

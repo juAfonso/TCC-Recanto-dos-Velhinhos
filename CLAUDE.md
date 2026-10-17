@@ -111,7 +111,10 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   do sistema (`GMAIL_USER`). A instituição está ciente do uso para envios
   automáticos. Telefone oficial: **(24) 3016-4023** — o (24) 3356-2801 e o
   `contato@recantodosvelhinhos.org.br` do protótipo estavam errados (o
-  Recanto não tem domínio). Esses valores são o ponto de partida do
+  Recanto não tem domínio). **Endereço oficial (confirmado em 2026-10-17):**
+  Rua Francisco Ribeiro de Abreu, 102, Posto Zootécnico, Pinheiral/RJ, CEP
+  27198-360 — o do aviso de privacidade. O "nº 60, Centro, 27197-000" da
+  página institucional estava errado. Esses valores são o ponto de partida do
   `contato_instituicao` no `db/seed.js`; depois disso, quem edita é a equipe
   pelo Painel, nunca o código.
 - **É a terceira dependência npm do projeto**, quebrando a regra de duas. O

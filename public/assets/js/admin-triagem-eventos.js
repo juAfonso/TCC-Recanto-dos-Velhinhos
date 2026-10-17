@@ -16,12 +16,22 @@ document.addEventListener('DOMContentLoaded', () => {
   const periodo = (ini, fim) => (fim ? `${Utils.formatDay(ini)} a ${Utils.formatDay(fim)}` : Utils.formatDay(ini));
   let filtro = 'em_analise';
   let atual = null;
+  // Na primeira carga, se não há nada em análise mas há proposta aguardando contato, abre nessa aba:
+  // o "Ver →" da Visão Geral conta as duas filas e não pode cair numa lista vazia.
+  let primeiraCarga = true;
 
   async function carregar() {
     tbody.innerHTML = '<tr><td colspan="8" class="cell-muted">Carregando…</td></tr>';
     try {
       const r = await Api.get(`/api/admin/solicitacoes?status=${filtro}`);
       ['em_analise', 'aguardando_contato'].forEach((s) => { $(`cont-${s}`).textContent = r.contagem[s] ? `(${r.contagem[s]})` : ''; });
+      if (primeiraCarga) {
+        primeiraCarga = false;
+        if (!r.contagem.em_analise && r.contagem.aguardando_contato) {
+          document.querySelector('.tabs-nav .tab-btn[data-filtro="aguardando_contato"]').click();
+          return;
+        }
+      }
       tbody.innerHTML = r.solicitacoes.map((s) => `
         <tr>
           <td class="cell-muted">${e(s.protocolo)}</td>

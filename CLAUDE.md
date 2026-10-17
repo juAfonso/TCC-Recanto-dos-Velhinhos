@@ -527,7 +527,12 @@ Passo a passo de comandos e validação em
   corpo de requisição na Vercel vai até 4,5 MB. **O store público do Blob
   ainda não foi criado**: até ele existir, incluir imagem responde "não
   conseguimos receber imagens agora" (o resto funciona). Session 2026-10-07
-  (3) do spec.md.
+  (3) do spec.md. **A notícia abre numa janela por cima da página
+  (decidido em 2026-10-17)**, na home e em Notícias: o cartão mostra um
+  resumo e "Ler mais" abre imagem grande e texto inteiro (`<dialog>`
+  nativo, sem biblioteca). Descartados página própria por notícia e "levar
+  até a notícia na lista". Custo aceito: a notícia não tem link próprio
+  para compartilhar.
 - **Gestão de usuários no Painel (decidido em 2026-10-07, fase 10).**
   (1) **O Painel não cria doador associado**: ele só nasce com a primeira
   doação associativa (decisão de 04/10); o FR-023 foi ajustado. (2)

@@ -82,27 +82,75 @@ const PortalCards = (() => {
       </div>`;
   }
 
-  /* Notícia: imagem com texto alternativo quando houver (FR-032b, Princípio II). */
-  function noticia(n, { resumo = false } = {}) {
+  /* Notícia: imagem com texto alternativo quando houver (FR-032b, Princípio II).
+     O cartão mostra um resumo; "Ler mais" abre a notícia inteira numa janela por cima da
+     página (decisão de 2026-10-17). Antes, o "Ler mais" da home levava à lista, que
+     mostrava o mesmo texto, e parecia que a notícia não abria. */
+  const noticiasCarregadas = new Map();
+
+  function noticia(n) {
+    noticiasCarregadas.set(String(n.id), n);
     const url = n.imagem ? urlSegura(n.imagem.url) : '';
     const capa = url
       ? `<img src="${url}" alt="${e(n.imagem.alt)}" class="noticia-thumb" style="object-fit:cover;width:100%;" loading="lazy">` : '';
-    const corpo = resumo
-      ? `<p>${e(n.corpo.slice(0, 110))}${n.corpo.length > 110 ? '…' : ''}</p>`
-      : Utils.paragrafos(n.corpo);
     return `
-      <article class="noticia-card">
+      <article class="noticia-card" data-noticia="${e(n.id)}">
         ${capa}
         <div class="body">
           <h3>${e(n.titulo)}</h3>
-          ${corpo}
+          <p>${e(n.corpo.slice(0, 110))}${n.corpo.length > 110 ? '…' : ''}</p>
           <div class="meta">
             <span>${Utils.formatDate(n.publicadaEm)}</span>
-            ${resumo ? '<a href="noticias.html" style="color:var(--viridian);font-weight:700;text-decoration:none;">Ler mais →</a>' : ''}
+            <button type="button" class="noticia-ler" data-noticia="${e(n.id)}">Ler mais<span class="sr-only">: ${e(n.titulo)}</span> →</button>
           </div>
         </div>
       </article>`;
   }
+
+  // <dialog> nativo: Esc fecha e o foco fica dentro da janela enquanto ela está aberta.
+  function janelaNoticia() {
+    let d = document.getElementById('noticia-janela');
+    if (d) return d;
+    d = document.createElement('dialog');
+    d.id = 'noticia-janela';
+    d.className = 'noticia-janela';
+    d.setAttribute('aria-labelledby', 'noticia-janela-titulo');
+    d.innerHTML = `
+      <button type="button" class="modal-close noticia-janela-fechar" aria-label="Fechar notícia">✕</button>
+      <div id="noticia-janela-conteudo"></div>`;
+    d.querySelector('.noticia-janela-fechar').addEventListener('click', () => d.close());
+    // Clique no fundo escurecido (fora da caixa) também fecha.
+    d.addEventListener('click', (ev) => {
+      const r = d.getBoundingClientRect();
+      const fora = ev.clientX < r.left || ev.clientX > r.right || ev.clientY < r.top || ev.clientY > r.bottom;
+      if (ev.target === d && fora) d.close();
+    });
+    document.body.appendChild(d);
+    return d;
+  }
+
+  function abrirNoticia(id, origem) {
+    const n = noticiasCarregadas.get(String(id));
+    if (!n) return;
+    const d = janelaNoticia();
+    const url = n.imagem ? urlSegura(n.imagem.url) : '';
+    d.querySelector('#noticia-janela-conteudo').innerHTML = `
+      ${url ? `<img src="${url}" alt="${e(n.imagem.alt)}" class="noticia-janela-imagem">` : ''}
+      <h2 id="noticia-janela-titulo">${e(n.titulo)}</h2>
+      <p class="noticia-janela-data">${Utils.formatDate(n.publicadaEm)}</p>
+      <div class="noticia-janela-texto">${Utils.paragrafos(n.corpo)}</div>`;
+    d.addEventListener('close', () => { if (origem && origem.isConnected) origem.focus(); }, { once: true });
+    d.showModal();
+    d.scrollTop = 0;
+  }
+
+  // O cartão inteiro abre a notícia com o mouse; pelo teclado, o botão "Ler mais".
+  document.addEventListener('click', (ev) => {
+    const alvo = ev.target.closest('.noticia-card[data-noticia], .noticia-ler[data-noticia]');
+    if (!alvo) return;
+    const card = alvo.closest('.noticia-card');
+    abrirNoticia(alvo.dataset.noticia, card ? card.querySelector('.noticia-ler') : alvo);
+  });
 
   function vazio(mensagem) {
     return `<div class="empty-state"><p>${e(mensagem)}</p></div>`;

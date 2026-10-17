@@ -613,6 +613,10 @@ button{ cursor:pointer; font-family:inherit; }
     box-shadow:var(--shadow-lg);
 }
 .noticia-janela::backdrop{ background:rgba(20,20,20,.6); }
+/* Com a notícia aberta, a página por trás não rola; e a rolagem da janela não "vaza" para ela. */
+html.noticia-aberta{ overflow:hidden; scrollbar-gutter:stable; }
+html.noticia-aberta body{ overflow:hidden; }
+.noticia-janela{ overscroll-behavior:contain; }
 .noticia-janela-fechar{
     position:sticky; top:0; float:right;
     margin:10px 10px 0 0;

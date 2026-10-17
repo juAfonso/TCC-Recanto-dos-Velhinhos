@@ -48,8 +48,9 @@ export function validarCadastro(corpo) {
     telefone: v.soDigitos(corpo.telefone),
     email: texto(corpo.email, 254).toLowerCase(),
     tipo_servico: tipoEscolhido === 'Outro' ? outro : tipoEscolhido,
-    objetivos: texto(corpo.objetivos, 2000) || null,
-    condicoes: texto(corpo.condicoes, 2000) || null,
+    // 300 caracteres: o termo impresso tem de caber numa folha A4 (2026-10-17).
+    objetivos: texto(corpo.objetivos, 300) || null,
+    condicoes: texto(corpo.condicoes, 300) || null,
   };
 
   const erroServico = tipoEscolhido === 'Outro'

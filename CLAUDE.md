@@ -1,6 +1,6 @@
 # SAGE — Memória do Projeto
 
-> Última atualização: 2026-10-16
+> Última atualização: 2026-10-17
 > TCC do IFRJ Campus Pinheiral — sistema web para a ILPI "Recanto dos Velhinhos
 > Francisco Gonçalves Barbosa". Repositório: `TCC-Recanto-dos-Velhinhos`
 > (GitHub, usuário juAfonso).
@@ -557,6 +557,12 @@ Passo a passo de comandos e validação em
   da instituição; a regra de não versionar a chave Pix continua valendo para
   o cadastro da chave (`admin/pix.html`). Se a presidência mudar, troca-se
   o nome no HTML. Session 2026-10-16 do spec.md.
+  **O termo cabe numa folha A4 (decidido em 2026-10-17).** A impressão é
+  compacta (`impressao.css`), e o bloco de serviço diminui a letra quando o
+  texto é longo, sem cortar nada. Para isso, "objetivos" e "dias e
+  horários" passaram a aceitar **até 300 caracteres** cada (eram 2.000), no
+  formulário e no servidor. Descartados: não imprimir o objetivo e cortar
+  com reticências (o termo assinado ficaria incompleto).
 - **Prioridade do item necessário: alta, média ou baixa (decidido em
   2026-10-05).** O CSU07 falava em "prioridade" sem valores, e o protótipo
   usava só "urgente sim/não". Os de prioridade alta são os "itens mais

@@ -169,6 +169,7 @@
 - Q: O menor continua com um documento de autorização separado? → A: **Não.** O termo do Recanto já tem "Assinatura do Responsável (caso o voluntário seja menor de idade)": é um só documento para maior e menor, e a assinatura do responsável nele é a autorização do FR-012. **[REVERTE]** a página de autorização separada (FR-012 de 2026-10-03 e FR-012a de 2026-10-06). Continua igual: o cadastro do menor fica com a autorização pendente até um funcionário marcar o recebimento, e nenhum documento de menor é guardado. Custo aceito: nome, documento e parentesco do responsável deixam de ser pedidos no papel, porque o termo do Recanto não os pede.
 - Q: Vale para o cadastro feito pela equipe no Painel? → A: **Sim.** Portal, triagem e cadastro direto (FR-023) imprimem o mesmo termo.
 - Q: A data de nascimento, que o termo do Recanto não tem, continua sendo coletada? → A: **Sim, mas não é impressa.** Ela é necessária para identificar o menor (Session 2026-10-03 (2)). Os demais campos do formulário já correspondem aos do termo, então formulário e banco não mudam.
+- Q (2026-10-17): O termo impresso pode ocupar mais de uma folha? → A: **Não, cabe numa folha A4.** Quando o bloco de serviço tem muito texto, a letra dele diminui; nada é cortado. Para garantir isso, "objetivos" e "dias e horários" aceitam até 300 caracteres cada (FR-011, FR-012a). Descartados: omitir o objetivo do termo e cortar o texto com reticências.
 
 ## User Scenarios & Testing (mandatory)
 

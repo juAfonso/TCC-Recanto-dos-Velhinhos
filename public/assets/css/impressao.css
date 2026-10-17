@@ -10,10 +10,37 @@
 .acoes-tela { max-width: 780px; margin: 24px auto 0; padding: 0 24px; display: flex; gap: 10px; flex-wrap: wrap; }
 .aviso-tela { max-width: 780px; margin: 16px auto; }
 @media (max-width: 600px) { .termo dl, .termo .assinaturas { grid-template-columns: 1fr; } }
+/* O termo tem de caber numa folha A4 (2026-10-17): compacta só a impressão, sem mudar o texto. */
+@page { size: A4; margin: 10mm 14mm; }
 @media print {
   .acoes-tela, .aviso-tela { display: none !important; }
   body { background: #fff !important; }
-  .termo { padding: 0; }
+  .termo { padding: 0; max-width: none; font-size: 10.5pt; line-height: 1.35; }
+  .termo p { margin: 0 0 4px; }
+  .termo-cabecalho { padding-bottom: 4px; margin-bottom: 8px; gap: 10px; }
+  .termo-cabecalho img { width: 52px; height: 52px; }
+  .termo-instituicao { font-size: 11pt; }
+  .termo-registro { font-size: 6.5pt; }
+  .termo-sede { font-size: 7.5pt; }
+  .termo h1 { font-size: 11pt; margin: 6px 0 8px; }
+  .termo-lei { padding: 3px 5px; line-height: 1.3; }
+  .campos { gap: 2px 12px; margin-top: 8px; }
+  .campo { min-height: 0; padding-top: 4px; line-height: 1.25; }
+  .termo dl.termo-servico { gap: 0 10px; }
+  .termo dl.termo-servico dd { min-height: 18px; }
+  .termo dl.termo-servico dt, .termo dl.termo-servico dd { line-height: 1.3; }
+  .termo .linha { height: 18px; margin: 0 0 2px; }
+  .termo-data { margin-top: 8px; }
+  .termo .termo-bloco { margin-top: 8px; }
+  .termo .assinaturas { margin-top: 24px; gap: 24px; }
+  .termo .assinaturas .linha, .assinatura-presidente .linha { height: 8px; }
+  .assinatura-presidente { margin-top: 24px; }
+  .termo-protocolo { margin: 8px 0 0 !important; font-size: 7.5pt; }
+  /* Bloco de serviço com muito texto (page-termo-adesao.js): some a linha em branco e a letra diminui. */
+  .servico-longo .linha-extra { display: none; }
+  .servico-longo dl.termo-servico { font-size: 9pt; }
+  .servico-muito-longo dl.termo-servico { font-size: 8pt; }
+  .servico-muito-longo dl.termo-servico dt, .servico-muito-longo dl.termo-servico dd { line-height: 1.2; }
 }
 
 /* Termo do Recanto (2026-10-16): cabeçalho institucional e campos preenchidos sobre a linha. */
@@ -34,6 +61,7 @@
 .termo dl.termo-servico { grid-template-columns: 140px 1fr; }
 .termo dl.termo-servico dd { border-bottom: 1px solid #333; min-height: 26px; }
 .termo-data { text-align: center; margin-top: 18px; }
+.termo .termo-bloco { margin-top: 18px; }
 .assinatura-presidente { max-width: 360px; margin: 36px auto 0; text-align: center; }
 .termo .assinaturas .rotulo { text-align: center; }
 .termo-protocolo { margin-top: 28px; }

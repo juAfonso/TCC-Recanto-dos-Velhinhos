@@ -16,18 +16,19 @@
     <button type="button" class="btn btn-outline" onclick="history.length > 1 ? history.back() : window.close()">Voltar</button>
 </div>
 <div class="alert alert-info aviso-tela"><span aria-hidden="true">ℹ️</span><div>
-    Imprima este termo (ou salve em PDF) e leve-o à sede do Recanto. Ele é assinado por você e pela instituição
+    Imprima este termo (ou salve em PDF) para ser assinado na sede pelo voluntário e pela instituição
     <b>quando o cadastro for aprovado</b>. Nada desta página é enviado pela internet.
     <p id="aviso-menor" hidden style="margin-top:8px;">
         <b>Menor de 18 anos:</b> o responsável legal assina este mesmo termo, no campo
-        "Assinatura do Responsável", e ele é entregue na sede. O cadastro só pode ser aprovado
-        depois que a equipe receber o termo assinado pelo responsável.
+        "Assinatura do Responsável". O cadastro só pode ser aprovado depois disso: marque a
+        autorização como recebida na triagem.
     </p>
 </div></div>
 
-<!-- Texto do termo que o Recanto já usa (decidido em 2026-10-16): um só documento para maior e menor. -->
+<!-- Texto do termo que o Recanto já usa (decidido em 2026-10-16): um só documento para maior e menor.
+     Aberto só pelo Painel desde 2026-10-17; o voluntário não imprime pelo site. -->
 <main class="termo">
-    <p id="sem-dados" hidden>Não encontramos os dados do cadastro neste navegador. Peça à equipe do Recanto para imprimir o termo pelo Painel.</p>
+    <p id="sem-dados" hidden>Não encontramos os dados do cadastro. Abra o termo pelo Painel, no botão <b>Imprimir termo de adesão</b> do cadastro.</p>
     <div id="conteudo" hidden>
         <header class="termo-cabecalho">
             <img src="assets/img/logo-icon.png" alt="" width="64" height="64">
@@ -70,16 +71,16 @@
             <div class="campo c3"><span>e-mail:</span> <b id="t-email"></b></div>
         </div>
 
-        <p style="margin-top:18px;">Tipo de serviço que o voluntário vai prestar (preencher com o objetivo e as condições de seu exercício):</p>
+        <p class="termo-bloco">Tipo de serviço que o voluntário vai prestar (preencher com o objetivo e as condições de seu exercício):</p>
         <dl class="termo-servico">
             <dt>Serviço</dt><dd id="t-servico"></dd>
             <dt>Objetivo</dt><dd id="t-objetivos"></dd>
             <dt>Dias e horários</dt><dd id="t-condicoes"></dd>
         </dl>
-        <div class="linha"></div>
-        <div class="linha"></div>
+        <div class="linha linha-extra"></div>
+        <div class="linha linha-extra"></div>
 
-        <p style="margin-top:18px;">Instituição onde o voluntário vai prestar o serviço:</p>
+        <p class="termo-bloco">Instituição onde o voluntário vai prestar o serviço:</p>
         <p>
             Nome: <b>RECANTO DOS VELHINHOS FRANCISCO GONÇALVES BARBOSA</b><br>
             Endereço: Rua Francisco Ribeiro de Abreu, 102 – Posto Zootécnico – Pinheiral – RJ.<br>

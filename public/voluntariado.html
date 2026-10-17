@@ -66,7 +66,7 @@
                     <div class="form-group">
                         <label for="v-nascimento">Data de nascimento <span class="req">*</span></label>
                         <input type="date" id="v-nascimento" data-campo="dataNascimento">
-                        <p class="form-hint">Menores de 18 anos podem se cadastrar, com autorização do responsável entregue na sede.</p>
+                        <p class="form-hint">Menores de 18 anos podem se cadastrar, com autorização do responsável, que assina o termo de adesão na sede.</p>
                         <div class="form-error"></div>
                     </div>
                     <div class="form-group">
@@ -163,12 +163,12 @@
                 </div>
                 <div class="form-group">
                     <label for="v-objetivos">O que você espera desse trabalho voluntário? (opcional)</label>
-                    <textarea id="v-objetivos" data-campo="objetivos" rows="3" maxlength="2000"></textarea>
+                    <textarea id="v-objetivos" data-campo="objetivos" rows="3" maxlength="300"></textarea>
                     <div class="form-error"></div>
                 </div>
                 <div class="form-group">
                     <label for="v-condicoes">Dias e horários disponíveis (opcional)</label>
-                    <textarea id="v-condicoes" data-campo="condicoes" rows="2" maxlength="2000" placeholder="ex.: sábados pela manhã"></textarea>
+                    <textarea id="v-condicoes" data-campo="condicoes" rows="2" maxlength="300" placeholder="ex.: sábados pela manhã"></textarea>
                     <div class="form-error"></div>
                 </div>
 
@@ -187,11 +187,10 @@
                 <p class="form-hint" id="aviso-email"></p>
             </div>
             <div class="alert alert-info" style="margin-top:18px;"><div>
-                <b>Termo de adesão.</b> O serviço voluntário é formalizado por um termo assinado por você e pelo Recanto (Lei nº 9.608/1998). Imprima e leve à sede: ele é assinado quando o cadastro for aprovado.
-                <div style="margin-top:10px;"><a class="btn btn-viridian btn-sm" href="termo-adesao.html" target="_blank" rel="opener">Imprimir termo de adesão</a></div>
+                <b>Termo de adesão.</b> O serviço voluntário é formalizado por um termo de adesão (Lei nº 9.608/1998), preenchido e assinado na sede do Recanto depois da aprovação do cadastro.
             </div></div>
             <div class="alert alert-warning" id="aviso-menor" hidden><div>
-                <b>Falta a autorização do responsável.</b> Como você tem menos de 18 anos, o responsável legal também assina o termo de adesão, no campo "Assinatura do Responsável". O cadastro só pode ser aprovado depois que o termo assinado por ele for entregue na sede do Recanto.
+                <b>Falta a autorização do responsável.</b> Como você tem menos de 18 anos, o responsável legal precisa ir à sede do Recanto para assinar o termo de adesão. O cadastro só pode ser aprovado depois disso.
             </div></div>
             <div class="form-actions" style="justify-content:center;margin-top:18px;">
                 <a href="index.html" class="btn btn-outline">Voltar ao início</a>
@@ -237,7 +236,6 @@
 <script src="assets/js/nav.js"></script>
 <script src="assets/js/mascaras.js"></script>
 <script src="assets/js/consentimento.js"></script>
-<script src="assets/js/impressao-voluntario.js"></script>
 <script src="assets/js/page-voluntariado.js"></script>
 </body>
 </html>

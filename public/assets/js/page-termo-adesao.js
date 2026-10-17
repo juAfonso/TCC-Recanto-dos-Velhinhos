@@ -31,6 +31,11 @@
       't-protocolo': dados.protocolo,
     };
     Object.entries(campos).forEach(([id, valor]) => { $(id).textContent = valor || ''; });
+    // O termo cabe numa folha A4: quanto mais texto no bloco de serviço, menor a letra dele
+    // (2026-10-17). Os campos vão até 200 + 300 + 300 caracteres; nada é cortado.
+    const tamanho = ['t-servico', 't-objetivos', 't-condicoes'].reduce((n, id) => n + $(id).textContent.length, 0);
+    if (tamanho > 180) $('conteudo').classList.add('servico-longo');
+    if (tamanho > 400) $('conteudo').classList.add('servico-muito-longo');
     // Informado pelo servidor (resposta do envio ou dados do Painel), nunca calculado aqui.
     $('aviso-menor').hidden = dados.menorDeIdade !== true;
     $('conteudo').hidden = false;

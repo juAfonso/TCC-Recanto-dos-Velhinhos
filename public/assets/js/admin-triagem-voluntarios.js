@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const seloAutorizacao = (v) => (v.menorDeIdade
     ? (v.autorizacaoStatus === 'recebida'
       ? ' <span class="badge badge-success" title="Autorização do responsável recebida">Autorização ok</span>'
-      : ' <span class="badge badge-warning" title="Autorização do responsável ainda não entregue">Autorização pendente</span>')
+      : ' <span class="badge badge-warning" title="O responsável ainda não assinou o termo">Autorização pendente</span>')
     : '');
 
   /* ---------- Lista ---------- */
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const acao = b.dataset.acao;
     if (acao === 'entrevista' && confirm(`Chamar ${atual.nome} para entrevista? A pessoa recebe um e-mail avisando que a equipe vai entrar em contato.`)) decidir('entrevista');
     if (acao === 'aprovar' && confirm(`Aprovar ${atual.nome} como voluntário(a)? A pessoa recebe um e-mail com o resultado.`)) decidir('aprovar');
-    if (acao === 'autorizacao-recebida' && confirm('Confirmar que o termo de adesão assinado pelo responsável foi entregue na sede?')) decidir('autorizacao-recebida');
+    if (acao === 'autorizacao-recebida' && confirm('Confirmar que o responsável assinou o termo de adesão na sede?')) decidir('autorizacao-recebida');
     if (acao === 'rejeitar') {
       $('rej-motivo').value = '';
       openModal('modal-rejeitar');

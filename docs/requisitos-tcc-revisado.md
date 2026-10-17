@@ -124,7 +124,7 @@
 
 ### Gestão de usuários
 
-Cadastro, consulta, alteração e inativação de registros dos perfis funcionário, voluntário e doador associado, com busca por nome, CPF ou e-mail. Cada pessoa tem um único cadastro, identificado pelo CPF; funcionário e voluntário são papéis exclusivos, e o de doador associado pode ser acumulado com qualquer um deles. A inativação é feita papel por papel e pode ser desfeita. O voluntário cadastrado diretamente pela administração dispensa a triagem, mas preenche os dados do termo de adesão; o menor de idade permanece pendente até a entrega da autorização do responsável. O doador associado não é cadastrado pela administração: seu cadastro nasce com a primeira doação associativa.
+Cadastro, consulta, alteração e inativação de registros dos perfis funcionário, voluntário e doador associado, com busca por nome, CPF ou e-mail. Cada pessoa tem um único cadastro, identificado pelo CPF; funcionário e voluntário são papéis exclusivos, e o de doador associado pode ser acumulado com qualquer um deles. A inativação é feita papel por papel e pode ser desfeita. O voluntário cadastrado diretamente pela administração dispensa a triagem, mas preenche os dados do termo de adesão; o menor de idade permanece pendente até o responsável assinar o termo de adesão na sede. O doador associado não é cadastrado pela administração: seu cadastro nasce com a primeira doação associativa.
 
 [Mudou: inativação por papel, cadastro direto de voluntário e origem do doador associado (decisões de 2026-10-06 e 2026-10-07).]
 
@@ -168,7 +168,7 @@ Publicação, edição e despublicação de notícias no portal público, com um
 
 ### Cadastro de voluntários
 
-Cadastro de voluntários pelo portal público, com os dados do termo de adesão que a instituição já usa, previsto na Lei nº 9.608/1998, e triagem pela administração, incluindo etapa de entrevista, antes da atuação junto aos residentes. Após o envio, o termo de adesão é disponibilizado já preenchido para impressão e assinatura. O termo é o mesmo para maior e menor de idade: no caso de menor, o responsável legal também o assina, e a aprovação depende da entrega desse termo assinado na sede da instituição.
+Cadastro de voluntários pelo portal público, com os dados do termo de adesão que a instituição já usa, previsto na Lei nº 9.608/1998, e triagem pela administração, incluindo etapa de entrevista, antes da atuação junto aos residentes. A administração imprime o termo de adesão já preenchido, que é assinado na sede da instituição. O termo é o mesmo para maior e menor de idade: no caso de menor, o responsável legal também o assina na sede, e a aprovação depende dessa assinatura.
 
 [Mudou: entraram os dados do termo de adesão e o termo para imprimir, um só para maior e menor (FR-011, FR-012, FR-012a).]
 

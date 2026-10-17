@@ -1,6 +1,6 @@
 /* =========================================================
-   impressao-voluntario.js — dados dos documentos para imprimir
-   (termo de adesão e autorização do responsável)
+   impressao-voluntario.js — dados do termo de adesão para imprimir
+   (um só documento para maior e menor desde 2026-10-16)
 
    Os dados vêm do sessionStorage do navegador: gravados pelo
    formulário de voluntariado logo após o envio, ou pelo Painel.
@@ -27,21 +27,5 @@ const ImpressaoVoluntario = (() => {
   const telefone = (v) => String(v || '').replace(/\D/g, '').replace(/^(\d{2})(\d{4,5})(\d{4})$/, '($1) $2-$3');
   const servico = (d) => (d.tipoServico === 'Outro' ? d.tipoServicoOutro : d.tipoServico);
 
-  // Linhas <dt>/<dd> com os dados do voluntário (texto já escapado).
-  function dadosHtml(d, { completo = true } = {}) {
-    const e = (t) => Utils.escapeHtml(t || '—');
-    const linhas = [
-      ['Nome', d.nome],
-      ['Data de nascimento', Utils.formatDay(d.dataNascimento)],
-      ['RG', d.rg],
-      ['CPF', cpf(d.cpf)],
-      ...(completo ? [['Escolaridade', d.escolaridade], ['Profissão', d.profissao]] : []),
-      ['Endereço', `${d.endereco || ''}, ${d.bairro || ''} — ${d.cidade || ''}/${d.uf || ''}, CEP ${cep(d.cep)}`],
-      ['Telefone', telefone(d.telefone)],
-      ['E-mail', d.email],
-    ];
-    return linhas.map(([rotulo, valor]) => `<dt>${e(rotulo)}</dt><dd>${e(valor)}</dd>`).join('');
-  }
-
-  return { CHAVE, guardar, ler, dadosHtml, servico };
+  return { CHAVE, guardar, ler, cpf, cep, telefone, servico };
 })();

@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $('aviso-email').textContent = r.emailEnviado
       ? 'Também mandamos o código para o seu e-mail (confira a caixa de spam).'
       : 'Não conseguimos enviar o e-mail agora, mas o cadastro foi registrado. Anote o código acima.';
-    // Dados para os documentos de imprimir: só nesta aba do navegador, até ela ser fechada.
+    // Dados para o termo de imprimir: só nesta aba do navegador, até ela ser fechada.
     // Sem sessionStorage, a equipe imprime pelo Painel.
     const menor = r.autorizacaoStatus === 'pendente';
     ImpressaoVoluntario.guardar({ ...corpo, protocolo: r.protocolo, menorDeIdade: menor });

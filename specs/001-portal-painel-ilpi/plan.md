@@ -125,7 +125,7 @@ public/                              # protótipo, já no repositório desde 202
 ├── consultar-status.html · login.html · autoatendimento.html
 ├── aviso-privacidade.html           # NOVO — FR-053
 ├── definir-senha.html               # NOVO — definição e redefinição (D11)
-├── autorizacao-menor.html           # NOVO — página para imprimir (FR-012, D17)
+├── termo-adesao.html                # termo único para imprimir, maior e menor (FR-012, FR-012a, D17)
 ├── admin/
 │   ├── dashboard.html · itens.html · campanhas.html · noticias.html · doacoes.html
 │   ├── usuarios.html · pix.html

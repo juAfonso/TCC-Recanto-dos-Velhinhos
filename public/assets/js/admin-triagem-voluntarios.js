@@ -106,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
         acoes.push(['autorizacao-recebida', 'btn-outline', 'Marcar autorização como recebida']);
       }
       acoes.push(['imprimir-termo', 'btn-outline', 'Imprimir termo de adesão']);
-      if (v.menorDeIdade) acoes.push(['imprimir-autorizacao', 'btn-outline', 'Imprimir autorização do responsável']);
       acoes.push(['corrigir', 'btn-outline', 'Corrigir dados']);
     }
     $('vol-acoes').innerHTML = acoes.map(([acao, cls, rotulo]) => `<button type="button" class="btn ${cls} btn-sm" data-acao="${acao}">${rotulo}</button>`).join('')
@@ -131,14 +130,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const acao = b.dataset.acao;
     if (acao === 'entrevista' && confirm(`Chamar ${atual.nome} para entrevista? A pessoa recebe um e-mail avisando que a equipe vai entrar em contato.`)) decidir('entrevista');
     if (acao === 'aprovar' && confirm(`Aprovar ${atual.nome} como voluntário(a)? A pessoa recebe um e-mail com o resultado.`)) decidir('aprovar');
-    if (acao === 'autorizacao-recebida' && confirm('Confirmar que a autorização assinada pelo responsável foi entregue na sede?')) decidir('autorizacao-recebida');
+    if (acao === 'autorizacao-recebida' && confirm('Confirmar que o termo de adesão assinado pelo responsável foi entregue na sede?')) decidir('autorizacao-recebida');
     if (acao === 'rejeitar') {
       $('rej-motivo').value = '';
       openModal('modal-rejeitar');
       $('rej-motivo').focus();
     }
-    if (acao === 'imprimir-termo') imprimir('termo-adesao.html');
-    if (acao === 'imprimir-autorizacao') imprimir('autorizacao-menor.html');
+    if (acao === 'imprimir-termo') imprimir();
     if (acao === 'corrigir') abrirCorrecao();
   });
 
@@ -148,14 +146,14 @@ document.addEventListener('DOMContentLoaded', () => {
     await decidir('rejeitar', { motivo: $('rej-motivo').value.trim() });
   });
 
-  // Documentos para imprimir (termo de adesão e autorização): os dados vêm do Painel e vão para a
+  // Termo de adesão para imprimir (um só para maior e menor): os dados vêm do Painel e vão para a
   // página de impressão pelo sessionStorage, que a aba nova aberta por window.open herda (D17).
-  async function imprimir(pagina) {
+  async function imprimir() {
     try {
       const d = await Api.get(`/api/admin/voluntarios/${atual.id}/impressao`);
       // Grava ANTES de abrir: a aba nova copia o sessionStorage no momento em que é criada.
       ImpressaoVoluntario.guardar(d);
-      const aba = window.open(`../${pagina}`, '_blank');
+      const aba = window.open('../termo-adesao.html', '_blank');
       if (!aba) Utils.toast('O navegador bloqueou a janela. Permita pop-ups para este site e tente de novo.', 'warning');
       setTimeout(() => { try { sessionStorage.removeItem(ImpressaoVoluntario.CHAVE); } catch (e) { /* nada */ } }, 5000);
     } catch (erro) {

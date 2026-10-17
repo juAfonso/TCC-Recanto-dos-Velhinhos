@@ -324,7 +324,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 |---|---|
 | 1. No passo 3 do fluxo principal, em vez de indicar um usuário, escolhe cadastrar novo usuário e informa, para o perfil funcionário, nome, CPF, data de nascimento, e-mail e telefone; para o perfil voluntário, os mesmos dados do termo de adesão pedidos no CSU05. | |
 | | 2. Verifica se o CPF já existe; existindo, executa o fluxo alternativo 02. |
-| | 3. Grava o usuário sem passar por triagem, porque o cadastro já é ação explícita de um funcionário, e registra a conta e a data. Funcionário e voluntário maior de idade ficam ativos. Voluntário menor de idade fica pendente, com a autorização do responsável legal pendente, e só é aprovado depois de ela ser marcada como recebida (CSU05, fluxos alternativos 04 e 03). O caso de uso se encerra. |
+| | 3. Grava o usuário sem passar por triagem, porque o cadastro já é ação explícita de um funcionário, e registra a conta e a data. Funcionário e voluntário maior de idade ficam ativos. Voluntário menor de idade fica pendente, com a autorização do responsável legal pendente, e só é aprovado depois de ela ser marcada como recebida (CSU05, fluxos alternativos 04 e 03). Para o voluntário, maior ou menor, oferece o termo de adesão para imprimir (CSU05, fluxo alternativo 12), que o menor entrega assinado também pelo responsável. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 02 – CPF já cadastrado
 
@@ -407,7 +407,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU05 |
 |---|---|
 | Nome | Cadastrar Voluntário |
-| Sumário | Este caso de uso descreve os passos percorridos pelo visitante para se cadastrar como voluntário e pela equipe para triar esse cadastro, com etapa de entrevista. Não existe autoaprovação: todo cadastro passa por triagem humana. Os dados coletados são os do termo de adesão da Lei nº 9.608/1998. A autorização do responsável legal de menor de idade é entregue em papel na sede da instituição. |
+| Sumário | Este caso de uso descreve os passos percorridos pelo visitante para se cadastrar como voluntário e pela equipe para triar esse cadastro, com etapa de entrevista. Não existe autoaprovação: todo cadastro passa por triagem humana. Os dados coletados são os do termo de adesão ao serviço voluntário que a instituição já usa (Lei nº 9.608/1998), mais a data de nascimento, que identifica o menor de idade. O termo é um só para maior e menor: no caso de menor, o responsável legal o assina no campo próprio, e essa assinatura é a autorização, entregue em papel na sede da instituição. |
 | Ator Principal | Visitante (candidato a voluntário) |
 | Ator Secundário | Funcionário |
 | Pré-condições | Visitante deve estar na página pública de voluntariado. O aviso de privacidade deve estar publicado. |
@@ -420,15 +420,14 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | | 2. Verifica a data de nascimento; sendo menor de idade, executa o fluxo alternativo 01. Exibe o resumo do tratamento dos dados e a opção de aceite do aviso de privacidade. |
 | 3. Aceita o aviso de privacidade e confirma o envio. | |
 | | 4. Registra o cadastro com status pendente, grava o consentimento com data/hora, finalidade e versão do aviso, gera o código de protocolo e sinaliza o cadastro no Painel Administrativo. |
-| | 5. Exibe o protocolo, orientando o visitante a anotá-lo, e envia e-mail de confirmação informando que a análise pode levar alguns dias. O caso de uso se encerra. |
+| | 5. Exibe o protocolo, orientando o visitante a anotá-lo, envia e-mail de confirmação informando que a análise pode levar alguns dias e oferece o termo de adesão para imprimir (fluxo alternativo 12). O caso de uso se encerra. |
 
 ## Fluxo Alternativo 01 – Voluntário menor de idade
 
 | Ator (visitante) | Sistema |
 |---|---|
-| | 1. No passo 2 do fluxo principal, identifica que o cadastrando é menor de idade, informa que a autorização do responsável legal deve ser entregue assinada na sede da instituição e oferece a página de autorização pronta para impressão, preenchida com os dados informados. |
-| 2. Imprime a autorização ou a salva em PDF pelo navegador. | |
-| | 3. Retorna ao passo 3 do fluxo principal; o cadastro será registrado com a autorização marcada como pendente. |
+| | 1. No passo 2 do fluxo principal, identifica que o cadastrando é menor de idade e informa que o responsável legal deve assinar o termo de adesão, no campo "Assinatura do Responsável", e entregá-lo na sede da instituição. |
+| | 2. Retorna ao passo 3 do fluxo principal; o cadastro será registrado com a autorização marcada como pendente, e o termo é impresso pelo fluxo alternativo 12. |
 
 ## Fluxo Alternativo 02 – Chamar para entrevista
 
@@ -449,7 +448,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. A partir do passo 4 do fluxo principal, sendo cadastro de menor com autorização pendente, recebe na sede a autorização assinada pelo responsável legal e a marca como recebida. | |
+| 1. A partir do passo 4 do fluxo principal, sendo cadastro de menor com autorização pendente, recebe na sede o termo de adesão assinado pelo responsável legal e marca a autorização como recebida. | |
 | | 2. Registra o recebimento com a data e a conta, sem guardar cópia do documento, e libera a aprovação. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 05 – Rejeitar cadastro
@@ -502,10 +501,19 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | | 1. No passo 5 do fluxo principal ou ao final dos fluxos alternativos 02, 03 e 05, não consegue enviar o e-mail de confirmação ou de resultado. |
 | | 2. Mantém o cadastro e a decisão registrados, tenta reenviar automaticamente uma vez após um intervalo e, persistindo a falha, registra-a para reenvio ou contato manual pela equipe. O registro nunca é revertido. O caso de uso se encerra. |
 
+## Fluxo Alternativo 12 – Imprimir o termo de adesão
+
+| Ator (visitante ou funcionário) | Sistema |
+|---|---|
+| 1. No passo 5 do fluxo principal, o visitante escolhe imprimir o termo de adesão; ou, a qualquer momento, o funcionário escolhe imprimi-lo no detalhe de um cadastro de voluntário no Painel. | |
+| | 2. Exibe o termo de adesão ao serviço voluntário da instituição, o mesmo para maior e menor de idade, preenchido com os dados do cadastro e com os campos de assinatura do voluntário, do responsável (caso o voluntário seja menor de idade), da presidente da instituição e de duas testemunhas. O termo é montado no navegador e não é guardado pelo sistema. |
+| 3. Imprime o termo ou o salva em PDF pelo navegador e o leva à sede, onde é assinado quando o cadastro for aprovado. | |
+| | 4. O caso de uso se encerra. |
+
 ## Pós-condições
 
 - **Fluxo principal:** O cadastro está registrado como pendente, com consentimento e protocolo, aguardando triagem.
-- **Fluxo Alternativo 01 – Voluntário menor de idade:** O cadastro do menor fica com a autorização pendente; nenhum documento do menor é armazenado no sistema.
+- **Fluxo Alternativo 01 – Voluntário menor de idade:** O cadastro do menor fica com a autorização pendente até a entrega do termo assinado pelo responsável; nenhum documento do menor é armazenado no sistema.
 - **Fluxo Alternativo 02 – Chamar para entrevista:** O cadastro consta como chamado para entrevista.
 - **Fluxo Alternativo 03 – Aprovar após entrevista:** A pessoa está cadastrada como voluntária ativa e a aprovação consta na auditoria.
 - **Fluxo Alternativo 04 – Registrar recebimento da autorização:** A autorização consta como recebida e o cadastro do menor pode ser aprovado.
@@ -516,6 +524,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 - **Fluxo Exceção 09 – Pessoa que já é funcionária:** O cadastro permaneceu sem aprovação.
 - **Fluxo Exceção 10 – Envio sem aceite do aviso de privacidade:** Nenhum cadastro foi registrado.
 - **Fluxo Exceção 11 – Falha no envio de e-mail:** O registro permanece e a falha de envio está sinalizada à equipe.
+- **Fluxo Alternativo 12 – Imprimir o termo de adesão:** O termo preenchido foi impresso ou salvo em PDF; nada foi gravado no sistema.
 
 ---
 

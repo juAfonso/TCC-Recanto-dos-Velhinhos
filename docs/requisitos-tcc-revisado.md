@@ -21,7 +21,7 @@
 - Implementar um canal de doação financeira via Pix no portal público, com registro das doações declaradas pelo doador e conferência posterior pela equipe administrativa.
 - Implementar ferramentas para a organização de campanhas e eventos promovidos pela instituição, incluindo o cadastro de ações, datas, descrição e recursos necessários, com verificação de conflito de datas.
 - Implementar uma funcionalidade para divulgação dos itens e suprimentos de que a instituição necessita no momento, permitindo atualização simples pela administração e exibição automática no portal público.
-- Implementar um fluxo de triagem de voluntários pela administração, com etapa de entrevista e geração do termo de adesão para assinatura, incluindo o tratamento de candidatos menores de idade mediante autorização do responsável legal.
+- Implementar um fluxo de triagem de voluntários pela administração, com etapa de entrevista e geração do termo de adesão para assinatura, incluindo o tratamento de candidatos menores de idade, cujo termo é assinado também pelo responsável legal.
 - Implementar o recebimento e a avaliação de candidaturas a vagas de emprego, com envio de currículo e triagem pela administração, com etapa de entrevista.
 - Implementar um canal para que pessoas e organizações externas proponham eventos ou campanhas à instituição, sujeitos à avaliação da administração.
 - Disponibilizar uma área de autoatendimento, com acesso individual, para que doadores associados consultem exclusivamente seus próprios dados e histórico.
@@ -75,7 +75,7 @@
 
 - Tratamento de dados pessoais em observância à Lei nº 13.709/2018, com coleta mínima necessária e finalidade declarada ao titular.
 - Consentimento registrado com data, finalidade e versão do aviso aceito.
-- Dados de menores de idade com acesso restrito a perfis autorizados. A autorização do responsável legal é entregue em papel na sede da instituição; o sistema registra apenas o seu recebimento e não guarda cópia do documento.
+- Dados de menores de idade com acesso restrito a perfis autorizados. Não há documento de autorização separado: o termo de adesão, impresso somente pela administração, é assinado pelo responsável legal na sede da instituição, e essa assinatura é a autorização. O sistema registra apenas que a assinatura foi colhida e não guarda cópia do termo assinado.
 - Arquivos enviados pelo público acessíveis apenas mediante verificação de permissão, nunca por endereço público direto.
 - Retenção limitada à finalidade: os dados de candidaturas, cadastros de voluntário e solicitações externas não aprovados ou encerrados são anonimizados seis meses após a conclusão da triagem; o currículo de quem foi contratado, seis meses após a efetivação. Dados de doador associado só são anonimizados a pedido do titular. O prazo é configuração editável pela equipe.
 

@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (noticiasGrid) {
     Api.get('/api/public/noticias?limite=3')
       .then(({ noticias }) => {
-        noticiasGrid.innerHTML = noticias.map(n => PortalCards.noticia(n, { resumo: true })).join('')
+        noticiasGrid.innerHTML = noticias.map(n => PortalCards.noticia(n)).join('')
           || '<p class="cell-muted">Nenhuma notícia publicada ainda.</p>';
       })
       .catch(() => { noticiasGrid.innerHTML = PortalCards.erro(); });

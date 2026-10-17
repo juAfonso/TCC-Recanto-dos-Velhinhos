@@ -57,13 +57,21 @@ document.addEventListener('DOMContentLoaded', () => {
       $('pix-indisponivel').style.display = 'flex';
     });
 
-  /* Valores sugeridos */
-  document.querySelectorAll('.valor-preset').forEach(btn => {
+  /* Valores sugeridos: o botão do valor escolhido fica marcado; digitar outro valor desmarca. */
+  const presets = document.querySelectorAll('.valor-preset');
+  function syncPresets() {
+    const valor = $('valorDoacao').value.trim();
+    presets.forEach(b => b.setAttribute('aria-pressed', String(valor === b.dataset.valor + ',00')));
+  }
+  presets.forEach(btn => {
     btn.addEventListener('click', () => {
       $('valorDoacao').value = btn.dataset.valor + ',00';
       Utils.clearFieldError($('valorDoacao').closest('.form-group'));
+      syncPresets();
     });
   });
+  $('valorDoacao').addEventListener('input', syncPresets);
+  syncPresets();
 
   /* Radio cards */
   function tipoEscolhido() {

@@ -129,7 +129,7 @@ Comuns às três:
   destaca **"anote este código"**; `emailEnviado: false` não muda nada além de um aviso discreto.
 - O registro é gravado antes do e-mail; falha de envio segue a política D5 e **nunca** desfaz o
   registro (FR-049a).
-- O termo de adesão (que, no menor, o responsável também assina) é montado no navegador com os dados do próprio formulário (D17, revisto em 2026-10-16).
+- O Portal não oferece o termo de adesão: desde 2026-10-17 só a equipe o imprime, pelo Painel (`GET /api/admin/voluntarios/:id/impressao`, D17).
 
 ### Consulta de status (CSU10)
 

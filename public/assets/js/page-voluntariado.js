@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     botao.textContent = 'Enviando…';
     try {
       const r = await Api.post('/api/public/voluntarios', { ...corpo, consentimento: Consentimento.dados(form) }, { form });
-      mostrarSucesso(r, corpo);
+      mostrarSucesso(r);
     } catch (erro) {
       if (erro.campos.length) {
         const primeiro = form.querySelector('.has-error input, .has-error select, .has-error textarea');
@@ -64,18 +64,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  function mostrarSucesso(r, corpo) {
+  function mostrarSucesso(r) {
     $('form-wrap').hidden = true;
     $('sucesso').hidden = false;
     $('protocolo-gerado').textContent = r.protocolo;
     $('aviso-email').textContent = r.emailEnviado
       ? 'Também mandamos o código para o seu e-mail (confira a caixa de spam).'
       : 'Não conseguimos enviar o e-mail agora, mas o cadastro foi registrado. Anote o código acima.';
-    // Dados para o termo de imprimir: só nesta aba do navegador, até ela ser fechada.
-    // Sem sessionStorage, a equipe imprime pelo Painel.
-    const menor = r.autorizacaoStatus === 'pendente';
-    ImpressaoVoluntario.guardar({ ...corpo, protocolo: r.protocolo, menorDeIdade: menor });
-    $('aviso-menor').hidden = !menor;
+    // O termo de adesão é impresso só pela equipe, no Painel (2026-10-17).
+    $('aviso-menor').hidden = r.autorizacaoStatus !== 'pendente';
     $('sucesso').scrollIntoView({ behavior: 'smooth' });
   }
 });

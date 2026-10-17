@@ -535,9 +535,10 @@ Passo a passo de comandos e validação em
   registra consentimento** nem recebe e-mail: a base é o vínculo de
   trabalho. Tornar funcionário quem é voluntário ativo encerra o papel de
   voluntário, depois de confirmação. Session 2026-10-07 (2) do spec.md.
-- **Termo de adesão para imprimir (decidido em 2026-10-06, FR-012a).** Todo
-  voluntário imprime o termo da Lei 9.608 já preenchido logo após o envio.
-  A equipe imprime o termo de qualquer cadastro pelo Painel. **Ampliou o
+- **Termo de adesão para imprimir (decidido em 2026-10-06, FR-012a).** ~~Todo
+  voluntário imprime o termo da Lei 9.608 já preenchido logo após o envio.~~
+  (Revertido em 2026-10-17, ver abaixo.) A equipe imprime o termo de
+  qualquer cadastro pelo Painel. **Ampliou o
   CSU05** (fluxo alternativo 12 em `docs/casos-de-uso-tcc.md`): falta levar
   ao PRD e à seção 19 do TCC. Session 2026-10-06 (4) do spec.md.
 - **[Reversão] Termo do Recanto, único para maior e menor (decidido em
@@ -563,6 +564,13 @@ Passo a passo de comandos e validação em
   horários" passaram a aceitar **até 300 caracteres** cada (eram 2.000), no
   formulário e no servidor. Descartados: não imprimir o objetivo e cortar
   com reticências (o termo assinado ficaria incompleto).
+  **[Reversão] Só a equipe imprime o termo (decidido em 2026-10-17).** O
+  voluntário não imprime mais pelo site: depois do envio, o Portal avisa que
+  o termo é preenchido e assinado na sede depois da aprovação, e, para o
+  menor, que o responsável precisa ir à sede assinar. A equipe imprime pelo
+  Painel (triagem e cadastro direto). Reverte a impressão pelo voluntário de
+  2026-10-06. Como consequência, o Portal deixou de guardar os dados do
+  cadastro no navegador.
 - **Prioridade do item necessário: alta, média ou baixa (decidido em
   2026-10-05).** O CSU07 falava em "prioridade" sem valores, e o protótipo
   usava só "urgente sim/não". Os de prioridade alta são os "itens mais

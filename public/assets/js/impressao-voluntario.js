@@ -2,8 +2,8 @@
    impressao-voluntario.js — dados do termo de adesão para imprimir
    (um só documento para maior e menor desde 2026-10-16)
 
-   Os dados vêm do sessionStorage do navegador: gravados pelo
-   formulário de voluntariado logo após o envio, ou pelo Painel.
+   Os dados vêm do sessionStorage do navegador, gravados pelo
+   Painel (desde 2026-10-17 o voluntário não imprime pelo site).
    O sessionStorage existe só naquela aba e some quando ela é
    fechada; não vai a servidor nenhum. Não apagamos ao trocar de
    página porque alguns navegadores (celular, navegador dentro de

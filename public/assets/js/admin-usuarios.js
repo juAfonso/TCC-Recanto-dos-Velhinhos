@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cadastroFeito = r;
       $('cadastro-feito-texto').innerHTML = r.status === 'aprovado'
         ? `<div>Voluntário(a) cadastrado(a) e já ativo(a). Protocolo <b>${e(r.protocolo)}</b>. Imprima o termo de adesão para a pessoa assinar.</div>`
-        : `<div>Cadastro registrado como <b>pendente</b> (protocolo <b>${e(r.protocolo)}</b>): é menor de idade. Imprima o termo de adesão: o responsável também o assina. Quando o termo assinado chegar, marque como recebida e aprove em <a href="triagem-voluntarios.html">Triagem › Voluntários</a>.</div>`;
+        : `<div>Cadastro registrado como <b>pendente</b> (protocolo <b>${e(r.protocolo)}</b>): é menor de idade. Imprima o termo de adesão: o responsável também o assina. Quando o responsável assinar, marque a autorização como recebida e aprove em <a href="triagem-voluntarios.html">Triagem › Voluntários</a>.</div>`;
       formN.hidden = true;
       $('cadastro-feito').hidden = false;
     } catch (erro) {

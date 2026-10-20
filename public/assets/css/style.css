@@ -122,6 +122,18 @@ button{ cursor:pointer; font-family:inherit; }
     box-shadow:0 2px 15px rgba(0,0,0,.08);
 }
 
+/* Enquanto o nav.js busca o menu.html, a barra já aparece vazia no lugar. */
+#portal-menu:empty::before{
+    content:'';
+    position:fixed;
+    top:0; left:0;
+    width:100%;
+    height:var(--header-h);
+    background:rgba(255,255,255,.96);
+    box-shadow:0 2px 15px rgba(0,0,0,.08);
+    z-index:1000;
+}
+
 .logo{
     display:flex;
     align-items:center;

@@ -1,0 +1,29 @@
+<!-- Menu do Portal Público, num arquivo só (decidido em 2026-10-19).
+     O nav.js o coloca no <header id="portal-menu"> de cada página e marca o
+     link da página aberta. Item novo no menu se inclui só aqui. -->
+<nav class="navbar">
+    <a href="index.html" class="logo">
+        <img src="assets/img/logo-icon.png" alt="Recanto dos Velhinhos Francisco Gonçalves Barbosa" class="logo-mark">
+        <span>Recanto dos Velhinhos<span class="logo-sub">Francisco Gonçalves Barbosa</span></span>
+    </a>
+    <button class="menu-toggle" aria-label="Abrir menu" aria-expanded="false">☰</button>
+    <ul class="menu">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="institucional.html">Institucional</a></li>
+        <li><a href="campanhas.html">Campanhas &amp; Eventos</a></li>
+        <li><a href="doacoes.html">Doações</a></li>
+        <li><a href="noticias.html">Notícias</a></li>
+        <li class="nav-dropdown">
+            <a href="#">Participar ▾</a>
+            <div class="nav-dropdown-panel">
+                <a href="voluntariado.html">Seja voluntário</a>
+                <a href="vagas.html">Trabalhe conosco</a>
+                <a href="solicitar-evento.html">Propor evento/campanha</a>
+                <a href="consultar-status.html">Consultar status de solicitação</a>
+            </div>
+        </li>
+    </ul>
+    <div class="nav-actions">
+        <a href="login.html" class="btn-login">Entrar</a>
+    </div>
+</nav>

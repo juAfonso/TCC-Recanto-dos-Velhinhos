@@ -184,6 +184,15 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   ficava escondida até o servidor confirmar a sessão, então o menu não
   "pisca". Descartado montar o menu em JS (texto do HTML dentro de string,
   pior de editar) e gerar as páginas num build (o projeto não tem build).
+- **Menu e rodapé do Portal num arquivo só (decidido em 2026-10-19).** O
+  mesmo mecanismo do Painel: `public/menu.html` e `public/rodape.html`, que
+  o `nav.js` coloca no `<header id="portal-menu">` e no
+  `<footer id="portal-rodape">` vazios de cada página, marcando o link
+  aberto (nas páginas de "Participar", o item do topo). **Item novo no menu
+  ou no rodapé se inclui só nesses arquivos.** A área do doador usa
+  `data-area="doador"` no `<header>`: o menu esconde "Participar" e mostra
+  "Sair", com o logout no próprio `nav.js`. Enquanto o menu carrega, o CSS
+  desenha a barra vazia; como ela é fixa, a página não se mexe.
 - **Versão do front (atualizado em 2026-09-05):** vale a entregue como
   `recanto-frontend-completo`, que substituiu a primeira versão. Ela traz
   identidade visual verde, logo real (`assets/img/logo-icon.png`) usado no

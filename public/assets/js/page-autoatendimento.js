@@ -4,11 +4,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const $ = (id) => document.getElementById(id);
 
-  $('btn-logout').addEventListener('click', async () => {
-    await Auth.logoutDoador();
-    window.location.href = 'index.html';
-  });
-
   const sessao = await Auth.requireAutoatendimento();
   if (!sessao) return; // redirecionado para o login
 

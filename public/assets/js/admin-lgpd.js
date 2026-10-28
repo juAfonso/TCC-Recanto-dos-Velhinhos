@@ -5,11 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const $ = (id) => document.getElementById(id);
   const e = (t) => Utils.escapeHtml(t);
   const ROTULO = {
-    pessoa: 'Pessoa cadastrada', cadastro_voluntario: 'Cadastro de voluntário', candidatura: 'Candidatura a vaga',
+    pessoa: 'Pessoa cadastrada', cand_voluntario: 'Cadastro de voluntário', cand_funcionario: 'Candidatura a vaga',
     solicitacao: 'Proposta externa', curriculo: 'Currículo',
   };
   const PAPEL = { funcionario: 'funcionário', voluntario: 'voluntário', doador_associado: 'doador associado' };
-  const RETEM = new Set(['pessoa', 'cadastro_voluntario', 'candidatura']);
+  const RETEM = new Set(['pessoa', 'cand_voluntario', 'cand_funcionario']);
   const SITUACAO = {
     pendente: 'em análise', em_analise: 'em análise', entrevista: 'em entrevista', aguardando_contato: 'aguardando contato',
     aprovado: 'aprovado', aprovada: 'aprovada', confirmada: 'confirmada', rejeitado: 'rejeitado', rejeitada: 'rejeitada',
@@ -65,8 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const EFEITO = {
     pessoa: 'O doador associado perde o acesso ao autoatendimento e todos os aceites dele são revogados.',
-    cadastro_voluntario: 'Se o cadastro estiver em triagem, sai da fila. Se o voluntário estiver ativo, é inativado.',
-    candidatura: 'Se a candidatura estiver em triagem, sai da fila.',
+    cand_voluntario: 'Se o cadastro estiver em triagem, sai da fila. Se o voluntário estiver ativo, é inativado.',
+    cand_funcionario: 'Se a candidatura estiver em triagem, sai da fila.',
     solicitacao: 'Se a proposta estiver em triagem, sai da fila.',
   };
   const RESULTADO = {
@@ -96,8 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let alvoAtual = null;
   const O_QUE = {
     pessoa: 'Nome, CPF, contatos e data de nascimento da pessoa viram "[anonimizado]", e o mesmo vale para os cadastros e candidaturas dela. O acesso é desligado. As doações continuam, sem o nome de quem doou.',
-    cadastro_voluntario: 'Nome, CPF, RG, endereço e contatos do cadastro viram "[anonimizado]".',
-    candidatura: 'Nome, CPF e contatos viram "[anonimizado]" e o currículo é apagado do armazenamento.',
+    cand_voluntario: 'Nome, CPF, RG, endereço e contatos do cadastro viram "[anonimizado]".',
+    cand_funcionario: 'Nome, CPF e contatos viram "[anonimizado]" e o currículo é apagado do armazenamento.',
     curriculo: 'Só o currículo (arquivo e texto) é apagado. O resto da candidatura continua.',
     solicitacao: 'Nome, contatos e objetivo da proposta viram "[anonimizado]". O nome do evento e as datas continuam.',
   };

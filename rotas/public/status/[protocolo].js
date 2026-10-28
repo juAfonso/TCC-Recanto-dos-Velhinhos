@@ -12,8 +12,8 @@ import { hojeBrasilia } from '../../_lib/datas.js';
 import { json, falhar, rota } from '../../_lib/http.js';
 
 const TABELAS = {
-  VOL: { tabela: 'cadastro_voluntario', tipo: 'voluntario' },
-  CAN: { tabela: 'candidatura', tipo: 'candidatura' },
+  VOL: { tabela: 'cand_voluntario', tipo: 'voluntario' },
+  CAN: { tabela: 'cand_funcionario', tipo: 'candidatura' },
   SOL: { tabela: 'solicitacao_externa', tipo: 'solicitacao_externa' },
 };
 

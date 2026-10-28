@@ -497,11 +497,26 @@ Passo a passo de comandos e validação em
   **Admissão continua (0,1) do lado de `Cand_Voluntario` (2026-10-06).**
   No DER, `Cand_Voluntario` é só a submissão pública com triagem; o
   voluntário cadastrado direto no Painel não passa por ela, como o
-  funcionário. O `cadastro_voluntario` de origem `painel` (FR-023) é
+  funcionário. O `cand_voluntario` de origem `painel` (FR-023) é
   detalhe de implementação que guarda o termo de adesão, não candidatura.
   Explicado na observação do DER e em `docs/tabelas-banco-de-dados.md`.
   Descartado: tirar esse registro do spec e guardar o termo de adesão em
   `pessoa`/`papel` (reabriria o FR-023 e o plano).
+  **Tabelas com os nomes do DER (decidido em 2026-10-28).**
+  `cadastro_voluntario` virou `cand_voluntario` e `candidatura` virou
+  `cand_funcionario`, assim como as colunas `cand_voluntario_id` e
+  `cand_funcionario_id` de `consentimento` e os valores gravados que
+  apontam para essas tabelas (`entidade_tipo` da auditoria, das falhas de
+  e-mail, do histórico e da anonimização, e o `alvo` da API de
+  anonimização). Continuam iguais: os endereços da API
+  (`/api/admin/candidaturas`), os nomes de ação da auditoria
+  (`candidatura.enviar`, `voluntario.cadastrar`) e o `tipo` que a consulta
+  de status devolve ao Portal. A troca foi feita **editando a migração
+  003**, não por migração nova: bancos que já tinham a 003 aplicada (`dev`,
+  `main`) precisam ser renomeados à mão no Neon, com o SQL do PR, **antes**
+  de publicar o código. O `npm run migrate` não reaplica migração já
+  registrada em `schema_migrations`, por isso a edição sozinha não alcança
+  esses bancos.
 - **Formulário de voluntário (decidido em 2026-10-06, fase 6).** Obrigatórios:
   identificação, endereço, contato e tipo de serviço; escolaridade, profissão,
   objetivos e dias/horários são opcionais (a equipe completa na entrevista).

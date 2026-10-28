@@ -26,7 +26,7 @@ export const POST = rota(async (request) => {
 
     if (corpo.papel === 'voluntario') {
       const [revogado] = await tx.query(
-        `SELECT 1 FROM consentimento WHERE cadastro_voluntario_id = $1 AND revogado_em IS NOT NULL`, [papel.origem_id]);
+        `SELECT 1 FROM consentimento WHERE cand_voluntario_id = $1 AND revogado_em IS NOT NULL`, [papel.origem_id]);
       if (revogado) {
         falhar(409, 'CONSENTIMENTO_REVOGADO',
           'O consentimento deste voluntário foi revogado a pedido dele. Para voltar, ele precisa fazer um cadastro novo.');

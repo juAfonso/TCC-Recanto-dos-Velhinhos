@@ -52,9 +52,9 @@ export function paraTela(c, consentimento) {
 export const GET = rota(async (request) => {
   await exigirAdmin(request);
   const id = idDaRota(request);
-  const [c] = await sql`SELECT * FROM cadastro_voluntario WHERE id = ${id}`;
+  const [c] = await sql`SELECT * FROM cand_voluntario WHERE id = ${id}`;
   if (!c) falhar(404, 'NAO_ENCONTRADO', 'Cadastro não encontrado.');
-  const [consentimento] = await sql`SELECT aviso_versao, aceito_em, revogado_em FROM consentimento WHERE cadastro_voluntario_id = ${id}`;
+  const [consentimento] = await sql`SELECT aviso_versao, aceito_em, revogado_em FROM consentimento WHERE cand_voluntario_id = ${id}`;
   return json(paraTela(c, consentimento));
 });
 
@@ -65,7 +65,7 @@ export const PUT = rota(async (request) => {
   const autor = conta.identificador;
 
   await transacao(async (tx) => {
-    const [atual] = await tx.query('SELECT * FROM cadastro_voluntario WHERE id = $1 FOR UPDATE', [id]);
+    const [atual] = await tx.query('SELECT * FROM cand_voluntario WHERE id = $1 FOR UPDATE', [id]);
     if (!atual) falhar(404, 'NAO_ENCONTRADO', 'Cadastro não encontrado.');
     if (atual.anonimizado_em) falhar(409, 'REGISTRO_ANONIMIZADO', 'Este cadastro foi anonimizado e não pode ser corrigido.');
     if (atual.status === 'aprovado' && dados.cpf !== atual.cpf) {
@@ -78,9 +78,9 @@ export const PUT = rota(async (request) => {
       autorizacao = dados.menor_de_idade ? 'pendente' : 'nao_se_aplica';
     }
 
-    await registrarAlteracao({ entidadeTipo: 'cadastro_voluntario', entidadeId: id, estadoAnterior: atual, autor }, tx);
+    await registrarAlteracao({ entidadeTipo: 'cand_voluntario', entidadeId: id, estadoAnterior: atual, autor }, tx);
     await tx.query(
-      `UPDATE cadastro_voluntario SET ${CAMPOS.map((c, i) => `${c} = $${i + 2}`).join(', ')},
+      `UPDATE cand_voluntario SET ${CAMPOS.map((c, i) => `${c} = $${i + 2}`).join(', ')},
               menor_de_idade = $${CAMPOS.length + 2}, autorizacao_status = $${CAMPOS.length + 3}
        WHERE id = $1`,
       [id, ...CAMPOS.map((c) => dados[c]), dados.menor_de_idade, autorizacao]);
@@ -100,7 +100,7 @@ export const PUT = rota(async (request) => {
 
     await registrarAuditoria({
       autorTipo: 'conta_institucional', autorId: conta.id,
-      acao: 'voluntario.corrigir', entidadeTipo: 'cadastro_voluntario', entidadeId: id,
+      acao: 'voluntario.corrigir', entidadeTipo: 'cand_voluntario', entidadeId: id,
     }, tx);
   });
   return json({ ok: true });

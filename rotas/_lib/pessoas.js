@@ -44,10 +44,10 @@ export function validarPessoa(corpo, { comCpf = true } = {}) {
 // Submissões ainda em triagem ligadas à pessoa, pelo vínculo ou pelo mesmo CPF (FR-023a).
 export async function submissoesEmTriagem(executor, pessoa) {
   return executor.query(
-    `SELECT 'cadastro_voluntario' AS tipo, protocolo, status FROM cadastro_voluntario
+    `SELECT 'cand_voluntario' AS tipo, protocolo, status FROM cand_voluntario
      WHERE (pessoa_id = $1 OR cpf = $2) AND status IN ('pendente', 'entrevista') AND anonimizado_em IS NULL
      UNION ALL
-     SELECT 'candidatura', protocolo, status FROM candidatura
+     SELECT 'cand_funcionario', protocolo, status FROM cand_funcionario
      WHERE (pessoa_id = $1 OR cpf = $2) AND status IN ('em_analise', 'entrevista') AND anonimizado_em IS NULL`,
     [pessoa.id, pessoa.cpf]);
 }
@@ -74,14 +74,14 @@ export async function cadastrarVoluntarioPainel(tx, dados, autor) {
   const valores = [...CAMPOS.map((c) => dados[c]), protocolo, 'painel', dados.menor_de_idade,
     adulto ? 'nao_se_aplica' : 'pendente', adulto ? 'aprovado' : 'pendente', autor];
   const [cadastro] = await tx.query(
-    `INSERT INTO cadastro_voluntario (${colunas.join(', ')})
+    `INSERT INTO cand_voluntario (${colunas.join(', ')})
      VALUES (${colunas.map((_, i) => `$${i + 1}`).join(', ')}) RETURNING id, protocolo, status, autorizacao_status`,
     valores);
 
   let pessoaId = null;
   if (adulto) {
     await tx.query(
-      `UPDATE cadastro_voluntario SET triado_por = $2, triado_em = now(), concluido_em = now() WHERE id = $1`,
+      `UPDATE cand_voluntario SET triado_por = $2, triado_em = now(), concluido_em = now() WHERE id = $1`,
       [cadastro.id, autor]);
     try {
       ({ id: pessoaId } = await encontrarOuCriarPessoa(tx, {
@@ -89,7 +89,7 @@ export async function cadastrarVoluntarioPainel(tx, dados, autor) {
       }, autor));
     } catch (e) { traduzirEmailEmUso(e); }
     await adicionarPapel(tx, pessoaId, 'voluntario', cadastro.id, autor);
-    await tx.query('UPDATE cadastro_voluntario SET pessoa_id = $2 WHERE id = $1', [cadastro.id, pessoaId]);
+    await tx.query('UPDATE cand_voluntario SET pessoa_id = $2 WHERE id = $1', [cadastro.id, pessoaId]);
   }
   return {
     cadastroVoluntarioId: cadastro.id, protocolo: cadastro.protocolo, status: cadastro.status,

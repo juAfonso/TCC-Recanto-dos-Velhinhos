@@ -12,7 +12,7 @@ CREATE TABLE aviso_privacidade (
 
 -- Cadastro de voluntário (FR-011 a FR-015, CSU05). Prefixo VOL-.
 -- Só os campos do termo de adesão da Lei 9.608/1998, mais data de nascimento (FR-011).
-CREATE TABLE cadastro_voluntario (
+CREATE TABLE cand_voluntario (
   id                       uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   protocolo                text NOT NULL UNIQUE,
   origem                   text NOT NULL DEFAULT 'portal' CHECK (origem IN ('portal', 'painel')),
@@ -50,10 +50,10 @@ CREATE TABLE cadastro_voluntario (
   CHECK (status <> 'aprovado' OR autorizacao_status <> 'pendente')
 );
 
-CREATE INDEX cadastro_voluntario_fila ON cadastro_voluntario (status, criado_em);
+CREATE INDEX cand_voluntario_fila ON cand_voluntario (status, criado_em);
 
 -- Candidatura a vaga (FR-016 a FR-019, CSU06). Prefixo CAN-. Cargos fixos, sem tabela de vagas.
-CREATE TABLE candidatura (
+CREATE TABLE cand_funcionario (
   id                       uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   protocolo                text NOT NULL UNIQUE,
   cargo                    text NOT NULL CHECK (cargo IN ('limpeza', 'cuidador', 'enfermagem', 'cozinha')),
@@ -81,7 +81,7 @@ CREATE TABLE candidatura (
          OR anonimizado_em IS NOT NULL OR curriculo_anonimizado_em IS NOT NULL)
 );
 
-CREATE INDEX candidatura_fila ON candidatura (status, criado_em);
+CREATE INDEX cand_funcionario_fila ON cand_funcionario (status, criado_em);
 
 -- Solicitação externa de evento ou campanha (FR-020 a FR-022, CSU08). Prefixo SOL-.
 -- As FKs para evento/campanha são adicionadas em 005, depois que essas tabelas existem.
@@ -115,8 +115,8 @@ CREATE INDEX solicitacao_externa_fila ON solicitacao_externa (status, criado_em)
 -- uma submissão ou a um doador associado.
 CREATE TABLE consentimento (
   id                     uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  cadastro_voluntario_id uuid UNIQUE REFERENCES cadastro_voluntario (id),
-  candidatura_id         uuid UNIQUE REFERENCES candidatura (id),
+  cand_voluntario_id uuid UNIQUE REFERENCES cand_voluntario (id),
+  cand_funcionario_id         uuid UNIQUE REFERENCES cand_funcionario (id),
   solicitacao_externa_id uuid UNIQUE REFERENCES solicitacao_externa (id),
   pessoa_id              uuid REFERENCES pessoa (id),
   aviso_versao           text NOT NULL REFERENCES aviso_privacidade (versao),
@@ -124,7 +124,7 @@ CREATE TABLE consentimento (
   aceito_em              timestamptz NOT NULL DEFAULT now(),
   revogado_em            timestamptz,
   revogado_por           text,
-  CHECK (num_nonnulls(cadastro_voluntario_id, candidatura_id, solicitacao_externa_id, pessoa_id) = 1),
+  CHECK (num_nonnulls(cand_voluntario_id, cand_funcionario_id, solicitacao_externa_id, pessoa_id) = 1),
   -- Doador: um consentimento por versão do aviso aceita.
   UNIQUE (pessoa_id, aviso_versao)
 );

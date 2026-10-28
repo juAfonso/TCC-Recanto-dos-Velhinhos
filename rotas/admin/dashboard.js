@@ -20,8 +20,8 @@ export const GET = rota(async (request) => {
         (SELECT count(*) FROM item_necessario, config
           WHERE status = 'ativo' AND quantidade_atualizada_em < now() - make_interval(days => config.dias))::int AS itens_sem_atualizacao,
         (SELECT dias FROM config) AS dias_sem_atualizacao,
-        (SELECT count(*) FROM cadastro_voluntario WHERE status IN ('pendente', 'entrevista') AND anonimizado_em IS NULL)::int AS voluntarios,
-        (SELECT count(*) FROM candidatura WHERE status IN ('em_analise', 'entrevista') AND anonimizado_em IS NULL)::int AS candidaturas,
+        (SELECT count(*) FROM cand_voluntario WHERE status IN ('pendente', 'entrevista') AND anonimizado_em IS NULL)::int AS voluntarios,
+        (SELECT count(*) FROM cand_funcionario WHERE status IN ('em_analise', 'entrevista') AND anonimizado_em IS NULL)::int AS candidaturas,
         (SELECT count(*) FROM solicitacao_externa WHERE status IN ('em_analise', 'aguardando_contato') AND anonimizado_em IS NULL)::int AS solicitacoes,
         (SELECT count(*) FROM doacao WHERE status = 'pendente')::int AS doacoes_pendentes,
         (SELECT count(*) FROM falha_email WHERE tratada_em IS NULL AND anonimizado_em IS NULL)::int AS falhas_email`,

@@ -1,0 +1,49 @@
+@startuml casos-de-uso
+' SAGE — Diagrama de casos de uso (CSU01 a CSU11)
+' Atores do Portal à esquerda; Funcionário (Painel) à direita.
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Visitante" as Visitante
+actor "Doador Associado" as Associado
+actor "Solicitante Externo" as Solicitante
+actor "Funcionário" as Funcionario
+
+Associado -|> Visitante
+Solicitante -|> Visitante
+
+rectangle "SAGE" {
+  usecase "Doar via Pix" as UC01
+  usecase "Campanhas e Eventos" as UC02
+  usecase "Divulgação Institucional" as UC03
+  usecase "Itens Necessários" as UC07
+  usecase "Cadastrar Voluntário" as UC05
+  usecase "Candidatar-se a Vaga" as UC06
+  usecase "Consultar Status\nde Solicitação" as UC10
+  usecase "Solicitar Evento/Campanha\nExterna" as UC08
+  usecase "Autoatendimento\ndo Doador" as UC09
+  usecase "Manter Usuários" as UC04
+  usecase "Direitos do Titular\n(LGPD)" as UC11
+}
+
+Visitante -- UC01
+Visitante -- UC02
+Visitante -- UC03
+Visitante -- UC07
+Visitante -- UC05
+Visitante -- UC06
+Visitante -- UC10
+Solicitante -- UC08
+Associado -- UC09
+
+' O caso de uso vem antes para o Funcionário ficar à direita
+UC01 -- Funcionario
+UC02 -- Funcionario
+UC03 -- Funcionario
+UC07 -- Funcionario
+UC05 -- Funcionario
+UC06 -- Funcionario
+UC08 -- Funcionario
+UC04 -- Funcionario
+UC11 -- Funcionario
+@enduml

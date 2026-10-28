@@ -6,5 +6,5 @@ import { json, idDaRota, rota } from '../../../_lib/http.js';
 
 export const POST = rota(async (request) => {
   const { conta } = await exigirAdmin(request);
-  return json(await decidir({ tabela: 'candidatura', id: idDaRota(request), para: 'entrevista', conta }));
+  return json(await decidir({ tabela: 'cand_funcionario', id: idDaRota(request), para: 'entrevista', conta }));
 });

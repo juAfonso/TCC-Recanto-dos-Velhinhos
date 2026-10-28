@@ -5,7 +5,7 @@
 
 CREATE TABLE anonimizacao (
   id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  entidade_tipo  text NOT NULL CHECK (entidade_tipo IN ('pessoa', 'cadastro_voluntario', 'candidatura', 'curriculo', 'solicitacao_externa')),
+  entidade_tipo  text NOT NULL CHECK (entidade_tipo IN ('pessoa', 'cand_voluntario', 'cand_funcionario', 'curriculo', 'solicitacao_externa')),
   entidade_id    uuid NOT NULL,
   -- Feita a partir de outra (a da pessoa alcança os cadastros dela): aponta para a principal.
   origem_id      uuid REFERENCES anonimizacao (id),

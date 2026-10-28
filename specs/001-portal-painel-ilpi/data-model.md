@@ -123,7 +123,7 @@ FR-034). Campos comuns:
 | `anonimizado_em` | `timestamptz` NULL |
 | `criado_em` | `timestamptz` |
 
-### `cadastro_voluntario` (FR-011 a FR-015, CSU05)
+### `cand_voluntario` (FR-011 a FR-015, CSU05)
 
 Prefixo `VOL-`. Campos do termo de adesão da Lei 9.608/1998 — nenhum além destes (FR-011).
 
@@ -158,7 +158,7 @@ pendente ──► entrevista ──► aprovado
   segue `pendente → aprovado` quando a autorização for marcada como recebida, sem passar por
   entrevista.
 
-### `candidatura` (FR-016 a FR-019, CSU06)
+### `cand_funcionario` (FR-016 a FR-019, CSU06)
 
 Prefixo `CAN-`. **Sem tabela de vagas**: os cargos são fixos (FR-016, Assumptions).
 
@@ -210,8 +210,8 @@ que exatamente uma está preenchida.
 | Campo | Tipo | Notas |
 |---|---|---|
 | `id` | `uuid` PK | |
-| `cadastro_voluntario_id` | `uuid` FK NULL | 1 por cadastro |
-| `candidatura_id` | `uuid` FK NULL | 1 por candidatura |
+| `cand_voluntario_id` | `uuid` FK NULL | 1 por cadastro |
+| `cand_funcionario_id` | `uuid` FK NULL | 1 por candidatura |
 | `solicitacao_externa_id` | `uuid` FK NULL | 1 por solicitação |
 | `pessoa_id` | `uuid` FK NULL | doador associado — **um por versão do aviso aceita** |
 | `aviso_versao` | `text` FK → `aviso_privacidade.versao` | |
@@ -228,7 +228,7 @@ pessoal — só o **nome** dos campos retidos.
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `entidade_tipo`, `entidade_id` | | `pessoa` \| `cadastro_voluntario` \| `candidatura` \| `curriculo` \| `solicitacao_externa` |
+| `entidade_tipo`, `entidade_id` | | `pessoa` \| `cand_voluntario` \| `cand_funcionario` \| `curriculo` \| `solicitacao_externa` |
 | `origem_id` | `uuid` FK NULL | a anonimização da pessoa que alcançou este cadastro |
 | `campos_retidos` | `text[]` | subconjunto de `nome`, `cpf`, `data_nascimento` |
 | `justificativa` | `text` NULL | obrigatória quando `campos_retidos` não está vazio (CHECK) |
@@ -429,9 +429,9 @@ Calculado na consulta (sem cron), com `retencao_meses` da configuração:
 
 | Registro | Condição | O que se anonimiza |
 |---|---|---|
-| `cadastro_voluntario` | `status IN (rejeitado, encerrado_titular)` e `concluido_em` + prazo vencido | o cadastro inteiro |
-| `candidatura` | idem | a candidatura inteira, com o currículo |
-| `candidatura` aprovada | `efetivado_em` + prazo vencido e `curriculo_anonimizado_em IS NULL` | **só o currículo** |
+| `cand_voluntario` | `status IN (rejeitado, encerrado_titular)` e `concluido_em` + prazo vencido | o cadastro inteiro |
+| `cand_funcionario` | idem | a candidatura inteira, com o currículo |
+| `cand_funcionario` aprovada | `efetivado_em` + prazo vencido e `curriculo_anonimizado_em IS NULL` | **só o currículo** |
 | `solicitacao_externa` | `status IN (rejeitada, encerrada_titular)` e `concluido_em` + prazo vencido | a solicitação inteira |
 | Doador associado inativo | — | **nunca entra na fila** (FR-056); só anonimiza a pedido |
 
@@ -444,7 +444,7 @@ pessoa 1─N papel                      (exclusividade funcionario/voluntario at
 pessoa 1─N doacao                     (só associativa)
 pessoa 1─N consentimento              (doador: um por versão do aviso)
 pessoa 1─N token_senha
-cadastro_voluntario 1─1 consentimento · N─0..1 pessoa (após aprovação)
+cand_voluntario 1─1 consentimento · N─0..1 pessoa (após aprovação)
 candidatura         1─1 consentimento · N─0..1 pessoa · 0..1 arquivo (currículo)
 solicitacao_externa 1─1 consentimento · 0..1 evento | 0..1 campanha
 campanha 1─N recurso

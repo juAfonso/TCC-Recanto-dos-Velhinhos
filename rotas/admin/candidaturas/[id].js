@@ -16,10 +16,10 @@ export const GET = rota(async (request) => {
   const id = idDaRota(request);
   const [c] = await sql`
     SELECT c.*, a.nome_original AS arquivo_nome, a.tamanho_bytes AS arquivo_tamanho, a.removido_em AS arquivo_removido
-    FROM candidatura c LEFT JOIN arquivo a ON a.id = c.curriculo_arquivo_id
+    FROM cand_funcionario c LEFT JOIN arquivo a ON a.id = c.curriculo_arquivo_id
     WHERE c.id = ${id}`;
   if (!c) falhar(404, 'NAO_ENCONTRADO', 'Candidatura não encontrada.');
-  const [consentimento] = await sql`SELECT aviso_versao, aceito_em, revogado_em FROM consentimento WHERE candidatura_id = ${id}`;
+  const [consentimento] = await sql`SELECT aviso_versao, aceito_em, revogado_em FROM consentimento WHERE cand_funcionario_id = ${id}`;
   const [voluntario] = c.anonimizado_em ? [] : await sql`
     SELECT 1 FROM pessoa p JOIN papel pa ON pa.pessoa_id = p.id
     WHERE p.cpf = ${c.cpf} AND p.anonimizado_em IS NULL AND pa.tipo = 'voluntario' AND pa.status = 'ativo'`;
@@ -45,7 +45,7 @@ export const PUT = rota(async (request) => {
   const autor = conta.identificador;
 
   await transacao(async (tx) => {
-    const [atual] = await tx.query('SELECT * FROM candidatura WHERE id = $1 FOR UPDATE', [id]);
+    const [atual] = await tx.query('SELECT * FROM cand_funcionario WHERE id = $1 FOR UPDATE', [id]);
     if (!atual) falhar(404, 'NAO_ENCONTRADO', 'Candidatura não encontrada.');
     if (atual.anonimizado_em) falhar(409, 'REGISTRO_ANONIMIZADO', 'Esta candidatura foi anonimizada e não pode ser corrigida.');
     if (atual.status === 'aprovada' && dados.cpf !== atual.cpf) {
@@ -56,9 +56,9 @@ export const PUT = rota(async (request) => {
     if (!texto && !atual.curriculo_arquivo_id) {
       falhar(422, 'CURRICULO_OBRIGATORIO', 'Sem arquivo, a descrição da experiência não pode ficar vazia.', ['curriculoTexto']);
     }
-    await registrarAlteracao({ entidadeTipo: 'candidatura', entidadeId: id, estadoAnterior: atual, autor }, tx);
+    await registrarAlteracao({ entidadeTipo: 'cand_funcionario', entidadeId: id, estadoAnterior: atual, autor }, tx);
     await tx.query(
-      `UPDATE candidatura SET ${CAMPOS.map((c, i) => `${c} = $${i + 2}`).join(', ')}, curriculo_texto = $${CAMPOS.length + 2}
+      `UPDATE cand_funcionario SET ${CAMPOS.map((c, i) => `${c} = $${i + 2}`).join(', ')}, curriculo_texto = $${CAMPOS.length + 2}
        WHERE id = $1`,
       [id, ...CAMPOS.map((c) => dados[c]), texto]);
     if (atual.status === 'aprovada' && atual.pessoa_id) {
@@ -75,7 +75,7 @@ export const PUT = rota(async (request) => {
     }
     await registrarAuditoria({
       autorTipo: 'conta_institucional', autorId: conta.id,
-      acao: 'candidatura.corrigir', entidadeTipo: 'candidatura', entidadeId: id,
+      acao: 'candidatura.corrigir', entidadeTipo: 'cand_funcionario', entidadeId: id,
     }, tx);
   });
   return json({ ok: true });

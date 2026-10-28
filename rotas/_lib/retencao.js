@@ -9,19 +9,19 @@ export async function registrosVencidos() {
   const meses = Math.max(0, parseInt(config?.valor ?? '6', 10) || 0);
 
   const itens = await sql`
-    SELECT 'cadastro_voluntario' AS alvo, id, protocolo, nome, status, concluido_em AS base,
+    SELECT 'cand_voluntario' AS alvo, id, protocolo, nome, status, concluido_em AS base,
            'Cadastro de voluntário não aprovado' AS descricao
-    FROM cadastro_voluntario
+    FROM cand_voluntario
     WHERE anonimizado_em IS NULL AND status IN ('rejeitado', 'encerrado_titular')
       AND concluido_em + make_interval(months => ${meses}) <= now()
     UNION ALL
-    SELECT 'candidatura', id, protocolo, nome, status, concluido_em, 'Candidatura não aprovada'
-    FROM candidatura
+    SELECT 'cand_funcionario', id, protocolo, nome, status, concluido_em, 'Candidatura não aprovada'
+    FROM cand_funcionario
     WHERE anonimizado_em IS NULL AND status IN ('rejeitada', 'encerrada_titular')
       AND concluido_em + make_interval(months => ${meses}) <= now()
     UNION ALL
     SELECT 'curriculo', id, protocolo, nome, status, efetivado_em, 'Currículo de quem foi contratado'
-    FROM candidatura
+    FROM cand_funcionario
     WHERE anonimizado_em IS NULL AND status = 'aprovada' AND curriculo_anonimizado_em IS NULL
       AND efetivado_em + make_interval(months => ${meses}) <= now()
     UNION ALL

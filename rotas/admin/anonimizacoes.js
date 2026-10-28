@@ -1,5 +1,5 @@
 // POST /api/admin/anonimizacoes { alvo, id, reter?, justificativaRetencao? } (FR-055, FR-056).
-// alvo: pessoa | cadastro_voluntario | candidatura | curriculo | solicitacao. Irreversível.
+// alvo: pessoa | cand_voluntario | cand_funcionario | curriculo | solicitacao. Irreversível.
 
 import { exigirAdmin } from '../_lib/acesso.js';
 import { anonimizar } from '../_lib/anonimizacao.js';

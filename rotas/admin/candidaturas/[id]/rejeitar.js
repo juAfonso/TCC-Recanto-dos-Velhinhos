@@ -8,7 +8,7 @@ export const POST = rota(async (request) => {
   const { conta } = await exigirAdmin(request);
   const { motivo } = await lerJson(request);
   return json(await decidir({
-    tabela: 'candidatura', id: idDaRota(request), para: 'rejeitada',
+    tabela: 'cand_funcionario', id: idDaRota(request), para: 'rejeitada',
     motivo: typeof motivo === 'string' ? motivo.slice(0, 1000) : null, conta,
   }));
 });

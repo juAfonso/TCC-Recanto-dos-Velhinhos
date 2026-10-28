@@ -15,7 +15,7 @@ export const GET = rota(async (request) => {
   const linhas = await sql`
     SELECT id, protocolo, nome, data_nascimento, tipo_servico, status, origem, menor_de_idade,
            autorizacao_status, criado_em, triado_em, anonimizado_em
-    FROM cadastro_voluntario
+    FROM cand_voluntario
     WHERE ${status} = 'todos' OR status = ${status}
     ORDER BY CASE WHEN status IN ('pendente', 'entrevista') THEN criado_em END ASC, criado_em DESC
     LIMIT 300`;
@@ -23,7 +23,7 @@ export const GET = rota(async (request) => {
   const [contagem] = await sql`
     SELECT count(*) FILTER (WHERE status = 'pendente')::int AS pendente,
            count(*) FILTER (WHERE status = 'entrevista')::int AS entrevista
-    FROM cadastro_voluntario`;
+    FROM cand_voluntario`;
 
   return json({
     contagem,

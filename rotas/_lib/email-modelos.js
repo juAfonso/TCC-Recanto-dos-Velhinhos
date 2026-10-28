@@ -8,8 +8,8 @@ const ASSINATURA = '\n\nRecanto dos Velhinhos Francisco Gonçalves Barbosa\nPinh
 
 // Nome de cada submissão com triagem, para compor as frases.
 const SUBMISSOES = {
-  cadastro_voluntario: { nome: 'seu cadastro de voluntário', aprovado: 'aprovado', naoAprovado: 'não aprovado' },
-  candidatura: { nome: 'sua candidatura', aprovado: 'aprovada', naoAprovado: 'não aprovada' },
+  cand_voluntario: { nome: 'seu cadastro de voluntário', aprovado: 'aprovado', naoAprovado: 'não aprovado' },
+  cand_funcionario: { nome: 'sua candidatura', aprovado: 'aprovada', naoAprovado: 'não aprovada' },
   solicitacao_externa: { nome: 'sua solicitação de evento ou campanha', aprovado: 'aprovada', naoAprovado: 'não aprovada' },
 };
 

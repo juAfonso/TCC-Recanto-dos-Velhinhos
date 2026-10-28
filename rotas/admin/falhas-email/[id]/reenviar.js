@@ -11,7 +11,7 @@ import { registrarAuditoria } from '../../../_lib/auditoria.js';
 import { enviarEmail } from '../../../_lib/email.js';
 import { json, falhar, idDaRota, rota } from '../../../_lib/http.js';
 
-const NOME = { cadastro_voluntario: 'nome', candidatura: 'nome', solicitacao_externa: 'nome_contato' };
+const NOME = { cand_voluntario: 'nome', cand_funcionario: 'nome', solicitacao_externa: 'nome_contato' };
 
 export const POST = rota(async (request) => {
   const { conta } = await exigirAdmin(request);

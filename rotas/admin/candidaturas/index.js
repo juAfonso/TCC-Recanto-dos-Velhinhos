@@ -15,14 +15,14 @@ export const GET = rota(async (request) => {
   const linhas = await sql`
     SELECT id, protocolo, cargo, nome, data_nascimento, status, criado_em, triado_em,
            curriculo_arquivo_id IS NOT NULL AS tem_arquivo, anonimizado_em
-    FROM candidatura
+    FROM cand_funcionario
     WHERE ${status} = 'todas' OR status = ${status}
     ORDER BY CASE WHEN status IN ('em_analise', 'entrevista') THEN criado_em END ASC, criado_em DESC
     LIMIT 300`;
   const [contagem] = await sql`
     SELECT count(*) FILTER (WHERE status = 'em_analise')::int AS em_analise,
            count(*) FILTER (WHERE status = 'entrevista')::int AS entrevista
-    FROM candidatura`;
+    FROM cand_funcionario`;
 
   return json({
     contagem,

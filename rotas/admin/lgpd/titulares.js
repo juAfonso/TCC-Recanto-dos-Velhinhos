@@ -20,11 +20,11 @@ export const GET = rota(async (request) => {
            (SELECT string_agg(tipo || ':' || status, ',') FROM papel WHERE pessoa_id = pessoa.id) AS papeis
     FROM pessoa WHERE cpf = ${cpf} OR lower(email) = lower(${q}) OR lower(nome) LIKE ${termo}
     UNION ALL
-    SELECT 'cadastro_voluntario', id, protocolo, nome, cpf, email, status, criado_em, anonimizado_em, NULL
-    FROM cadastro_voluntario WHERE cpf = ${cpf} OR lower(email) = lower(${q}) OR lower(nome) LIKE ${termo}
+    SELECT 'cand_voluntario', id, protocolo, nome, cpf, email, status, criado_em, anonimizado_em, NULL
+    FROM cand_voluntario WHERE cpf = ${cpf} OR lower(email) = lower(${q}) OR lower(nome) LIKE ${termo}
     UNION ALL
-    SELECT 'candidatura', id, protocolo, nome, cpf, email, status, criado_em, anonimizado_em, NULL
-    FROM candidatura WHERE cpf = ${cpf} OR lower(email) = lower(${q}) OR lower(nome) LIKE ${termo}
+    SELECT 'cand_funcionario', id, protocolo, nome, cpf, email, status, criado_em, anonimizado_em, NULL
+    FROM cand_funcionario WHERE cpf = ${cpf} OR lower(email) = lower(${q}) OR lower(nome) LIKE ${termo}
     UNION ALL
     SELECT 'solicitacao', id, protocolo, nome_contato, NULL, email, status, criado_em, anonimizado_em, NULL
     FROM solicitacao_externa WHERE lower(email) = lower(${q}) OR lower(nome_contato) LIKE ${termo}
@@ -34,10 +34,10 @@ export const GET = rota(async (request) => {
   const ids = registros.map((r) => r.id);
   const consentimentos = ids.length ? await sql`
     SELECT id, aviso_versao, finalidade, aceito_em, revogado_em, revogado_por,
-           COALESCE(pessoa_id, cadastro_voluntario_id, candidatura_id, solicitacao_externa_id) AS dono
+           COALESCE(pessoa_id, cand_voluntario_id, cand_funcionario_id, solicitacao_externa_id) AS dono
     FROM consentimento
-    WHERE pessoa_id = ANY(${ids}::uuid[]) OR cadastro_voluntario_id = ANY(${ids}::uuid[])
-       OR candidatura_id = ANY(${ids}::uuid[]) OR solicitacao_externa_id = ANY(${ids}::uuid[])
+    WHERE pessoa_id = ANY(${ids}::uuid[]) OR cand_voluntario_id = ANY(${ids}::uuid[])
+       OR cand_funcionario_id = ANY(${ids}::uuid[]) OR solicitacao_externa_id = ANY(${ids}::uuid[])
     ORDER BY aceito_em` : [];
   const anonimizacoes = ids.length ? await sql`
     SELECT entidade_id, campos_retidos, justificativa, executado_por, executado_em

@@ -57,7 +57,7 @@ test('voluntário adulto do Painel nasce aprovado com papel; menor fica pendente
   const adulto = await post('/api/admin/pessoas', VOLUNTARIO);
   assert.equal(adulto.status, 201);
   assert.equal(adulto.corpo.status, 'aprovado');
-  const [cadastro] = await sql`SELECT origem, pessoa_id FROM cadastro_voluntario WHERE id = ${adulto.corpo.cadastroVoluntarioId}`;
+  const [cadastro] = await sql`SELECT origem, pessoa_id FROM cand_voluntario WHERE id = ${adulto.corpo.cadastroVoluntarioId}`;
   assert.equal(cadastro.origem, 'painel');
   assert.equal(cadastro.pessoa_id, adulto.corpo.id);
 
@@ -113,7 +113,7 @@ test('inativar o papel de doador tira o login, não apaga nada, e reativar devol
 test('inativar com submissão em triagem avisa e só segue com confirmação (FR-023a)', async () => {
   const [p] = await sql`SELECT id FROM pessoa WHERE cpf = '39053344705'`;
   await sql`
-    INSERT INTO candidatura (protocolo, cargo, nome, cpf, data_nascimento, telefone, email, curriculo_texto, criado_por)
+    INSERT INTO cand_funcionario (protocolo, cargo, nome, cpf, data_nascimento, telefone, email, curriculo_texto, criado_por)
     VALUES ('CAN-TESTE00001', 'cozinha', 'Funcionária Teste', '39053344705', '1985-01-02', '2433334444', 'func@exemplo.invalid', 'Experiência em cozinha.', 'teste')`;
   const aviso = await post(`/api/admin/pessoas/${p.id}/inativar`, { papel: 'funcionario' });
   assert.equal(aviso.status, 409);

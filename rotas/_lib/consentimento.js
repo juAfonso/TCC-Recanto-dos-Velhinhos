@@ -34,8 +34,8 @@ export async function validarAceite(corpo) {
 }
 
 const COLUNAS = {
-  cadastro_voluntario: 'cadastro_voluntario_id',
-  candidatura: 'candidatura_id',
+  cand_voluntario: 'cand_voluntario_id',
+  cand_funcionario: 'cand_funcionario_id',
   solicitacao_externa: 'solicitacao_externa_id',
   pessoa: 'pessoa_id',
 };

@@ -55,7 +55,7 @@ const consultar = (protocolo, ip) =>
 test('consulta mostra só tipo, status e data — nenhum dado pessoal (FR-044)', async () => {
   const protocolo = gerarProtocolo('CAN');
   await sql`
-    INSERT INTO candidatura (protocolo, cargo, nome, cpf, data_nascimento, telefone, email, curriculo_texto, status, criado_por)
+    INSERT INTO cand_funcionario (protocolo, cargo, nome, cpf, data_nascimento, telefone, email, curriculo_texto, status, criado_por)
     VALUES (${protocolo}, 'cozinha', 'Pessoa Sigilosa', '39053344705', '1990-01-01', '24999998888',
             'sigilo@exemplo.invalid', 'Experiência.', 'entrevista', 'teste')`;
   const r = await consultar(protocolo.toLowerCase(), '198.51.100.1');

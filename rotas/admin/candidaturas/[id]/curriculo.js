@@ -10,13 +10,13 @@ import { falhar, idDaRota, rota } from '../../../_lib/http.js';
 export const GET = rota(async (request) => {
   const { conta } = await exigirAdmin(request);
   const id = idDaRota(request);
-  const [c] = await sql`SELECT curriculo_arquivo_id FROM candidatura WHERE id = ${id}`;
+  const [c] = await sql`SELECT curriculo_arquivo_id FROM cand_funcionario WHERE id = ${id}`;
   if (!c?.curriculo_arquivo_id) falhar(404, 'NAO_ENCONTRADO', 'Esta candidatura não tem currículo em arquivo.');
   const resposta = await respostaArquivoPrivado(c.curriculo_arquivo_id);
   if (!resposta) falhar(404, 'NAO_ENCONTRADO', 'O arquivo do currículo não está mais disponível.');
   await registrarAuditoria({
     autorTipo: 'conta_institucional', autorId: conta.id,
-    acao: 'candidatura.abrir_curriculo', entidadeTipo: 'candidatura', entidadeId: id,
+    acao: 'candidatura.abrir_curriculo', entidadeTipo: 'cand_funcionario', entidadeId: id,
   });
   return resposta;
 });

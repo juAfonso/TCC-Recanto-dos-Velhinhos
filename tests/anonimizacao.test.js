@@ -17,7 +17,7 @@ const PESSOAIS = [CPF, EMAIL, TELEFONE_ANTIGO, 'Doador de Teste', ENDERECO, '12.
 let conta;
 let doador;
 
-const TABELAS = ['pessoa', 'papel', 'doacao', 'historico_alteracao', 'falha_email', 'consentimento', 'cadastro_voluntario'];
+const TABELAS = ['pessoa', 'papel', 'doacao', 'historico_alteracao', 'falha_email', 'consentimento', 'cand_voluntario'];
 async function contagens() {
   const r = {};
   for (const t of TABELAS) {
@@ -50,7 +50,7 @@ before(async () => {
   }
   // Cadastro de voluntário rejeitado da mesma pessoa (mesmo CPF), com endereço e RG.
   await sql`
-    INSERT INTO cadastro_voluntario (protocolo, nome, cpf, rg, data_nascimento, endereco, cidade, uf, telefone, email,
+    INSERT INTO cand_voluntario (protocolo, nome, cpf, rg, data_nascimento, endereco, cidade, uf, telefone, email,
                                      menor_de_idade, autorizacao_status, status, criado_por)
     VALUES ('VOL-TESTEANON1', 'Doador de Teste', ${CPF}, '12.345.678-9', '1980-01-01', ${ENDERECO}, 'Pinheiral', 'RJ',
             ${TELEFONE_ANTIGO}, ${EMAIL}, false, 'nao_se_aplica', 'rejeitado', 'publico')`;
@@ -71,7 +71,7 @@ test('anonimizar o doador: nada pessoal legível, doações e linhas preservadas
     pessoa: await sql`SELECT * FROM pessoa`,
     historico: await sql`SELECT * FROM historico_alteracao`,
     falhas: await sql`SELECT * FROM falha_email`,
-    voluntario: await sql`SELECT * FROM cadastro_voluntario`,
+    voluntario: await sql`SELECT * FROM cand_voluntario`,
   });
   for (const dado of PESSOAIS) assert.ok(!despejo.includes(dado), `"${dado}" continua legível`);
 

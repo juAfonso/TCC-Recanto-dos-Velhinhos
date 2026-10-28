@@ -15,9 +15,9 @@ export const POST = rota(async (request) => {
   const autor = conta.identificador;
 
   return json(await decidir({
-    tabela: 'candidatura', id, para: 'aprovada', conta,
+    tabela: 'cand_funcionario', id, para: 'aprovada', conta,
     efeito: async (tx) => {
-      const [c] = await tx.query('SELECT nome, cpf, email, telefone, data_nascimento FROM candidatura WHERE id = $1', [id]);
+      const [c] = await tx.query('SELECT nome, cpf, email, telefone, data_nascimento FROM cand_funcionario WHERE id = $1', [id]);
       const pessoa = await encontrarOuCriarPessoa(tx, {
         cpf: c.cpf, nome: c.nome, email: c.email, telefone: c.telefone,
         dataNascimento: c.data_nascimento ? dataTexto(c.data_nascimento) : null,
@@ -27,7 +27,7 @@ export const POST = rota(async (request) => {
       if (jaFuncionario) falhar(422, 'JA_E_FUNCIONARIO', 'Esta pessoa já é funcionária ativa do Recanto.');
       await encerrarPapel(tx, pessoa.id, 'voluntario', autor);
       await adicionarPapel(tx, pessoa.id, 'funcionario', id, autor);
-      await tx.query('UPDATE candidatura SET pessoa_id = $2, efetivado_em = now() WHERE id = $1', [id, pessoa.id]);
+      await tx.query('UPDATE cand_funcionario SET pessoa_id = $2, efetivado_em = now() WHERE id = $1', [id, pessoa.id]);
     },
   }));
 });

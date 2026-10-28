@@ -15,12 +15,12 @@ export const GET = rota(async (request) => {
   const [c] = await sql`
     SELECT protocolo, nome, data_nascimento, rg, cpf, escolaridade, profissao, endereco, bairro, cep, cidade, uf,
            telefone, email, tipo_servico, objetivos, condicoes, menor_de_idade, anonimizado_em
-    FROM cadastro_voluntario WHERE id = ${id}`;
+    FROM cand_voluntario WHERE id = ${id}`;
   if (!c) falhar(404, 'NAO_ENCONTRADO', 'Cadastro não encontrado.');
   if (c.anonimizado_em) falhar(409, 'REGISTRO_ANONIMIZADO', 'Este cadastro foi anonimizado.');
   await registrarAuditoria({
     autorTipo: 'conta_institucional', autorId: conta.id,
-    acao: 'voluntario.imprimir_documentos', entidadeTipo: 'cadastro_voluntario', entidadeId: id,
+    acao: 'voluntario.imprimir_documentos', entidadeTipo: 'cand_voluntario', entidadeId: id,
   });
   return json({
     protocolo: c.protocolo, nome: c.nome, dataNascimento: dataTexto(c.data_nascimento), rg: c.rg, cpf: c.cpf,

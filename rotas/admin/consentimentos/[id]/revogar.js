@@ -11,8 +11,8 @@ import { registrarAuditoria } from '../../../_lib/auditoria.js';
 import { json, falhar, idDaRota, rota } from '../../../_lib/http.js';
 
 const SUBMISSOES = {
-  cadastro_voluntario_id: { tabela: 'cadastro_voluntario', triagem: ['pendente', 'entrevista'], encerrado: 'encerrado_titular' },
-  candidatura_id: { tabela: 'candidatura', triagem: ['em_analise', 'entrevista'], encerrado: 'encerrada_titular' },
+  cand_voluntario_id: { tabela: 'cand_voluntario', triagem: ['pendente', 'entrevista'], encerrado: 'encerrado_titular' },
+  cand_funcionario_id: { tabela: 'cand_funcionario', triagem: ['em_analise', 'entrevista'], encerrado: 'encerrada_titular' },
   solicitacao_externa_id: { tabela: 'solicitacao_externa', triagem: ['em_analise', 'aguardando_contato'], encerrado: 'encerrada_titular' },
 };
 
@@ -47,7 +47,7 @@ export const POST = rota(async (request) => {
           `UPDATE ${regra.tabela} SET status = $2, concluido_em = now(), triado_por = $3, triado_em = now() WHERE id = $1`,
           [s.id, regra.encerrado, autor]);
         efeito = 'submissao_encerrada';
-      } else if (regra.tabela === 'cadastro_voluntario' && s.status === 'aprovado' && s.pessoa_id) {
+      } else if (regra.tabela === 'cand_voluntario' && s.status === 'aprovado' && s.pessoa_id) {
         const inativados = await tx.query(
           `UPDATE papel SET status = 'inativo', alterado_por = $2, alterado_em = now()
            WHERE pessoa_id = $1 AND tipo = 'voluntario' AND status = 'ativo' RETURNING id`, [s.pessoa_id, autor]);

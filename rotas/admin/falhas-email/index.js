@@ -14,8 +14,8 @@ export const GET = rota(async (request) => {
            COALESCE(v.protocolo, k.protocolo, s.protocolo) AS protocolo,
            COALESCE(v.telefone, k.telefone, s.telefone, p.telefone) AS telefone
     FROM falha_email f
-    LEFT JOIN cadastro_voluntario v ON f.entidade_tipo = 'cadastro_voluntario' AND v.id = f.entidade_id
-    LEFT JOIN candidatura k ON f.entidade_tipo = 'candidatura' AND k.id = f.entidade_id
+    LEFT JOIN cand_voluntario v ON f.entidade_tipo = 'cand_voluntario' AND v.id = f.entidade_id
+    LEFT JOIN cand_funcionario k ON f.entidade_tipo = 'cand_funcionario' AND k.id = f.entidade_id
     LEFT JOIN solicitacao_externa s ON f.entidade_tipo = 'solicitacao_externa' AND s.id = f.entidade_id
     LEFT JOIN pessoa p ON f.entidade_tipo = 'pessoa' AND p.id = f.entidade_id
     WHERE f.anonimizado_em IS NULL AND (${todas} OR f.tratada_em IS NULL)

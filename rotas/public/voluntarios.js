@@ -21,12 +21,12 @@ export const POST = rota(async (request) => {
     const colunas = [...CAMPOS, 'protocolo', 'origem', 'menor_de_idade', 'autorizacao_status', 'criado_por'];
     const valores = [...CAMPOS.map((c) => dados[c]), protocolo, 'portal', dados.menor_de_idade, autorizacaoStatus, 'publico'];
     const [novo] = await tx.query(
-      `INSERT INTO cadastro_voluntario (${colunas.join(', ')})
+      `INSERT INTO cand_voluntario (${colunas.join(', ')})
        VALUES (${colunas.map((_, i) => `$${i + 1}`).join(', ')}) RETURNING id, protocolo, status`,
       valores);
-    await registrarConsentimento({ alvo: 'cadastro_voluntario', alvoId: novo.id, avisoVersao, finalidade: 'cadastro_voluntario' }, tx);
+    await registrarConsentimento({ alvo: 'cand_voluntario', alvoId: novo.id, avisoVersao, finalidade: 'cand_voluntario' }, tx);
     await registrarAuditoria({
-      autorTipo: 'anonimo', acao: 'voluntario.cadastrar', entidadeTipo: 'cadastro_voluntario', entidadeId: novo.id,
+      autorTipo: 'anonimo', acao: 'voluntario.cadastrar', entidadeTipo: 'cand_voluntario', entidadeId: novo.id,
       detalhe: { menorDeIdade: dados.menor_de_idade },
     }, tx);
     return novo;
@@ -35,9 +35,9 @@ export const POST = rota(async (request) => {
   const emailEnviado = await enviarEmail({
     para: dados.email,
     modelo: 'confirmacao_submissao',
-    dados: { tipo: 'cadastro_voluntario', nome: dados.nome, protocolo: cadastro.protocolo },
+    dados: { tipo: 'cand_voluntario', nome: dados.nome, protocolo: cadastro.protocolo },
     motivo: 'confirmacao',
-    entidadeTipo: 'cadastro_voluntario',
+    entidadeTipo: 'cand_voluntario',
     entidadeId: cadastro.id,
   });
 

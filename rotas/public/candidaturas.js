@@ -39,11 +39,11 @@ export const POST = rota(async (request) => {
     const colunas = [...CAMPOS, 'curriculo_arquivo_id', 'curriculo_texto', 'protocolo', 'criado_por'];
     const valores = [...CAMPOS.map((c) => dados[c]), curriculo?.id ?? null, dados.curriculo_texto, gerarProtocolo('CAN'), 'publico'];
     const [nova] = await tx.query(
-      `INSERT INTO candidatura (${colunas.join(', ')}) VALUES (${colunas.map((_, i) => `$${i + 1}`).join(', ')})
+      `INSERT INTO cand_funcionario (${colunas.join(', ')}) VALUES (${colunas.map((_, i) => `$${i + 1}`).join(', ')})
        RETURNING id, protocolo, status`, valores);
-    await registrarConsentimento({ alvo: 'candidatura', alvoId: nova.id, avisoVersao, finalidade: 'candidatura_vaga' }, tx);
+    await registrarConsentimento({ alvo: 'cand_funcionario', alvoId: nova.id, avisoVersao, finalidade: 'candidatura_vaga' }, tx);
     await registrarAuditoria({
-      autorTipo: 'anonimo', acao: 'candidatura.enviar', entidadeTipo: 'candidatura', entidadeId: nova.id,
+      autorTipo: 'anonimo', acao: 'candidatura.enviar', entidadeTipo: 'cand_funcionario', entidadeId: nova.id,
       detalhe: { cargo: dados.cargo, comArquivo: Boolean(curriculo) },
     }, tx);
     return nova;
@@ -55,9 +55,9 @@ export const POST = rota(async (request) => {
   const emailEnviado = await enviarEmail({
     para: dados.email,
     modelo: 'confirmacao_submissao',
-    dados: { tipo: 'candidatura', nome: dados.nome, protocolo: candidatura.protocolo },
+    dados: { tipo: 'cand_funcionario', nome: dados.nome, protocolo: candidatura.protocolo },
     motivo: 'confirmacao',
-    entidadeTipo: 'candidatura',
+    entidadeTipo: 'cand_funcionario',
     entidadeId: candidatura.id,
   });
 

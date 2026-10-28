@@ -65,7 +65,7 @@ export const POST = rota(async (request) => {
         'Esta pessoa é funcionária ativa. Funcionário não pode ser voluntário ao mesmo tempo.');
     }
     const [emTriagem] = await tx.query(
-      `SELECT protocolo FROM cadastro_voluntario
+      `SELECT protocolo FROM cand_voluntario
        WHERE cpf = $1 AND status IN ('pendente', 'entrevista') AND anonimizado_em IS NULL`, [pessoa.cpf]);
     if (emTriagem) {
       falhar(409, 'VOLUNTARIO_EM_TRIAGEM',
@@ -73,10 +73,10 @@ export const POST = rota(async (request) => {
     }
     const dados = validarCadastro({ ...corpo, cpf: pessoa.cpf });
     const r = await cadastrarVoluntarioPainel(tx, dados, autor);
-    await tx.query('UPDATE cadastro_voluntario SET pessoa_id = $2 WHERE id = $1', [r.cadastroVoluntarioId, id]);
+    await tx.query('UPDATE cand_voluntario SET pessoa_id = $2 WHERE id = $1', [r.cadastroVoluntarioId, id]);
     await registrarAuditoria({
       autorTipo: 'conta_institucional', autorId: conta.id, acao: 'voluntario.cadastrar_painel',
-      entidadeTipo: 'cadastro_voluntario', entidadeId: r.cadastroVoluntarioId, detalhe: { menorDeIdade: dados.menor_de_idade },
+      entidadeTipo: 'cand_voluntario', entidadeId: r.cadastroVoluntarioId, detalhe: { menorDeIdade: dados.menor_de_idade },
     }, tx);
     return { id, papel: 'voluntario', ...r, pessoaId: id };
   });

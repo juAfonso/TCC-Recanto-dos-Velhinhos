@@ -10,7 +10,7 @@ import { inativarPapel } from '../../../_lib/papeis.js';
 import { PAPEIS, submissoesEmTriagem } from '../../../_lib/pessoas.js';
 import { json, lerJson, falhar, idDaRota, rota } from '../../../_lib/http.js';
 
-const NOMES = { cadastro_voluntario: 'cadastro de voluntário', candidatura: 'candidatura a vaga' };
+const NOMES = { cand_voluntario: 'cadastro de voluntário', cand_funcionario: 'candidatura a vaga' };
 
 export const POST = rota(async (request) => {
   const { conta } = await exigirAdmin(request);

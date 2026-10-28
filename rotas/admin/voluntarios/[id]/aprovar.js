@@ -16,10 +16,10 @@ export const POST = rota(async (request) => {
   const autor = conta.identificador;
 
   const resultado = await decidir({
-    tabela: 'cadastro_voluntario', id, para: 'aprovado', conta,
+    tabela: 'cand_voluntario', id, para: 'aprovado', conta,
     efeito: async (tx) => {
       const [c] = await tx.query(
-        'SELECT nome, cpf, email, telefone, data_nascimento FROM cadastro_voluntario WHERE id = $1', [id]);
+        'SELECT nome, cpf, email, telefone, data_nascimento FROM cand_voluntario WHERE id = $1', [id]);
       const pessoa = await encontrarOuCriarPessoa(tx, {
         cpf: c.cpf, nome: c.nome, email: c.email, telefone: c.telefone,
         dataNascimento: c.data_nascimento ? dataTexto(c.data_nascimento) : null,
@@ -27,7 +27,7 @@ export const POST = rota(async (request) => {
       const [jaVoluntario] = await tx.query(
         `SELECT id FROM papel WHERE pessoa_id = $1 AND tipo = 'voluntario' AND status = 'ativo'`, [pessoa.id]);
       if (!jaVoluntario) await adicionarPapel(tx, pessoa.id, 'voluntario', id, autor);
-      await tx.query('UPDATE cadastro_voluntario SET pessoa_id = $2 WHERE id = $1', [id, pessoa.id]);
+      await tx.query('UPDATE cand_voluntario SET pessoa_id = $2 WHERE id = $1', [id, pessoa.id]);
     },
   });
   return json(resultado);

@@ -19,8 +19,8 @@ const A = `'${ANONIMO}'`;
 
 const ALVOS = {
   pessoa: 'pessoa',
-  cadastro_voluntario: 'cadastro_voluntario',
-  candidatura: 'candidatura',
+  cand_voluntario: 'cand_voluntario',
+  cand_funcionario: 'cand_funcionario',
   curriculo: 'curriculo',
   solicitacao: 'solicitacao_externa',
   solicitacao_externa: 'solicitacao_externa',
@@ -29,16 +29,16 @@ const ALVOS = {
 // Campos que a equipe pode reter por obrigação legal, por tipo de registro.
 export const RETIVEIS = {
   pessoa: ['nome', 'cpf', 'data_nascimento'],
-  cadastro_voluntario: ['nome', 'cpf', 'data_nascimento'],
-  candidatura: ['nome', 'cpf', 'data_nascimento'],
+  cand_voluntario: ['nome', 'cpf', 'data_nascimento'],
+  cand_funcionario: ['nome', 'cpf', 'data_nascimento'],
   curriculo: [],
   solicitacao_externa: [],
 };
 
 // Submissão ainda em triagem sai da fila ao ser anonimizada.
 const ENCERRAR = {
-  cadastro_voluntario: { de: ['pendente', 'entrevista'], para: 'encerrado_titular' },
-  candidatura: { de: ['em_analise', 'entrevista'], para: 'encerrada_titular' },
+  cand_voluntario: { de: ['pendente', 'entrevista'], para: 'encerrado_titular' },
+  cand_funcionario: { de: ['em_analise', 'entrevista'], para: 'encerrada_titular' },
   solicitacao_externa: { de: ['em_analise', 'aguardando_contato'], para: 'encerrada_titular' },
 };
 
@@ -91,10 +91,10 @@ const EXECUTORES = {
     return [p.email];
   },
 
-  async cadastro_voluntario(tx, c, reter, autor) {
-    await encerrarSeEmTriagem(tx, 'cadastro_voluntario', c, autor);
+  async cand_voluntario(tx, c, reter, autor) {
+    await encerrarSeEmTriagem(tx, 'cand_voluntario', c, autor);
     await tx.query(
-      `UPDATE cadastro_voluntario
+      `UPDATE cand_voluntario
        SET nome = ${ret(reter, 'nome', 'nome', A)}, cpf = ${ret(reter, 'cpf', 'cpf', A)},
            data_nascimento = ${ret(reter, 'data_nascimento')}, rg = NULL, endereco = NULL, bairro = NULL, cep = NULL,
            telefone = NULL, email = NULL, escolaridade = NULL, profissao = NULL, objetivos = NULL, condicoes = NULL,
@@ -103,10 +103,10 @@ const EXECUTORES = {
     return [c.email];
   },
 
-  async candidatura(tx, c, reter, autor) {
-    await encerrarSeEmTriagem(tx, 'candidatura', c, autor);
+  async cand_funcionario(tx, c, reter, autor) {
+    await encerrarSeEmTriagem(tx, 'cand_funcionario', c, autor);
     await tx.query(
-      `UPDATE candidatura
+      `UPDATE cand_funcionario
        SET nome = ${ret(reter, 'nome', 'nome', A)}, cpf = ${ret(reter, 'cpf', 'cpf', A)},
            data_nascimento = ${ret(reter, 'data_nascimento')}, telefone = NULL, email = NULL, curriculo_texto = NULL,
            motivo_rejeicao = CASE WHEN motivo_rejeicao IS NULL THEN NULL ELSE ${A} END,
@@ -120,7 +120,7 @@ const EXECUTORES = {
   async curriculo(tx, c) {
     if (c.curriculo_anonimizado_em) falhar(409, 'JA_ANONIMIZADO', 'O currículo desta candidatura já foi anonimizado.');
     await tx.query(
-      'UPDATE candidatura SET curriculo_texto = NULL, curriculo_anonimizado_em = now() WHERE id = $1', [c.id]);
+      'UPDATE cand_funcionario SET curriculo_texto = NULL, curriculo_anonimizado_em = now() WHERE id = $1', [c.id]);
     if (c.curriculo_arquivo_id) await tx.query('UPDATE arquivo SET nome_original = $2 WHERE id = $1', [c.curriculo_arquivo_id, ANONIMO]);
     return [];
   },
@@ -136,7 +136,7 @@ const EXECUTORES = {
   },
 };
 
-const TABELA = { curriculo: 'candidatura' };
+const TABELA = { curriculo: 'cand_funcionario' };
 
 async function travar(tx, tipo, id) {
   const tabela = TABELA[tipo] ?? tipo;
@@ -149,12 +149,12 @@ async function travar(tx, tipo, id) {
 // Arquivos de currículo que a operação alcança. Saem do Blob ANTES da transação: se ela falhar,
 // o arquivo já se foi, mas a anonimização pode ser repetida (removerArquivo ignora o já removido).
 async function curriculosAlcancados(tipo, id) {
-  if (tipo === 'candidatura' || tipo === 'curriculo') {
-    return sql`SELECT curriculo_arquivo_id AS id FROM candidatura WHERE id = ${id} AND curriculo_arquivo_id IS NOT NULL`;
+  if (tipo === 'cand_funcionario' || tipo === 'curriculo') {
+    return sql`SELECT curriculo_arquivo_id AS id FROM cand_funcionario WHERE id = ${id} AND curriculo_arquivo_id IS NOT NULL`;
   }
   if (tipo === 'pessoa') {
     return sql`
-      SELECT c.curriculo_arquivo_id AS id FROM candidatura c, pessoa p
+      SELECT c.curriculo_arquivo_id AS id FROM cand_funcionario c, pessoa p
       WHERE p.id = ${id} AND c.curriculo_arquivo_id IS NOT NULL AND c.anonimizado_em IS NULL
         AND (c.pessoa_id = p.id OR c.cpf = p.cpf)`;
   }
@@ -186,7 +186,7 @@ export async function anonimizar({ alvo, id, reter = [], justificativaRetencao, 
     // A pessoa alcança os cadastros e candidaturas dela (decisão de 2026-10-07).
     let alcancados = 0;
     if (tipo === 'pessoa') {
-      for (const tabela of ['cadastro_voluntario', 'candidatura']) {
+      for (const tabela of ['cand_voluntario', 'cand_funcionario']) {
         const ligados = await tx.query(
           `SELECT * FROM ${tabela} WHERE anonimizado_em IS NULL AND (pessoa_id = $1 OR cpf = $2) FOR UPDATE`,
           [id, registro.cpf]);

@@ -27,8 +27,8 @@
 | 2 | `papel` | Pessoas e acesso | Papéis da pessoa: funcionário, voluntário, doador associado | CSU04, FR-048 |
 | 3 | `conta_institucional` | Pessoas e acesso | Login compartilhado do Painel Administrativo | FR-040 |
 | 4 | `token_senha` | Pessoas e acesso | Links de definição e redefinição de senha do doador | CSU09, FR-046 |
-| 5 | `cadastro_voluntario` | Submissões | Cadastro de voluntário com triagem | CSU05 |
-| 6 | `candidatura` | Submissões | Candidatura a vaga com triagem | CSU06 |
+| 5 | `cand_voluntario` | Submissões | Cadastro de voluntário com triagem | CSU05 |
+| 6 | `cand_funcionario` | Submissões | Candidatura a vaga com triagem | CSU06 |
 | 7 | `solicitacao_externa` | Submissões | Pedido externo de evento ou campanha | CSU08 |
 | 8 | `aviso_privacidade` | LGPD | Versões do aviso de privacidade | CSU11, FR-053 |
 | 9 | `consentimento` | LGPD | Aceite do aviso, com data, finalidade e revogação | CSU11, FR-051 |
@@ -53,8 +53,8 @@
 ```
 pessoa 1 ── N papel                   pessoa 1 ── N token_senha
 pessoa 1 ── N doacao (associativa)    pessoa 1 ── N consentimento (doador, um por versão)
-cadastro_voluntario N ── 0..1 pessoa  candidatura N ── 0..1 pessoa
-cadastro_voluntario 1 ── 1 consentimento
+cand_voluntario N ── 0..1 pessoa  cand_funcionario N ── 0..1 pessoa
+cand_voluntario 1 ── 1 consentimento
 candidatura         1 ── 1 consentimento     candidatura 0..1 ── 0..1 arquivo (currículo)
 solicitacao_externa 1 ── 1 consentimento     solicitacao_externa 0..1 ── 0..1 evento | campanha
 aviso_privacidade 1 ── N consentimento
@@ -155,7 +155,7 @@ só mudam por ação humana no Painel (Princípio VIII). Colunas comuns às trê
 | `anonimizado_em` | timestamptz | | Data da anonimização |
 | `criado_por`, `criado_em` | text, timestamptz | NN | Autoria do envio |
 
-### 2.1 `cadastro_voluntario`
+### 2.1 `cand_voluntario`
 
 Só os campos do termo de adesão da Lei 9.608/1998, mais a data de nascimento.
 
@@ -183,7 +183,7 @@ origem `painel` existe apenas para guardar o termo de adesão de quem a equipe c
 (FR-023); conceitualmente, esse voluntário não passou por candidatura, e por isso a Admissão
 é (0,1) do lado de `Cand_Voluntario` (decisão de 2026-10-06).
 
-### 2.2 `candidatura`
+### 2.2 `cand_funcionario`
 
 Cargos fixos; não há tabela de vagas.
 
@@ -239,8 +239,8 @@ Nova versão = nova linha; versão publicada nunca é editada. Vigente = a mais 
 | Coluna | Tipo | Restrições | Descrição |
 |---|---|---|---|
 | `id` | uuid | PK | Identificador |
-| `cadastro_voluntario_id` | uuid | FK → `cadastro_voluntario`, UQ | Dono, se for voluntário |
-| `candidatura_id` | uuid | FK → `candidatura`, UQ | Dono, se for candidatura |
+| `cand_voluntario_id` | uuid | FK → `cand_voluntario`, UQ | Dono, se for voluntário |
+| `cand_funcionario_id` | uuid | FK → `cand_funcionario`, UQ | Dono, se for candidatura |
 | `solicitacao_externa_id` | uuid | FK → `solicitacao_externa`, UQ | Dono, se for solicitação |
 | `pessoa_id` | uuid | FK → `pessoa` | Dono, se for doador associado |
 | `aviso_versao` | text | NN, FK → `aviso_privacidade` | Versão aceita |

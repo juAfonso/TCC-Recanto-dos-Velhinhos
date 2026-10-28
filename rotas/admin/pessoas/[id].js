@@ -19,14 +19,14 @@ export const GET = rota(async (request) => {
 
   const [papeis, voluntarios, candidaturas, consentimentos, [doacoes], historico] = await Promise.all([
     sql`SELECT tipo, status, inicio_em, fim_em, alterado_por, alterado_em FROM papel WHERE pessoa_id = ${id} ORDER BY inicio_em`,
-    sql`SELECT id, protocolo, origem, status, autorizacao_status, menor_de_idade, criado_em FROM cadastro_voluntario
+    sql`SELECT id, protocolo, origem, status, autorizacao_status, menor_de_idade, criado_em FROM cand_voluntario
         WHERE pessoa_id = ${id} OR (cpf = ${p.cpf} AND anonimizado_em IS NULL) ORDER BY criado_em DESC`,
-    sql`SELECT id, protocolo, cargo, status, criado_em FROM candidatura
+    sql`SELECT id, protocolo, cargo, status, criado_em FROM cand_funcionario
         WHERE pessoa_id = ${id} OR (cpf = ${p.cpf} AND anonimizado_em IS NULL) ORDER BY criado_em DESC`,
     sql`SELECT c.id, c.aviso_versao, c.finalidade, c.aceito_em, c.revogado_em
         FROM consentimento c
-        LEFT JOIN cadastro_voluntario v ON v.id = c.cadastro_voluntario_id
-        LEFT JOIN candidatura k ON k.id = c.candidatura_id
+        LEFT JOIN cand_voluntario v ON v.id = c.cand_voluntario_id
+        LEFT JOIN cand_funcionario k ON k.id = c.cand_funcionario_id
         WHERE c.pessoa_id = ${id} OR v.pessoa_id = ${id} OR k.pessoa_id = ${id}
            OR (v.cpf = ${p.cpf} AND v.anonimizado_em IS NULL) OR (k.cpf = ${p.cpf} AND k.anonimizado_em IS NULL)
         ORDER BY c.aceito_em DESC`,

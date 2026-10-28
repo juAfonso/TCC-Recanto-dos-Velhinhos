@@ -9,7 +9,7 @@ export const POST = rota(async (request) => {
   const { conta } = await exigirAdmin(request);
   const { motivo } = await lerJson(request);
   const resultado = await decidir({
-    tabela: 'cadastro_voluntario', id: idDaRota(request), para: 'rejeitado',
+    tabela: 'cand_voluntario', id: idDaRota(request), para: 'rejeitado',
     motivo: typeof motivo === 'string' ? motivo.slice(0, 1000) : null, conta,
   });
   return json(resultado);

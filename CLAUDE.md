@@ -505,18 +505,23 @@ Passo a passo de comandos e validação em
   **Tabelas com os nomes do DER (decidido em 2026-10-28).**
   `cadastro_voluntario` virou `cand_voluntario` e `candidatura` virou
   `cand_funcionario`, assim como as colunas `cand_voluntario_id` e
-  `cand_funcionario_id` de `consentimento` e os valores gravados que
-  apontam para essas tabelas (`entidade_tipo` da auditoria, das falhas de
-  e-mail, do histórico e da anonimização, e o `alvo` da API de
-  anonimização). Continuam iguais: os endereços da API
-  (`/api/admin/candidaturas`), os nomes de ação da auditoria
-  (`candidatura.enviar`, `voluntario.cadastrar`) e o `tipo` que a consulta
-  de status devolve ao Portal. A troca foi feita **editando a migração
-  003**, não por migração nova: bancos que já tinham a 003 aplicada (`dev`,
-  `main`) precisam ser renomeados à mão no Neon, com o SQL do PR, **antes**
-  de publicar o código. O `npm run migrate` não reaplica migração já
-  registrada em `schema_migrations`, por isso a edição sozinha não alcança
-  esses bancos.
+  `cand_funcionario_id` de `consentimento`, o `alvo` da API de
+  anonimização e o `entidade_tipo` que o código grava daqui em diante.
+  Continuam iguais: os endereços da API (`/api/admin/candidaturas`), os
+  nomes de ação da auditoria (`candidatura.enviar`, `voluntario.cadastrar`)
+  e o `tipo` que a consulta de status devolve ao Portal. A troca foi feita
+  **editando a migração 003**, não por migração nova; o `npm run migrate`
+  não reaplica migração já registrada em `schema_migrations`, então a
+  `main` e a `dev` foram renomeadas à mão no mesmo dia, depois do deploy.
+  **O histórico protegido não foi reescrito:** `registro_auditoria` e
+  `anonimizacao` só aceitam inclusão (Princípio III, gatilho no banco), e
+  as linhas gravadas antes da troca continuam com `cadastro_voluntario` e
+  `candidatura`. Por isso, nesses dois bancos, a regra de `anonimizacao`
+  aceita os nomes antigos e os novos; num banco criado do zero, só os
+  novos. Em `falha_email`, `historico_alteracao` e na `finalidade` do
+  consentimento, os valores antigos foram trocados. Quem renomear tabela
+  no futuro: não tente `UPDATE` nessas duas tabelas — o gatilho recusa e
+  a transação inteira é desfeita.
 - **Formulário de voluntário (decidido em 2026-10-06, fase 6).** Obrigatórios:
   identificação, endereço, contato e tipo de serviço; escolaridade, profissão,
   objetivos e dias/horários são opcionais (a equipe completa na entrevista).

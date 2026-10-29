@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         : '<b>Pendente</b> — o responsável ainda não entregou a autorização assinada')
       : 'Não se aplica (maior de idade)';
     $('vol-situacao').innerHTML = `${selo(v.status)} ${v.origem === 'painel' ? '<span class="badge badge-neutral">Cadastrado no Painel</span>' : '<span class="badge badge-neutral">Enviado pelo site</span>'}
-      ${v.triadoEm ? `<span class="cell-muted" style="font-size:.8rem;"> · última decisão por ${e(v.triadoPor)} em ${Utils.formatDateTime(v.triadoEm)}</span>` : ''}
+      ${v.triadoEm ? `<span class="cell-muted" style="font-size:.86rem;"> · última decisão por ${e(v.triadoPor)} em ${Utils.formatDateTime(v.triadoEm)}</span>` : ''}
       ${v.motivoRejeicao ? `<p class="form-hint" style="margin-top:6px;">Motivo da rejeição: ${e(v.motivoRejeicao)}</p>` : ''}`;
 
     const cpf = (v.cpf || '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');

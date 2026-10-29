@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const c = atual;
     $('modal-cand-titulo').textContent = `${c.nome} — ${c.protocolo}`;
     $('cand-situacao').innerHTML = `${selo(c.status)}
-      ${c.triadoEm ? `<span class="cell-muted" style="font-size:.8rem;"> · última decisão por ${e(c.triadoPor)} em ${Utils.formatDateTime(c.triadoEm)}</span>` : ''}
+      ${c.triadoEm ? `<span class="cell-muted" style="font-size:.86rem;"> · última decisão por ${e(c.triadoPor)} em ${Utils.formatDateTime(c.triadoEm)}</span>` : ''}
       ${c.efetivadoEm ? `<p class="form-hint" style="margin-top:6px;">Efetivada como funcionária em ${Utils.formatDateTime(c.efetivadoEm)}.</p>` : ''}
       ${c.motivoRejeicao ? `<p class="form-hint" style="margin-top:6px;">Motivo da rejeição: ${e(c.motivoRejeicao)}</p>` : ''}`;
     $('cand-aviso-voluntario').hidden = !(c.jaVoluntario && ['em_analise', 'entrevista'].includes(c.status));

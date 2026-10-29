@@ -21,17 +21,26 @@
 <section class="section">
     <div class="container">
 
-        <div id="form-wrap">
+        <div id="form-wrap" class="form-layout">
+            <aside class="form-guia" aria-label="Como funciona a proposta">
+                <h2 class="form-guia-titulo">Como funciona</h2>
+                <p>A proposta fica <b>em análise</b>. Se a equipe aprovar, ela <b>entra em contato</b> para combinar os detalhes, e só então o evento ou a campanha aparece no site. Ao enviar, você recebe um <b>código de protocolo</b> para acompanhar.</p>
+                <ol class="form-guia-passos">
+                    <li><a href="#secao-proposta">A proposta</a></li>
+                    <li><a href="#secao-contato">Contato</a></li>
+                </ol>
+                <p class="form-guia-nota">Campos com <span class="req">*</span> são obrigatórios.</p>
+            </aside>
             <form class="form-shell" id="form-solicitacao" novalidate data-consentimento="analisar a proposta e entrar em contato para combinar os detalhes">
-                <div class="alert alert-info">
-                    <div>A proposta fica <b>em análise</b>. Se a equipe aprovar, ela <b>entra em contato</b> para combinar os detalhes, e só então o evento ou a campanha aparece no site. Ao enviar, você recebe um <b>código de protocolo</b> para acompanhar.</div>
-                </div>
+              <fieldset class="form-secao" id="secao-proposta">
+                <legend>A proposta</legend>
+                <p class="form-secao-desc">O horário e os detalhes são combinados com a equipe depois da análise.</p>
 
-                <fieldset class="form-group" style="border:0;padding:0;">
-                    <legend style="font-weight:700;margin-bottom:6px;">O que você quer propor? <span class="req">*</span></legend>
-                    <div data-campo="tipo" style="display:flex;gap:18px;flex-wrap:wrap;">
-                        <label style="display:flex;gap:8px;align-items:center;font-weight:400;"><input type="radio" name="tipo" value="evento"> Um <b>evento</b> (acontece num dia)</label>
-                        <label style="display:flex;gap:8px;align-items:center;font-weight:400;"><input type="radio" name="tipo" value="campanha"> Uma <b>campanha</b> (dura um período)</label>
+                <fieldset class="form-group">
+                    <legend class="rotulo-grupo">O que você quer propor? <span class="req">*</span></legend>
+                    <div class="opcoes" data-campo="tipo">
+                        <label class="opcao"><input type="radio" name="tipo" value="evento"><span><b>Um evento</b><span class="desc">Acontece num dia</span></span></label>
+                        <label class="opcao"><input type="radio" name="tipo" value="campanha"><span><b>Uma campanha</b><span class="desc">Dura um período</span></span></label>
                     </div>
                     <div class="form-error"></div>
                 </fieldset>
@@ -74,7 +83,11 @@
                     <div class="form-error"></div>
                 </div>
 
-                <h2 style="font-size:1.1rem;margin:22px 0 10px;">Contato</h2>
+              </fieldset>
+
+              <fieldset class="form-secao" id="secao-contato">
+                <legend>Contato</legend>
+                <p class="form-secao-desc">É por aqui que a equipe fala com você sobre a proposta.</p>
                 <div class="form-group">
                     <label for="se-nome">Nome da pessoa ou da organização <span class="req">*</span></label>
                     <input type="text" id="se-nome" data-campo="nomeContato" autocomplete="name" maxlength="150">
@@ -92,6 +105,7 @@
                         <div class="form-error"></div>
                     </div>
                 </div>
+              </fieldset>
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-viridian">Enviar proposta</button>

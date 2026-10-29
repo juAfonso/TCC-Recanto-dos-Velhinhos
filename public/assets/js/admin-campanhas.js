@@ -21,22 +21,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const arrecadado = x.arrecadado ?? 0;
     const pct = Math.min(100, Math.round((arrecadado / x.meta) * 100));
     const botao = x.status === 'ativo'
-      ? ` <button class="link-btn" data-arrecadado="${x.id}" style="font-size:.78rem;">Atualizar</button>` : '';
+      ? ` <button class="link-btn" data-arrecadado="${x.id}" style="font-size:.86rem;">Atualizar</button>` : '';
     return `${Utils.formatCurrency(arrecadado)} de ${Utils.formatCurrency(x.meta)} (${pct}%)${botao}`;
   }
 
   function situacao(x) {
     if (x.status === 'encerrado') {
       const quem = x.encerradoPor === 'sistema' ? 'automaticamente' : `por ${e(x.encerradoPor)}`;
-      return `<span class="badge badge-neutral">Encerrado</span><div class="cell-muted" style="font-size:.75rem;">${quem} em ${Utils.formatDate(x.encerradoEm)}</div>`;
+      return `<span class="badge badge-neutral">Encerrado</span><div class="cell-muted" style="font-size:.86rem;">${quem} em ${Utils.formatDate(x.encerradoEm)}</div>`;
     }
-    if (x.vencido) return '<span class="badge badge-warning">Já passou</span><div class="cell-muted" style="font-size:.75rem;">fora do site; será encerrado esta noite</div>';
+    if (x.vencido) return '<span class="badge badge-warning">Já passou</span><div class="cell-muted" style="font-size:.86rem;">fora do site; será encerrado esta noite</div>';
     return '<span class="badge badge-success">No site</span>';
   }
 
   function linha(x) {
     const tipo = x.tipo === 'evento' ? '<span class="badge badge-info">Evento</span>' : '<span class="badge badge-success">Campanha</span>';
-    const origem = x.externa ? '<div class="cell-muted" style="font-size:.75rem;">Parceria externa</div>' : '';
+    const origem = x.externa ? '<div class="cell-muted" style="font-size:.86rem;">Parceria externa</div>' : '';
     const acoes = x.status === 'ativo'
       ? `<button class="btn btn-outline btn-sm" data-editar="${x.id}">Editar</button>
          <button class="btn btn-danger-outline btn-sm" data-encerrar="${x.id}">Encerrar</button>`

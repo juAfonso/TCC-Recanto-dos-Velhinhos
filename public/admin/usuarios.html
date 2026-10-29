@@ -22,9 +22,9 @@
 
         <div class="admin-content">
             <!-- Ajuda contextual (FR-061) -->
-            <details class="panel" style="margin-bottom:18px;">
-                <summary style="cursor:pointer;font-weight:700;">Como funciona esta tela</summary>
-                <ul style="margin:12px 0 0 20px;line-height:1.7;">
+            <details class="panel">
+                <summary>Como funciona esta tela</summary>
+                <ul class="lista-ajuda">
                     <li>Cada pessoa aparece <b>uma vez só</b>, pelo CPF, com os papéis que tem: funcionário, voluntário e doador associado. <b>Funcionário e voluntário não podem ser a mesma pessoa ao mesmo tempo.</b></li>
                     <li><b>Cadastrar aqui não passa por triagem</b>: é você quem está registrando. Voluntário cadastrado aqui preenche o termo de adesão; o <b>menor de idade</b> fica pendente até a autorização do responsável chegar na sede.</li>
                     <li><b>Doador associado não é cadastrado aqui</b>: a conta nasce com a primeira doação associativa feita no site.</li>
@@ -79,7 +79,7 @@
 
         <div id="pessoa-detalhe">
             <div id="pessoa-situacao" style="margin-bottom:14px;"></div>
-            <dl id="pessoa-dados" style="display:grid;grid-template-columns:minmax(140px,200px) 1fr;gap:6px 14px;font-size:.92rem;"></dl>
+            <dl id="pessoa-dados" class="dados-grid"></dl>
 
             <h4 style="margin:20px 0 8px;">Papéis</h4>
             <div class="table-wrap">
@@ -120,20 +120,23 @@
             <button class="modal-close" data-close-modal="modal-cadastro" aria-label="Fechar">✕</button>
         </div>
         <form id="form-cadastro" novalidate>
-            <fieldset class="form-group" id="grupo-perfil" data-campo="perfil" style="border:0;padding:0;">
-                <legend style="font-weight:700;margin-bottom:6px;">Papel <span class="req">*</span></legend>
-                <label style="margin-right:18px;"><input type="radio" name="perfil" value="funcionario" checked> Funcionário</label>
-                <label><input type="radio" name="perfil" value="voluntario"> Voluntário</label>
+            <fieldset class="form-group" id="grupo-perfil" data-campo="perfil">
+                <legend class="rotulo-grupo">Papel <span class="req">*</span></legend>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="perfil" value="funcionario" checked><span><b>Funcionário</b></span></label>
+                    <label class="opcao"><input type="radio" name="perfil" value="voluntario"><span><b>Voluntário</b></span></label>
+                </div>
                 <div class="form-error"></div>
             </fieldset>
             <p class="form-hint" id="dica-perfil" style="margin-bottom:12px;"></p>
 
+            <h4 class="form-grupo-titulo">Identificação e contato</h4>
             <div class="form-group"><label for="n-nome">Nome completo <span class="req">*</span></label><input type="text" id="n-nome" data-campo="nome" maxlength="150"><div class="form-error"></div></div>
             <div class="form-row">
                 <div class="form-group"><label for="n-cpf">CPF <span class="req">*</span></label><input type="text" id="n-cpf" data-campo="cpf" data-mascara="cpf"><div class="form-error"></div></div>
                 <div class="form-group"><label for="n-nascimento">Data de nascimento <span class="req">*</span></label><input type="date" id="n-nascimento" data-campo="dataNascimento"><div class="form-error"></div></div>
             </div>
-            <div class="alert alert-warning" id="aviso-menor" hidden style="margin-bottom:12px;"><span aria-hidden="true">⚠️</span><div>Menor de idade: o cadastro fica <b>pendente</b> até o responsável assinar o termo de adesão na sede. Depois de salvar, imprima o termo de adesão: o responsável também o assina.</div></div>
+            <div class="alert alert-warning" id="aviso-menor" hidden><div>Menor de idade: o cadastro fica <b>pendente</b> até o responsável assinar o termo de adesão na sede. Depois de salvar, imprima o termo de adesão: o responsável também o assina.</div></div>
             <div class="form-row">
                 <div class="form-group"><label for="n-telefone">Telefone <span class="req">*</span></label><input type="text" id="n-telefone" data-campo="telefone" data-mascara="telefone"><div class="form-error"></div></div>
                 <div class="form-group"><label for="n-email">E-mail <span class="req">*</span></label><input type="email" id="n-email" data-campo="email" maxlength="254"><div class="form-error"></div></div>
@@ -141,6 +144,7 @@
 
             <!-- Campos do termo de adesão (FR-011), só para voluntário -->
             <div id="campos-voluntario" hidden>
+                <h4 class="form-grupo-titulo">Termo de adesão</h4>
                 <div class="form-row">
                     <div class="form-group"><label for="n-rg">RG <span class="req">*</span></label><input type="text" id="n-rg" data-campo="rg" maxlength="30"><div class="form-error"></div></div>
                     <div class="form-group"><label for="n-escolaridade">Escolaridade</label><input type="text" id="n-escolaridade" data-campo="escolaridade" maxlength="80"><div class="form-error"></div></div>

@@ -22,9 +22,9 @@ export const GET = rota(async (request) => {
   const conflitos = s.tipo === 'evento' && s.data_pretendida && ['em_analise', 'aguardando_contato'].includes(s.status)
     ? await sql`SELECT nome FROM evento WHERE status = 'ativo' AND data = ${dia(s.data_pretendida)} ORDER BY nome`
     : [];
-  const [criado] = s.evento_id
-    ? await sql`SELECT id, nome, status FROM evento WHERE id = ${s.evento_id}`
-    : s.campanha_id ? await sql`SELECT id, nome, status FROM campanha WHERE id = ${s.campanha_id}` : [];
+  const [criado] = s.tipo === 'evento'
+    ? await sql`SELECT id, nome, status FROM evento WHERE solicitacao_origem_id = ${id}`
+    : await sql`SELECT id, nome, status FROM campanha WHERE solicitacao_origem_id = ${id}`;
 
   return json({
     id: s.id, protocolo: s.protocolo, tipo: s.tipo, status: s.status,

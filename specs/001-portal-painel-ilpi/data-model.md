@@ -192,11 +192,12 @@ Prefixo `SOL-`.
 | `periodo_inicio`, `periodo_fim` | `date` NULL | campanha |
 | `recursos_esperados` | `text` | o que pede à instituição — **não** vira `recurso` |
 | `status` | `text` | `em_analise` → `aguardando_contato` → `confirmada`; `rejeitada`; `encerrada_titular` |
-| `evento_id` / `campanha_id` | `uuid` FK NULL | preenchido na confirmação |
 
 **Transições**: `em_analise → aguardando_contato` (aprovar, nada publicado) → `confirmada` (cria
 evento ou campanha com os dados combinados, FR-022). Rejeição a partir de `em_analise` ou
 `aguardando_contato`. Aviso de conflito de data só para `tipo = evento` (FR-030).
+O evento ou a campanha criado aponta para a solicitação por `solicitacao_origem_id`; a
+solicitação não guarda o vínculo de volta (migração 008, 2026-10-29).
 
 ---
 
@@ -315,7 +316,7 @@ Tipos diferentes, mesma tela (2026-10-05).
 |---|---|---|
 | `nome`, `descricao`, `recursos_necessarios` | `text` | recursos em texto livre |
 | `data` | `date` | não pode ser passada no cadastro |
-| `solicitacao_origem_id` | `uuid` FK NULL | |
+| `solicitacao_origem_id` | `uuid` FK NULL, UNIQUE | solicitação externa que originou (FR-022) |
 | `status` | `text` | `ativo` \| `encerrado` |
 | `criado_por`, `criado_em` | | conta (ou a da confirmação da solicitação, FR-022) |
 | `atualizado_por`, `atualizado_em` | | |

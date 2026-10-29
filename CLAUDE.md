@@ -547,6 +547,12 @@ Passo a passo de comandos e validação em
   consentimento, os valores antigos foram trocados. Quem renomear tabela
   no futuro: não tente `UPDATE` nessas duas tabelas — o gatilho recusa e
   a transação inteira é desfeita.
+- **Vínculo solicitação → evento/campanha só de um lado (decidido em
+  2026-10-29, migração 008).** Fica em `evento.solicitacao_origem_id` e
+  `campanha.solicitacao_origem_id`, com `UNIQUE`. Saíram
+  `solicitacao_externa.evento_id`/`campanha_id`: eram o mesmo vínculo 1:1
+  gravado nos dois sentidos, sem garantia de que os dois lados concordassem.
+  O detalhe da solicitação busca o criado pelo `tipo` dela.
 - **Formulário de voluntário (decidido em 2026-10-06, fase 6).** Obrigatórios:
   identificação, endereço, contato e tipo de serviço; escolaridade, profissão,
   objetivos e dias/horários são opcionais (a equipe completa na entrevista).

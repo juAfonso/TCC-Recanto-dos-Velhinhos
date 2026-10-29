@@ -22,9 +22,9 @@
 
         <div class="admin-content">
             <!-- Ajuda contextual (FR-061) -->
-            <details class="panel" style="margin-bottom:18px;">
-                <summary style="cursor:pointer;font-weight:700;">Como funciona a triagem de propostas externas</summary>
-                <ol style="margin:12px 0 0 20px;line-height:1.7;">
+            <details class="panel">
+                <summary>Como funciona a triagem de propostas externas</summary>
+                <ol class="lista-ajuda">
                     <li><b>Em análise:</b> leia a proposta. <b>Aprovar não publica nada</b> — só avisa a pessoa, por e-mail, que a equipe vai entrar em contato.</li>
                     <li><b>Aguardando contato:</b> ligue ou escreva para combinar data, horário e o que for preciso. Depois clique em <b>Confirmar e publicar</b> e preencha os dados <b>combinados</b> (podem ser diferentes do pedido). Só aí o evento ou a campanha aparece no site.</li>
                     <li><b>Data ocupada:</b> se já houver evento no mesmo dia, o sistema avisa. É só um aviso: a equipe decide se dá para fazer os dois.</li>
@@ -64,7 +64,7 @@
         <div id="sol-detalhe">
             <div id="sol-situacao" style="margin-bottom:14px;"></div>
             <div class="alert alert-warning" id="sol-aviso-conflito" hidden><div id="sol-aviso-conflito-texto"></div></div>
-            <dl id="sol-dados" style="display:grid;grid-template-columns:minmax(140px,200px) 1fr;gap:6px 14px;font-size:.92rem;"></dl>
+            <dl id="sol-dados" class="dados-grid"></dl>
             <div class="form-actions" id="sol-acoes" style="flex-wrap:wrap;margin-top:20px;"></div>
         </div>
 
@@ -79,7 +79,7 @@
             </div>
             <div id="conf-campanha" hidden>
                 <div class="form-row"><div class="form-group"><label for="conf-inicio">Início <span class="req">*</span></label><input type="date" id="conf-inicio" data-campo="periodoInicio"><div class="form-error"></div></div><div class="form-group"><label for="conf-fim">Fim <span class="req">*</span></label><input type="date" id="conf-fim" data-campo="periodoFim"><div class="form-error"></div></div></div>
-                <fieldset class="form-group" style="border:0;padding:0;">
+                <fieldset class="form-group">
                     <legend style="font-weight:700;margin-bottom:8px;">O que a campanha arrecada <span class="req">*</span></legend>
                     <div id="lista-recursos"></div>
                     <button type="button" class="btn btn-outline btn-sm" id="btn-add-recurso">+ Adicionar recurso</button>
@@ -100,7 +100,7 @@
         <!-- Corrigir os dados da proposta (FR-037) -->
         <form id="form-corrigir" novalidate hidden>
             <p class="form-hint" style="margin-bottom:12px;">Corrigir não muda a etapa nem o que já foi publicado. A versão anterior fica no histórico.</p>
-            <fieldset class="form-group" style="border:0;padding:0;">
+            <fieldset class="form-group">
                 <legend style="font-weight:700;margin-bottom:6px;">Tipo <span class="req">*</span></legend>
                 <div data-campo="tipo" style="display:flex;gap:18px;flex-wrap:wrap;">
                     <label class="checkbox-line"><input type="radio" name="c-tipo" value="evento"> <span>Evento</span></label>

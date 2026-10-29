@@ -22,9 +22,9 @@
 
         <div class="admin-content">
             <!-- Ajuda contextual da triagem (FR-061) -->
-            <details class="panel" style="margin-bottom:18px;">
-                <summary style="cursor:pointer;font-weight:700;">Como fazer a triagem de candidaturas</summary>
-                <ol style="margin:12px 0 0 20px;line-height:1.7;">
+            <details class="panel">
+                <summary>Como fazer a triagem de candidaturas</summary>
+                <ol class="lista-ajuda">
                     <li><b>Em análise:</b> leia o currículo (arquivo ou texto). Se fizer sentido, clique em <b>Chamar para entrevista</b> — a pessoa recebe um e-mail avisando que a equipe vai entrar em contato.</li>
                     <li><b>Entrevista:</b> depois de conversar, clique em <b>Aprovar</b> — a pessoa passa a constar como <b>funcionária</b> — ou <b>Rejeitar</b>.</li>
                     <li><b>Quem já é voluntário:</b> ao ser aprovado como funcionário, o vínculo de voluntário é <b>encerrado</b> (não apagado). A lei não permite as duas coisas ao mesmo tempo na mesma instituição.</li>
@@ -65,7 +65,7 @@
         <div id="cand-detalhe">
             <div id="cand-situacao" style="margin-bottom:14px;"></div>
             <div class="alert alert-warning" id="cand-aviso-voluntario" hidden><div>Esta pessoa já é <b>voluntária ativa</b>. Se for aprovada como funcionária, o vínculo de voluntário será <b>encerrado</b> (não apagado).</div></div>
-            <dl id="cand-dados" style="display:grid;grid-template-columns:minmax(140px,200px) 1fr;gap:6px 14px;font-size:.92rem;"></dl>
+            <dl id="cand-dados" class="dados-grid"></dl>
             <div class="form-actions" id="cand-acoes" style="flex-wrap:wrap;margin-top:20px;"></div>
         </div>
         <form id="form-corrigir" novalidate hidden>

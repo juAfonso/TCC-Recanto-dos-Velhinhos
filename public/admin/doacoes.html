@@ -24,9 +24,9 @@
             <div class="stat-grid" id="doacoes-stats"></div>
 
             <!-- Ajuda contextual da conferência (FR-061) -->
-            <details class="panel" style="margin-bottom:18px;" open>
-                <summary style="cursor:pointer;font-weight:700;">Como conferir uma doação no extrato</summary>
-                <ol style="margin:12px 0 0 20px;line-height:1.7;">
+            <details class="panel" open>
+                <summary>Como conferir uma doação no extrato</summary>
+                <ol class="lista-ajuda">
                     <li>Abra o extrato da conta do Recanto no banco.</li>
                     <li>Procure uma entrada <strong>Pix</strong> com o <strong>mesmo valor</strong>, perto da <strong>data e hora do clique</strong> mostradas aqui. Na doação associativa, o nome ajuda — mas a pessoa pode ter pago da conta de outra.</li>
                     <li>Achou? Clique em <strong>Confirmar</strong>. Não achou depois de alguns dias, ou a entrada é depósito/TED? Clique em <strong>Não localizada</strong>.</li>
@@ -67,7 +67,7 @@
         </div>
         <form id="form-nao-localizada" novalidate>
             <p id="modal-nl-resumo" style="margin-bottom:14px;"></p>
-            <fieldset class="form-group" style="border:0;padding:0;">
+            <fieldset class="form-group">
                 <legend style="font-weight:700;margin-bottom:8px;">Motivo (opcional)</legend>
                 <label class="checkbox-line"><input type="radio" name="motivoTipo" value="nenhum" checked> Sem motivo</label>
                 <label class="checkbox-line" style="margin-top:8px;"><input type="radio" name="motivoTipo" value="padrao"> Pagamento por depósito ou transferência, fora do Pix</label>

@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <tr>
           <td><strong>${e(n.titulo)}</strong><br><span class="cell-muted">${e(n.corpo.slice(0, 90))}${n.corpo.length > 90 ? '…' : ''}</span></td>
           <td>${n.imagem ? `<img src="${e(n.imagem.url)}" alt="${e(n.imagem.alt)}" style="width:64px;height:44px;object-fit:cover;border-radius:6px;">` : '<span class="cell-muted">—</span>'}</td>
-          <td class="cell-muted">${Utils.formatDateTime(n.criadoEm)}${n.atualizadoEm ? `<br><span style="font-size:.8rem;">editada em ${Utils.formatDateTime(n.atualizadoEm)}</span>` : ''}</td>
+          <td class="cell-muted">${Utils.formatDateTime(n.criadoEm)}${n.atualizadoEm ? `<br><span style="font-size:.86rem;">editada em ${Utils.formatDateTime(n.atualizadoEm)}</span>` : ''}</td>
           <td>${n.status === 'publicada' ? '<span class="badge badge-success">No site</span>' : '<span class="badge badge-neutral">Despublicada</span>'}</td>
           <td><div class="row-actions">
             <button class="btn btn-outline btn-sm" data-editar="${n.id}">Editar</button>

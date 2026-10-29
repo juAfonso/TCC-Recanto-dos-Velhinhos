@@ -199,6 +199,31 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   cabeçalho de todas as telas, e ajustes em quase todas as páginas. A versão
   anterior foi excluída do disco; se precisar dela por algum motivo, está
   preservada no commit `dfaf3bc`.
+- **Identidade visual do SAGE (decidida em 2026-10-28).** Substitui a do
+  modelo MANAS. Regras que valem para tela nova estão no topo do
+  `public/assets/css/style.css`; o resumo:
+  1. **Cores com papel fixo.** Verde (viridian e dois tons derivados)
+     conduz navegação, ações e títulos; **magenta só no botão de doar**, na
+     marca da página ativa e no asterisco de obrigatório; fairy e tea são
+     fundos; **cyclamen nunca em texto** (2,3:1). Todo par de cor foi medido
+     (WCAG): borda de campo 3,41:1, foco tea sobre o verde escuro 7,51:1.
+  2. **Letras servidas pelo próprio site**, em `public/assets/fonts/` (OFL):
+     Literata nos títulos, Atkinson Hyperlegible Next no resto. Nenhum pedido
+     ao Google Fonts, para não enviar o IP de visitantes a terceiros (LGPD).
+     **Menor texto: 14px**; corpo em 17px. O termo de adesão mantém a letra
+     antiga e cabe em uma folha A4 (`@media print` volta a base a 16px).
+  3. **Ícones de uma família só**: os Bootstrap Icons que já estavam no HTML,
+     aplicados por CSS (`--i-nome`). **Emoji e caractere (☰ ✕ ← →) não são
+     ícone**; o aviso pega o ícone do tipo pelo próprio CSS.
+  4. **O telhado do logo é o traço da casa**, só em dois lugares: marca dos
+     rótulos de seção e desenho de linha nas faixas verdes do topo.
+  5. **Formulário longo do Portal** (voluntário, vaga, proposta) usa
+     `.form-layout`: guia ao lado e `<fieldset class="form-secao">`
+     numerados; o sucesso mostra o protocolo como canhoto.
+  6. **Única mudança de comportamento:** `Utils.toast` passou a ser lido pelo
+     leitor de tela (`aria-live`), e o aviso de erro fica até ser fechado.
+  O "Clique aqui" de `campanhas.html` virou uma chamada desenhada, com o
+  mesmo destino (`solicitar-evento.html`).
 - **O vídeo do hero foi removido em 2026-09-05.** `assets/video/hero-video.mp4`
   pesava 9,3 dos 9,6 MB do front. Foi trocado por `assets/img/hero.jpg`, um
   quadro extraído do próprio vídeo, e a classe CSS passou de `.hero-video`

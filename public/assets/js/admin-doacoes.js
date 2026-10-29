@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const duplicata = d.possivelDuplicata
       ? ' <span class="badge badge-danger" title="Outra pendente com o mesmo valor a até 30 minutos">Possível duplicata</span>' : '';
     const conferencia = d.status !== 'pendente'
-      ? `<div class="cell-muted" style="font-size:.78rem;">por ${e(d.conferidoPor)} em ${Utils.formatDateTime(d.conferidoEm)}${d.motivoNaoLocalizada ? `<br>Motivo: ${e(d.motivoNaoLocalizada)}` : ''}</div>` : '';
+      ? `<div class="cell-muted" style="font-size:.86rem;">por ${e(d.conferidoPor)} em ${Utils.formatDateTime(d.conferidoEm)}${d.motivoNaoLocalizada ? `<br>Motivo: ${e(d.motivoNaoLocalizada)}` : ''}</div>` : '';
     const acoes = d.status === 'pendente'
       ? `<button class="btn btn-viridian btn-sm" data-confirmar="${d.id}">Confirmar</button>
          <button class="btn btn-outline btn-sm" data-nao-localizar="${d.id}">Não localizada</button>` : '';

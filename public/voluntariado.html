@@ -21,14 +21,21 @@
 <section class="section">
     <div class="container">
 
-        <div id="form-wrap">
+        <div id="form-wrap" class="form-layout">
+            <aside class="form-guia" aria-label="Como funciona o cadastro">
+                <h2 class="form-guia-titulo">Como funciona</h2>
+                <p>Seu cadastro fica <b>pendente</b> até a equipe analisar. Se for aprovado na primeira etapa, você será chamado para uma <b>entrevista</b>. Ao enviar, você recebe um <b>código de protocolo</b> para acompanhar.</p>
+                <ol class="form-guia-passos">
+                    <li><a href="#secao-dados">Seus dados</a></li>
+                    <li><a href="#secao-contato">Endereço e contato</a></li>
+                    <li><a href="#secao-ajuda">Como você quer ajudar</a></li>
+                </ol>
+                <p class="form-guia-nota">Campos com <span class="req">*</span> são obrigatórios.</p>
+            </aside>
             <form class="form-shell" id="form-voluntario" novalidate data-consentimento="analisar meu cadastro de voluntário e preencher o termo de adesão">
-                <div class="alert alert-info">
-                    <div>Seu cadastro fica <b>pendente</b> até a equipe analisar. Se for aprovado na primeira etapa, você será chamado para uma <b>entrevista</b>. Ao enviar, você recebe um <b>código de protocolo</b> para acompanhar.</div>
-                </div>
-                <p class="form-hint" style="margin-bottom:18px;">Os campos com <span class="req">*</span> são obrigatórios. Estes dados são os do termo de adesão ao serviço voluntário (Lei nº 9.608/1998).</p>
-
-                <h2 style="font-size:1.05rem;margin:8px 0 12px;">Seus dados</h2>
+              <fieldset class="form-secao" id="secao-dados">
+                <legend>Seus dados</legend>
+                <p class="form-secao-desc">São os dados do termo de adesão ao serviço voluntário (Lei nº 9.608/1998).</p>
                 
                     <div class="form-group">
                         <label for="v-nome">Nome completo <span class="req">*</span></label>
@@ -67,7 +74,11 @@
                         <div class="form-error"></div>
                     </div>
 
-                <h2 style="font-size:1.05rem;margin:18px 0 12px;">Endereço e contato</h2>
+              </fieldset>
+
+              <fieldset class="form-secao" id="secao-contato">
+                <legend>Endereço e contato</legend>
+                <p class="form-secao-desc">O endereço vai para o termo de adesão. Telefone e e-mail são para a equipe falar com você sobre o cadastro.</p>
                 
                     <div class="form-group">
                         <label for="v-endereco">Endereço (rua e número) <span class="req">*</span></label>
@@ -113,7 +124,11 @@
                     </div>
                 </div>
 
-                <h2 style="font-size:1.05rem;margin:18px 0 12px;">Como você quer ajudar</h2>
+              </fieldset>
+
+              <fieldset class="form-secao" id="secao-ajuda">
+                <legend>Como você quer ajudar</legend>
+                <p class="form-secao-desc">Os campos opcionais podem ficar para a conversa na entrevista.</p>
                 <div class="form-group">
                     <label for="v-servico">Tipo de serviço <span class="req">*</span></label>
                     <select id="v-servico" data-campo="tipoServico">
@@ -144,6 +159,7 @@
                     <textarea id="v-condicoes" data-campo="condicoes" rows="2" maxlength="300" placeholder="ex.: sábados pela manhã"></textarea>
                     <div class="form-error"></div>
                 </div>
+              </fieldset>
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-viridian">Enviar cadastro</button>

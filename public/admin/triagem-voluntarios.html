@@ -22,9 +22,9 @@
 
         <div class="admin-content">
             <!-- Ajuda contextual da triagem (FR-061) -->
-            <details class="panel" style="margin-bottom:18px;">
-                <summary style="cursor:pointer;font-weight:700;">Como fazer a triagem de voluntários</summary>
-                <ol style="margin:12px 0 0 20px;line-height:1.7;">
+            <details class="panel">
+                <summary>Como fazer a triagem de voluntários</summary>
+                <ol class="lista-ajuda">
                     <li><b>Pendente:</b> leia o cadastro. Se fizer sentido, clique em <b>Chamar para entrevista</b> — a pessoa recebe um e-mail avisando que a equipe vai entrar em contato. Combine a entrevista por telefone ou e-mail.</li>
                     <li><b>Entrevista:</b> depois de conversar, clique em <b>Aprovar</b> (o voluntário fica ativo) ou <b>Rejeitar</b>.</li>
                     <li><b>Menor de 18 anos:</b> só pode ser aprovado depois que o responsável <b>assinar o termo de adesão</b> na sede. Imprima o termo pelo botão <b>Imprimir termo de adesão</b> e, depois da assinatura, clique em <b>Marcar autorização como recebida</b>.</li>
@@ -66,7 +66,7 @@
         <!-- Leitura: todos os dados coletados (FR-037a) -->
         <div id="vol-detalhe">
             <div id="vol-situacao" style="margin-bottom:14px;"></div>
-            <dl id="vol-dados" style="display:grid;grid-template-columns:minmax(140px,200px) 1fr;gap:6px 14px;font-size:.92rem;"></dl>
+            <dl id="vol-dados" class="dados-grid"></dl>
             <div class="form-actions" id="vol-acoes" style="flex-wrap:wrap;margin-top:20px;"></div>
         </div>
 

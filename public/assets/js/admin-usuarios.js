@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $('modal-pessoa-titulo').textContent = p.nome;
     $('pessoa-situacao').innerHTML = (p.anonimizado ? '<span class="badge badge-neutral">Anonimizado</span>'
       : p.ativo ? '<span class="badge badge-success">Ativo</span>' : '<span class="badge badge-neutral">Inativo — nenhum papel ativo</span>')
-      + `<span class="cell-muted" style="font-size:.8rem;"> · cadastrado por ${e(p.criadoPor)} em ${Utils.formatDateTime(p.criadoEm)}</span>`;
+      + `<span class="cell-muted" style="font-size:.86rem;"> · cadastrado por ${e(p.criadoPor)} em ${Utils.formatDateTime(p.criadoEm)}</span>`;
 
     const linhas = [
       ['Nome', p.nome], ['CPF', cpfFmt(p.cpf)],

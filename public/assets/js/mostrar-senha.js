@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     botao.setAttribute('aria-pressed', 'false');
     botao.setAttribute('aria-label', 'Mostrar senha');
     botao.className = 'link-btn';
-    botao.style.cssText = 'position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.8rem;font-weight:700;padding:4px 8px;';
+    botao.style.cssText = 'position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.86rem;font-weight:700;padding:4px 8px;';
 
     botao.addEventListener('click', () => {
       const mostrando = campo.type === 'text';

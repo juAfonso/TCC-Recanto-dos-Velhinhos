@@ -4,28 +4,46 @@
 
 const Utils = (() => {
 
-  /* ---------- Toasts ---------- */
+  /* ---------- Toasts ----------
+     O contêiner é uma região viva (aria-live): o leitor de tela lê o aviso assim
+     que ele aparece. Por isso ele já existe antes do primeiro aviso.
+     Aviso de erro (danger) fica na tela até a pessoa fechar e é lido na hora
+     (role="alert"); os demais somem sozinhos. (decidido em 2026-10-28) */
   function ensureToastContainer() {
     let c = document.getElementById('toast-container');
     if (!c) {
       c = document.createElement('div');
       c.id = 'toast-container';
+      c.setAttribute('aria-live', 'polite');
       document.body.appendChild(c);
     }
     return c;
   }
+  if (document.body) ensureToastContainer();
 
-  function toast(message, type = 'success', timeout = 4200) {
+  function toast(message, type = 'success', timeout = 6000) {
     const container = ensureToastContainer();
     const el = document.createElement('div');
     el.className = `toast ${type === 'danger' ? 'toast-danger' : type === 'warning' ? 'toast-warning' : ''}`;
-    el.textContent = message;
-    container.appendChild(el);
-    setTimeout(() => {
+    const texto = document.createElement('span');
+    texto.textContent = message;
+    el.appendChild(texto);
+    const remover = () => {
       el.style.transition = 'opacity .3s ease';
       el.style.opacity = '0';
       setTimeout(() => el.remove(), 300);
-    }, timeout);
+    };
+    if (type === 'danger') {
+      el.setAttribute('role', 'alert');
+      const fechar = document.createElement('button');
+      fechar.type = 'button';
+      fechar.className = 'toast-fechar';
+      fechar.textContent = 'Fechar';
+      fechar.addEventListener('click', remover);
+      el.appendChild(fechar);
+    }
+    container.appendChild(el);
+    if (type !== 'danger') setTimeout(remover, timeout);
   }
 
   /* ---------- Formatação ---------- */

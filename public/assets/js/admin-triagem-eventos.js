@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const s = atual;
     $('modal-sol-titulo').textContent = `${s.nomeIniciativa} — ${s.protocolo}`;
     $('sol-situacao').innerHTML = `${selo(s.status)}
-      ${s.triadoEm ? `<span class="cell-muted" style="font-size:.8rem;"> · última decisão por ${e(s.triadoPor)} em ${Utils.formatDateTime(s.triadoEm)}</span>` : ''}
+      ${s.triadoEm ? `<span class="cell-muted" style="font-size:.86rem;"> · última decisão por ${e(s.triadoPor)} em ${Utils.formatDateTime(s.triadoEm)}</span>` : ''}
       ${s.criado ? `<p class="form-hint" style="margin-top:6px;">Publicado no site como “${e(s.criado.nome)}”${s.criado.status === 'encerrado' ? ' (já encerrado)' : ''}. Para mudar, use a tela Campanhas &amp; Eventos.</p>` : ''}
       ${s.motivoRejeicao ? `<p class="form-hint" style="margin-top:6px;">Motivo da rejeição: ${e(s.motivoRejeicao)}</p>` : ''}`;
     $('sol-aviso-conflito').hidden = !s.conflitos.length;

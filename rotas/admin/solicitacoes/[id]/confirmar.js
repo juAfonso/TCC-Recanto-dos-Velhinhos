@@ -23,14 +23,11 @@ export const POST = rota(async (request) => {
   let criadoId = null;
   const resultado = await decidir({
     tabela: 'solicitacao_externa', id, para: 'confirmada', conta,
+    // O vínculo fica só no evento/campanha criado (`solicitacao_origem_id`, migração 008).
     efeito: async (tx) => {
-      if (s.tipo === 'evento') {
-        criadoId = await criarEvento(tx, dados, { conta, origemId: id, confirmarAviso: corpo.confirmarAviso === true });
-        await tx.query('UPDATE solicitacao_externa SET evento_id = $2 WHERE id = $1', [id, criadoId]);
-      } else {
-        criadoId = await criarCampanha(tx, dados, { conta, origemId: id });
-        await tx.query('UPDATE solicitacao_externa SET campanha_id = $2 WHERE id = $1', [id, criadoId]);
-      }
+      criadoId = s.tipo === 'evento'
+        ? await criarEvento(tx, dados, { conta, origemId: id, confirmarAviso: corpo.confirmarAviso === true })
+        : await criarCampanha(tx, dados, { conta, origemId: id });
     },
   });
   return json({ ...resultado, tipo: s.tipo, criadoId });

@@ -217,8 +217,6 @@ CHECK: currículo em arquivo **ou** texto (FR-017), exceto depois de anonimizado
 | `data_pretendida` | date | | Evento |
 | `periodo_inicio`, `periodo_fim` | date | | Campanha |
 | `recursos_esperados` | text | | O que pede à instituição (espaço, equipe, horário) |
-| `evento_id` | uuid | FK → `evento` | Evento criado na confirmação |
-| `campanha_id` | uuid | FK → `campanha` | Campanha criada na confirmação |
 
 ---
 
@@ -319,7 +317,7 @@ Só a conferência humana leva a `confirmada` (Princípio VII).
 | `nome`, `descricao` | text | NN | Divulgação |
 | `recursos_necessarios` | text | | Recursos em texto livre |
 | `data` | date | NN | Data do evento |
-| `solicitacao_origem_id` | uuid | FK → `solicitacao_externa` | Se veio de solicitação externa |
+| `solicitacao_origem_id` | uuid | FK → `solicitacao_externa`, UNIQUE | Se veio de solicitação externa (vínculo só deste lado, migração 008) |
 | `status` | text | NN, `ativo` \| `encerrado` | Encerrado à mão ou pelo cron diário |
 | `criado_por`, `criado_em` | text, timestamptz | NN | Criação |
 | `atualizado_por`, `atualizado_em` | text, timestamptz | | Última edição |
@@ -335,7 +333,7 @@ Só a conferência humana leva a `confirmada` (Princípio VII).
 | `meta_valor` | numeric(12,2) | > 0 | Meta opcional |
 | `arrecadado_valor` | numeric(12,2) | ≥ 0; só com meta | Informado à mão pela equipe |
 | `arrecadado_por`, `arrecadado_em` | text, timestamptz | | Quem informou o arrecadado |
-| `solicitacao_origem_id` | uuid | FK → `solicitacao_externa` | Se veio de solicitação externa |
+| `solicitacao_origem_id` | uuid | FK → `solicitacao_externa`, UNIQUE | Se veio de solicitação externa (vínculo só deste lado, migração 008) |
 | `status` | text | NN, `ativo` \| `encerrado` | Situação |
 | `criado_por`, `criado_em` | text, timestamptz | NN | Criação |
 | `atualizado_por`, `atualizado_em` | text, timestamptz | | Última edição |

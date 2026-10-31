@@ -409,6 +409,9 @@ footer.site-footer :focus-visible,
         overflow-y:auto;
         overscroll-behavior:contain;
     }
+    /* Com o menu aberto, a página de trás não rola junto. Fica dentro da media query:
+       se a janela alargar com o menu aberto, a página volta a rolar. */
+    html.menu-aberto{ overflow:hidden; }
     .menu li{ width:100%; }
     .menu a{ display:block; width:100%; padding:16px 6%; border-bottom:1px solid var(--line) !important; }
     .menu a.active{ box-shadow:inset 4px 0 0 var(--magenta); }

@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderStats(resumo) {
     // Só Pix declarado no site e confirmado: não é a arrecadação da instituição (FR-060a).
     document.getElementById('doacoes-stats').innerHTML = `
-      <div class="stat-card ${resumo.pendentes ? 'alert-card' : ''}">
+      <div class="stat-card">
         <span class="stat-label">Aguardando conferência</span>
         <span class="stat-value">${resumo.pendentes}</span>
       </div>

@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       [d.retencaoVencida, 'Registros com prazo de retenção vencido', 'lgpd.html'],
     ];
     $('stat-grid').innerHTML = cartoes.map(([n, rotulo, link]) => `
-      <a class="stat-card ${n ? 'alert-card' : ''}" href="${link}" style="text-decoration:none;color:inherit;">
+      <a class="stat-card" href="${link}" style="text-decoration:none;color:inherit;">
         <span class="stat-value">${n}</span>
         <span class="stat-label">${e(rotulo)}</span>
       </a>`).join('');

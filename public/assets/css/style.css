@@ -68,7 +68,7 @@
     /* neutros com um pouco de verde */
     --ink:#1F2A26;             /* 14,8:1 sobre branco */
     --muted:#55615C;           /* 6,46:1 sobre branco, 5,94:1 sobre --bg-soft */
-    --line:#DCE3DF;            /* divisória, não contorno de controle */
+    --line:#7E8F87;            /* divisória, não contorno de controle */
     --field-border:#7E8F87;    /* contorno de campo, 3,41:1 (mínimo 3:1) */
     --bg-soft:#F3F6F4;         /* fundo do Painel e de cabeçalho de tabela */
     --white:#ffffff;
@@ -409,6 +409,9 @@ footer.site-footer :focus-visible,
         overflow-y:auto;
         overscroll-behavior:contain;
     }
+    /* Com o menu aberto, a página de trás não rola junto. Fica dentro da media query:
+       se a janela alargar com o menu aberto, a página volta a rolar. */
+    html.menu-aberto{ overflow:hidden; }
     .menu li{ width:100%; }
     .menu a{ display:block; width:100%; padding:16px 6%; border-bottom:1px solid var(--line) !important; }
     .menu a.active{ box-shadow:inset 4px 0 0 var(--magenta); }
@@ -1564,7 +1567,8 @@ td:last-child .btn + .btn{ margin-left:6px; }
     object-fit:contain;
     flex-shrink:0;
 }
-.admin-nav{ padding:var(--e3); flex:1; overflow-y:auto; }
+/* Barra de rolagem fina e verde: no Windows a padrão abria uma faixa clara ao lado do menu. */
+.admin-nav{ padding:var(--e3); flex:1; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--viridian) transparent; }
 .admin-nav a{
     display:flex;
     align-items:center;
@@ -1639,7 +1643,8 @@ td:last-child .btn + .btn{ margin-left:6px; }
     min-width:44px; min-height:44px;
 }
 
-.admin-content{ padding:var(--e6) 34px; max-width:1240px; }
+/* Sem largura máxima: em tela larga o limite deixava uma faixa vazia à direita. */
+.admin-content{ padding:var(--e6) 34px; }
 
 /* Ajuda "Como funciona esta tela": faixa discreta, recolhida, igual em todas as telas. */
 .admin-content > details.panel{
@@ -1688,23 +1693,18 @@ ul.lista-ajuda{ list-style:disc; }
     .admin-menu-toggle{ display:block; }
 }
 
-/* Indicadores numa faixa só, separados por fio, em vez de cartões que esticam
-   até a altura do mais alto. O fio vem da sombra de 1px de cada célula; o
-   contêiner corta a da borda. */
+/* Indicadores em cartões separados, cada um com a sua borda cinza. */
 .stat-grid{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
-    gap:0;
+    gap:var(--e3);
     margin-bottom:var(--e5);
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:var(--radius-md);
-    overflow:hidden;
 }
 .stat-card{
     background:#fff;
     padding:var(--e4) var(--e5);
-    box-shadow:-1px 0 0 var(--line), 0 -1px 0 var(--line);
+    border:1px solid var(--field-border);
+    border-radius:var(--radius-md);
     display:flex;
     flex-direction:column;
     gap:2px;
@@ -1725,8 +1725,6 @@ a.stat-card:hover{ background:var(--bg-soft); }
 .stat-card .stat-value{ font-family:var(--font-titulo); font-size:2rem; font-weight:600; color:var(--viridian-deep); line-height:1.15; font-variant-numeric:tabular-nums; }
 .stat-card .stat-label{ font-size:.92rem; color:var(--muted); font-weight:600; }
 .stat-card .form-hint{ margin-top:var(--e1); }
-/* Número que pede ação: fio âmbar no topo da célula. */
-.stat-card.alert-card{ box-shadow:-1px 0 0 var(--line), 0 -1px 0 var(--line), inset 0 4px 0 var(--warning-line); }
 
 .panel{
     background:#fff;

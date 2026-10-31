@@ -48,6 +48,7 @@
     if (toggle && menu) {
       toggle.addEventListener('click', () => {
         menu.classList.toggle('open');
+        document.documentElement.classList.toggle('menu-aberto', menu.classList.contains('open'));
         toggle.setAttribute('aria-expanded', menu.classList.contains('open') ? 'true' : 'false');
       });
     }

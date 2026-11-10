@@ -639,6 +639,21 @@ Passo a passo de comandos e validação em
   Painel (triagem e cadastro direto). Reverte a impressão pelo voluntário de
   2026-10-06. Como consequência, o Portal deixou de guardar os dados do
   cadastro no navegador.
+- **Relatório de doações para imprimir ou salvar em PDF (decidido em
+  2026-11-10).** Tela `admin/relatorio-doacoes.html`, aberta pelo botão da
+  tela de Doações, com o mesmo papel timbrado do termo de adesão (cabeçalho,
+  CNPJ, sede, caixa cinza, local e data, assinaturas do responsável pela
+  conferência e da presidente). Filtros: **período** (data do clique em "Já
+  fiz o Pix", fuso de Brasília; padrão o mês corrente), **faixa de valor**,
+  tipo (espontânea/associativa) e situação (padrão: só confirmadas). Mostra
+  totais por tipo, por mês (quando passa de um mês) e a lista. Os dados vêm de
+  `GET /api/admin/doacoes/relatorio`; a lógica pura está em
+  `rotas/_lib/relatorio-doacoes.js`. PDF pelo `window.print` do navegador,
+  **sem biblioteca de PDF**, como o termo. O próprio relatório avisa que **não
+  é a arrecadação** da instituição (só Pix declarado no site, ver 2026-10-03).
+  Na associativa sai só o nome do doador (nada de CPF ou contato). Faz parte da
+  conferência de doações do CSU01 no Painel; não é CSU novo. Falta levar ao
+  PRD e à seção 19 do TCC.
 - **Prioridade do item necessário: alta, média ou baixa (decidido em
   2026-10-05).** O CSU07 falava em "prioridade" sem valores, e o protótipo
   usava só "urgente sim/não". Os de prioridade alta são os "itens mais

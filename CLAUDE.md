@@ -1,6 +1,6 @@
 # SAGE — Memória do Projeto
 
-> Última atualização: 2026-10-17
+> Última atualização: 2026-11-11
 > TCC do IFRJ Campus Pinheiral — sistema web para a ILPI "Recanto dos Velhinhos
 > Francisco Gonçalves Barbosa". Repositório: `TCC-Recanto-dos-Velhinhos`
 > (GitHub, usuário juAfonso).
@@ -15,10 +15,11 @@
 
 Sistema web para apoiar a gestão da ILPI (Instituição de Longa Permanência
 para Idosos) Recanto dos Velhinhos, em Pinheiral/RJ. Escopo definido por PRD
-e 11 casos de uso (CSU01–CSU11), cobrindo doações, campanhas, divulgação
-institucional, gestão de usuários, voluntariado, vagas, itens necessários,
-solicitações externas de evento/campanha e exercício de direitos do titular
-de dados (LGPD).
+e 15 casos de uso (CSU01–CSU15, reorganizados em 2026-11-11 a partir do DER),
+cobrindo doações, campanhas, notícias e página institucional, gestão de
+pessoas (com os direitos do titular de dados, LGPD), voluntariado, vagas,
+itens necessários, solicitações externas de evento/campanha, chave Pix,
+aviso de privacidade, configurações e auditoria.
 
 **O Recanto dos Velhinhos vai efetivamente usar em operação a versão que o
 grupo está produzindo no TCC** — não se trata de um protótipo acadêmico à
@@ -431,7 +432,8 @@ Passo a passo de comandos e validação em
   explícito registrado nos formulários públicos (com data/hora, finalidade e
   versão do aviso), aviso de privacidade público, anonimização, registro de
   revogação de consentimento e prazos de retenção (FR-051 a FR-058,
-  CSU11/User Story 11 do spec.md). ~~Canal de exercício de direitos por
+  User Story 11 do spec.md; ~~CSU11~~ desde 2026-11-11 distribuído entre o
+  CSU04 e o CSU13, ver "Casos de uso alinhados ao DER"). ~~Canal de exercício de direitos por
   protocolo~~ — **revertido em 2026-10-03**: os pedidos do titular chegam por
   contato com a instituição, fora do sistema (ver "Alinhamento com o texto do
   TCC"). Continua
@@ -582,6 +584,38 @@ Passo a passo de comandos e validação em
   `solicitacao_externa.evento_id`/`campanha_id`: eram o mesmo vínculo 1:1
   gravado nos dois sentidos, sem garantia de que os dois lados concordassem.
   O detalhe da solicitação busca o criado pelo `tipo` dela.
+- **Casos de uso alinhados ao DER (decidido em 2026-11-11, a pedido do
+  orientador).** Os casos de uso tinham sido escritos sem partir do banco.
+  Critérios adotados, que evitam redebater:
+  1. **Toda entidade do DER que um ator mantém tem um caso de uso
+     "Manter"** (um por entidade, com as operações como fluxos, não quatro).
+     Não têm caso de uso próprio: **consentimento e anonimização** (criados
+     como efeito de outros fluxos) e **recurso** (só existe dentro da
+     campanha; fica no CSU02, fluxo alternativo 09).
+  2. **Funcionalidades do site que não são cadastro também são casos de
+     uso**, se o ator alcança um objetivo próprio (CSU09, CSU10, CSU15).
+     **Login e ajuda do Painel não são**: são meio, não objetivo. O login é
+     pré-condição; definir e redefinir senha seguem no CSU09.
+  3. **Caso de uso diz o que, não como**: sem tela, navegador, janela ou
+     nome de tabela. A ligação com o DER fica numa matriz de rastreabilidade
+     (Apêndice A de `docs/casos-de-uso-tcc.md`).
+  Resultado: **15 casos de uso**. **[Reversão]** o CSU11 de LGPD
+  (2026-09-04) saiu: LGPD não é caso de uso em si, e os pedidos do titular
+  foram para o CSU04 e a publicação do aviso para o CSU13 (os FR-051 a
+  FR-058 não mudaram). O CSU04 virou **Manter Pessoas** ("usuário" sugeria
+  que todo cadastrado tem acesso; só o doador associado tem login). Página
+  institucional saiu do CSU03 e chave Pix saiu do CSU01. Novos no fim, para
+  não renumerar: CSU11 Página Institucional, CSU12 Chave Pix, CSU13 Aviso
+  de Privacidade, CSU14 Configurações, CSU15 Auditoria (inclui o tratamento
+  dos e-mails não entregues). **No TCC, só os seis principais vão descritos
+  por inteiro** (CSU01, 02, 04, 05, 06, 08), por orientação do professor; o
+  CSU04 entrou entre eles porque carrega a LGPD. Os demais vão em lista;
+  o texto completo fica no Apêndice B, como apoio. Nenhuma funcionalidade
+  nova: é reorganização. Session 2026-11-11 do spec.md.
+  Pendente: atualizar o diagrama de casos de uso no documento do TCC
+  (`docs/diagrama-casos-de-uso.puml` já atualizado) e conferir com o
+  orientador se `conta_institucional`, `registro_auditoria` e `configuracao`
+  devem entrar no DER.
 - **Formulário de voluntário (decidido em 2026-10-06, fase 6).** Obrigatórios:
   identificação, endereço, contato e tipo de serviço; escolaridade, profissão,
   objetivos e dias/horários são opcionais (a equipe completa na entrevista).
@@ -809,7 +843,9 @@ Passo a passo de comandos e validação em
      Tela de ajuda não é caso de uso de negócio — não há ator atingindo um
      objetivo institucional. Criar um décimo segundo CSU obrigaria a
      renumerar e reescrever "11 casos de uso" em todo o documento do TCC sem
-     ganho nenhum de clareza. **Continuam sendo 11 CSUs.**
+     ganho nenhum de clareza. **Continuam sendo 11 CSUs.** (A contagem mudou
+     para 15 em 2026-11-11, por outro motivo; a ajuda continua fora dos
+     casos de uso, agora pelo critério "meio, não objetivo do ator".)
   2. **É escrita depois do sistema construído**, contra as telas reais.
      Escrever antes produziria ajuda de telas que ainda vão mudar.
   3. **Cobre só o Painel, não o Portal Público.** Se o doador ou o voluntário
@@ -842,17 +878,26 @@ Passo a passo de comandos e validação em
   de 19 para 21 histórias, incorporando os itens acima (protocolo de doação,
   redefinição de senha, controle de acesso por permissão, entre outros).
 
-## Os 11 casos de uso (referência rápida)
+## Os 15 casos de uso (referência rápida, desde 2026-11-11)
 
-CSU01 Doação via Pix · CSU02 Campanhas e Eventos · CSU03 Divulgação
-Institucional · CSU04 Manter Usuários (com painel consolidado) · CSU05
-Cadastrar Voluntário · CSU06 Cadastrar Candidato a Vaga · CSU07 Manter Itens
-Necessários · CSU08 Solicitar Evento/Campanha Externa · CSU09 Autoatendimento
-de Voluntário/Doador · CSU10 Consultar Status de Solicitação · **CSU11
-Exercício de Direitos do Titular (LGPD)** — adicionado em 2026-09-04, ver
-"Decisões já tomadas".
+CSU01 Doação via Pix · CSU02 Manter Campanhas e Eventos · CSU03 Manter
+Notícias · CSU04 **Manter Pessoas** (com painel consolidado e os pedidos do
+titular: correção, revogação e anonimização) · CSU05 Cadastrar Voluntário ·
+CSU06 Cadastrar Candidato a Vaga · CSU07 Manter Itens Necessários · CSU08
+Solicitar Evento/Campanha Externa · CSU09 Autoatendimento do Doador Associado
+· CSU10 Consultar Status de Solicitação · CSU11 Manter Página Institucional ·
+CSU12 Manter Chave Pix · CSU13 Manter Aviso de Privacidade · CSU14 Manter
+Configurações · CSU15 Consultar Auditoria.
 
-Esses 11 são o recorte de alto nível do PRD. O detalhamento em
+**Atenção ao número CSU11:** até 2026-11-10 ele era "Exercício de Direitos do
+Titular (LGPD)". Documento antigo que cite "CSU11" para LGPD está falando do
+que hoje é o CSU04 (fluxos alternativos 12 e 13) e o CSU13.
+
+No documento do TCC vão descritos por inteiro só os seis principais (CSU01,
+02, 04, 05, 06 e 08); os demais entram numa lista com sumário. Ver "Casos de
+uso alinhados ao DER" em "Decisões já tomadas".
+
+Esses 15 são o recorte de alto nível do PRD. O detalhamento em
 FRs/cenários de aceitação (spec.md e seção 19) já passou de FR-001–FR-044
 para FR-001–FR-061 (com subitens como FR-007a e FR-049a; FR-033 e FR-059
 removidos em 2026-10-03, números reservados), com as adições listadas em
@@ -925,8 +970,10 @@ recente do spec.md, não esta lista resumida.
      ambiente Development e, se quiserem, trocar a senha e salvar como
      Sensitive. Adiado pelo grupo em 2026-10-07.
    - **Colar no PRD e no documento do TCC** os textos já prontos em `docs/`
-     (atualizados em 2026-10-07): os 11 casos de uso de
-     `docs/casos-de-uso-tcc.md`, com as decisões das fases 10 a 14 (seção 19),
+     (atualizados em 2026-10-07): os casos de uso de
+     `docs/casos-de-uso-tcc.md` (reorganizados em 15 em 2026-11-11: no TCC,
+     os seis principais por inteiro e os demais em lista), com as decisões
+     das fases 10 a 14 (seção 19), o diagrama `docs/diagrama-casos-de-uso.puml`,
      e os objetivos específicos e requisitos de
      `docs/requisitos-tcc-revisado.md`, reorganizados pelo critério "RF = o
      que o sistema faz; RNF = características e restrições". Falta só colar;
@@ -934,7 +981,7 @@ recente do spec.md, não esta lista resumida.
 
 ## Inegociável
 
-- Não implementar nada fora dos 11 CSUs sem antes atualizar o PRD e este
+- Não implementar nada fora dos 15 CSUs sem antes atualizar o PRD e este
   arquivo — código certo pra escopo errado é o erro mais caro de evitar aqui.
 - Não reintroduzir boleto/cartão ou exclusão física de usuário sem decisão
   explícita da equipe registrada aqui. Anonimização a pedido do titular

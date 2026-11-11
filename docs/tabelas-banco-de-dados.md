@@ -30,22 +30,22 @@
 | 5 | `cand_voluntario` | Submissões | Cadastro de voluntário com triagem | CSU05 |
 | 6 | `cand_funcionario` | Submissões | Candidatura a vaga com triagem | CSU06 |
 | 7 | `solicitacao_externa` | Submissões | Pedido externo de evento ou campanha | CSU08 |
-| 8 | `aviso_privacidade` | LGPD | Versões do aviso de privacidade | CSU11, FR-053 |
-| 9 | `consentimento` | LGPD | Aceite do aviso, com data, finalidade e revogação | CSU11, FR-051 |
-| 10 | `chave_pix_institucional` | Doação | Chave Pix da instituição usada para gerar o QR code | CSU01, FR-007 |
+| 8 | `aviso_privacidade` | LGPD | Versões do aviso de privacidade | CSU13, FR-053 |
+| 9 | `consentimento` | LGPD | Aceite do aviso, com data, finalidade e revogação | CSU01, CSU04–CSU06, CSU08, FR-051 |
+| 10 | `chave_pix_institucional` | Doação | Chave Pix da instituição usada para gerar o QR code | CSU12, FR-007 |
 | 11 | `doacao` | Doação | Declaração "Já fiz o Pix" e sua conferência | CSU01 |
 | 12 | `item_necessario` | Conteúdo | Itens de que a instituição precisa | CSU07 |
 | 13 | `evento` | Conteúdo | Eventos divulgados no Portal | CSU02 |
 | 14 | `campanha` | Conteúdo | Campanhas de arrecadação | CSU02 |
 | 15 | `recurso` | Conteúdo | O que cada campanha arrecada | CSU02 |
 | 16 | `noticia` | Conteúdo | Notícias do Portal | CSU03 |
-| 17 | `conteudo_institucional` | Conteúdo | Textos da página institucional (linha única) | CSU03, FR-001a |
-| 18 | `conteudo_institucional_imagem` | Conteúdo | Imagens da página institucional | CSU03, FR-001a |
+| 17 | `conteudo_institucional` | Conteúdo | Textos da página institucional (linha única) | CSU11, FR-001a |
+| 18 | `conteudo_institucional_imagem` | Conteúdo | Imagens da página institucional | CSU11, FR-001a |
 | 19 | `arquivo` | Operação | Ponteiro para arquivos no Vercel Blob | FR-017, FR-032b |
-| 20 | `registro_auditoria` | Operação | Quem fez o quê e quando (somente inclusão) | FR-035, FR-047 |
+| 20 | `registro_auditoria` | Operação | Quem fez o quê e quando (somente inclusão) | CSU15, FR-035, FR-047 |
 | 21 | `historico_alteracao` | Operação | Valor anterior de cada edição | FR-037 |
-| 22 | `falha_email` | Operação | E-mails que não puderam ser enviados | FR-049a |
-| 23 | `configuracao` | Operação | Valores editáveis (prazos, contato) | FR-028, FR-056 |
+| 22 | `falha_email` | Operação | E-mails que não puderam ser enviados | CSU15, FR-049a |
+| 23 | `configuracao` | Operação | Valores editáveis (prazos, contato) | CSU14, FR-028, FR-056 |
 | 24 | `limite_tentativa` | Operação | Contador técnico contra tentativas repetidas | research D13 |
 
 **Relacionamentos principais**

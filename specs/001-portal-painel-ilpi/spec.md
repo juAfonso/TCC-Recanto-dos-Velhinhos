@@ -172,6 +172,16 @@
 - Q (2026-10-17): O termo impresso pode ocupar mais de uma folha? → A: **Não, cabe numa folha A4.** Quando o bloco de serviço tem muito texto, a letra dele diminui; nada é cortado. Para garantir isso, "objetivos" e "dias e horários" aceitam até 300 caracteres cada (FR-011, FR-012a). Descartados: omitir o objetivo do termo e cortar o texto com reticências.
 - Q (2026-10-17): O voluntário continua imprimindo o termo pelo Portal depois do envio? → A: **Não, só a equipe imprime, pelo Painel** (FR-012a). Depois do envio, o Portal informa que o termo é preenchido e assinado na sede depois da aprovação; para o menor, que o responsável precisa ir à sede assinar e que o cadastro só é aprovado depois disso. **[REVERTE]** a impressão pelo voluntário da Session 2026-10-06 (4). Efeito colateral: o Portal deixa de guardar os dados do cadastro no navegador para a impressão.
 
+### Session 2026-11-11 — Casos de uso alinhados ao DER (pedido do orientador)
+
+Reorganização dos casos de uso, sem requisito novo nem mudança de comportamento: os FRs, as User Stories e o código continuam como estão. Texto completo em `docs/casos-de-uso-tcc.md`.
+
+- Q: Como os casos de uso se relacionam com o DER? → A: **Toda entidade do DER que um ator mantém tem um caso de uso "Manter"**, e as funcionalidades do site que não são cadastro de entidade também são casos de uso, desde que o ator alcance um objetivo próprio. Consentimento e anonimização não têm caso de uso próprio (são criados como efeito de outros fluxos); recurso fica dentro do CSU02 (só existe dentro de uma campanha).
+- Q: A LGPD continua sendo um caso de uso próprio? → A: **Não. [REVERTE]** o CSU11 "Exercício de Direitos do Titular" (2026-09-04). Os requisitos FR-051 a FR-058 continuam valendo; o conteúdo foi distribuído: revogação, anonimização e correção a pedido do titular no CSU04, publicação do aviso de privacidade no CSU13.
+- Q: Quais são os casos de uso? → A: **15.** CSU01 a CSU10 mantêm o número; o CSU03 passa a ser só Manter Notícias e o CSU04 passa a se chamar **Manter Pessoas** (cadastrado não significa ter acesso ao sistema). Novos: CSU11 Manter Página Institucional (saiu do CSU03), CSU12 Manter Chave Pix (saiu do CSU01), CSU13 Manter Aviso de Privacidade, CSU14 Manter Configurações e CSU15 Consultar Auditoria. Login e ajuda do Painel não são casos de uso (meio, não objetivo); a ajuda continua nos FR-060 e FR-061.
+- Q: O documento do TCC descreve todos por inteiro? → A: **Não, só os seis principais** (CSU01, 02, 04, 05, 06 e 08), por orientação do professor; os demais aparecem em lista com sumário.
+- Q: O caso de uso cita tabela ou tela? → A: **Não.** Diz o que o sistema faz, não como; a ligação com as entidades do DER fica numa matriz de rastreabilidade à parte (Apêndice A de `docs/casos-de-uso-tcc.md`).
+
 ## User Scenarios & Testing (mandatory)
 
 ### User Story 1 - Portal Público Informativo (Priority: P1)

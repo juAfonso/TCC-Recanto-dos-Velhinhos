@@ -12,7 +12,7 @@ anterior de 2026-09-04) | **Spec**: [spec.md](./spec.md)
 
 Substituir a gestão manual da ILPI (planilhas e Instagram) por uma aplicação web com **Portal
 Público** (sem login), **autoatendimento do doador associado** e **Painel Administrativo** (conta
-institucional). Cobre os 11 casos de uso e os requisitos FR-001 a FR-061 (FR-010, FR-010b, FR-033,
+institucional). Cobre os casos de uso (11 no plano original; reorganizados em 15 em 2026-11-11, sem funcionalidade nova) e os requisitos FR-001 a FR-061 (FR-010, FR-010b, FR-033,
 FR-045 e FR-059 são números reservados).
 
 A abordagem mantém o protótipo de `public/` em HTML/CSS/JS puro e troca sua camada falsa
@@ -85,7 +85,7 @@ tentativas; o grupo aceitou o risco residual e as demais decisões técnicas do 
 | III — Integridade | ✅ Passa, com duas observações | Nenhuma rota `DELETE`; toda mudança de status registra autor e data, inclusive as automáticas (autor `sistema`, FR-029c); `registro_auditoria` append-only; histórico de alterações (D16). **Observações**: (a) a anonimização remove o objeto do currículo no Blob e marca a linha — é o mecanismo do FR-055, que o CLAUDE.md já distingue de exclusão física; (b) o cron apaga janelas expiradas de `limite_tentativa`, contador técnico sem dado pessoal e sem valor de negócio (D13). |
 | IV — Separação de contextos | ✅ Passa | Exatamente os dois acessos autenticados da versão 3.0.0: conta institucional (`/api/admin/*`) e doador associado (`/api/me/*`), mais a zona pública. Contexto verificado no servidor a cada requisição; id do doador sempre da sessão; currículo só pela função do Painel, que checa a sessão e repassa o arquivo (D3); nenhum dado pessoal na zona pública (consulta de status e página de autorização do menor desenhadas para isso — D17). |
 | V — Responsividade | ✅ Passa | Portão por tela pública; protótipo já é mobile-first. |
-| VI — Escopo fechado | ✅ Passa | Cobre os 11 CSUs. A página institucional editável está dentro do CSU03 (decisão de 2026-10-05). Nada de residentes, saúde, IA, redes sociais, BI ou módulo financeiro. Cron e Blob são recursos da própria plataforma de hospedagem, não integrações externas novas. |
+| VI — Escopo fechado | ✅ Passa | Cobre os CSUs (15 desde a reorganização de 2026-11-11, que não acrescentou funcionalidade). A página institucional editável é o CSU11 desde então; antes, ficava dentro do CSU03 (decisão de 2026-10-05). Nada de residentes, saúde, IA, redes sociais, BI ou módulo financeiro. Cron e Blob são recursos da própria plataforma de hospedagem, não integrações externas novas. |
 | VII — Pix sem integração | ✅ Passa | QR estático montado no navegador a partir da chave cadastrada pela instituição; sem API de pagamento, cobrança dinâmica ou webhook; declaração nasce `pendente` e só um humano confirma; data/hora do clique pelo servidor. *Nota de redação*: o princípio ainda fala em "imagem de QR code fornecida pela instituição"; o QR gerado da chave cadastrada cumpre o mesmo propósito. Um ajuste de redação (PATCH) pode ser feito quando convier, sem bloquear nada. |
 | VIII — Triagem humana | ✅ Passa | Submissões nascem no status inicial; toda transição de triagem é rota humana explícita; entrevista antes da aprovação; nenhuma aprovação automática ou em lote; nada publicado na aprovação da solicitação externa, só na confirmação. O único automatismo — encerrar evento vencido — não é triagem. |
 
@@ -131,7 +131,7 @@ public/                              # protótipo, já no repositório desde 202
 │   ├── usuarios.html · pix.html
 │   ├── triagem-voluntarios.html · triagem-vagas.html · triagem-eventos.html
 │   ├── institucional.html           # NOVO — FR-001a
-│   ├── lgpd.html                    # NOVO — revogação, anonimização, fila de retenção (CSU11)
+│   ├── lgpd.html                    # NOVO — revogação, anonimização, fila de retenção (CSU04) e aviso de privacidade (CSU13)
 │   ├── configuracoes.html           # NOVO — prazos, contato, aviso de privacidade
 │   ├── auditoria.html               # NOVO — FR-035
 │   └── ajuda.html                   # NOVO — FR-060/060a (escrita depois das telas prontas)

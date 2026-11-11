@@ -320,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (r.tipo === 'dinheiro') {
       return `
         <div class="arrecadacao-linha" data-id="${e(r.id)}">
-          <p class="arrecadacao-nome">${e(r.descricao)} <span class="badge badge-neutral">Dinheiro</span></p>
+          <p class="arrecadacao-nome"><span>${e(r.descricao)}</span> <span class="badge badge-info">Dinheiro</span></p>
           <div class="arrecadacao-campos">
             <div class="form-group">
               <label for="arr-qtd-${n}">Valor (R$)</label>

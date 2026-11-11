@@ -2581,13 +2581,16 @@ td .cell-muted{ justify-self:auto; }
 /* Arrecadação por recurso, na janela do Painel (2026-11-11). */
 .arrecadacao-linha{ border-top:1px solid var(--line); padding:var(--e4) 0; }
 .arrecadacao-linha:first-child{ border-top:none; padding-top:0; }
-.arrecadacao-nome{ font-weight:700; margin-bottom:var(--e2); }
+.arrecadacao-nome{ display:flex; align-items:center; flex-wrap:wrap; gap:var(--e2); font-weight:700; margin-bottom:var(--e2); }
+.arrecadacao-nome .badge{ font-weight:600; }
 .arrecadacao-campos{
     display:grid;
     grid-template-columns:minmax(0,170px) minmax(0,190px) minmax(0,1fr);
     gap:0 var(--e4);
     align-items:start;
 }
-.arrecadacao-campos .form-group{ margin-bottom:0; }
+.arrecadacao-campos .form-group{ margin-bottom:0; min-width:0; }
+/* O select global tem min-width:220px, que passava da coluna e cobria o campo ao lado. */
+.arrecadacao-campos input, .arrecadacao-campos select{ width:100%; min-width:0; }
 .arrecadacao-linha .form-hint{ margin-top:var(--e2); }
 @media(max-width:560px){ .arrecadacao-campos{ grid-template-columns:1fr; gap:var(--e3); } }

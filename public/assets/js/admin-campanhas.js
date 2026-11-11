@@ -33,8 +33,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const pct = Math.min(100, Math.round((arrecadado / x.meta) * 100));
       barra = `${Utils.formatCurrency(arrecadado)} de ${Utils.formatCurrency(x.meta)} (${pct}%)`;
     }
-    return `${barra}<div class="cell-muted" style="font-size:.86rem;">${contados(x)}</div>
-      <button class="link-btn" data-arrecadado="${x.id}" style="font-size:.86rem;">Registrar arrecadação</button>`;
+    return `<div class="celula-arrecadacao">
+      <div>${barra}</div>
+      <div class="cell-muted">${contados(x)}</div>
+      <button class="link-btn" data-arrecadado="${x.id}">Registrar arrecadação</button>
+    </div>`;
   }
 
   function situacao(x) {
@@ -312,14 +315,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const n = i + 1;
     const qtd = r.quantidade === null ? '' : String(r.quantidade).replace('.', ',');
     const quem = r.arrecadadoEm
-      ? `<p class="form-hint" style="flex:1 1 100%;margin:0;">Informado por ${e(r.arrecadadoPor)} em ${Utils.formatDateTime(r.arrecadadoEm)}</p>` : '';
+      ? `<p class="form-hint">Informado por ${e(r.arrecadadoPor)} em ${Utils.formatDateTime(r.arrecadadoEm)}</p>` : '';
+    // Cada recurso: o nome em cima e os campos lado a lado embaixo (2026-11-11).
     if (r.tipo === 'dinheiro') {
       return `
-        <div class="form-row arrecadacao-linha" data-id="${e(r.id)}">
+        <div class="arrecadacao-linha" data-id="${e(r.id)}">
           <p class="arrecadacao-nome">${e(r.descricao)} <span class="badge badge-neutral">Dinheiro</span></p>
-          <div class="form-group" style="flex:0 1 220px;">
-            <label for="arr-qtd-${n}">Valor arrecadado (R$)</label>
-            <input type="text" id="arr-qtd-${n}" class="arr-qtd" inputmode="decimal" value="${e(qtd)}" placeholder="Ainda não contado">
+          <div class="arrecadacao-campos">
+            <div class="form-group">
+              <label for="arr-qtd-${n}">Valor (R$)</label>
+              <input type="text" id="arr-qtd-${n}" class="arr-qtd" inputmode="decimal" value="${e(qtd)}" placeholder="Não contado">
+            </div>
           </div>
           ${quem}
         </div>`;
@@ -327,21 +333,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const outra = Boolean(r.unidade) && !UNIDADES.includes(r.unidade);
     const opcoes = UNIDADES.map((u) => `<option value="${u}"${r.unidade === u ? ' selected' : ''}>${u}</option>`).join('');
     return `
-      <div class="form-row arrecadacao-linha" data-id="${e(r.id)}">
+      <div class="arrecadacao-linha" data-id="${e(r.id)}">
         <p class="arrecadacao-nome">${e(r.descricao)}</p>
-        <div class="form-group" style="flex:0 1 160px;">
-          <label for="arr-qtd-${n}">Quantidade</label>
-          <input type="text" id="arr-qtd-${n}" class="arr-qtd" inputmode="decimal" value="${e(qtd)}" placeholder="Ainda não contado">
-        </div>
-        <div class="form-group" style="flex:0 1 160px;">
-          <label for="arr-un-${n}">Unidade</label>
-          <select id="arr-un-${n}" class="arr-un">
-            <option value="">Escolha…</option>${opcoes}<option value="outra"${outra ? ' selected' : ''}>Outra…</option>
-          </select>
-        </div>
-        <div class="form-group arr-outra-grupo" style="flex:1 1 160px;"${outra ? '' : ' hidden'}>
-          <label for="arr-outra-${n}">Qual unidade?</label>
-          <input type="text" id="arr-outra-${n}" class="arr-outra" maxlength="40" value="${outra ? e(r.unidade) : ''}" placeholder="ex.: sacos de 5 kg">
+        <div class="arrecadacao-campos">
+          <div class="form-group">
+            <label for="arr-qtd-${n}">Quantidade</label>
+            <input type="text" id="arr-qtd-${n}" class="arr-qtd" inputmode="decimal" value="${e(qtd)}" placeholder="Não contado">
+          </div>
+          <div class="form-group">
+            <label for="arr-un-${n}">Unidade</label>
+            <select id="arr-un-${n}" class="arr-un">
+              <option value="">Escolha…</option>${opcoes}<option value="outra"${outra ? ' selected' : ''}>Outra…</option>
+            </select>
+          </div>
+          <div class="form-group arr-outra-grupo"${outra ? '' : ' hidden'}>
+            <label for="arr-outra-${n}">Qual unidade?</label>
+            <input type="text" id="arr-outra-${n}" class="arr-outra" maxlength="40" value="${outra ? e(r.unidade) : ''}" placeholder="ex.: sacos de 5 kg">
+          </div>
         </div>
         ${quem}
       </div>`;

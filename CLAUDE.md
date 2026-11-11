@@ -584,6 +584,19 @@ Passo a passo de comandos e validação em
   `solicitacao_externa.evento_id`/`campanha_id`: eram o mesmo vínculo 1:1
   gravado nos dois sentidos, sem garantia de que os dois lados concordassem.
   O detalhe da solicitação busca o criado pelo `tipo` dela.
+- **Um arquivo, um dono (decidido em 2026-11-11, migração 010).**
+  `noticia.imagem_arquivo_id`, `cand_funcionario.curriculo_arquivo_id` e
+  `conteudo_institucional_imagem.arquivo_id` ganharam `UNIQUE`. O código já
+  criava um `arquivo` novo a cada envio, mas o banco aceitava dois registros
+  no mesmo arquivo, e o diagrama Bachman mostrava a relação como 0..N.
+  Agora é 0..1 dos dois lados (na galeria, 0..1 para 1). O `UNIQUE` aceita
+  vários `NULL`, então notícia sem imagem e currículo em texto continuam
+  valendo. Custo aceito: reaproveitar a mesma imagem em mais de uma notícia
+  exigiria tirar a restrição. O `UNIQUE` não impede o mesmo arquivo em duas
+  tabelas diferentes; isso fica a cargo do código e da `categoria`.
+  **Depois do merge, rodar `npm run migrate` na `dev` e
+  `npm run migrate -- --producao` na `main`**, e regerar o
+  `docs/Sagedb_bachman2roxo.png`.
 - **Casos de uso alinhados ao DER (decidido em 2026-11-11, a pedido do
   orientador).** Os casos de uso tinham sido escritos sem partir do banco.
   Critérios adotados, que evitam redebater:

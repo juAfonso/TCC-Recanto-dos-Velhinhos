@@ -64,7 +64,7 @@ negação de acesso.
 
 ## Zona pública
 
-### Conteúdo (US1, CSU02, CSU03, CSU07)
+### Conteúdo (US1, CSU02, CSU03, CSU07, CSU11)
 
 | Método | Rota | Retorna |
 |---|---|---|
@@ -236,7 +236,7 @@ Regras:
 - Toda decisão dispara e-mail ao autor (FR-049b), com motivo se houver; falha não reverte a decisão.
 - Não existe aprovação automática nem em lote (FR-034, Princípio VIII).
 
-### Conteúdo (CSU02, CSU03, CSU07)
+### Conteúdo (CSU02, CSU03, CSU07, CSU11)
 
 | Método | Rota | Notas |
 |---|---|---|
@@ -267,7 +267,7 @@ Regras:
 
 Não existe rota de exclusão (FR-024).
 
-### LGPD (CSU11)
+### LGPD (CSU04, CSU13)
 
 | Método | Rota | Notas |
 |---|---|---|

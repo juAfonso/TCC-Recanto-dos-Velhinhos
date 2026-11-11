@@ -1,49 +1,83 @@
 @startuml casos-de-uso
-' SAGE — Diagrama de casos de uso (CSU01 a CSU11)
-' Atores do Portal à esquerda; Funcionário (Painel) à direita.
+' SAGE — Diagrama de casos de uso (CSU01 a CSU15), revisão de 2026-11-11.
+' Um só diagrama, com o sistema em duas áreas lado a lado:
+'   atores do Portal | Portal Público | Funcionário | Painel Administrativo | Titular
+' O Funcionário fica entre as duas áreas, para se ligar às duas sem que nenhuma
+' linha atravesse a outra. Os casos de uso com triagem ou conferência (CSU01, 05,
+' 06 e 08) ficam no Portal, onde começam, e se ligam também ao Funcionário.
+' O Visitante consulta no Portal, sem login, o que é mantido no Painel; isso está
+' na legenda, e não em linhas, para o diagrama não ficar poluído.
 left to right direction
 skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam rectangle {
+  RoundCorner 12
+}
+skinparam usecase {
+  BackgroundColor #FFFFFF
+  BorderColor #3E7B6A
+}
 
 actor "Visitante" as Visitante
-actor "Doador Associado" as Associado
-actor "Solicitante Externo" as Solicitante
+actor "Doador\nAssociado" as Associado
+actor "Solicitante\nExterno" as Solicitante
 actor "Funcionário" as Funcionario
+actor "Titular\ndos Dados" as Titular
 
 Associado -|> Visitante
 Solicitante -|> Visitante
 
-rectangle "SAGE" {
-  usecase "Doar via Pix" as UC01
-  usecase "Campanhas e Eventos" as UC02
-  usecase "Divulgação Institucional" as UC03
-  usecase "Itens Necessários" as UC07
-  usecase "Cadastrar Voluntário" as UC05
-  usecase "Candidatar-se a Vaga" as UC06
-  usecase "Consultar Status\nde Solicitação" as UC10
-  usecase "Solicitar Evento/Campanha\nExterna" as UC08
-  usecase "Autoatendimento\ndo Doador" as UC09
-  usecase "Manter Usuários" as UC04
-  usecase "Direitos do Titular\n(LGPD)" as UC11
+rectangle "SAGE — Portal Público" as Portal #EEF6F3 {
+  usecase "CSU01\nDoar via Pix" as UC01
+  usecase "CSU05\nCadastrar Voluntário" as UC05
+  usecase "CSU06\nCadastrar Candidato\na Vaga" as UC06
+  usecase "CSU08\nSolicitar Evento ou\nCampanha Externa" as UC08
+  usecase "CSU09\nAutoatendimento\ndo Doador" as UC09
+  usecase "CSU10\nConsultar Status\nde Solicitação" as UC10
 }
 
+rectangle "SAGE — Painel Administrativo" as Painel #F7F0F5 {
+  usecase "CSU02\nManter Campanhas\ne Eventos" as UC02
+  usecase "CSU03\nManter Notícias" as UC03
+  usecase "CSU04\nManter Pessoas" as UC04
+  usecase "CSU07\nManter Itens\nNecessários" as UC07
+  usecase "CSU11\nManter Página\nInstitucional" as UC11
+  usecase "CSU12\nManter Chave Pix" as UC12
+  usecase "CSU13\nManter Aviso\nde Privacidade" as UC13
+  usecase "CSU14\nManter\nConfigurações" as UC14
+  usecase "CSU15\nConsultar\nAuditoria" as UC15
+}
+
+legend bottom
+  O Visitante também consulta no Portal, sem login, o que o Funcionário mantém
+  no Painel: campanhas e eventos, notícias, itens necessários, página
+  institucional e aviso de privacidade.
+endlegend
+
+' Portal Público
 Visitante -- UC01
-Visitante -- UC02
-Visitante -- UC03
-Visitante -- UC07
 Visitante -- UC05
 Visitante -- UC06
 Visitante -- UC10
 Solicitante -- UC08
 Associado -- UC09
 
-' O caso de uso vem antes para o Funcionário ficar à direita
+' Triagem e conferência do que chega pelo Portal
 UC01 -- Funcionario
-UC02 -- Funcionario
-UC03 -- Funcionario
-UC07 -- Funcionario
 UC05 -- Funcionario
 UC06 -- Funcionario
 UC08 -- Funcionario
-UC04 -- Funcionario
-UC11 -- Funcionario
+
+' Painel Administrativo
+Funcionario -- UC02
+Funcionario -- UC03
+Funcionario -- UC04
+Funcionario -- UC07
+Funcionario -- UC11
+Funcionario -- UC12
+Funcionario -- UC13
+Funcionario -- UC14
+Funcionario -- UC15
+UC04 -- Titular
 @enduml

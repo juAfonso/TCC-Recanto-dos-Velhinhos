@@ -481,6 +481,6 @@ Task: "Criar public/definir-senha.html e page-definir-senha.js"
 - [USn] = rastreabilidade até a história do spec.
 - Commit ao fim de cada tarefa ou grupo lógico, com mensagem citando os FRs.
 - Antes de implementar qualquer coisa fora destas tarefas, conferir o CLAUDE.md → "Inegociável":
-  nada fora dos 11 CSUs sem atualizar o PRD e o CLAUDE.md.
+  nada fora dos 15 CSUs sem atualizar o PRD e o CLAUDE.md.
 - Tarefa que esbarrar em decisão não registrada no spec ou no CLAUDE.md: parar e levar ao grupo,
   não decidir no código.

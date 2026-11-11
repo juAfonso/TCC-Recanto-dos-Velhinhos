@@ -178,7 +178,7 @@ Nenhuma tela é dada como concluída sem:
 - **Responsividade (V)**: uma resolução móvel e uma desktop; Chrome, Firefox, Edge e Safari.
 - **Dados (III)**: sem exclusão física; status e auditoria presentes.
 - **Acesso (IV)**: autorização no servidor; dado pessoal não trafega para a zona pública.
-- **Escopo (VI)**: nada fora dos 11 CSUs.
+- **Escopo (VI)**: nada fora dos 15 CSUs (revisão de 2026-11-11).
 
 ## Testes automatizados
 

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Relatório de doações — Painel Administrativo</title>
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/impressao.css">
+</head>
+<body>
+
+<!-- Relatório de doações (2026-11-10): mesmo papel timbrado do termo de adesão (cabeçalho, CNPJ, sede,
+     caixa cinza e assinaturas), gerado pelo navegador com window.print — sem biblioteca de PDF. -->
+
+<div class="acoes-tela">
+    <button type="button" class="btn btn-viridian" id="btn-imprimir" disabled>Imprimir ou salvar em PDF</button>
+    <a class="btn btn-outline" href="doacoes.html">Voltar para Doações</a>
+</div>
+
+<form id="form-relatorio" class="panel filtros-relatorio aviso-tela" novalidate>
+    <h2 style="font-size:1.1rem;margin-bottom:12px;">Filtros do relatório</h2>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="f-de">De</label>
+            <input type="date" id="f-de" name="de" required>
+        </div>
+        <div class="form-group">
+            <label for="f-ate">Até</label>
+            <input type="date" id="f-ate" name="ate" required>
+        </div>
+    </div>
+    <div class="atalhos-periodo" role="group" aria-label="Atalhos de período">
+        <button type="button" class="btn btn-outline btn-sm" data-periodo="mes">Este mês</button>
+        <button type="button" class="btn btn-outline btn-sm" data-periodo="mes-anterior">Mês passado</button>
+        <button type="button" class="btn btn-outline btn-sm" data-periodo="ano">Este ano</button>
+        <button type="button" class="btn btn-outline btn-sm" data-periodo="ano-anterior">Ano passado</button>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="f-valor-min">Valor mínimo (R$)</label>
+            <input type="text" id="f-valor-min" name="valorMin" inputmode="decimal" placeholder="Sem mínimo" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label for="f-valor-max">Valor máximo (R$)</label>
+            <input type="text" id="f-valor-max" name="valorMax" inputmode="decimal" placeholder="Sem máximo" autocomplete="off">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group">
+            <label for="f-tipo">Tipo de doação</label>
+            <select id="f-tipo" name="tipo">
+                <option value="todas">Espontânea e associativa</option>
+                <option value="espontanea">Só espontânea</option>
+                <option value="associativa">Só associativa</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="f-situacao">Situação</label>
+            <select id="f-situacao" name="situacao">
+                <option value="confirmada">Só confirmadas no extrato</option>
+                <option value="pendente">Só pendentes</option>
+                <option value="nao_localizada">Só não localizadas</option>
+                <option value="todas">Todas as situações</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="f-ordem">Ordenar por</label>
+            <select id="f-ordem" name="ordem">
+                <option value="data">Data (mais antiga primeiro)</option>
+                <option value="valor">Valor (maior primeiro)</option>
+            </select>
+        </div>
+    </div>
+    <div class="form-actions" style="justify-content:flex-start;">
+        <button type="submit" class="btn btn-viridian">Gerar relatório</button>
+    </div>
+</form>
+
+<main class="termo relatorio">
+    <p id="estado" class="cell-muted">Carregando…</p>
+    <div id="conteudo" hidden>
+        <header class="termo-cabecalho">
+            <img src="../assets/img/logo-icon.png" alt="" width="64" height="64">
+            <div>
+                <p class="termo-instituicao">Recanto dos Velhinhos Francisco Gonçalves Barbosa</p>
+                <p class="termo-registro">
+                    Fundado em 07/01/1983. Registrado no Conselho Nacional de Assistência Social sob o nº CCEAS0077/2003,
+                    em 21/08/2003. Utilidade Pública Federal: Decreto de 03/04/2000, Utilidade Pública Estadual: Lei n.º 3.961,
+                    de 17/09/2002, Utilidade Pública Municipal: Lei n.º 45, de 14/05/1998. Registrado no Cartório do 1.º Ofício
+                    da Comarca de Piraí, Registro de Pessoas Jurídicas, Livro A, fls. 37, sob o n.º 16 em 13/04/1983,
+                    Rerratificação de Estatuto no Livro “A-1”, às fls. 072/074, nº de ordem AV.02-016 em 30/12/2003 -
+                    CNPJ: 28.056.695/0001-42
+                </p>
+                <p class="termo-sede">SEDE: Rua Francisco Ribeiro de Abreu, 102 – Posto Zootécnico – Pinheiral – RJ – CEP 27198-360 TEL: (24) 3016-4023</p>
+            </div>
+        </header>
+
+        <h1>Relatório de doações</h1>
+
+        <p class="termo-lei">
+            Este relatório lista as doações feitas por Pix e declaradas pelo doador no site do Recanto (botão
+            “Já fiz o Pix”), espontâneas e associativas. Uma doação só é <b>confirmada</b> depois que a equipe
+            confere a entrada no extrato bancário. Não inclui o que é pago na sede, em dinheiro, por depósito ou
+            transferência, nem doações de itens: <b>não representa a arrecadação total da instituição.</b>
+        </p>
+
+        <div class="campos">
+            <div class="campo c3"><span>Período:</span> <b id="r-periodo"></b></div>
+            <div class="campo c3"><span>Valor:</span> <b id="r-valor"></b></div>
+            <div class="campo c3"><span>Tipo:</span> <b id="r-tipo"></b></div>
+            <div class="campo c3"><span>Situação:</span> <b id="r-situacao"></b></div>
+        </div>
+
+        <p class="termo-bloco"><b>Resumo</b></p>
+        <table class="tabela-relatorio">
+            <caption class="sr-only">Resumo por tipo de doação</caption>
+            <thead><tr><th scope="col">Tipo</th><th scope="col" class="num">Quantidade</th><th scope="col" class="num">Total</th></tr></thead>
+            <tbody id="r-resumo"></tbody>
+        </table>
+        <p class="rotulo" id="r-estatisticas" style="margin-top:4px;"></p>
+
+        <div id="bloco-meses">
+            <p class="termo-bloco"><b>Totais por mês</b></p>
+            <table class="tabela-relatorio">
+                <caption class="sr-only">Totais por mês</caption>
+                <thead>
+                    <tr><th scope="col">Mês</th><th scope="col" class="num">Espontânea</th><th scope="col" class="num">Associativa</th><th scope="col" class="num">Total</th></tr>
+                </thead>
+                <tbody id="r-meses"></tbody>
+            </table>
+        </div>
+
+        <p class="termo-bloco"><b>Doações</b> <span class="rotulo" id="r-ordem"></span></p>
+        <table class="tabela-relatorio">
+            <caption class="sr-only">Lista de doações do relatório</caption>
+            <thead>
+                <tr><th scope="col">Nº</th><th scope="col">Data e hora</th><th scope="col">Tipo</th><th scope="col">Doador</th><th scope="col">Situação</th><th scope="col" class="num">Valor</th></tr>
+            </thead>
+            <tbody id="r-lista"></tbody>
+            <tfoot><tr><th scope="row" colspan="5">Total</th><td class="num" id="r-total"></td></tr></tfoot>
+        </table>
+
+        <p class="termo-data" id="r-local-data"></p>
+
+        <div class="assinaturas">
+            <div><div class="linha"></div><div class="rotulo"><i>Responsável pela conferência</i></div></div>
+            <div><div class="linha"></div><div class="rotulo"><i>Eliege de Faria Barbosa<br>Presidente</i></div></div>
+        </div>
+
+        <p class="rotulo termo-protocolo">Emitido pelo SAGE em <b id="r-emitido"></b>. Data e hora das doações: momento do clique em “Já fiz o Pix”, horário de Brasília.</p>
+    </div>
+</main>
+
+<script src="../assets/js/utils.js"></script>
+<script src="../assets/js/api.js"></script>
+<script src="../assets/js/auth.js"></script>
+<script src="../assets/js/admin-guard.js"></script>
+<script src="../assets/js/admin-relatorio-doacoes.js"></script>
+</body>
+</html>

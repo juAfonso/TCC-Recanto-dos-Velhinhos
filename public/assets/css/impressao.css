@@ -61,3 +61,28 @@
 .termo .assinaturas .rotulo { text-align: center; }
 .termo-protocolo { margin-top: 28px; }
 @media (max-width: 600px) { .campos { grid-template-columns: 1fr; } .campos .campo { grid-column: 1 / -1; } }
+
+/* Relatório de doações (2026-11-10): o mesmo papel do termo, com tabelas. Pode ter várias
+   folhas; o cabeçalho de cada tabela se repete no alto de cada folha. */
+.filtros-relatorio { max-width: 780px; margin: 16px auto; padding: 20px 24px; }
+.atalhos-periodo { display: flex; gap: 8px; flex-wrap: wrap; margin: -4px 0 14px; }
+.relatorio .termo-lei { margin-bottom: 10px; }
+.tabela-relatorio { width: 100%; border-collapse: collapse; font-size: .9rem; margin-top: 4px; }
+.tabela-relatorio th, .tabela-relatorio td { border: 1px solid #555 !important; padding: 3px 6px; text-align: left; vertical-align: top; color: #222; background: #fff; }
+.tabela-relatorio thead th { background: #ddd; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.tabela-relatorio .num { text-align: right; white-space: nowrap; }
+.tabela-relatorio .rotulo { font-size: inherit; }
+.tabela-relatorio .linha-total th, .tabela-relatorio .linha-total td, .tabela-relatorio tfoot th, .tabela-relatorio tfoot td { font-weight: 700; }
+.tabela-relatorio tfoot th { text-align: right; }
+.tabela-relatorio tr { break-inside: avoid; }
+.tabela-relatorio thead { display: table-header-group; }
+.relatorio .assinaturas { margin-top: 44px; break-inside: avoid; }
+@media (max-width: 600px) { .tabela-relatorio { font-size: .8rem; } .tabela-relatorio th, .tabela-relatorio td { padding: 2px 4px; } }
+@media print {
+  .filtros-relatorio { display: none !important; }
+  .tabela-relatorio { font-size: 8.5pt; }
+  .tabela-relatorio th, .tabela-relatorio td { padding: 1px 4px; }
+  .relatorio .termo-bloco { margin-top: 10px; break-after: avoid; }
+  .relatorio .termo-data { margin-top: 14px; break-after: avoid; }
+  .relatorio .assinaturas { margin-top: 36px; }
+}

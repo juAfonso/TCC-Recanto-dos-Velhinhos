@@ -73,12 +73,15 @@
       }
       mostrarGrupo(null);
       botoes.forEach((b) => b.addEventListener('click', () => mostrarGrupo(aberto === b.dataset.grupo ? null : b.dataset.grupo)));
-      document.addEventListener('keydown', (ev) => {
-        if (ev.key !== 'Escape' || !aberto) return;
+      // Fecha e devolve o foco ao botão da seção (Esc e setinha do painel, 2026-11-11).
+      const fechar = () => {
         const botao = aside.querySelector(`.menu-grupo[data-grupo="${aberto}"]`);
         mostrarGrupo(null);
         if (botao) botao.focus();
-      });
+      };
+      document.addEventListener('keydown', (ev) => { if (ev.key === 'Escape' && aberto) fechar(); });
+      const setaFechar = aside.querySelector('.menu-painel-fechar');
+      if (setaFechar) setaFechar.addEventListener('click', fechar);
       document.addEventListener('click', (ev) => {
         if (aberto && !aside.contains(ev.target)) mostrarGrupo(null);
       });

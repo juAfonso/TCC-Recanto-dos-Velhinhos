@@ -1530,10 +1530,10 @@ td:last-child .btn + .btn{ margin-left:6px; }
     background:var(--bg-soft);
 }
 
-/* Menu em duas colunas (2026-11-11): trilho verde-escuro com um botão por seção e,
-   ao lado, painel claro com as telas da seção escolhida. */
+/* Menu em duas colunas (2026-11-11): só o trilho verde-escuro fica à vista; o botão
+   de uma seção abre ao lado, por cima da tela, o painel claro com as telas dela. */
 .admin-sidebar{
-    width:322px;
+    width:108px;
     color:var(--ink);
     flex-shrink:0;
     display:flex;
@@ -1551,6 +1551,8 @@ td:last-child .btn + .btn{ margin-left:6px; }
     align-items:stretch;
     overflow-y:auto;
     scrollbar-width:none;
+    position:relative;
+    z-index:2;
 }
 .menu-trilho-logo{
     display:flex;
@@ -1559,7 +1561,7 @@ td:last-child .btn + .btn{ margin-left:6px; }
     border-bottom:1px solid rgba(255,255,255,.12);
 }
 .menu-trilho-logo .logo-mark{ height:40px; width:auto; object-fit:contain; }
-.menu-trilho-botoes{ display:flex; flex-direction:column; padding:var(--e3) 0; gap:2px; }
+.menu-trilho-botoes{ display:flex; flex-direction:column; padding:var(--e3) 0; gap:2px; flex:1; }
 .menu-grupo{
     display:flex;
     flex-direction:column;
@@ -1585,15 +1587,21 @@ td:last-child .btn + .btn{ margin-left:6px; }
 /* Seção aberta: o botão ganha a cor do painel e "encosta" nele. */
 .menu-grupo.active{ background:var(--tea-soft); color:var(--viridian-deep); font-weight:700; }
 .menu-grupo.active:focus-visible{ outline-color:var(--viridian-dark); }
+/* Seção da página aberta, com o painel fechado: fio claro à esquerda. */
+.menu-grupo.atual:not(.active){ box-shadow:inset 4px 0 0 var(--tea); color:#fff; }
+.menu-sair{ border-top:1px solid rgba(255,255,255,.12); border-radius:0; margin:0; padding-bottom:14px; }
 
 .menu-painel{
-    flex:1;
-    min-width:0;
+    position:absolute;
+    top:0; bottom:0; left:108px;
+    width:230px;
     background:var(--tea-soft);
     border-right:1px solid #CFE0D6;
+    box-shadow:var(--shadow-lg);
     display:flex;
     flex-direction:column;
 }
+.menu-painel[hidden]{ display:none; }
 .menu-painel :focus-visible{ outline-color:var(--viridian-dark); }
 .menu-painel-marca{
     padding:22px 18px 16px;
@@ -1639,29 +1647,16 @@ td:last-child .btn + .btn{ margin-left:6px; }
 .admin-nav a.active{ background:var(--viridian-deep); color:#fff; font-weight:700; }
 .admin-nav a.active svg{ color:#fff; }
 .admin-nav a.active:focus-visible{ outline-color:var(--viridian-dark); }
-.admin-sidebar .side-foot{
+.menu-painel-conta{
     padding:var(--e4) 18px 18px;
     border-top:1px solid #CFE0D6;
-    font-size:.86rem;
+    font-size:.875rem;
     color:var(--muted);
 }
-.admin-sidebar .side-foot strong{ color:var(--viridian-deep); display:block; font-size:.92rem; margin-bottom:2px;}
-.admin-sidebar .side-foot button{
-    margin-top:var(--e3);
-    background:#fff;
-    border:1.5px solid var(--viridian-dark);
-    color:var(--viridian-dark);
-    min-height:44px;
-    padding:8px 14px;
-    border-radius:var(--radius-sm);
-    font-size:.92rem;
-    font-weight:700;
-    width:100%;
-}
-.admin-sidebar .side-foot button:hover{ background:var(--tea); }
+.menu-painel-conta strong{ color:var(--viridian-deep); display:block; font-size:.92rem; margin-bottom:2px; }
 
 .admin-main{
-    margin-left:322px;
+    margin-left:108px;
     flex:1;
     min-width:0;
     padding:0 0 60px;
@@ -1733,7 +1728,7 @@ ul.lista-ajuda{ list-style:disc; }
 }
 
 @media(max-width:940px){
-    .admin-sidebar{ transform:translateX(-100%); max-width:100vw; }
+    .admin-sidebar{ transform:translateX(-100%); }
     .admin-sidebar.open{ transform:translateX(0); box-shadow:var(--shadow-lg); }
     .admin-main{ margin-left:0; }
     .admin-menu-toggle{ display:block; }
@@ -2491,3 +2486,37 @@ tbody tr:focus-within{ background:#F8FAF9; }
 /* Paginação e filtros do registro de ações. */
 .btn-sm.btn-voltar::before, .btn-sm.btn-avancar::after{ width:1em; height:1em; }
 .modal .form-actions .btn{ white-space:nowrap; }
+
+/* Mapa da seção de contato (2026-11-11): desenho do próprio site que leva ao Google Maps;
+   o mapa do Google só carrega se a pessoa pedir (mapa.js). */
+.contato-mapa{ max-width:1180px; margin:var(--e6) auto 0; display:flex; flex-direction:column; align-items:flex-start; gap:var(--e3); }
+.mapa-previa{
+    position:relative;
+    display:block;
+    width:100%;
+    aspect-ratio:8 / 3;
+    min-height:200px;
+    border:1px solid var(--line);
+    border-radius:var(--radius-md);
+    overflow:hidden;
+    text-decoration:none !important;
+}
+.mapa-desenho{ display:block; width:100%; height:100%; }
+.mapa-legenda{
+    position:absolute;
+    left:var(--e4); bottom:var(--e4); right:var(--e4);
+    max-width:max-content;
+    display:flex; flex-direction:column; gap:2px;
+    padding:var(--e3) var(--e4);
+    background:#fff;
+    border-radius:var(--radius-sm);
+    border:1px solid var(--line);
+    color:var(--ink);
+    font-weight:400;
+}
+.mapa-legenda strong{ color:var(--viridian-deep); }
+.mapa-legenda span{ color:var(--viridian-dark); font-weight:700; text-decoration:underline; text-underline-offset:3px; }
+.mapa-previa:hover .mapa-legenda, .mapa-previa:focus-visible .mapa-legenda{ background:var(--tea-soft); }
+.mapa-quadro{ width:100%; aspect-ratio:8 / 3; min-height:280px; border:1px solid var(--line); border-radius:var(--radius-md); }
+.mapa-aviso{ margin:0; }
+@media(max-width:640px){ .mapa-previa{ min-height:280px; } }

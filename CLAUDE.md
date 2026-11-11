@@ -186,12 +186,16 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   pior de editar) e gerar as páginas num build (o projeto não tem build).
   **Menu em duas colunas (decidido em 2026-11-11).** À esquerda, um trilho
   verde-escuro com um botão por seção (Início, Operação, Triagem,
-  Comunicação, Privacidade, Sistema); à direita, um painel verde-claro com
-  as telas da seção escolhida, e a tela aberta em verde-escuro. Abre na
-  seção da página aberta; a troca de seção fica no `admin-guard.js`. Seção
-  nova: um botão `.menu-grupo` e um `<nav class="admin-nav">` com o mesmo
-  `data-grupo`, ambos no `menu.html`. Rótulo do trilho em 14px (o menor
-  texto do site); por isso o menu passou de 250px para 322px.
+  Comunicação, Privacidade, Sistema); o painel verde-claro com as telas da
+  seção, e a tela aberta em verde-escuro, **começa fechado** e abre ao lado,
+  por cima da tela, quando se clica no botão da seção; fecha no mesmo
+  botão, no Esc ou ao clicar fora (ajuste do mesmo dia: a primeira versão
+  deixava o painel sempre aberto). O botão da seção da página aberta tem um
+  fio claro. "Sair" fica no pé do trilho, para não sumir com o painel. O
+  comportamento fica no `admin-guard.js`. Seção nova: um botão
+  `.menu-grupo` e um `<nav class="admin-nav">` com o mesmo `data-grupo`,
+  ambos no `menu.html`. Rótulo do trilho em 14px (o menor texto do site);
+  por isso o trilho tem 108px.
 - **Menu e rodapé do Portal num arquivo só (decidido em 2026-10-19).** O
   mesmo mecanismo do Painel: `public/menu.html` e `public/rodape.html`, que
   o `nav.js` coloca no `<header id="portal-menu">` e no
@@ -234,6 +238,19 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
      8 segundos (os outros, em 6), e continua com o botão "Fechar".
   O "Clique aqui" de `campanhas.html` virou uma chamada desenhada, com o
   mesmo destino (`solicitar-evento.html`).
+- **Favicon é o logo sem os escritos (decidido em 2026-11-11).** Gerado do
+  `assets/img/logo-icon.png`: `public/favicon.ico` (16, 32 e 48px),
+  `favicon-32.png`, `favicon-192.png` e `apple-touch-icon.png` (fundo
+  branco) em `assets/img/`. Toda página nova, do Portal ou do Painel, leva
+  as quatro linhas `<link rel="icon">` logo depois do `<title>`.
+- **Mapa na seção de contato (decidido em 2026-11-11)**, na home e na página
+  institucional (`assets/js/mapa.js`). É um **desenho do próprio site** com
+  o endereço, que abre o Google Maps numa nova aba; o mapa real do Google só
+  é carregado na página se a pessoa clicar em "Mostrar o mapa aqui". Motivo:
+  o mesmo da fonte servida pelo site (LGPD), nenhum pedido ao Google sem
+  ação do visitante. O endereço do mapa está no `data-endereco` do HTML,
+  fixo como o resto do bloco de contato dessas páginas; se o endereço mudar,
+  troca-se ali também.
 - **O vídeo do hero foi removido em 2026-09-05.** `assets/video/hero-video.mp4`
   pesava 9,3 dos 9,6 MB do front. Foi trocado por `assets/img/hero.jpg`, um
   quadro extraído do próprio vídeo, e a classe CSS passou de `.hero-video`

@@ -48,21 +48,40 @@
       }
     });
 
-    // Menu em duas colunas (2026-11-11): o trilho escolhe a seção e o painel mostra as telas dela.
-    // Abre na seção da página aberta; sem página do menu aberta, na primeira.
-    const botoes = aside.querySelectorAll('.menu-grupo');
+    // Menu em duas colunas (2026-11-11): só o trilho fica à vista; o botão de uma seção abre ao
+    // lado, por cima da tela, o painel com as telas dela. Fecha no mesmo botão, no Esc ou ao
+    // clicar fora. O botão da seção da página aberta fica marcado mesmo com o painel fechado.
+    const botoes = aside.querySelectorAll('.menu-grupo[data-grupo]');
+    const painel = aside.querySelector('.menu-painel');
+    let aberto = null;
     const mostrarGrupo = (grupo) => {
+      aberto = grupo;
       botoes.forEach((b) => {
         const ativo = b.dataset.grupo === grupo;
         b.classList.toggle('active', ativo);
         b.setAttribute('aria-expanded', String(ativo));
       });
       aside.querySelectorAll('.menu-painel .admin-nav').forEach((nav) => { nav.hidden = nav.dataset.grupo !== grupo; });
+      if (painel) painel.hidden = !grupo;
+      aside.classList.toggle('painel-aberto', Boolean(grupo));
     };
-    if (botoes.length) {
-      const aberta = aside.querySelector('.menu-painel .admin-nav a.active');
-      mostrarGrupo(aberta ? aberta.closest('.admin-nav').dataset.grupo : botoes[0].dataset.grupo);
-      botoes.forEach((b) => b.addEventListener('click', () => mostrarGrupo(b.dataset.grupo)));
+    if (botoes.length && painel) {
+      const paginaAberta = aside.querySelector('.menu-painel .admin-nav a.active');
+      if (paginaAberta) {
+        const grupoAtual = paginaAberta.closest('.admin-nav').dataset.grupo;
+        botoes.forEach((b) => b.classList.toggle('atual', b.dataset.grupo === grupoAtual));
+      }
+      mostrarGrupo(null);
+      botoes.forEach((b) => b.addEventListener('click', () => mostrarGrupo(aberto === b.dataset.grupo ? null : b.dataset.grupo)));
+      document.addEventListener('keydown', (ev) => {
+        if (ev.key !== 'Escape' || !aberto) return;
+        const botao = aside.querySelector(`.menu-grupo[data-grupo="${aberto}"]`);
+        mostrarGrupo(null);
+        if (botao) botao.focus();
+      });
+      document.addEventListener('click', (ev) => {
+        if (aberto && !aside.contains(ev.target)) mostrarGrupo(null);
+      });
     }
 
     const logoutBtn = document.getElementById('btn-admin-logout');

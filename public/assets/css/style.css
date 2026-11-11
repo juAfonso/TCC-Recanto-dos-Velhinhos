@@ -1603,30 +1603,29 @@ td:last-child .btn + .btn{ margin-left:6px; }
 }
 .menu-painel[hidden]{ display:none; }
 .menu-painel :focus-visible{ outline-color:var(--viridian-dark); }
-/* Topo do painel: marca e a setinha que fecha o menu (2026-11-11). */
-.menu-painel-topo{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:var(--e2);
-    padding-right:4px;
-    border-bottom:1px solid #CFE0D6;
-}
+/* Setinha que fecha o menu (2026-11-11): botão redondo no meio da borda direita do painel. */
 .menu-painel-fechar{
-    flex-shrink:0;
+    position:absolute;
+    top:50%;
+    right:-20px;
+    transform:translateY(-50%);
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    width:44px; height:44px;
-    background:none;
-    border:none;
-    border-radius:var(--radius-sm);
+    width:40px; height:40px;
+    padding:0;
+    background:#fff;
+    border:1.5px solid var(--viridian-dark);
+    border-radius:50%;
     color:var(--viridian-deep);
+    box-shadow:0 4px 12px rgba(30,74,60,.18);
     cursor:pointer;
 }
+.menu-painel-fechar::after{ content:""; position:absolute; inset:-4px; } /* área de toque de 48px */
 .menu-painel-fechar:hover{ background:var(--tea); }
 .menu-painel-marca{
-    padding:22px 0 16px 18px;
+    padding:22px 18px 16px;
+    border-bottom:1px solid #CFE0D6;
     color:var(--viridian-deep);
     font-family:var(--font-titulo);
     font-weight:600;

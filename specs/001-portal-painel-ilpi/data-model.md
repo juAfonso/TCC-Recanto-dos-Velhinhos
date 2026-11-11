@@ -167,7 +167,7 @@ Prefixo `CAN-`. **Sem tabela de vagas**: os cargos são fixos (FR-016, Assumptio
 | `cargo` | `text` | `limpeza` \| `cuidador` \| `enfermagem` \| `cozinha` |
 | `nome`, `cpf`, `telefone`, `email` | `text` | anonimizáveis (FR-016a) |
 | `data_nascimento` | `date` | maioridade |
-| `curriculo_arquivo_id` | `uuid` FK NULL → `arquivo` | |
+| `curriculo_arquivo_id` | `uuid` FK NULL UNIQUE → `arquivo` | um arquivo, uma candidatura (migração 010) |
 | `curriculo_texto` | `text` NULL | |
 | `status` | `text` | `em_analise` → `entrevista` → `aprovada`; `rejeitada`; `encerrada_titular` |
 | `efetivado_em` | `timestamptz` NULL | início do prazo do currículo do aprovado (FR-056) |
@@ -351,7 +351,7 @@ Sem relação com `item_necessario`, como no DER.
 | Campo | Tipo | Notas |
 |---|---|---|
 | `titulo`, `corpo` | `text` | |
-| `imagem_arquivo_id` | `uuid` FK NULL → `arquivo` | pública |
+| `imagem_arquivo_id` | `uuid` FK NULL UNIQUE → `arquivo` | pública; um arquivo, uma notícia (migração 010) |
 | `imagem_alt` | `text` NULL | obrigatório se houver imagem — `CHECK` |
 | `status` | `text` | `publicada` \| `despublicada` |
 | `criado_por`, `criado_em` | | |
@@ -367,7 +367,7 @@ Sem relação com `item_necessario`, como no DER.
 | `historia`, `missao`, `equipe`, `acolhimento`, `bazar` | `text` | `acolhimento` e `bazar` desde 2026-10-06 (migração 006, Session 2026-10-06 (2) do spec) |
 | `atualizado_por`, `atualizado_em` | | versões anteriores em `historico_alteracao` |
 
-`conteudo_institucional_imagem`: `arquivo_id`, `texto_alternativo` (obrigatório), `ordem`, `ativo`, `criado_por`/`criado_em`, `desativado_por`/`desativado_em` — tirar uma imagem da página é desativar.
+`conteudo_institucional_imagem`: `arquivo_id` (UNIQUE, migração 010), `texto_alternativo` (obrigatório), `ordem`, `ativo`, `criado_por`/`criado_em`, `desativado_por`/`desativado_em` — tirar uma imagem da página é desativar.
 
 ### `arquivo`
 
@@ -451,10 +451,10 @@ pessoa 1─N doacao                     (só associativa)
 pessoa 1─N consentimento              (doador: um por versão do aviso)
 pessoa 1─N token_senha
 cand_voluntario 1─1 consentimento · N─0..1 pessoa (após aprovação)
-candidatura         1─1 consentimento · N─0..1 pessoa · 0..1 arquivo (currículo)
+candidatura         1─1 consentimento · N─0..1 pessoa · 0..1─0..1 arquivo (currículo)
 solicitacao_externa 1─1 consentimento · 0..1 evento | 0..1 campanha
 campanha 1─N recurso
-noticia 0..1 arquivo · conteudo_institucional 1─N conteudo_institucional_imagem
+noticia 0..1─0..1 arquivo · conteudo_institucional 1─N conteudo_institucional_imagem 0..1─1 arquivo
 aviso_privacidade 1─N consentimento
 registro_auditoria, historico_alteracao → sem FK obrigatória
 ```

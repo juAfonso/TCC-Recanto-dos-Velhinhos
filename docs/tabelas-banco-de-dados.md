@@ -59,7 +59,7 @@ candidatura         1 ── 1 consentimento     candidatura 0..1 ── 0..1 ar
 solicitacao_externa 1 ── 1 consentimento     solicitacao_externa 0..1 ── 0..1 evento | campanha
 aviso_privacidade 1 ── N consentimento
 campanha 1 ── N recurso
-noticia 0..1 ── 0..1 arquivo          conteudo_institucional_imagem N ── 1 arquivo
+noticia 0..1 ── 0..1 arquivo          conteudo_institucional_imagem 0..1 ── 1 arquivo
 ```
 
 ---
@@ -195,7 +195,7 @@ Cargos fixos; não há tabela de vagas.
 | `nome`, `cpf` | text | NN | Identificação |
 | `telefone`, `email` | text | | Contato |
 | `data_nascimento` | date | obrigatória na API | Maioridade |
-| `curriculo_arquivo_id` | uuid | FK → `arquivo` | Currículo enviado como arquivo |
+| `curriculo_arquivo_id` | uuid | FK → `arquivo`, UNIQUE | Currículo enviado como arquivo |
 | `curriculo_texto` | text | | Currículo digitado |
 | `efetivado_em` | timestamptz | | Aprovação; início do prazo do currículo do aprovado |
 | `curriculo_anonimizado_em` | timestamptz | | Só o currículo anonimizado |
@@ -365,7 +365,7 @@ O que cada campanha arrecada (relação Arrecada do DER). Tirar um recurso é de
 |---|---|---|---|
 | `id` | uuid | PK | Identificador |
 | `titulo`, `corpo` | text | NN | Conteúdo |
-| `imagem_arquivo_id` | uuid | FK → `arquivo` | Imagem opcional |
+| `imagem_arquivo_id` | uuid | FK → `arquivo`, UNIQUE | Imagem opcional |
 | `imagem_alt` | text | obrigatório se houver imagem | Texto alternativo (Princípio II) |
 | `status` | text | NN, `publicada` \| `despublicada` | Visibilidade no Portal |
 | `criado_por`, `criado_em` | text, timestamptz | NN | Criação |
@@ -388,7 +388,7 @@ Linha única (`id = 1`); versões anteriores ficam em `historico_alteracao`.
 | Coluna | Tipo | Restrições | Descrição |
 |---|---|---|---|
 | `id` | uuid | PK | Identificador |
-| `arquivo_id` | uuid | NN, FK → `arquivo` | Imagem |
+| `arquivo_id` | uuid | NN, FK → `arquivo`, UNIQUE | Imagem |
 | `texto_alternativo` | text | NN, não vazio | Descrição para leitor de tela |
 | `ordem` | integer | NN, padrão 0 | Posição na página |
 | `ativo` | boolean | NN, padrão `true` | Tirar da página = desativar |

@@ -664,6 +664,10 @@ Passo a passo de comandos e validação em
   Na associativa sai só o nome do doador (nada de CPF ou contato). Faz parte da
   conferência de doações do CSU01 no Painel; não é CSU novo. Falta levar ao
   PRD e à seção 19 do TCC.
+  **Período escolhido à vista (2026-11-11):** o atalho (este mês, mês passado,
+  este ano, ano passado) fica marcado enquanto as datas forem as dele, e o
+  relatório escreve o nome do período ("Novembro de 2026 (até hoje)", "Ano
+  de 2025") antes das datas; período qualquer sai só com as datas.
 - **Prioridade do item necessário: alta, média ou baixa (decidido em
   2026-10-05).** O CSU07 falava em "prioridade" sem valores, e o protótipo
   usava só "urgente sim/não". Os de prioridade alta são os "itens mais

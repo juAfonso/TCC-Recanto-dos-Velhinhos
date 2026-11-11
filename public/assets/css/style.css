@@ -2545,18 +2545,52 @@ tbody tr:focus-within{ background:#F8FAF9; }
    Filtro Campanhas / Eventos (2026-11-11)
    Portal, Painel e triagem: botões com aria-pressed, como os atalhos de período.
    ========================================================= */
-.filtro-tipo{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
-.filtro-tipo .filtro-tipo-rotulo{ font-weight:700; margin-right:4px; }
+/* Botões colados num bloco só (controle segmentado), da mesma altura do campo de busca. */
+.filtro-tipo{ display:inline-flex; flex-wrap:nowrap; align-items:center; flex:none; }
+.filtro-tipo .filtro-tipo-rotulo{ font-weight:700; margin-right:var(--e3); }
+.filtro-tipo .btn{ min-height:46px; padding:8px 18px; border-radius:0; gap:6px; }
+.filtro-tipo .btn + .btn{ margin-left:-2px; }
+.filtro-tipo .btn:first-of-type{ border-radius:var(--radius-sm) 0 0 var(--radius-sm); }
+.filtro-tipo .btn:last-of-type{ border-radius:0 var(--radius-sm) var(--radius-sm) 0; }
+.filtro-tipo .btn:focus-visible{ position:relative; z-index:1; }
 .filtro-tipo .btn[aria-pressed="true"],
-.filtro-tipo .btn[aria-pressed="true"]:hover{ background:var(--viridian-dark) !important; border-color:var(--viridian-dark); color:#fff; }
+.filtro-tipo .btn[aria-pressed="true"]:hover{ background:var(--viridian-dark) !important; border-color:var(--viridian-dark); color:#fff; position:relative; }
 .filtro-tipo .btn[aria-pressed="true"]::before{
-    content:""; width:14px; height:14px; margin-right:6px; background-color:currentColor;
+    content:""; width:14px; height:14px; background-color:currentColor;
     -webkit-mask:var(--i-marcar) center / contain no-repeat; mask:var(--i-marcar) center / contain no-repeat;
 }
 .section .filtro-tipo{ margin-bottom:var(--e4); }
-.panel .filtro-tipo{ padding:0 0 var(--e3); }
+/* Na triagem o filtro fica sozinho, abaixo das abas. */
+.panel > .filtro-tipo{ display:flex; padding:var(--e3) 0; }
+@media(max-width:640px){
+    .filtro-tipo .btn{ flex:1 1 0; padding:8px 10px; }
+    .table-toolbar > .filtro-tipo{ display:flex; }
+}
+
+/* Na tabela, a linha de apoio (cinza) fica alinhada à esquerda, embaixo do texto principal.
+   A regra .cell-muted{ justify-self:center } é antiga e, no Chrome atual, centralizava
+   esses blocos dentro da célula (2026-11-11). */
+td .cell-muted{ justify-self:auto; }
+/* Campanhas & Eventos: as ações (Ver dados, Editar, Encerrar) ficam numa linha só. */
+#campanhas-tbody .row-actions{ flex-wrap:nowrap; }
+#campanhas-tbody td:last-child .btn + .btn{ margin-left:0; }
+.celula-arrecadacao{ display:flex; flex-direction:column; align-items:flex-start; gap:2px; min-width:200px; }
+.celula-arrecadacao .cell-muted{ font-size:.86rem; }
+.celula-arrecadacao .link-btn{ font-size:.86rem; text-align:left; white-space:nowrap; margin-top:2px; }
 
 /* Arrecadação por recurso, na janela do Painel (2026-11-11). */
-.arrecadacao-linha{ align-items:flex-end; border-top:1px solid var(--line); padding-top:10px; }
+.arrecadacao-linha{ border-top:1px solid var(--line); padding:var(--e4) 0; }
 .arrecadacao-linha:first-child{ border-top:none; padding-top:0; }
-.arrecadacao-linha .arrecadacao-nome{ flex:1 1 100%; font-weight:700; margin-bottom:4px; }
+.arrecadacao-nome{ display:flex; align-items:center; flex-wrap:wrap; gap:var(--e2); font-weight:700; margin-bottom:var(--e2); }
+.arrecadacao-nome .badge{ font-weight:600; }
+.arrecadacao-campos{
+    display:grid;
+    grid-template-columns:minmax(0,170px) minmax(0,190px) minmax(0,1fr);
+    gap:0 var(--e4);
+    align-items:start;
+}
+.arrecadacao-campos .form-group{ margin-bottom:0; min-width:0; }
+/* O select global tem min-width:220px, que passava da coluna e cobria o campo ao lado. */
+.arrecadacao-campos input, .arrecadacao-campos select{ width:100%; min-width:0; }
+.arrecadacao-linha .form-hint{ margin-top:var(--e2); }
+@media(max-width:560px){ .arrecadacao-campos{ grid-template-columns:1fr; gap:var(--e3); } }

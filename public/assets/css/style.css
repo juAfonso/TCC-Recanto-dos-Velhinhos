@@ -170,7 +170,7 @@ button{ cursor:pointer; font-family:inherit; }
     outline:3px solid var(--viridian);
     outline-offset:2px;
 }
-.admin-sidebar :focus-visible,
+.menu-trilho :focus-visible,
 footer.site-footer :focus-visible,
 .page-hero :focus-visible,
 .login-shell > :focus-visible,
@@ -1530,45 +1530,96 @@ td:last-child .btn + .btn{ margin-left:6px; }
     background:var(--bg-soft);
 }
 
+/* Menu em duas colunas (2026-11-11): trilho verde-escuro com um botão por seção e,
+   ao lado, painel claro com as telas da seção escolhida. */
 .admin-sidebar{
-    width:250px;
-    background:var(--viridian-deep);
-    color:#DCEBE3;
+    width:322px;
+    color:var(--ink);
     flex-shrink:0;
     display:flex;
-    flex-direction:column;
     position:fixed;
     top:0; left:0; bottom:0;
     z-index:1200;
     transition:transform .25s;
 }
-.admin-sidebar .side-logo{
+.menu-trilho{
+    width:108px;
+    flex-shrink:0;
+    background:var(--viridian-deep);
     display:flex;
-    align-items:center;
-    gap:12px;
-    padding:20px;
+    flex-direction:column;
+    align-items:stretch;
+    overflow-y:auto;
+    scrollbar-width:none;
+}
+.menu-trilho-logo{
+    display:flex;
+    justify-content:center;
+    padding:16px 8px;
     border-bottom:1px solid rgba(255,255,255,.12);
-    color:#fff;
+}
+.menu-trilho-logo .logo-mark{ height:40px; width:auto; object-fit:contain; }
+.menu-trilho-botoes{ display:flex; flex-direction:column; padding:var(--e3) 0; gap:2px; }
+.menu-grupo{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    min-height:64px;
+    padding:10px 4px;
+    margin-left:8px;
+    background:none;
+    border:none;
+    border-radius:var(--radius-sm) 0 0 var(--radius-sm);
+    color:#DCEBE3;
+    font-family:var(--font-texto);
+    font-size:.875rem;
+    font-weight:600;
+    line-height:1.2;
+    text-align:center;
+    cursor:pointer;
+    transition:background-color .15s, color .15s;
+}
+.menu-grupo svg{ width:20px; height:20px; flex-shrink:0; }
+.menu-grupo:hover{ background:rgba(255,255,255,.08); color:#fff; }
+/* Seção aberta: o botão ganha a cor do painel e "encosta" nele. */
+.menu-grupo.active{ background:var(--tea-soft); color:var(--viridian-deep); font-weight:700; }
+.menu-grupo.active:focus-visible{ outline-color:var(--viridian-dark); }
+
+.menu-painel{
+    flex:1;
+    min-width:0;
+    background:var(--tea-soft);
+    border-right:1px solid #CFE0D6;
+    display:flex;
+    flex-direction:column;
+}
+.menu-painel :focus-visible{ outline-color:var(--viridian-dark); }
+.menu-painel-marca{
+    padding:22px 18px 16px;
+    border-bottom:1px solid #CFE0D6;
+    color:var(--viridian-deep);
     font-family:var(--font-titulo);
     font-weight:600;
     font-size:1.1rem;
     line-height:1.25;
-    text-decoration:none;
 }
-.admin-sidebar .side-logo small{
+.menu-painel-marca small{
+    display:block;
     font-family:var(--font-texto);
     font-weight:400;
     font-size:.86rem;
-    color:#C6DCD0;
+    color:var(--muted);
 }
-.admin-sidebar .side-logo .logo-mark{
-    height:42px;
-    width:auto;
-    object-fit:contain;
-    flex-shrink:0;
+.menu-painel-titulo{
+    font-size:.86rem;
+    font-weight:700;
+    color:var(--muted);
+    margin:var(--e1) 10px var(--e3);
 }
 /* Barra de rolagem fina e verde: no Windows a padrão abria uma faixa clara ao lado do menu. */
-.admin-nav{ padding:var(--e3); flex:1; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--viridian) transparent; }
+.admin-nav{ padding:var(--e4) var(--e3); flex:1; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--viridian) transparent; }
+.admin-nav[hidden]{ display:none; }
 .admin-nav a{
     display:flex;
     align-items:center;
@@ -1577,34 +1628,29 @@ td:last-child .btn + .btn{ margin-left:6px; }
     padding:8px 12px;
     border-radius:var(--radius-sm);
     text-decoration:none;
-    color:#DCEBE3;
+    color:var(--ink);
     font-size:.94rem;
     font-weight:600;
     margin-bottom:2px;
 }
-.admin-nav a svg{ flex-shrink:0; opacity:.85; }
-.admin-nav a:hover{ background:rgba(255,255,255,.08); color:#fff; }
-/* Página aberta: tea com texto verde profundo (7,51:1). */
-.admin-nav a.active{ background:var(--tea); color:var(--viridian-deep); font-weight:700; }
-.admin-nav a.active svg{ opacity:1; }
-.admin-nav .nav-section-label{
-    font-size:.86rem;
-    font-weight:700;
-    color:var(--tea);
-    margin:var(--e4) 12px var(--e1);
-}
+.admin-nav a svg{ flex-shrink:0; color:var(--viridian-dark); }
+.admin-nav a:hover{ background:var(--tea); color:var(--viridian-deep); }
+/* Página aberta: verde profundo com texto branco (10,0:1), como o item escuro do modelo. */
+.admin-nav a.active{ background:var(--viridian-deep); color:#fff; font-weight:700; }
+.admin-nav a.active svg{ color:#fff; }
+.admin-nav a.active:focus-visible{ outline-color:var(--viridian-dark); }
 .admin-sidebar .side-foot{
-    padding:var(--e4) 20px 20px;
-    border-top:1px solid rgba(255,255,255,.12);
+    padding:var(--e4) 18px 18px;
+    border-top:1px solid #CFE0D6;
     font-size:.86rem;
-    color:#C6DCD0;
+    color:var(--muted);
 }
-.admin-sidebar .side-foot strong{ color:#fff; display:block; font-size:.92rem; margin-bottom:2px;}
+.admin-sidebar .side-foot strong{ color:var(--viridian-deep); display:block; font-size:.92rem; margin-bottom:2px;}
 .admin-sidebar .side-foot button{
     margin-top:var(--e3);
-    background:none;
-    border:1.5px solid rgba(255,255,255,.45);
-    color:#fff;
+    background:#fff;
+    border:1.5px solid var(--viridian-dark);
+    color:var(--viridian-dark);
     min-height:44px;
     padding:8px 14px;
     border-radius:var(--radius-sm);
@@ -1612,10 +1658,10 @@ td:last-child .btn + .btn{ margin-left:6px; }
     font-weight:700;
     width:100%;
 }
-.admin-sidebar .side-foot button:hover{ background:rgba(255,255,255,.1); }
+.admin-sidebar .side-foot button:hover{ background:var(--tea); }
 
 .admin-main{
-    margin-left:250px;
+    margin-left:322px;
     flex:1;
     min-width:0;
     padding:0 0 60px;
@@ -1687,7 +1733,7 @@ ul.lista-ajuda{ list-style:disc; }
 }
 
 @media(max-width:940px){
-    .admin-sidebar{ transform:translateX(-100%); }
+    .admin-sidebar{ transform:translateX(-100%); max-width:100vw; }
     .admin-sidebar.open{ transform:translateX(0); box-shadow:var(--shadow-lg); }
     .admin-main{ margin-left:0; }
     .admin-menu-toggle{ display:block; }
@@ -1878,7 +1924,7 @@ footer.site-footer{
 /* O desenho do logo tem contorno preto e árvores verdes: sobre o verde escuro ele
    some, então fica sobre uma placa clara. */
 footer.site-footer .logo .logo-mark,
-.admin-sidebar .side-logo .logo-mark{
+.menu-trilho-logo .logo-mark{
     background:#fff;
     border-radius:var(--radius-sm);
     padding:4px 6px;
@@ -2437,7 +2483,7 @@ tbody tr:focus-within{ background:#F8FAF9; }
 
 /* Menu lateral: o ícone acompanha o texto e o item em foco ganha fundo. */
 .admin-nav a{ transition:background-color .15s, color .15s; }
-.admin-nav a:focus-visible{ background:rgba(255,255,255,.08); outline-offset:-3px; }
+.admin-nav a:focus-visible{ background:var(--tea); outline-offset:-3px; }
 
 /* Topo do Painel: o caminho (crumb) e o título ganham um respiro. */
 .admin-topbar .crumb{ display:block; margin-bottom:2px; }

@@ -184,6 +184,14 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   ficava escondida até o servidor confirmar a sessão, então o menu não
   "pisca". Descartado montar o menu em JS (texto do HTML dentro de string,
   pior de editar) e gerar as páginas num build (o projeto não tem build).
+  **Menu em duas colunas (decidido em 2026-11-11).** À esquerda, um trilho
+  verde-escuro com um botão por seção (Início, Operação, Triagem,
+  Comunicação, Privacidade, Sistema); à direita, um painel verde-claro com
+  as telas da seção escolhida, e a tela aberta em verde-escuro. Abre na
+  seção da página aberta; a troca de seção fica no `admin-guard.js`. Seção
+  nova: um botão `.menu-grupo` e um `<nav class="admin-nav">` com o mesmo
+  `data-grupo`, ambos no `menu.html`. Rótulo do trilho em 14px (o menor
+  texto do site); por isso o menu passou de 250px para 322px.
 - **Menu e rodapé do Portal num arquivo só (decidido em 2026-10-19).** O
   mesmo mecanismo do Painel: `public/menu.html` e `public/rodape.html`, que
   o `nav.js` coloca no `<header id="portal-menu">` e no
@@ -221,7 +229,9 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
      `.form-layout`: guia ao lado e `<fieldset class="form-secao">`
      numerados; o sucesso mostra o protocolo como canhoto.
   6. **Única mudança de comportamento:** `Utils.toast` passou a ser lido pelo
-     leitor de tela (`aria-live`), e o aviso de erro fica até ser fechado.
+     leitor de tela (`aria-live`). ~~O aviso de erro fica até ser fechado.~~
+     **[Reversão] Desde 2026-11-11 o aviso de erro também some sozinho**, em
+     8 segundos (os outros, em 6), e continua com o botão "Fechar".
   O "Clique aqui" de `campanhas.html` virou uma chamada desenhada, com o
   mesmo destino (`solicitar-evento.html`).
 - **O vídeo do hero foi removido em 2026-09-05.** `assets/video/hero-video.mp4`

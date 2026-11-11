@@ -22,12 +22,20 @@
                 <h1>Campanhas &amp; Eventos</h1>
             </div>
             <button class="admin-menu-toggle" aria-label="Abrir menu">☰</button>
-            <button class="btn btn-viridian btn-sm" id="btn-nova-campanha">+ Nova campanha/evento</button>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <a class="btn btn-outline btn-sm" href="relatorio-campanha.html">Relatório de campanha</a>
+                <button class="btn btn-viridian btn-sm" id="btn-nova-campanha">+ Nova campanha/evento</button>
+            </div>
         </div>
 
         <div class="admin-content">
             <div class="panel">
                 <div class="table-toolbar">
+                    <div class="filtro-tipo" role="group" aria-label="Mostrar">
+                        <button type="button" class="btn btn-outline btn-sm" data-tipo="todos" aria-pressed="true">Todos</button>
+                        <button type="button" class="btn btn-outline btn-sm" data-tipo="campanha" aria-pressed="false">Campanhas</button>
+                        <button type="button" class="btn btn-outline btn-sm" data-tipo="evento" aria-pressed="false">Eventos</button>
+                    </div>
                     <div class="search-box">
                         <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
   <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
@@ -69,8 +77,8 @@
                 <div class="form-error"></div>
             </div>
             <div class="form-group">
-                <label for="camp-descricao">Descrição <span class="req">*</span></label>
-                <textarea id="camp-descricao" data-campo="descricao" rows="3"></textarea>
+                <label for="camp-objetivo">Objetivo <span class="req">*</span></label>
+                <textarea id="camp-objetivo" data-campo="objetivo" rows="3" maxlength="4000" placeholder="O que é e por que faz bem aos residentes. Aparece no site."></textarea>
                 <div class="form-error"></div>
             </div>
 
@@ -111,6 +119,7 @@
                     <label for="camp-meta">Meta em dinheiro (R$) — opcional</label>
                     <input type="text" id="camp-meta" data-campo="meta" inputmode="decimal" placeholder="Deixe em branco se não houver meta">
                     <p class="form-hint">Sem meta, o site não mostra barra de arrecadação. O valor arrecadado é informado à mão pela equipe.</p>
+                    <p class="form-hint" id="camp-externa-aviso" hidden>Campanha proposta de fora do Recanto arrecada só itens: sem recurso em dinheiro e sem meta em R$.</p>
                     <div class="form-error"></div>
                 </div>
             </div>
@@ -123,20 +132,52 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="modal-arrecadado" role="dialog" aria-modal="true" aria-labelledby="modal-arrecadado-titulo">
-    <div class="modal">
+<!-- Consulta (2026-11-11): todos os dados, só leitura. É o único jeito de ver o que já foi
+     encerrado, que não se edita mais. -->
+<div class="modal-overlay" id="modal-ver" role="dialog" aria-modal="true" aria-labelledby="modal-ver-titulo">
+    <div class="modal" style="max-width:760px;">
         <div class="modal-head">
-            <h3 id="modal-arrecadado-titulo">Atualizar valor arrecadado</h3>
+            <h3 id="modal-ver-titulo">Dados</h3>
+            <button class="modal-close" data-close-modal="modal-ver" aria-label="Fechar">✕</button>
+        </div>
+        <div id="ver-situacao" style="margin-bottom:14px;"></div>
+        <dl id="ver-dados" class="dados-grid"></dl>
+        <div id="ver-recursos-bloco">
+            <h4 style="margin:20px 0 8px;">Recursos e arrecadação</h4>
+            <div class="table-wrap">
+                <table>
+                    <caption class="sr-only">Recursos da campanha e quanto foi arrecadado</caption>
+                    <thead><tr><th scope="col">Recurso</th><th scope="col">Tipo</th><th scope="col">Arrecadado</th><th scope="col">Informado por</th></tr></thead>
+                    <tbody id="ver-recursos"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="form-actions" id="ver-acoes" style="flex-wrap:wrap;margin-top:20px;"></div>
+    </div>
+</div>
+
+<!-- Arrecadação (2026-11-11): valor da barra (se houver meta) e quanto veio de cada recurso.
+     Vale também depois do encerramento: a contagem final vai para o relatório da campanha. -->
+<div class="modal-overlay" id="modal-arrecadado" role="dialog" aria-modal="true" aria-labelledby="modal-arrecadado-titulo">
+    <div class="modal" style="max-width:720px;">
+        <div class="modal-head">
+            <h3 id="modal-arrecadado-titulo">Registrar arrecadação</h3>
             <button class="modal-close" data-close-modal="modal-arrecadado" aria-label="Fechar">✕</button>
         </div>
         <form id="form-arrecadado" novalidate>
             <p id="arrecadado-resumo" style="margin-bottom:12px;"></p>
-            <div class="form-group">
-                <label for="arrecadado-valor">Valor arrecadado até agora (R$) <span class="req">*</span></label>
+            <div class="form-group" id="grupo-arrecadado-valor">
+                <label for="arrecadado-valor">Valor arrecadado para a barra do site (R$) <span class="req">*</span></label>
                 <input type="text" id="arrecadado-valor" data-campo="valor" inputmode="decimal">
                 <p class="form-hint">Use o controle da secretaria: o sistema não soma as doações por Pix às campanhas.</p>
                 <div class="form-error"></div>
             </div>
+            <fieldset class="form-group">
+                <legend style="font-weight:700;margin-bottom:8px;">Quanto foi arrecadado de cada recurso</legend>
+                <p class="form-hint" style="margin-bottom:10px;">Deixe em branco o que ainda não foi contado. Dá para corrigir depois, mesmo com a campanha encerrada; a versão anterior fica no histórico.</p>
+                <div id="lista-arrecadacao"></div>
+                <div class="form-error" data-campo="recursos"></div>
+            </fieldset>
             <div class="form-actions">
                 <button type="button" class="btn btn-outline" data-close-modal="modal-arrecadado">Cancelar</button>
                 <button type="submit" class="btn btn-viridian">Salvar</button>

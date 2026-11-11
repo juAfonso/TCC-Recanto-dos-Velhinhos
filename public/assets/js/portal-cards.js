@@ -58,7 +58,7 @@ const PortalCards = (() => {
           <h3>${e(c.nome)}</h3>
           <span class="badge badge-success">Campanha</span>
         </div>
-        <p class="desc">${e(c.descricao)}</p>
+        <p class="desc">${e(c.objetivo)}</p>
         ${progresso(c)}
         <div class="campanha-foot">
           <span>${ICONE_CALENDARIO} De ${Utils.formatDay(c.periodoInicio)} a ${Utils.formatDay(c.periodoFim)}</span>
@@ -74,7 +74,7 @@ const PortalCards = (() => {
           <h3>${e(ev.nome)}</h3>
           <span class="badge badge-info">Evento</span>
         </div>
-        <p class="desc">${e(ev.descricao)}</p>
+        <p class="desc">${e(ev.objetivo)}</p>
         <div class="campanha-foot">
           <span>${ICONE_CALENDARIO} Data: ${Utils.formatDay(ev.data)}</span>
           ${ev.recursos ? `<span>${ICONE_SACOLA} Precisamos de: ${e(ev.recursos)}</span>` : ''}

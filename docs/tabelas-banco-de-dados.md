@@ -217,6 +217,7 @@ CHECK: currículo em arquivo **ou** texto (FR-017), exceto depois de anonimizado
 | `data_pretendida` | date | | Evento |
 | `periodo_inicio`, `periodo_fim` | date | | Campanha |
 | `recursos_esperados` | text | | O que pede à instituição (espaço, equipe, horário) |
+| `itens_arrecadar` | text[] | só campanha | Itens que a campanha vai arrecadar; viram `recurso` na confirmação (migração 009) |
 
 ---
 
@@ -314,7 +315,7 @@ Só a conferência humana leva a `confirmada` (Princípio VII).
 | Coluna | Tipo | Restrições | Descrição |
 |---|---|---|---|
 | `id` | uuid | PK | Identificador |
-| `nome`, `descricao` | text | NN | Divulgação |
+| `nome`, `objetivo` | text | NN | Divulgação (`objetivo` era `descricao` até a migração 009) |
 | `recursos_necessarios` | text | | Recursos em texto livre |
 | `data` | date | NN | Data do evento |
 | `solicitacao_origem_id` | uuid | FK → `solicitacao_externa`, UNIQUE | Se veio de solicitação externa (vínculo só deste lado, migração 008) |
@@ -328,7 +329,7 @@ Só a conferência humana leva a `confirmada` (Princípio VII).
 | Coluna | Tipo | Restrições | Descrição |
 |---|---|---|---|
 | `id` | uuid | PK | Identificador |
-| `nome`, `descricao` | text | NN | Divulgação |
+| `nome`, `objetivo` | text | NN | Divulgação (`objetivo` era `descricao` até a migração 009) |
 | `periodo_inicio`, `periodo_fim` | date | NN, fim ≥ início | Período |
 | `meta_valor` | numeric(12,2) | > 0 | Meta opcional |
 | `arrecadado_valor` | numeric(12,2) | ≥ 0; só com meta | Informado à mão pela equipe |
@@ -349,6 +350,9 @@ O que cada campanha arrecada (relação Arrecada do DER). Tirar um recurso é de
 | `campanha_id` | uuid | NN, FK → `campanha` | Campanha |
 | `tipo` | text | NN, `dinheiro` \| `item` | Tipo de recurso |
 | `descricao` | text | NN | Descrição |
+| `quantidade_arrecadada` | numeric(12,2) | ≥ 0 | Quanto foi arrecadado, informado pela equipe (migração 009) |
+| `unidade` | text | só item; obrigatória com quantidade | kg, pacotes…; dinheiro é sempre R$ |
+| `arrecadado_por`, `arrecadado_em` | text, timestamptz | | Quem informou a quantidade |
 | `ativo` | boolean | NN, padrão `true` | Recurso em uso |
 | `criado_por`, `criado_em` | text, timestamptz | NN | Criação |
 | `desativado_por`, `desativado_em` | text, timestamptz | | Desativação |

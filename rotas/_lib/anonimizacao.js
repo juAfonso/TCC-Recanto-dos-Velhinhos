@@ -129,7 +129,7 @@ const EXECUTORES = {
     await encerrarSeEmTriagem(tx, 'solicitacao_externa', s, autor);
     await tx.query(
       `UPDATE solicitacao_externa
-       SET nome_contato = ${A}, email = NULL, telefone = NULL, objetivo = ${A}, recursos_esperados = NULL,
+       SET nome_contato = ${A}, email = NULL, telefone = NULL, objetivo = ${A}, recursos_esperados = NULL, itens_arrecadar = NULL,
            motivo_rejeicao = CASE WHEN motivo_rejeicao IS NULL THEN NULL ELSE ${A} END, anonimizado_em = now()
        WHERE id = $1`, [s.id]);
     return [s.email];

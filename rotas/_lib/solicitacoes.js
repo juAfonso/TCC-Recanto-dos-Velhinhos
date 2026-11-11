@@ -1,6 +1,10 @@
 // Solicitação externa de evento ou campanha (FR-020, CSU08). Tipo obrigatório; contato com nome,
 // e-mail e telefone; nome da iniciativa e objetivo; data (evento) ou período (campanha) a partir
 // de amanhã; recursos esperados da instituição opcionais (decisões de 2026-10-06, fase 8).
+// Campanha lista os itens que vai arrecadar (pelo menos um, decisão de 2026-11-11): na
+// confirmação eles viram os recursos da campanha, todos do tipo item.
+
+export const MAXIMO_ITENS = 30;
 
 import * as v from './validacao.js';
 import { hojeBrasilia } from './datas.js';
@@ -28,6 +32,9 @@ export function validarSolicitacao(corpo, anterior = {}) {
     periodo_inicio: tipo === 'campanha' ? String(corpo.periodoInicio ?? '') : null,
     periodo_fim: tipo === 'campanha' ? String(corpo.periodoFim ?? '') : null,
     recursos_esperados: texto(corpo.recursosEsperados, 2000) || null,
+    itens_arrecadar: tipo === 'campanha'
+      ? (Array.isArray(corpo.itensArrecadar) ? corpo.itensArrecadar : []).map((i) => texto(i, 300)).filter(Boolean)
+      : null,
   };
   const erroFim = tipo !== 'campanha' ? null
     : v.data(dados.periodo_fim) ? 'Informe o fim do período.'
@@ -42,10 +49,13 @@ export function validarSolicitacao(corpo, anterior = {}) {
     dataPretendida: tipo === 'evento' ? dataFutura(dados.data_pretendida, 'a data pretendida', anterior.data_pretendida) : null,
     periodoInicio: tipo === 'campanha' ? dataFutura(dados.periodo_inicio, 'o início do período', anterior.periodo_inicio) : null,
     periodoFim: erroFim,
+    itensArrecadar: tipo !== 'campanha' ? null
+      : !dados.itens_arrecadar.length ? 'Informe ao menos um item que a campanha vai arrecadar.'
+      : dados.itens_arrecadar.length > MAXIMO_ITENS ? `Informe no máximo ${MAXIMO_ITENS} itens.` : null,
   });
   if (falha) falhar(400, 'DADOS_INVALIDOS', falha.mensagem, falha.campos, falha.mensagens);
   return dados;
 }
 
 export const CAMPOS = ['tipo', 'nome_contato', 'email', 'telefone', 'nome_iniciativa', 'objetivo',
-  'data_pretendida', 'periodo_inicio', 'periodo_fim', 'recursos_esperados'];
+  'data_pretendida', 'periodo_inicio', 'periodo_fim', 'recursos_esperados', 'itens_arrecadar'];

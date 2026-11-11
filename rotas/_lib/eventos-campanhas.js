@@ -1,7 +1,10 @@
 // Evento e campanha: tipos diferentes, mesma tela (FR-029, DER, 2026-10-05).
-// Evento: nome, data, descrição e recursos em texto. Campanha: nome, período, descrição,
+// Evento: nome, data, objetivo e recursos em texto. Campanha: nome, período, objetivo,
 // recursos a arrecadar (≥ 1, tabela `recurso`) e meta opcional.
 // Conflito de data só entre eventos, e é AVISO, nunca bloqueio (FR-030).
+// "Objetivo" era "descrição" até 2026-11-11 (migração 009), alinhado à solicitação externa.
+// Campanha vinda de solicitação externa não arrecada dinheiro: sem recurso "dinheiro" e sem
+// meta em R$ (decisão de 2026-11-11). Só a equipe cria campanha que arrecada dinheiro.
 
 import * as v from './validacao.js';
 import { hojeBrasilia } from './datas.js';
@@ -21,24 +24,25 @@ function dataValida(valor, dataAnterior) {
 export function validarEvento(corpo, { dataAnterior } = {}) {
   const evento = {
     nome: texto(corpo.nome, 150),
-    descricao: texto(corpo.descricao, 4000),
+    objetivo: texto(corpo.objetivo, 4000),
     data: String(corpo.data ?? ''),
     recursos: texto(corpo.recursos, 2000),
   };
   const falha = v.conferir({
     nome: v.obrigatorio(evento.nome, 'O nome do evento'),
     data: dataValida(evento.data, dataAnterior),
-    descricao: v.obrigatorio(evento.descricao, 'A descrição'),
+    objetivo: v.obrigatorio(evento.objetivo, 'O objetivo'),
   });
   if (falha) falhar(400, 'DADOS_INVALIDOS', falha.mensagem, falha.campos, falha.mensagens);
   return evento;
 }
 
-export function validarCampanha(corpo, { inicioAnterior } = {}) {
+// `externa`: campanha que nasceu de solicitação externa (só itens, sem meta em R$).
+export function validarCampanha(corpo, { inicioAnterior, externa = false } = {}) {
   const recursos = Array.isArray(corpo.recursos) ? corpo.recursos : [];
   const campanha = {
     nome: texto(corpo.nome, 150),
-    descricao: texto(corpo.descricao, 4000),
+    objetivo: texto(corpo.objetivo, 4000),
     periodoInicio: String(corpo.periodoInicio ?? ''),
     periodoFim: String(corpo.periodoFim ?? ''),
     meta: corpo.meta === undefined || corpo.meta === null || String(corpo.meta).trim() === '' ? null : String(corpo.meta).trim().replace(',', '.'),
@@ -48,7 +52,9 @@ export function validarCampanha(corpo, { inicioAnterior } = {}) {
   };
   const erroRecursos = !campanha.recursos.length
     ? 'Informe ao menos um recurso que a campanha arrecada (dinheiro ou item).'
-    : campanha.recursos.some((r) => r.tipo !== 'dinheiro' && r.tipo !== 'item') ? 'Cada recurso precisa ser "dinheiro" ou "item".' : null;
+    : campanha.recursos.some((r) => r.tipo !== 'dinheiro' && r.tipo !== 'item') ? 'Cada recurso precisa ser "dinheiro" ou "item".'
+    : externa && campanha.recursos.some((r) => r.tipo === 'dinheiro')
+      ? 'Campanha proposta de fora do Recanto arrecada só itens, não dinheiro.' : null;
   const erroFim = v.data(campanha.periodoFim) ? 'Informe uma data de fim válida.'
     : campanha.periodoFim < hojeBrasilia() ? 'O fim do período não pode estar no passado.'
     : campanha.periodoFim < campanha.periodoInicio ? 'O fim precisa ser igual ou depois do início.' : null;
@@ -56,8 +62,10 @@ export function validarCampanha(corpo, { inicioAnterior } = {}) {
     nome: v.obrigatorio(campanha.nome, 'O nome da campanha'),
     periodoInicio: dataValida(campanha.periodoInicio, inicioAnterior),
     periodoFim: erroFim,
-    descricao: v.obrigatorio(campanha.descricao, 'A descrição'),
-    meta: campanha.meta === null ? null : v.valorMonetario(campanha.meta, 0.01),
+    objetivo: v.obrigatorio(campanha.objetivo, 'O objetivo'),
+    meta: campanha.meta === null ? null
+      : externa ? 'Campanha proposta de fora do Recanto não tem meta em dinheiro.'
+      : v.valorMonetario(campanha.meta, 0.01),
     recursos: erroRecursos,
   });
   if (falha) falhar(400, 'DADOS_INVALIDOS', falha.mensagem, falha.campos, falha.mensagens);
@@ -83,9 +91,9 @@ export async function conferirConflito(executor, data, { excetoId = null, confir
 export async function criarEvento(tx, evento, { conta, origemId = null, confirmarAviso = false }) {
   const conflitos = await conferirConflito(tx, evento.data, { confirmarAviso });
   const [novo] = await tx.query(
-    `INSERT INTO evento (nome, descricao, recursos_necessarios, data, solicitacao_origem_id, criado_por)
+    `INSERT INTO evento (nome, objetivo, recursos_necessarios, data, solicitacao_origem_id, criado_por)
      VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
-    [evento.nome, evento.descricao, evento.recursos || null, evento.data, origemId, conta.identificador]);
+    [evento.nome, evento.objetivo, evento.recursos || null, evento.data, origemId, conta.identificador]);
   await registrarAuditoria({
     autorTipo: 'conta_institucional', autorId: conta.id, acao: 'evento.criar', entidadeTipo: 'evento', entidadeId: novo.id,
     detalhe: { conflitoConfirmado: conflitos.length > 0, deSolicitacao: Boolean(origemId) },
@@ -96,9 +104,9 @@ export async function criarEvento(tx, evento, { conta, origemId = null, confirma
 export async function criarCampanha(tx, campanha, { conta, origemId = null }) {
   const autor = conta.identificador;
   const [nova] = await tx.query(
-    `INSERT INTO campanha (nome, descricao, periodo_inicio, periodo_fim, meta_valor, solicitacao_origem_id, criado_por)
+    `INSERT INTO campanha (nome, objetivo, periodo_inicio, periodo_fim, meta_valor, solicitacao_origem_id, criado_por)
      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-    [campanha.nome, campanha.descricao, campanha.periodoInicio, campanha.periodoFim, campanha.meta, origemId, autor]);
+    [campanha.nome, campanha.objetivo, campanha.periodoInicio, campanha.periodoFim, campanha.meta, origemId, autor]);
   for (const r of campanha.recursos) {
     await tx.query(`INSERT INTO recurso (campanha_id, tipo, descricao, criado_por) VALUES ($1, $2, $3, $4)`,
       [nova.id, r.tipo, r.descricao, autor]);
@@ -118,6 +126,35 @@ export async function carregar(executor, id, { travar = false } = {}) {
   const [campanha] = await executor.query(`SELECT * FROM campanha WHERE id = $1${sufixo}`, [id]);
   if (campanha) return { tabela: 'campanha', registro: campanha };
   falhar(404, 'NAO_ENCONTRADO', 'Evento ou campanha não encontrado.');
+}
+
+// Quantidade arrecadada de cada recurso (decisão de 2026-11-11), informada à mão pela equipe.
+// Item: quantidade + unidade (da lista ou outra, escrita pela equipe). Dinheiro: valor em R$.
+// Em branco = ainda não informado. Recebe [{ id, quantidade, unidade }].
+export const UNIDADES = ['unidades', 'kg', 'litros', 'pacotes', 'caixas', 'fardos'];
+
+export function validarArrecadacaoRecursos(lista, recursosDaCampanha) {
+  const porId = new Map(recursosDaCampanha.map((r) => [r.id, r]));
+  const erros = [];
+  const valores = (Array.isArray(lista) ? lista : []).map((x) => {
+    const recurso = porId.get(x?.id);
+    if (!recurso) falhar(400, 'RECURSO_INVALIDO', 'Um dos recursos não pertence a esta campanha. Recarregue a página.');
+    // "1.234,5" ou "1234.5": com vírgula, o ponto é separador de milhar.
+    const digitado = String(x.quantidade ?? '').trim();
+    const bruto = digitado.includes(',') ? digitado.replace(/\./g, '').replace(',', '.') : digitado;
+    if (!bruto) return { id: recurso.id, quantidade: null, unidade: null };
+    const quantidade = Number(bruto);
+    if (!/^\d+(\.\d{1,2})?$/.test(bruto) || !Number.isFinite(quantidade) || quantidade > 9999999999) {
+      erros.push(`"${recurso.descricao}": informe um número (até duas casas decimais).`);
+      return null;
+    }
+    if (recurso.tipo === 'dinheiro') return { id: recurso.id, quantidade, unidade: null };
+    const unidade = texto(x.unidade, 40);
+    if (!unidade) erros.push(`"${recurso.descricao}": escolha a unidade (kg, pacotes…).`);
+    return { id: recurso.id, quantidade, unidade };
+  });
+  if (erros.length) falhar(400, 'DADOS_INVALIDOS', erros.join(' '), ['recursos'], { recursos: erros.join(' ') });
+  return valores;
 }
 
 export { dataTexto } from './datas.js';

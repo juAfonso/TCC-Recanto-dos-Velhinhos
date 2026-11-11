@@ -23,7 +23,7 @@ export const POST = rota(async (request) => {
     await registrarConsentimento({ alvo: 'solicitacao_externa', alvoId: nova.id, avisoVersao, finalidade: 'solicitacao_externa' }, tx);
     await registrarAuditoria({
       autorTipo: 'anonimo', acao: 'solicitacao.enviar', entidadeTipo: 'solicitacao_externa', entidadeId: nova.id,
-      detalhe: { tipo: dados.tipo, comRecursos: Boolean(dados.recursos_esperados) },
+      detalhe: { tipo: dados.tipo, comRecursos: Boolean(dados.recursos_esperados), itens: dados.itens_arrecadar?.length ?? 0 },
     }, tx);
     return nova;
   });

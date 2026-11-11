@@ -10,13 +10,13 @@ export const GET = rota(async () => {
   const hoje = hojeBrasilia();
 
   const eventos = await sql`
-    SELECT id, nome, descricao, recursos_necessarios, to_char(data, 'YYYY-MM-DD') AS data
+    SELECT id, nome, objetivo, recursos_necessarios, to_char(data, 'YYYY-MM-DD') AS data
     FROM evento
     WHERE status = 'ativo' AND data >= ${hoje}::date
     ORDER BY data, nome`;
 
   const campanhas = await sql`
-    SELECT c.id, c.nome, c.descricao,
+    SELECT c.id, c.nome, c.objetivo,
            to_char(c.periodo_inicio, 'YYYY-MM-DD') AS periodo_inicio,
            to_char(c.periodo_fim, 'YYYY-MM-DD') AS periodo_fim,
            c.meta_valor, c.arrecadado_valor,
@@ -33,7 +33,7 @@ export const GET = rota(async () => {
       tipo: 'evento',
       id: e.id,
       nome: e.nome,
-      descricao: e.descricao,
+      objetivo: e.objetivo,
       data: e.data,
       recursos: e.recursos_necessarios ?? '',
     })),
@@ -42,7 +42,7 @@ export const GET = rota(async () => {
         tipo: 'campanha',
         id: c.id,
         nome: c.nome,
-        descricao: c.descricao,
+        objetivo: c.objetivo,
         periodoInicio: c.periodo_inicio,
         periodoFim: c.periodo_fim,
         recursos: c.recursos,

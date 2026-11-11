@@ -1,4 +1,5 @@
-// GET /api/admin/solicitacoes?status= — filas da triagem de solicitações externas (FR-021, FR-022).
+// GET /api/admin/solicitacoes?status=&tipo= — filas da triagem de solicitações externas (FR-021,
+// FR-022). `tipo` (evento | campanha | todos) filtra a lista; a contagem das abas é sempre do total.
 
 import { sql } from '../../_lib/db.js';
 import { exigirAdmin } from '../../_lib/acesso.js';
@@ -10,13 +11,16 @@ export const GET = rota(async (request) => {
   await exigirAdmin(request);
   const status = new URL(request.url).searchParams.get('status') || 'em_analise';
   if (!STATUS.has(status)) falhar(400, 'STATUS_INVALIDO', 'Filtro de status inválido.');
+  const tipo = new URL(request.url).searchParams.get('tipo') || 'todos';
+  if (!['evento', 'campanha', 'todos'].includes(tipo)) falhar(400, 'TIPO_INVALIDO', 'Filtro de tipo inválido.');
 
   const linhas = await sql`
     SELECT id, protocolo, tipo, nome_contato, nome_iniciativa, status, criado_em, anonimizado_em,
            to_char(COALESCE(data_pretendida, periodo_inicio), 'YYYY-MM-DD') AS data_inicio,
            to_char(periodo_fim, 'YYYY-MM-DD') AS data_fim
     FROM solicitacao_externa
-    WHERE ${status} = 'todas' OR status = ${status}
+    WHERE (${status} = 'todas' OR status = ${status})
+      AND (${tipo} = 'todos' OR tipo = ${tipo})
     ORDER BY CASE WHEN status IN ('em_analise', 'aguardando_contato') THEN criado_em END ASC, criado_em DESC
     LIMIT 300`;
   const [contagem] = await sql`

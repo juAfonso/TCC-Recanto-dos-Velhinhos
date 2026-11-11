@@ -721,6 +721,44 @@ Passo a passo de comandos e validação em
   este ano, ano passado) fica marcado enquanto as datas forem as dele, e o
   relatório escreve o nome do período ("Novembro de 2026 (até hoje)", "Ano
   de 2025") antes das datas; período qualquer sai só com as datas.
+- **Campanhas: filtro, itens da proposta, arrecadação por recurso e relatório
+  (decidido em 2026-11-11, migração 009).** Pedido do grupo; tudo dentro do
+  CSU02 e do CSU08, nenhum caso de uso novo. Session 2026-11-11 (2) do spec.md.
+  1. **Filtro Campanhas / Eventos** no Portal (`campanhas.html`), na tela de
+     Campanhas & Eventos do Painel e na triagem de solicitações (FR-029d).
+  2. **A proposta externa de campanha lista os itens que vai arrecadar** (ao
+     menos um, obrigatório; `solicitacao_externa.itens_arrecadar`). Na
+     confirmação eles já entram como recursos da campanha e a equipe ajusta.
+     Os "recursos esperados" (o que se pede ao Recanto) continuam separados e
+     continuam não virando Recurso (decisão de 05/10 mantida).
+  3. **Só a equipe cria campanha que arrecada dinheiro.** Campanha nascida de
+     solicitação externa não tem recurso `dinheiro` nem meta em R$ (API recusa
+     na confirmação e na edição). O tipo `dinheiro` continua nas campanhas do
+     Painel.
+  4. **Quantidade arrecadada por recurso**, informada à mão (FR-029b): item
+     com unidade (unidades, kg, litros, pacotes, caixas, fardos ou outra
+     escrita pela equipe), dinheiro em R$; sem meta por item. Pode ser
+     registrada **a qualquer momento, inclusive depois de encerrada** — a
+     contagem final costuma sair depois do fim. O valor da barra (com meta)
+     também passou a aceitar correção depois do encerramento. Tudo vai para
+     o histórico. Mesma tela, botão "Registrar arrecadação".
+  5. **Relatório de campanha** (`admin/relatorio-campanha.html`, FR-029e):
+     a equipe escolhe uma campanha **encerrada** e imprime ou salva em PDF, no
+     papel timbrado do relatório de doações. Ativa não gera relatório. Da
+     proposta externa sai só o protocolo e o nome de quem propôs.
+  6. **"Descrição" virou "objetivo"** em evento e campanha, nas telas, na API
+     e no banco (`RENAME COLUMN` na migração 009), igual à solicitação
+     externa. A descrição do **recurso** continua "descrição".
+  7. **"Ver dados" em todo evento e campanha**, ativos e encerrados: janela só
+     de consulta com todos os dados, recursos, arrecadação e quem fez cada
+     coisa — como a consulta de pessoas. Antes, o encerrado não se editava e
+     também não se consultava.
+  Pendentes: atualizar o DER (`recurso` ganhou quantidade arrecadada e
+  unidade; `solicitacao_externa`, os itens), levar ao PRD e à seção 19 do
+  TCC. **Depois do merge, rodar `npm run migrate` na `dev` e
+  `npm run migrate -- --producao` na `main`**: até lá, quem estiver com a
+  `main` antiga no `npm run dev` contra a `dev` migrada vai ver erro em
+  campanhas (coluna `descricao` não existe mais).
 - **Prioridade do item necessário: alta, média ou baixa (decidido em
   2026-10-05).** O CSU07 falava em "prioridade" sem valores, e o protótipo
   usava só "urgente sim/não". Os de prioridade alta são os "itens mais

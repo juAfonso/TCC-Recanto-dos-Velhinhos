@@ -7,8 +7,9 @@ const Utils = (() => {
   /* ---------- Toasts ----------
      O contêiner é uma região viva (aria-live): o leitor de tela lê o aviso assim
      que ele aparece. Por isso ele já existe antes do primeiro aviso.
-     Aviso de erro (danger) fica na tela até a pessoa fechar e é lido na hora
-     (role="alert"); os demais somem sozinhos. (decidido em 2026-10-28) */
+     Aviso de erro (danger) é lido na hora (role="alert") e tem o botão Fechar.
+     Todos somem sozinhos: o de erro fica um pouco mais, para dar tempo de ler.
+     (decidido em 2026-10-28; erro passou a sumir sozinho em 2026-11-11) */
   function ensureToastContainer() {
     let c = document.getElementById('toast-container');
     if (!c) {
@@ -21,7 +22,7 @@ const Utils = (() => {
   }
   if (document.body) ensureToastContainer();
 
-  function toast(message, type = 'success', timeout = 6000) {
+  function toast(message, type = 'success', timeout = type === 'danger' ? 8000 : 6000) {
     const container = ensureToastContainer();
     const el = document.createElement('div');
     el.className = `toast ${type === 'danger' ? 'toast-danger' : type === 'warning' ? 'toast-warning' : ''}`;
@@ -43,7 +44,7 @@ const Utils = (() => {
       el.appendChild(fechar);
     }
     container.appendChild(el);
-    if (type !== 'danger') setTimeout(remover, timeout);
+    setTimeout(remover, timeout);
   }
 
   /* ---------- Formatação ---------- */

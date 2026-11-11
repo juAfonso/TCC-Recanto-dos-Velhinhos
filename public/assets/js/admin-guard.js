@@ -48,6 +48,23 @@
       }
     });
 
+    // Menu em duas colunas (2026-11-11): o trilho escolhe a seção e o painel mostra as telas dela.
+    // Abre na seção da página aberta; sem página do menu aberta, na primeira.
+    const botoes = aside.querySelectorAll('.menu-grupo');
+    const mostrarGrupo = (grupo) => {
+      botoes.forEach((b) => {
+        const ativo = b.dataset.grupo === grupo;
+        b.classList.toggle('active', ativo);
+        b.setAttribute('aria-expanded', String(ativo));
+      });
+      aside.querySelectorAll('.menu-painel .admin-nav').forEach((nav) => { nav.hidden = nav.dataset.grupo !== grupo; });
+    };
+    if (botoes.length) {
+      const aberta = aside.querySelector('.menu-painel .admin-nav a.active');
+      mostrarGrupo(aberta ? aberta.closest('.admin-nav').dataset.grupo : botoes[0].dataset.grupo);
+      botoes.forEach((b) => b.addEventListener('click', () => mostrarGrupo(b.dataset.grupo)));
+    }
+
     const logoutBtn = document.getElementById('btn-admin-logout');
     if (logoutBtn) {
       logoutBtn.addEventListener('click', async () => {

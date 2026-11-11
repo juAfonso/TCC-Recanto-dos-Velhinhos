@@ -1603,9 +1603,30 @@ td:last-child .btn + .btn{ margin-left:6px; }
 }
 .menu-painel[hidden]{ display:none; }
 .menu-painel :focus-visible{ outline-color:var(--viridian-dark); }
-.menu-painel-marca{
-    padding:22px 18px 16px;
+/* Topo do painel: marca e a setinha que fecha o menu (2026-11-11). */
+.menu-painel-topo{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:var(--e2);
+    padding-right:4px;
     border-bottom:1px solid #CFE0D6;
+}
+.menu-painel-fechar{
+    flex-shrink:0;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:44px; height:44px;
+    background:none;
+    border:none;
+    border-radius:var(--radius-sm);
+    color:var(--viridian-deep);
+    cursor:pointer;
+}
+.menu-painel-fechar:hover{ background:var(--tea); }
+.menu-painel-marca{
+    padding:22px 0 16px 18px;
     color:var(--viridian-deep);
     font-family:var(--font-titulo);
     font-weight:600;

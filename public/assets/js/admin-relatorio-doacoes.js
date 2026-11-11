@@ -44,6 +44,32 @@ document.addEventListener('DOMContentLoaded', () => {
     form.requestSubmit();
   }));
 
+  // Marca o atalho cujo período é o que está nos campos (2026-11-11). Mudar a data à mão
+  // desmarca, porque o período deixa de ser o do atalho.
+  function marcarAtalho() {
+    document.querySelectorAll('[data-periodo]').forEach((btn) => {
+      const [de, ate] = periodo(btn.dataset.periodo);
+      btn.setAttribute('aria-pressed', String(form.de.value === de && form.ate.value === ate));
+    });
+  }
+  ['de', 'ate'].forEach((campo) => form[campo].addEventListener('input', marcarAtalho));
+
+  // Nome do período para o relatório: "novembro de 2026", "ano de 2025"… quando o período
+  // é um mês ou um ano (inteiro, ou do dia 1º até hoje); senão, nada.
+  function nomePeriodo(de, ate) {
+    const [a1, m1, d1] = de.split('-').map(Number);
+    const [a2, m2, d2] = ate.split('-').map(Number);
+    if (d1 !== 1 || a1 !== a2) return '';
+    const fimOuHoje = (dia, ultimo) => dia === ultimo || ate === hoje();
+    if (m1 === m2 && fimOuHoje(d2, ultimoDia(a2, m2))) {
+      const nome = `${MESES[m1 - 1]} de ${a1}`;
+      return ate === hoje() && d2 !== ultimoDia(a2, m2) ? `${nome} (até hoje)` : nome;
+    }
+    if (m1 === 1 && (m2 === 12 && d2 === 31)) return `ano de ${a1}`;
+    if (m1 === 1 && ate === hoje()) return `ano de ${a1} (até hoje)`;
+    return '';
+  }
+
   const textoMes = (aaaaMm) => {
     const [a, m] = aaaaMm.split('-').map(Number);
     return `${MESES[m - 1]}/${a}`;
@@ -58,7 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function render(r) {
     const { filtros: f, resumo, doacoes } = r;
-    $('r-periodo').textContent = `${Utils.formatDay(f.de)} a ${Utils.formatDay(f.ate)}`;
+    const nome = nomePeriodo(f.de, f.ate);
+    const datas = `${Utils.formatDay(f.de)} a ${Utils.formatDay(f.ate)}`;
+    $('r-periodo').textContent = nome ? `${nome.charAt(0).toUpperCase()}${nome.slice(1)} — ${datas}` : datas;
     $('r-valor').textContent = textoValor(f.valorMin, f.valorMax);
     $('r-tipo').textContent = TIPO[f.tipo];
     $('r-situacao').textContent = SITUACAO[f.situacao];
@@ -105,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (valor) params.set(campo, valor);
     });
     history.replaceState(null, '', `?${params}`);
+    marcarAtalho();
     $('btn-imprimir').disabled = true;
     $('estado').hidden = false;
     $('estado').textContent = 'Carregando…';

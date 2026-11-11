@@ -86,3 +86,10 @@
   .relatorio .termo-data { margin-top: 14px; break-after: avoid; }
   .relatorio .assinaturas { margin-top: 36px; }
 }
+/* Atalho de período escolhido (2026-11-11): preenchido, com marca de seleção. */
+.atalhos-periodo .btn[aria-pressed="true"],
+.atalhos-periodo .btn[aria-pressed="true"]:hover { background: var(--viridian-dark) !important; border-color: var(--viridian-dark); color: #fff; }
+.atalhos-periodo .btn[aria-pressed="true"]::before {
+  content: ""; width: 14px; height: 14px; margin-right: 6px; background-color: currentColor;
+  -webkit-mask: var(--i-marcar) center / contain no-repeat; mask: var(--i-marcar) center / contain no-repeat;
+}

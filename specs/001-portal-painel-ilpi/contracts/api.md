@@ -218,7 +218,7 @@ Filas: `voluntarios`, `candidaturas`, `solicitacoes`.
 | `POST` | `/api/admin/voluntarios/:id/entrevista` · `/candidaturas/:id/entrevista` | voluntário, candidatura | pendente/em análise → entrevista |
 | `POST` | `/api/admin/voluntarios/:id/aprovar` · `/candidaturas/:id/aprovar` | voluntário, candidatura | entrevista → aprovado |
 | `POST` | `/api/admin/solicitacoes/:id/aprovar` | solicitação | em análise → aguardando contato (nada publicado) |
-| `POST` | `/api/admin/solicitacoes/:id/confirmar` | solicitação | aguardando contato → confirmada; corpo com os dados combinados e, na campanha, os recursos; cria e publica evento/campanha |
+| `POST` | `/api/admin/solicitacoes/:id/confirmar` | solicitação | aguardando contato → confirmada; corpo com os dados combinados e, na campanha, os recursos (só `item`, sem `meta`, 2026-11-11); cria e publica evento/campanha |
 | `POST` | `/api/admin/{fila}/:id/rejeitar` | todas | `{ motivo?: string }` — **opcional** |
 | `POST` | `/api/admin/voluntarios/:id/autorizacao-recebida` | voluntário menor | pendente → recebida (FR-012) |
 | `GET` | `/api/admin/voluntarios/:id/impressao` | voluntário | dados para imprimir o termo de adesão, único para maior e menor desde 2026-10-16 (FR-012a, D17); auditado. Substituiu `/autorizacao` em 2026-10-06 |
@@ -243,9 +243,10 @@ Regras:
 | `GET`/`POST` | `/api/admin/itens` | `?busca=` por nome; `POST` com nome, quantidade ≥ 0, unidade, prioridade (FR-026) |
 | `PUT` | `/api/admin/itens/:id` | atualizar quantidade renova `quantidade_atualizada_em` |
 | `POST` | `/api/admin/itens/:id/baixa` | `ativo → suprido` (FR-027) |
-| `GET`/`POST` | `/api/admin/eventos-campanhas` | `POST` com `tipo`; evento: nome, data, descrição, recursos em texto; campanha: nome, período, descrição, `recursos[]` (≥ 1), `meta?`; data passada: `400`; conflito de evento: `409` + `confirmarAviso` |
+| `GET`/`POST` | `/api/admin/eventos-campanhas` | `POST` com `tipo`; evento: nome, data, `objetivo`, recursos em texto; campanha: nome, período, `objetivo`, `recursos[]` (≥ 1), `meta?`; data passada: `400`; conflito de evento: `409` + `confirmarAviso` |
 | `PUT` | `/api/admin/eventos-campanhas/:id` | mesmas validações |
-| `PUT` | `/api/admin/campanhas/:id/arrecadado` | só com meta (FR-029b) |
+| `PUT` | `/api/admin/campanhas/:id/arrecadado` | `{ valor?, recursos?: [{ id, quantidade, unidade }] }`; `valor` só com meta (FR-029b); quantidade de cada recurso (item com unidade, dinheiro em R$); vale também para campanha encerrada (2026-11-11) |
+| `GET` | `/api/admin/campanhas/:id/relatorio` | dados do relatório de campanha **encerrada** (FR-029e); ativa → `422 CAMPANHA_ATIVA` |
 | `POST` | `/api/admin/eventos-campanhas/:id/encerrar` | a qualquer momento; já encerrado: `200` sem alteração (FR-029a) |
 | `GET`/`POST` 📎 | `/api/admin/noticias` | todas, publicadas e despublicadas; `POST` com `titulo`, `corpo`, `imagem` opcional e `imagemAlt` obrigatório se houver imagem (FR-032b); nasce publicada |
 | `GET` · `PUT` 📎 | `/api/admin/noticias/:id` | `PUT` edita texto e imagem: `imagem` nova substitui, `removerImagem=1` tira; a anterior é desvinculada, nunca apagada; estado anterior no histórico |

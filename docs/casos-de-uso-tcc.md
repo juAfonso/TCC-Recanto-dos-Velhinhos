@@ -173,7 +173,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU02 |
 |---|---|
 | Nome | Manter Campanhas e Eventos |
-| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para cadastrar, alterar e encerrar eventos e campanhas institucionais — o encerramento também acontece automaticamente quando a data do evento ou o período da campanha passa —, que são publicados automaticamente no Portal Público, onde o visitante os consulta sem login. Evento e campanha são tipos diferentes, escolhidos no cadastro: o evento tem data e recursos necessários descritos em texto, e só ele passa pelo aviso de conflito de data; a campanha tem período de arrecadação, os recursos que arrecada (dinheiro ou itens) e meta em dinheiro opcional, com valor arrecadado informado pela equipe, porque as doações via Pix não são vinculadas a campanhas. Os recursos só existem dentro de uma campanha e são mantidos neste caso de uso. |
+| Sumário | Este caso de uso descreve os passos percorridos pelo funcionário para cadastrar, alterar e encerrar eventos e campanhas institucionais — o encerramento também acontece automaticamente quando a data do evento ou o período da campanha passa —, que são publicados automaticamente no Portal Público, onde o visitante os consulta sem login. Evento e campanha são tipos diferentes, escolhidos no cadastro: o evento tem data e recursos necessários descritos em texto, e só ele passa pelo aviso de conflito de data; a campanha tem período de arrecadação, os recursos que arrecada (dinheiro ou itens) e meta em dinheiro opcional, com valor arrecadado informado pela equipe, porque as doações via Pix não são vinculadas a campanhas. A equipe também informa quanto foi arrecadado de cada recurso, mesmo depois do encerramento, e gera o relatório da campanha encerrada. Campanha originada de proposta externa (CSU08) arrecada só itens. Os recursos só existem dentro de uma campanha e são mantidos neste caso de uso. |
 | Ator Principal | Funcionário |
 | Ator Secundário | Visitante |
 | Pré-condições | Funcionário deve estar autenticado no Painel Administrativo pela conta institucional. |
@@ -183,8 +183,8 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Ator (funcionário) | Sistema |
 |---|---|
 | 1. Acessa a gestão de eventos e campanhas do Painel Administrativo. | |
-| | 2. Lista os eventos e as campanhas, ativos e encerrados, e oferece as opções cadastrar evento, cadastrar campanha, alterar, atualizar valor arrecadado e encerrar. |
-| 3. Escolhe cadastrar evento e informa nome, data, descrição e recursos necessários. | |
+| | 2. Lista os eventos e as campanhas, ativos e encerrados, permitindo ver só eventos ou só campanhas, e oferece as opções cadastrar evento, cadastrar campanha, alterar, registrar arrecadação, encerrar e gerar relatório de campanha. |
+| 3. Escolhe cadastrar evento e informa nome, data, objetivo e recursos necessários. | |
 | | 4. Verifica se a data já tem outro evento confirmado; havendo conflito, executa o fluxo alternativo 01. |
 | | 5. Grava o evento como ativo, publica-o automaticamente no Portal Público e registra a conta e a data na auditoria. O caso de uso se encerra. |
 
@@ -200,7 +200,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. No passo 3 do fluxo principal, escolhe cadastrar campanha e informa nome, período de arrecadação, descrição, os recursos a arrecadar — dinheiro ou itens, ao menos um — e, opcionalmente, meta em dinheiro. | |
+| 1. No passo 3 do fluxo principal, escolhe cadastrar campanha e informa nome, período de arrecadação, objetivo, os recursos a arrecadar — dinheiro ou itens, ao menos um — e, opcionalmente, meta em dinheiro. | |
 | | 2. Grava a campanha como ativa, com seus recursos, sem verificar conflito de data, publica-a automaticamente no Portal Público — sem indicação de progresso, se não houver meta em dinheiro — e registra a conta e a data. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 03 – Alterar evento ou campanha
@@ -212,12 +212,12 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | 3. Modifica os dados desejados e confirma; se mudou a data de um evento, o sistema executa o fluxo alternativo 01. Na campanha, os recursos são mantidos pelo fluxo alternativo 09. | |
 | | 4. Grava as alterações preservando o histórico, atualiza a publicação no Portal Público e registra a conta e a data. O caso de uso se encerra. |
 
-## Fluxo Alternativo 04 – Atualizar valor arrecadado
+## Fluxo Alternativo 04 – Registrar arrecadação
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. No passo 3 do fluxo principal, escolhe atualizar o valor arrecadado de uma campanha com meta em dinheiro e informa o valor, a partir do controle da secretaria. | |
-| | 2. Grava o valor, atualiza o progresso exibido no Portal Público e registra a conta e a data. O caso de uso se encerra. |
+| 1. No passo 3 do fluxo principal, escolhe registrar a arrecadação de uma campanha, ativa ou encerrada, e informa, a partir do controle da secretaria, o valor arrecadado em dinheiro (se a campanha tem meta) e a quantidade arrecadada de cada recurso — com a unidade, no item; em reais, no dinheiro —, deixando em branco o que ainda não foi contado. | |
+| | 2. Grava os valores preservando os anteriores no histórico, atualiza o progresso exibido no Portal Público, se houver meta, e registra a conta e a data. O caso de uso se encerra. |
 
 ## Fluxo Alternativo 05 – Encerrar evento ou campanha
 
@@ -254,18 +254,36 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | 1. No passo 3 do fluxo alternativo 03, sendo uma campanha, inclui um novo recurso a arrecadar (dinheiro ou item) ou desativa um recurso que a campanha deixou de arrecadar. | |
 | | 2. Grava o recurso incluído ou marca o recurso como desativado, sem excluí-lo, atualiza a campanha no Portal Público e registra a conta e a data. O caso de uso se encerra. |
 
+## Fluxo Alternativo 10 – Gerar relatório de campanha
+
+| Ator (funcionário) | Sistema |
+|---|---|
+| 1. No passo 3 do fluxo principal, escolhe gerar o relatório de campanha. | |
+| | 2. Lista as campanhas encerradas para escolha. |
+| 3. Escolhe uma campanha. | |
+| | 4. Exibe o relatório, pronto para imprimir ou salvar em PDF, com nome, objetivo, período, data de encerramento, origem (quando veio de proposta externa), meta e valor arrecadado em dinheiro (quando houver meta) e a quantidade arrecadada de cada recurso, indicando os que ainda não foram contados e avisando que as quantidades foram informadas pela equipe. O caso de uso se encerra. |
+
+## Fluxo Exceção 11 – Dinheiro em campanha de proposta externa
+
+| Ator (funcionário) | Sistema |
+|---|---|
+| 1. No passo 3 do fluxo alternativo 03 ou no passo 1 do fluxo alternativo 09, sendo uma campanha originada de proposta externa (CSU08), inclui recurso em dinheiro ou meta em dinheiro. | |
+| | 2. Não grava, informa que campanha proposta de fora da instituição arrecada só itens e retorna ao passo em que os dados foram informados. |
+
 ## Pós-condições
 
 - **Fluxo principal:** O evento está gravado e publicado no Portal Público.
 - **Fluxo Alternativo 01 – Conflito de data do evento:** O funcionário foi avisado do conflito e decidiu conscientemente.
 - **Fluxo Alternativo 02 – Cadastrar campanha:** A campanha está gravada, com seus recursos, e publicada no Portal Público.
 - **Fluxo Alternativo 03 – Alterar evento ou campanha:** Os dados foram modificados e o histórico da alteração foi preservado.
-- **Fluxo Alternativo 04 – Atualizar valor arrecadado:** O Portal Público exibe o progresso da campanha com o valor informado pela equipe.
+- **Fluxo Alternativo 04 – Registrar arrecadação:** A campanha tem o valor em dinheiro e as quantidades por recurso informados pela equipe; com meta, o Portal Público exibe o progresso.
 - **Fluxo Alternativo 05 – Encerrar evento ou campanha:** O evento ou a campanha saiu da listagem pública e seu registro histórico permanece.
 - **Fluxo Alternativo 06 – Encerramento automático por data:** O evento ou a campanha vencido consta como encerrado, fora da listagem pública, com o sistema como autor na auditoria.
 - **Fluxo Exceção 07 – Dados inválidos ou data passada:** Nenhuma alteração foi gravada.
 - **Fluxo Exceção 08 – Encerrar o que já está encerrado:** O registro permaneceu inalterado.
 - **Fluxo Alternativo 09 – Incluir ou desativar recurso da campanha:** A campanha exibe os recursos ativos; o recurso desativado continua registrado.
+- **Fluxo Alternativo 10 – Gerar relatório de campanha:** O relatório da campanha encerrada foi exibido para impressão; nada foi alterado.
+- **Fluxo Exceção 11 – Dinheiro em campanha de proposta externa:** Nenhuma alteração foi gravada.
 
 ---
 
@@ -659,7 +677,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 | Código | CSU08 |
 |---|---|
 | Nome | Solicitar Evento ou Campanha Externa |
-| Sumário | Este caso de uso descreve os passos percorridos por pessoa ou organização externa para propor um evento ou uma campanha à instituição, e pela equipe para avaliar essa proposta. A aprovação não publica nada: a instituição entra em contato com o solicitante e só depois de combinar os detalhes confirma a proposta, que gera um evento ou uma campanha, conforme o tipo, publicado no Portal Público. Os recursos esperados são o que o solicitante pede à instituição (espaço, equipe, horário) e ficam registrados na solicitação; os recursos que uma campanha arrecada são definidos pelo funcionário na confirmação. |
+| Sumário | Este caso de uso descreve os passos percorridos por pessoa ou organização externa para propor um evento ou uma campanha à instituição, e pela equipe para avaliar essa proposta. A aprovação não publica nada: a instituição entra em contato com o solicitante e só depois de combinar os detalhes confirma a proposta, que gera um evento ou uma campanha, conforme o tipo, publicado no Portal Público. Os recursos esperados são o que o solicitante pede à instituição (espaço, equipe, horário) e ficam registrados na solicitação. Na campanha, o solicitante lista os itens que ela vai arrecadar; na confirmação, eles se tornam os recursos da campanha, ajustados pelo funcionário. Campanha proposta de fora da instituição arrecada só itens, nunca dinheiro. |
 | Ator Principal | Solicitante externo |
 | Ator Secundário | Funcionário |
 | Pré-condições | Solicitante deve estar na página pública de solicitação de evento/campanha. O aviso de privacidade deve estar publicado. |
@@ -668,7 +686,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (solicitante) | Sistema |
 |---|---|
-| 1. Escolhe se propõe um evento ou uma campanha e preenche nome da pessoa ou organização, e-mail e telefone, nome do evento ou da campanha, objetivo e data do evento ou período da campanha, a partir do dia seguinte; se quiser, informa também os recursos que espera da instituição (como espaço, equipe ou horário), que são opcionais. Aceita o aviso de privacidade e confirma o envio. | |
+| 1. Escolhe se propõe um evento ou uma campanha e preenche nome da pessoa ou organização, e-mail e telefone, nome do evento ou da campanha, objetivo e data do evento ou período da campanha, a partir do dia seguinte; na campanha, lista os itens que ela vai arrecadar, ao menos um; se quiser, informa também os recursos que espera da instituição (como espaço, equipe ou horário), que são opcionais. Aceita o aviso de privacidade e confirma o envio. | |
 | | 2. Registra a solicitação externa com status em análise, registra o consentimento vinculado a ela, gera o código de protocolo e sinaliza a solicitação no Painel Administrativo. |
 | | 3. Exibe o protocolo, orientando o solicitante a anotá-lo, e envia e-mail de confirmação. O caso de uso se encerra. |
 
@@ -684,7 +702,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (funcionário) | Sistema |
 |---|---|
-| 1. Depois do fluxo alternativo 01 e de combinar os detalhes com o solicitante, fora do sistema, confirma a proposta, ajustando os dados combinados e, na campanha, informando os recursos a arrecadar. | |
+| 1. Depois do fluxo alternativo 01 e de combinar os detalhes com o solicitante, fora do sistema, confirma a proposta, ajustando os dados combinados e, na campanha, os itens a arrecadar, que já vêm da proposta. | |
 | | 2. Na solicitação de evento, se a data coincide com evento já confirmado, avisa sobre o conflito e permite prosseguir. |
 | | 3. Gera o evento ou a campanha, conforme o tipo da solicitação, com os dados combinados e vinculado à solicitação de origem, publica-o automaticamente no Portal Público (CSU02) e registra a conta e a data. O caso de uso se encerra. |
 
@@ -707,7 +725,7 @@ Sistema web para a ILPI Recanto dos Velhinhos Francisco Gonçalves Barbosa — C
 
 | Ator (solicitante) | Sistema |
 |---|---|
-| 1. No passo 1 do fluxo principal, envia a solicitação sem escolher entre evento e campanha, com dado obrigatório em branco, com telefone ou e-mail inválido, ou com data do evento ou início da campanha anterior ao dia seguinte. | |
+| 1. No passo 1 do fluxo principal, envia a solicitação sem escolher entre evento e campanha, com dado obrigatório em branco, com campanha sem nenhum item a arrecadar, com telefone ou e-mail inválido, ou com data do evento ou início da campanha anterior ao dia seguinte. | |
 | | 2. Impede o envio, indica cada dado a corrigir e retorna ao passo 1 do fluxo principal. |
 
 ## Fluxo Exceção 06 – Envio sem aceite do aviso de privacidade

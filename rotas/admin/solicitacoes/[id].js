@@ -31,7 +31,7 @@ export const GET = rota(async (request) => {
     nomeContato: s.nome_contato, email: s.email, telefone: s.telefone,
     nomeIniciativa: s.nome_iniciativa, objetivo: s.objetivo,
     dataPretendida: dia(s.data_pretendida), periodoInicio: dia(s.periodo_inicio), periodoFim: dia(s.periodo_fim),
-    recursosEsperados: s.recursos_esperados,
+    recursosEsperados: s.recursos_esperados, itensArrecadar: s.itens_arrecadar ?? [],
     motivoRejeicao: s.motivo_rejeicao, triadoPor: s.triado_por, triadoEm: s.triado_em,
     criadoEm: s.criado_em, anonimizado: Boolean(s.anonimizado_em),
     conflitos: conflitos.map((c) => c.nome),

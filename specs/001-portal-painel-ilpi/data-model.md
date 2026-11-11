@@ -191,6 +191,7 @@ Prefixo `SOL-`.
 | `data_pretendida` | `date` NULL | evento |
 | `periodo_inicio`, `periodo_fim` | `date` NULL | campanha |
 | `recursos_esperados` | `text` | o que pede à instituição — **não** vira `recurso` |
+| `itens_arrecadar` | `text[]` NULL | só campanha (≥ 1); na confirmação viram `recurso` do tipo item (migração 009, 2026-11-11). Anonimização apaga |
 | `status` | `text` | `em_analise` → `aguardando_contato` → `confirmada`; `rejeitada`; `encerrada_titular` |
 
 **Transições**: `em_analise → aguardando_contato` (aprovar, nada publicado) → `confirmada` (cria
@@ -314,7 +315,7 @@ Tipos diferentes, mesma tela (2026-10-05).
 
 | Campo | Tipo | Notas |
 |---|---|---|
-| `nome`, `descricao`, `recursos_necessarios` | `text` | recursos em texto livre |
+| `nome`, `objetivo`, `recursos_necessarios` | `text` | recursos em texto livre; `objetivo` era `descricao` até a migração 009 |
 | `data` | `date` | não pode ser passada no cadastro |
 | `solicitacao_origem_id` | `uuid` FK NULL, UNIQUE | solicitação externa que originou (FR-022) |
 | `status` | `text` | `ativo` \| `encerrado` |
@@ -324,7 +325,8 @@ Tipos diferentes, mesma tela (2026-10-05).
 
 `campanha`: igual, trocando `data` por `periodo_inicio`/`periodo_fim` e `recursos_necessarios` pela
 tabela `recurso`, mais `meta_valor` `numeric NULL` e `arrecadado_valor` `numeric NULL`
-(informado à mão, FR-029b; só faz sentido com meta).
+(informado à mão, FR-029b; só faz sentido com meta). Campanha com `solicitacao_origem_id` não tem meta
+nem recurso `dinheiro` (regra da API, 2026-11-11).
 
 **Conflito de data (FR-030)**: só evento × evento ativo na mesma `data`. Aviso, nunca bloqueio.
 
@@ -335,7 +337,10 @@ tabela `recurso`, mais `meta_valor` `numeric NULL` e `arrecadado_valor` `numeric
 | `campanha_id` | `uuid` FK | toda campanha ativa tem ≥ 1 recurso **ativo** (FR-029) |
 | `tipo` | `text` | `dinheiro` \| `item` |
 | `descricao` | `text` | |
-| `ativo` | `boolean` | editar a campanha desativa os recursos que saíram e cria os novos |
+| `quantidade_arrecadada` | `numeric(12,2)` NULL | informada à mão (FR-029b), também depois do encerramento; NULL = não contado |
+| `unidade` | `text` NULL | só item (obrigatória se houver quantidade); dinheiro é sempre R$ e fica NULL |
+| `arrecadado_por`, `arrecadado_em` | NULL | quem informou a quantidade |
+| `ativo` | `boolean` | editar a campanha desativa os recursos que saíram e cria os novos (o que só mudou a descrição leva a quantidade junto) |
 | `criado_por`, `criado_em` | | |
 | `desativado_por`, `desativado_em` | NULL | |
 

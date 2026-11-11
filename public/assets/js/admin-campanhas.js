@@ -1,28 +1,40 @@
 /* Campanhas e eventos no Painel (US3, FR-029 a FR-031, FR-029b, FR-030).
    Tipos diferentes na mesma tela. Publicar no site é automático. Conflito de data
-   entre eventos é AVISO: a equipe escolhe alterar a data ou prosseguir. */
+   entre eventos é AVISO: a equipe escolhe alterar a data ou prosseguir.
+   2026-11-11: filtro por tipo, "objetivo" no lugar de "descrição", arrecadação por recurso
+   (também depois de encerrada) e atalho para o relatório da campanha encerrada. */
 document.addEventListener('DOMContentLoaded', () => {
   const $ = (id) => document.getElementById(id);
   const e = (t) => Utils.escapeHtml(t);
   const tbody = $('campanhas-tbody');
   const form = $('form-campanha');
   const listaRecursos = $('lista-recursos');
+  const UNIDADES = ['unidades', 'kg', 'litros', 'pacotes', 'caixas', 'fardos'];
   let itens = [];
   let editando = null;
+  let filtroTipo = 'todos';
 
   /* ---------- Lista ---------- */
   function periodo(x) {
     return x.tipo === 'evento' ? Utils.formatDay(x.data) : `${Utils.formatDay(x.periodoInicio)} a ${Utils.formatDay(x.periodoFim)}`;
   }
 
+  // Quantos recursos já têm a quantidade arrecadada informada.
+  function contados(x) {
+    const n = x.recursos.filter((r) => r.quantidade !== null).length;
+    return `${n} de ${x.recursos.length} ${x.recursos.length === 1 ? 'recurso contado' : 'recursos contados'}`;
+  }
+
   function arrecadacao(x) {
     if (x.tipo === 'evento') return '<span class="cell-muted">—</span>';
-    if (x.meta === null) return '<span class="cell-muted">Sem meta</span>';
-    const arrecadado = x.arrecadado ?? 0;
-    const pct = Math.min(100, Math.round((arrecadado / x.meta) * 100));
-    const botao = x.status === 'ativo'
-      ? ` <button class="link-btn" data-arrecadado="${x.id}" style="font-size:.86rem;">Atualizar</button>` : '';
-    return `${Utils.formatCurrency(arrecadado)} de ${Utils.formatCurrency(x.meta)} (${pct}%)${botao}`;
+    let barra = '<span class="cell-muted">Sem meta</span>';
+    if (x.meta !== null) {
+      const arrecadado = x.arrecadado ?? 0;
+      const pct = Math.min(100, Math.round((arrecadado / x.meta) * 100));
+      barra = `${Utils.formatCurrency(arrecadado)} de ${Utils.formatCurrency(x.meta)} (${pct}%)`;
+    }
+    return `${barra}<div class="cell-muted" style="font-size:.86rem;">${contados(x)}</div>
+      <button class="link-btn" data-arrecadado="${x.id}" style="font-size:.86rem;">Registrar arrecadação</button>`;
   }
 
   function situacao(x) {
@@ -37,10 +49,15 @@ document.addEventListener('DOMContentLoaded', () => {
   function linha(x) {
     const tipo = x.tipo === 'evento' ? '<span class="badge badge-info">Evento</span>' : '<span class="badge badge-success">Campanha</span>';
     const origem = x.externa ? '<div class="cell-muted" style="font-size:.86rem;">Parceria externa</div>' : '';
+    // "Ver dados" em todos, como nas pessoas: é o único jeito de consultar o que já encerrou.
+    const ver = `<button class="btn btn-outline btn-sm" data-ver="${x.id}">Ver dados</button>`;
     const acoes = x.status === 'ativo'
-      ? `<button class="btn btn-outline btn-sm" data-editar="${x.id}">Editar</button>
+      ? `${ver}
+         <button class="btn btn-outline btn-sm" data-editar="${x.id}">Editar</button>
          <button class="btn btn-danger-outline btn-sm" data-encerrar="${x.id}">Encerrar</button>`
-      : '<span class="cell-muted">Histórico</span>';
+      : x.tipo === 'campanha'
+        ? `${ver} <a class="btn btn-outline btn-sm" href="relatorio-campanha.html?id=${encodeURIComponent(x.id)}">Relatório</a>`
+        : ver;
     return `
       <tr>
         <td>${e(x.nome)}${origem}</td>
@@ -52,11 +69,18 @@ document.addEventListener('DOMContentLoaded', () => {
       </tr>`;
   }
 
+  const NADA = {
+    todos: 'Nenhuma campanha ou evento encontrado.',
+    campanha: 'Nenhuma campanha encontrada.',
+    evento: 'Nenhum evento encontrado.',
+  };
+
   function render() {
     const busca = $('busca-campanha').value.trim().toLowerCase();
-    const lista = itens.filter((x) => !busca || x.nome.toLowerCase().includes(busca));
+    const lista = itens.filter((x) => (filtroTipo === 'todos' || x.tipo === filtroTipo)
+      && (!busca || x.nome.toLowerCase().includes(busca)));
     tbody.innerHTML = lista.map(linha).join('')
-      || '<tr><td colspan="6"><div class="empty-state"><span class="icon" aria-hidden="true">📅</span><p>Nenhuma campanha ou evento encontrado.</p></div></td></tr>';
+      || `<tr><td colspan="6"><div class="empty-state"><p>${NADA[filtroTipo]}</p></div></td></tr>`;
   }
 
   async function carregar() {
@@ -73,8 +97,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   $('busca-campanha').addEventListener('input', render);
 
+  // Filtro Todos / Campanhas / Eventos (2026-11-11).
+  document.querySelector('.filtro-tipo').addEventListener('click', (ev) => {
+    const b = ev.target.closest('[data-tipo]');
+    if (!b) return;
+    filtroTipo = b.dataset.tipo;
+    document.querySelectorAll('.filtro-tipo [data-tipo]').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+    render();
+  });
+
   /* ---------- Formulário ---------- */
   const tipoEscolhido = () => form.querySelector('input[name=tipo]:checked').value;
+  // Campanha que veio de solicitação externa: só itens e sem meta em R$ (2026-11-11).
+  const externa = () => Boolean(editando && editando.externa);
 
   function mostrarCamposDoTipo() {
     const evento = tipoEscolhido() === 'evento';
@@ -92,12 +127,14 @@ document.addEventListener('DOMContentLoaded', () => {
     div.className = 'form-row recurso-linha';
     div.style.alignItems = 'flex-end';
     if (r.id) div.dataset.id = r.id;
+    const dinheiro = externa() && r.tipo !== 'dinheiro'
+      ? '' : `<option value="dinheiro"${r.tipo === 'dinheiro' ? ' selected' : ''}>Dinheiro</option>`;
     div.innerHTML = `
       <div class="form-group" style="flex:0 0 140px;">
         <label for="rec-tipo-${n}">Tipo</label>
         <select id="rec-tipo-${n}" class="rec-tipo">
           <option value="item"${r.tipo === 'item' ? ' selected' : ''}>Item</option>
-          <option value="dinheiro"${r.tipo === 'dinheiro' ? ' selected' : ''}>Dinheiro</option>
+          ${dinheiro}
         </select>
       </div>
       <div class="form-group" style="flex:1;">
@@ -123,10 +160,13 @@ document.addEventListener('DOMContentLoaded', () => {
     $('camp-id').value = x ? x.id : '';
     const hoje = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' });
     ['camp-data', 'camp-inicio', 'camp-fim'].forEach((id) => { $(id).min = x ? '' : hoje; });
+    // Meta em R$ só em campanha criada pela equipe (a externa só mostra, se já tinha).
+    $('camp-meta').closest('.form-group').hidden = Boolean(x && x.externa && x.meta === null);
+    $('camp-externa-aviso').hidden = !externa();
     if (x) {
       form.querySelector(`input[name=tipo][value=${x.tipo}]`).checked = true;
       $('camp-nome').value = x.nome;
-      $('camp-descricao').value = x.descricao;
+      $('camp-objetivo').value = x.objetivo;
       if (x.tipo === 'evento') {
         $('camp-data').value = x.data;
         $('camp-recursos-texto').value = x.recursos || '';
@@ -145,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function dadosDoForm() {
     const tipo = editando ? editando.tipo : tipoEscolhido();
-    const comum = { tipo, nome: $('camp-nome').value.trim(), descricao: $('camp-descricao').value.trim() };
+    const comum = { tipo, nome: $('camp-nome').value.trim(), objetivo: $('camp-objetivo').value.trim() };
     if (tipo === 'evento') return { ...comum, data: $('camp-data').value, recursos: $('camp-recursos-texto').value.trim() };
     return {
       ...comum,
@@ -189,43 +229,173 @@ document.addEventListener('DOMContentLoaded', () => {
     botao.disabled = false;
   });
 
-  /* ---------- Encerrar e arrecadado ---------- */
+  /* ---------- Encerrar e arrecadação ---------- */
   tbody.addEventListener('click', async (ev) => {
-    const alvo = ev.target.closest('[data-editar], [data-encerrar], [data-arrecadado]');
+    const alvo = ev.target.closest('[data-ver], [data-editar], [data-encerrar], [data-arrecadado]');
     if (!alvo) return;
-    const x = itens.find((i) => i.id === (alvo.dataset.editar || alvo.dataset.encerrar || alvo.dataset.arrecadado));
+    const x = itens.find((i) => i.id === (alvo.dataset.ver || alvo.dataset.editar || alvo.dataset.encerrar || alvo.dataset.arrecadado));
+    if (alvo.dataset.ver) verDados(x);
     if (alvo.dataset.editar) abrir(x);
     if (alvo.dataset.encerrar) {
-      if (!confirm(`Encerrar "${x.nome}"? Sai do site agora e fica no histórico. Não dá para desfazer.`)) return;
+      const extra = x.tipo === 'campanha' ? ' A arrecadação pode ser registrada depois.' : '';
+      if (!confirm(`Encerrar "${x.nome}"? Sai do site agora e fica no histórico. Não dá para desfazer.${extra}`)) return;
       try {
         await Api.post(`/api/admin/eventos-campanhas/${x.id}/encerrar`);
         Utils.toast('Encerrado.');
       } catch (erro) { Utils.toast(erro.message, 'danger'); }
       carregar();
     }
-    if (alvo.dataset.arrecadado) {
-      editando = x;
-      $('form-arrecadado').reset();
-      Utils.clearAllErrors($('form-arrecadado'));
-      $('arrecadado-resumo').textContent = `${x.nome} — meta de ${Utils.formatCurrency(x.meta)}.`;
-      $('arrecadado-valor').value = x.arrecadado === null ? '' : String(x.arrecadado).replace('.', ',');
-      openModal('modal-arrecadado');
-      $('arrecadado-valor').focus();
-    }
+    if (alvo.dataset.arrecadado) abrirArrecadacao(x);
   });
+
+  /* ---------- Consultar dados (2026-11-11) ----------
+     Só leitura, para ativos e encerrados. Encerrado não se edita, mas tudo continua consultável. */
+  const quemQuando = (quem, quando) => (quando
+    ? `${quem === 'sistema' ? 'automaticamente' : `por ${e(quem)}`} em ${Utils.formatDateTime(quando)}` : '—');
+  const numero = (n) => Number(n).toLocaleString('pt-BR', { maximumFractionDigits: 2 });
+
+  function verDados(x) {
+    const campanha = x.tipo === 'campanha';
+    $('modal-ver-titulo').textContent = x.nome;
+    $('ver-situacao').innerHTML = situacao(x);
+    const linhas = [
+      ['Tipo', campanha ? 'Campanha' : 'Evento'],
+      ['Nome', e(x.nome)],
+      campanha ? ['Período', periodo(x)] : ['Data', periodo(x)],
+      ['Objetivo', Utils.paragrafos(x.objetivo)],
+      ...(campanha ? [] : [['Do que o evento precisa', x.recursos ? Utils.paragrafos(x.recursos) : '—']]),
+      ...(campanha ? [
+        ['Meta em dinheiro', x.meta === null ? 'Sem meta' : Utils.formatCurrency(x.meta)],
+        ...(x.meta === null ? [] : [['Valor arrecadado', `${x.arrecadado === null ? 'Não informado' : Utils.formatCurrency(x.arrecadado)}${x.arrecadadoEm ? ` <span class="cell-muted">(${quemQuando(x.arrecadadoPor, x.arrecadadoEm)})</span>` : ''}`]]),
+      ] : []),
+      ['Origem', x.externa ? `Proposta externa${x.protocoloOrigem ? ` — protocolo ${e(x.protocoloOrigem)}` : ''}` : 'Cadastrado pela equipe'],
+      ['Cadastrado', quemQuando(x.criadoPor, x.criadoEm)],
+      ['Última alteração', quemQuando(x.atualizadoPor, x.atualizadoEm)],
+      ['Encerrado', quemQuando(x.encerradoPor, x.encerradoEm)],
+    ];
+    $('ver-dados').innerHTML = linhas.map(([r, v]) => `<dt>${e(r)}</dt><dd>${v || '—'}</dd>`).join('');
+
+    $('ver-recursos-bloco').hidden = !campanha;
+    if (campanha) {
+      $('ver-recursos').innerHTML = x.recursos.map((r) => `
+        <tr>
+          <td>${e(r.descricao)}</td>
+          <td>${r.tipo === 'dinheiro' ? 'Dinheiro' : 'Item'}</td>
+          <td>${r.quantidade === null ? '<span class="cell-muted">Não informado</span>'
+            : r.tipo === 'dinheiro' ? Utils.formatCurrency(r.quantidade) : `${numero(r.quantidade)} ${e(r.unidade)}`}</td>
+          <td class="cell-muted">${r.arrecadadoEm ? quemQuando(r.arrecadadoPor, r.arrecadadoEm) : '—'}</td>
+        </tr>`).join('') || '<tr><td colspan="4" class="cell-muted">Sem recursos cadastrados.</td></tr>';
+    }
+
+    const acoes = [];
+    if (campanha) acoes.push(`<button type="button" class="btn btn-outline btn-sm" data-ver-arrecadado="${x.id}">Registrar arrecadação</button>`);
+    if (campanha && x.status !== 'ativo') acoes.push(`<a class="btn btn-outline btn-sm" href="relatorio-campanha.html?id=${encodeURIComponent(x.id)}">Relatório</a>`);
+    if (x.status === 'ativo') acoes.push(`<button type="button" class="btn btn-outline btn-sm" data-ver-editar="${x.id}">Editar</button>`);
+    $('ver-acoes').innerHTML = acoes.join('');
+    openModal('modal-ver');
+  }
+
+  $('ver-acoes').addEventListener('click', (ev) => {
+    const b = ev.target.closest('[data-ver-arrecadado], [data-ver-editar]');
+    if (!b) return;
+    const x = itens.find((i) => i.id === (b.dataset.verArrecadado || b.dataset.verEditar));
+    closeModal('modal-ver');
+    if (b.dataset.verArrecadado) abrirArrecadacao(x);
+    else abrir(x);
+  });
+
+  /* ---------- Arrecadação por recurso (2026-11-11) ----------
+     Item: quantidade + unidade (lista ou outra). Dinheiro: valor em R$. Em branco = não contado. */
+  const listaArrecadacao = $('lista-arrecadacao');
+
+  function linhaArrecadacao(r, i) {
+    const n = i + 1;
+    const qtd = r.quantidade === null ? '' : String(r.quantidade).replace('.', ',');
+    const quem = r.arrecadadoEm
+      ? `<p class="form-hint" style="flex:1 1 100%;margin:0;">Informado por ${e(r.arrecadadoPor)} em ${Utils.formatDateTime(r.arrecadadoEm)}</p>` : '';
+    if (r.tipo === 'dinheiro') {
+      return `
+        <div class="form-row arrecadacao-linha" data-id="${e(r.id)}">
+          <p class="arrecadacao-nome">${e(r.descricao)} <span class="badge badge-neutral">Dinheiro</span></p>
+          <div class="form-group" style="flex:0 1 220px;">
+            <label for="arr-qtd-${n}">Valor arrecadado (R$)</label>
+            <input type="text" id="arr-qtd-${n}" class="arr-qtd" inputmode="decimal" value="${e(qtd)}" placeholder="Ainda não contado">
+          </div>
+          ${quem}
+        </div>`;
+    }
+    const outra = Boolean(r.unidade) && !UNIDADES.includes(r.unidade);
+    const opcoes = UNIDADES.map((u) => `<option value="${u}"${r.unidade === u ? ' selected' : ''}>${u}</option>`).join('');
+    return `
+      <div class="form-row arrecadacao-linha" data-id="${e(r.id)}">
+        <p class="arrecadacao-nome">${e(r.descricao)}</p>
+        <div class="form-group" style="flex:0 1 160px;">
+          <label for="arr-qtd-${n}">Quantidade</label>
+          <input type="text" id="arr-qtd-${n}" class="arr-qtd" inputmode="decimal" value="${e(qtd)}" placeholder="Ainda não contado">
+        </div>
+        <div class="form-group" style="flex:0 1 160px;">
+          <label for="arr-un-${n}">Unidade</label>
+          <select id="arr-un-${n}" class="arr-un">
+            <option value="">Escolha…</option>${opcoes}<option value="outra"${outra ? ' selected' : ''}>Outra…</option>
+          </select>
+        </div>
+        <div class="form-group arr-outra-grupo" style="flex:1 1 160px;"${outra ? '' : ' hidden'}>
+          <label for="arr-outra-${n}">Qual unidade?</label>
+          <input type="text" id="arr-outra-${n}" class="arr-outra" maxlength="40" value="${outra ? e(r.unidade) : ''}" placeholder="ex.: sacos de 5 kg">
+        </div>
+        ${quem}
+      </div>`;
+  }
+
+  listaArrecadacao.addEventListener('change', (ev) => {
+    if (!ev.target.classList.contains('arr-un')) return;
+    const grupo = ev.target.closest('.arrecadacao-linha').querySelector('.arr-outra-grupo');
+    grupo.hidden = ev.target.value !== 'outra';
+    if (!grupo.hidden) grupo.querySelector('input').focus();
+  });
+
+  function abrirArrecadacao(x) {
+    editando = x;
+    const f = $('form-arrecadado');
+    f.reset();
+    Utils.clearAllErrors(f);
+    const quando = x.status === 'ativo' ? 'em andamento' : 'encerrada';
+    $('arrecadado-resumo').textContent = x.meta === null
+      ? `${x.nome} — campanha ${quando}.`
+      : `${x.nome} — campanha ${quando}, meta de ${Utils.formatCurrency(x.meta)}.`;
+    $('grupo-arrecadado-valor').hidden = x.meta === null;
+    $('arrecadado-valor').value = x.arrecadado === null ? '' : String(x.arrecadado).replace('.', ',');
+    listaArrecadacao.innerHTML = x.recursos.map(linhaArrecadacao).join('')
+      || '<p class="cell-muted">Esta campanha não tem recursos cadastrados.</p>';
+    openModal('modal-arrecadado');
+    (x.meta === null ? listaArrecadacao.querySelector('input') : $('arrecadado-valor'))?.focus();
+  }
 
   $('form-arrecadado').addEventListener('submit', async (ev) => {
     ev.preventDefault();
     const f = ev.currentTarget;
     Utils.clearAllErrors(f);
+    const corpo = {
+      recursos: [...listaArrecadacao.querySelectorAll('.arrecadacao-linha')].map((l) => {
+        const un = l.querySelector('.arr-un');
+        return {
+          id: l.dataset.id,
+          quantidade: l.querySelector('.arr-qtd').value.trim(),
+          unidade: !un ? null : un.value === 'outra' ? l.querySelector('.arr-outra').value.trim() : un.value,
+        };
+      }),
+    };
+    if (editando.meta !== null) corpo.valor = $('arrecadado-valor').value.trim();
+    const botao = f.querySelector('[type=submit]');
+    botao.disabled = true;
     try {
-      await Api.put(`/api/admin/campanhas/${editando.id}/arrecadado`, { valor: $('arrecadado-valor').value.trim() }, { form: f });
+      await Api.put(`/api/admin/campanhas/${editando.id}/arrecadado`, corpo, { form: f });
       closeModal('modal-arrecadado');
-      Utils.toast('Valor arrecadado atualizado no site.');
+      Utils.toast('Arrecadação registrada.');
       carregar();
     } catch (erro) {
       if (!erro.campos.length) Utils.toast(erro.message, 'danger');
-    }
+    } finally { botao.disabled = false; }
   });
 
   carregar();

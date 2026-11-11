@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const TIPO = { evento: 'Evento', campanha: 'Campanha' };
   const periodo = (ini, fim) => (fim ? `${Utils.formatDay(ini)} a ${Utils.formatDay(fim)}` : Utils.formatDay(ini));
   let filtro = 'em_analise';
+  let filtroTipo = 'todos'; // Todas / Campanhas / Eventos (2026-11-11)
   let atual = null;
   // Na primeira carga, se não há nada em análise mas há proposta aguardando contato, abre nessa aba:
   // o "Ver →" da Visão Geral conta as duas filas e não pode cair numa lista vazia.
@@ -23,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function carregar() {
     tbody.innerHTML = '<tr><td colspan="8" class="cell-muted">Carregando…</td></tr>';
     try {
-      const r = await Api.get(`/api/admin/solicitacoes?status=${filtro}`);
+      const r = await Api.get(`/api/admin/solicitacoes?status=${filtro}&tipo=${filtroTipo}`);
       ['em_analise', 'aguardando_contato'].forEach((s) => { $(`cont-${s}`).textContent = r.contagem[s] ? `(${r.contagem[s]})` : ''; });
       if (primeiraCarga) {
         primeiraCarga = false;
@@ -55,6 +56,13 @@ document.addEventListener('DOMContentLoaded', () => {
     filtro = btn.dataset.filtro;
     carregar();
   }));
+  document.querySelector('.filtro-tipo').addEventListener('click', (ev) => {
+    const b = ev.target.closest('[data-tipo]');
+    if (!b) return;
+    filtroTipo = b.dataset.tipo;
+    document.querySelectorAll('.filtro-tipo [data-tipo]').forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+    carregar();
+  });
   tbody.addEventListener('click', (ev) => { const b = ev.target.closest('[data-abrir]'); if (b) abrir(b.dataset.abrir); });
 
   // Só uma das três vistas do modal aparece por vez: detalhe, confirmar ou corrigir.
@@ -87,7 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const quando = s.tipo === 'evento' ? ['Data pretendida', Utils.formatDay(s.dataPretendida)] : ['Período pretendido', periodo(s.periodoInicio, s.periodoFim)];
     const linhas = [
       ['Tipo', TIPO[s.tipo]], ['Nome da proposta', e(s.nomeIniciativa)], quando,
-      ['Objetivo', Utils.paragrafos(s.objetivo)], ['O que pede ao Recanto', s.recursosEsperados ? Utils.paragrafos(s.recursosEsperados) : '—'],
+      ['Objetivo', Utils.paragrafos(s.objetivo)],
+      ...(s.tipo === 'campanha'
+        ? [['Itens a arrecadar', s.itensArrecadar.length ? `<ul style="margin:0;padding-left:20px;">${s.itensArrecadar.map((i) => `<li>${e(i)}</li>`).join('')}</ul>` : '—']]
+        : []),
+      ['O que pede ao Recanto', s.recursosEsperados ? Utils.paragrafos(s.recursosEsperados) : '—'],
       ['Quem propõe', e(s.nomeContato)], ['Telefone', tel ? `<a href="tel:+55${e(s.telefone)}">${e(tel)}</a>` : '—'],
       ['E-mail', s.email ? `<a href="mailto:${e(s.email)}">${e(s.email)}</a>` : '—'],
       ['Recebida em', Utils.formatDateTime(s.criadoEm)],
@@ -153,21 +165,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // ---- Confirmar com os dados combinados ----
   const formConf = $('form-confirmar');
   const listaRecursos = $('lista-recursos');
-  function adicionarRecurso(r = { tipo: 'item', descricao: '' }) {
+  // Proposta externa arrecada só itens (2026-11-11): sem escolha de tipo.
+  function adicionarRecurso(r = { descricao: '' }) {
     const n = listaRecursos.children.length + 1;
     const div = document.createElement('div');
     div.className = 'form-row recurso-linha';
     div.style.alignItems = 'flex-end';
     div.innerHTML = `
-      <div class="form-group" style="flex:0 0 140px;">
-        <label for="rec-tipo-${n}">Tipo</label>
-        <select id="rec-tipo-${n}" class="rec-tipo">
-          <option value="item"${r.tipo === 'item' ? ' selected' : ''}>Item</option>
-          <option value="dinheiro"${r.tipo === 'dinheiro' ? ' selected' : ''}>Dinheiro</option>
-        </select>
-      </div>
       <div class="form-group" style="flex:1;">
-        <label for="rec-desc-${n}">Descrição</label>
+        <label for="rec-desc-${n}">Item ${n}</label>
         <input type="text" id="rec-desc-${n}" class="rec-desc" maxlength="300" value="${e(r.descricao)}" placeholder="ex.: cobertores de casal">
       </div>
       <div class="form-group" style="flex:0 0 auto;">
@@ -188,14 +194,17 @@ document.addEventListener('DOMContentLoaded', () => {
     $('conf-campanha').hidden = evento;
     // Ponto de partida: o que foi pedido. A equipe ajusta para o que foi combinado.
     $('conf-nome').value = s.nomeIniciativa;
-    $('conf-descricao').value = s.objetivo;
+    $('conf-objetivo').value = s.objetivo;
     $('conf-data').value = s.dataPretendida || '';
     $('conf-recursos-texto').value = '';
     $('conf-inicio').value = s.periodoInicio || '';
     $('conf-fim').value = s.periodoFim || '';
-    $('conf-meta').value = '';
     listaRecursos.innerHTML = '';
-    if (!evento) adicionarRecurso();
+    if (!evento) {
+      // Os itens da proposta já entram como recursos; a equipe ajusta ao combinado.
+      s.itensArrecadar.forEach((descricao) => adicionarRecurso({ descricao }));
+      if (!s.itensArrecadar.length) adicionarRecurso();
+    }
     mostrar('confirmar');
     $('conf-nome').focus();
   }
@@ -203,13 +212,13 @@ document.addEventListener('DOMContentLoaded', () => {
   formConf.addEventListener('submit', async (ev) => {
     ev.preventDefault();
     Utils.clearAllErrors(formConf);
-    const comum = { nome: $('conf-nome').value.trim(), descricao: $('conf-descricao').value.trim() };
+    const comum = { nome: $('conf-nome').value.trim(), objetivo: $('conf-objetivo').value.trim() };
     const corpo = atual.tipo === 'evento'
       ? { ...comum, data: $('conf-data').value, recursos: $('conf-recursos-texto').value.trim() }
       : {
-        ...comum, periodoInicio: $('conf-inicio').value, periodoFim: $('conf-fim').value, meta: $('conf-meta').value.trim(),
+        ...comum, periodoInicio: $('conf-inicio').value, periodoFim: $('conf-fim').value,
         recursos: [...listaRecursos.querySelectorAll('.recurso-linha')].map((l) => ({
-          tipo: l.querySelector('.rec-tipo').value, descricao: l.querySelector('.rec-desc').value.trim(),
+          tipo: 'item', descricao: l.querySelector('.rec-desc').value.trim(),
         })),
       };
     const botao = formConf.querySelector('[type=submit]');
@@ -230,6 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function alternarTipoC() {
     $('c-grupo-data').hidden = tipoC() !== 'evento';
     $('c-grupo-periodo').hidden = tipoC() !== 'campanha';
+    $('c-grupo-itens').hidden = tipoC() !== 'campanha';
   }
   formC.querySelectorAll('input[name=c-tipo]').forEach((r) => r.addEventListener('change', alternarTipoC));
 
@@ -245,6 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $('c-iniciativa').value = s.nomeIniciativa; $('c-data').value = s.dataPretendida || '';
     $('c-inicio').value = s.periodoInicio || ''; $('c-fim').value = s.periodoFim || '';
     $('c-objetivo').value = s.objetivo; $('c-recursos').value = s.recursosEsperados || '';
+    $('c-itens').value = s.itensArrecadar.join('\n');
     $('c-nome').value = s.nomeContato; $('c-email').value = s.email || ''; $('c-telefone').value = s.telefone || '';
     Mascaras.aplicarEm(formC);
     $('c-telefone').dispatchEvent(new Event('input'));
@@ -258,7 +269,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const corpo = {
       tipo: tipoC(), nomeIniciativa: $('c-iniciativa').value.trim(), dataPretendida: $('c-data').value,
       periodoInicio: $('c-inicio').value, periodoFim: $('c-fim').value, objetivo: $('c-objetivo').value.trim(),
-      recursosEsperados: $('c-recursos').value.trim(), nomeContato: $('c-nome').value.trim(),
+      recursosEsperados: $('c-recursos').value.trim(),
+      itensArrecadar: $('c-itens').value.split('\n').map((i) => i.trim()).filter(Boolean),
+      nomeContato: $('c-nome').value.trim(),
       email: $('c-email').value.trim(), telefone: $('c-telefone').value,
     };
     try {

@@ -121,12 +121,12 @@ async function semearDemo(q) {
        ('Sabonete neutro', 30, 'unidades', 'baixa', 'sistema')`);
 
   await q(
-    `INSERT INTO evento (nome, descricao, recursos_necessarios, data, criado_por) VALUES
+    `INSERT INTO evento (nome, objetivo, recursos_necessarios, data, criado_por) VALUES
        ('Tarde de música', 'Apresentação de um coral da cidade para os residentes.', 'Cadeiras extras e lanche',
         (now() AT TIME ZONE 'America/Sao_Paulo')::date + 15, 'sistema')`);
 
   const [campanha] = await q(
-    `INSERT INTO campanha (nome, descricao, periodo_inicio, periodo_fim, meta_valor, arrecadado_valor, criado_por) VALUES
+    `INSERT INTO campanha (nome, objetivo, periodo_inicio, periodo_fim, meta_valor, arrecadado_valor, criado_por) VALUES
        ('Campanha do agasalho', 'Arrecadação de cobertores e agasalhos para o inverno.',
         (now() AT TIME ZONE 'America/Sao_Paulo')::date, (now() AT TIME ZONE 'America/Sao_Paulo')::date + 30,
         2000, 450, 'sistema')

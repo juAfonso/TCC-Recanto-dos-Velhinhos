@@ -32,6 +32,14 @@
 
 <section class="section">
     <div class="container">
+        <!-- Filtro Campanhas / Eventos (2026-11-11). Só aparece quando há o que listar. -->
+        <div class="filtro-tipo" role="group" aria-label="Mostrar" id="filtro-tipo" hidden>
+            <span class="filtro-tipo-rotulo" aria-hidden="true">Mostrar:</span>
+            <button type="button" class="btn btn-outline btn-sm" data-tipo="todos" aria-pressed="true">Todos</button>
+            <button type="button" class="btn btn-outline btn-sm" data-tipo="campanha" aria-pressed="false">Campanhas</button>
+            <button type="button" class="btn btn-outline btn-sm" data-tipo="evento" aria-pressed="false">Eventos</button>
+        </div>
+        <p class="sr-only" aria-live="polite" id="filtro-tipo-anuncio"></p>
         <div id="campanhas-lista" class="cards" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));">
             <!-- preenchido via JS -->
         </div>

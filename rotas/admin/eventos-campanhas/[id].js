@@ -1,6 +1,8 @@
 // PUT /api/admin/eventos-campanhas/:id — editar evento ou campanha ativos (FR-029, FR-030, FR-037).
 // Mesmas validações do cadastro; a data já gravada pode ficar no passado se não mudar.
 // Na campanha, recurso que saiu da lista é DESATIVADO (nunca apagado) e os novos são criados.
+// Recurso que só mudou a descrição leva junto a quantidade arrecadada já informada.
+// Campanha vinda de solicitação externa continua sem dinheiro (decisão de 2026-11-11).
 // Encerrado não se edita.
 
 import { transacao } from '../../_lib/db.js';
@@ -29,30 +31,38 @@ export const PUT = rota(async (request) => {
       }
       await registrarAlteracao({ entidadeTipo: 'evento', entidadeId: id, estadoAnterior: registro, autor }, tx);
       await tx.query(
-        `UPDATE evento SET nome = $2, descricao = $3, recursos_necessarios = $4, data = $5,
+        `UPDATE evento SET nome = $2, objetivo = $3, recursos_necessarios = $4, data = $5,
                 atualizado_por = $6, atualizado_em = now() WHERE id = $1`,
-        [id, evento.nome, evento.descricao, evento.recursos || null, evento.data, autor]);
+        [id, evento.nome, evento.objetivo, evento.recursos || null, evento.data, autor]);
     } else {
-      const campanha = validarCampanha(corpo, { inicioAnterior: dataTexto(registro.periodo_inicio) });
+      const campanha = validarCampanha(corpo, {
+        inicioAnterior: dataTexto(registro.periodo_inicio), externa: registro.solicitacao_origem_id !== null,
+      });
       // Sem meta não há arrecadado (FR-029b): o UPDATE abaixo zera; o valor antigo fica no histórico.
       const recursosAntes = await tx.query(
-        `SELECT id, tipo, descricao FROM recurso WHERE campanha_id = $1 AND ativo`, [id]);
+        `SELECT id, tipo, descricao, quantidade_arrecadada, unidade, arrecadado_por, arrecadado_em
+         FROM recurso WHERE campanha_id = $1 AND ativo`, [id]);
       await registrarAlteracao({
         entidadeTipo: 'campanha', entidadeId: id, estadoAnterior: { ...registro, recursos: recursosAntes }, autor,
       }, tx);
       await tx.query(
-        `UPDATE campanha SET nome = $2, descricao = $3, periodo_inicio = $4, periodo_fim = $5, meta_valor = $6,
+        `UPDATE campanha SET nome = $2, objetivo = $3, periodo_inicio = $4, periodo_fim = $5, meta_valor = $6,
                 arrecadado_valor = CASE WHEN $6::numeric IS NULL THEN NULL ELSE arrecadado_valor END,
                 atualizado_por = $7, atualizado_em = now() WHERE id = $1`,
-        [id, campanha.nome, campanha.descricao, campanha.periodoInicio, campanha.periodoFim, campanha.meta, autor]);
+        [id, campanha.nome, campanha.objetivo, campanha.periodoInicio, campanha.periodoFim, campanha.meta, autor]);
 
       // Mantém os recursos que vieram com id e não mudaram; desativa os que saíram ou mudaram.
       const mantidos = new Set();
       for (const r of campanha.recursos) {
         const igual = r.id && recursosAntes.find((a) => a.id === r.id && a.tipo === r.tipo && a.descricao === r.descricao);
         if (igual) { mantidos.add(r.id); continue; }
-        await tx.query(`INSERT INTO recurso (campanha_id, tipo, descricao, criado_por) VALUES ($1, $2, $3, $4)`,
-          [id, r.tipo, r.descricao, autor]);
+        // Mesmo tipo, descrição corrigida: a arrecadação informada continua valendo.
+        const antes = r.id && recursosAntes.find((a) => a.id === r.id && a.tipo === r.tipo);
+        await tx.query(
+          `INSERT INTO recurso (campanha_id, tipo, descricao, quantidade_arrecadada, unidade, arrecadado_por, arrecadado_em, criado_por)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+          [id, r.tipo, r.descricao, antes?.quantidade_arrecadada ?? null, antes?.unidade ?? null,
+            antes?.arrecadado_por ?? null, antes?.arrecadado_em ?? null, autor]);
       }
       for (const a of recursosAntes) {
         if (!mantidos.has(a.id)) {

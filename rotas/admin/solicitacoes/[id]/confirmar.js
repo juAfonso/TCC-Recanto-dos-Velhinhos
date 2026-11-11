@@ -1,8 +1,9 @@
 // POST /api/admin/solicitacoes/:id/confirmar — aguardando contato → confirmada (FR-022, FR-031).
 // Recebe os dados COMBINADOS com o solicitante (podem diferir do pedido) e cria, na mesma
 // transação, o evento ou a campanha do tipo da solicitação, já publicado no Portal.
-// Evento: { nome, descricao, data, recursos?, confirmarAviso? }.
-// Campanha: { nome, descricao, periodoInicio, periodoFim, recursos[], meta? }.
+// Evento: { nome, objetivo, data, recursos?, confirmarAviso? }.
+// Campanha: { nome, objetivo, periodoInicio, periodoFim, recursos[] } — só itens, sem meta em R$:
+// proposta externa não arrecada dinheiro (decisão de 2026-11-11).
 
 import { sql } from '../../../_lib/db.js';
 import { exigirAdmin } from '../../../_lib/acesso.js';
@@ -18,7 +19,7 @@ export const POST = rota(async (request) => {
   const [s] = await sql`SELECT tipo FROM solicitacao_externa WHERE id = ${id}`;
   if (!s) falhar(404, 'NAO_ENCONTRADO', 'Solicitação não encontrada.');
   // Valida antes de abrir a transação, para o funcionário ver todos os erros do formulário de uma vez.
-  const dados = s.tipo === 'evento' ? validarEvento(corpo) : validarCampanha(corpo);
+  const dados = s.tipo === 'evento' ? validarEvento(corpo) : validarCampanha(corpo, { externa: true });
 
   let criadoId = null;
   const resultado = await decidir({

@@ -82,6 +82,15 @@
                     <div class="form-error"></div>
                 </div>
 
+                <!-- Itens da campanha (2026-11-11): viram os recursos da campanha quando ela é confirmada. -->
+                <fieldset class="form-group" id="grupo-itens" hidden>
+                    <legend class="rotulo-grupo">O que a campanha vai arrecadar <span class="req">*</span></legend>
+                    <p class="form-hint">Um item em cada campo (ex.: fraldas geriátricas, leite integral, cobertores). Campanha proposta de fora do Recanto arrecada só itens, não dinheiro.</p>
+                    <div id="lista-itens" data-campo="itensArrecadar"></div>
+                    <button type="button" class="btn btn-outline btn-sm" id="btn-add-item">+ Adicionar outro item</button>
+                    <div class="form-error"></div>
+                </fieldset>
+
                 <div class="form-group">
                     <label for="se-recursos">O que você precisa do Recanto (opcional)</label>
                     <textarea id="se-recursos" data-campo="recursosEsperados" rows="3" maxlength="2000" placeholder="Ex.: espaço do salão, horário da tarde, ajuda de voluntários para divulgar."></textarea>

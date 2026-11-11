@@ -2540,3 +2540,23 @@ tbody tr:focus-within{ background:#F8FAF9; }
 .mapa-quadro{ width:100%; aspect-ratio:8 / 3; min-height:280px; border:1px solid var(--line); border-radius:var(--radius-md); }
 .mapa-aviso{ margin:0; }
 @media(max-width:640px){ .mapa-previa{ min-height:280px; } }
+
+/* =========================================================
+   Filtro Campanhas / Eventos (2026-11-11)
+   Portal, Painel e triagem: botões com aria-pressed, como os atalhos de período.
+   ========================================================= */
+.filtro-tipo{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.filtro-tipo .filtro-tipo-rotulo{ font-weight:700; margin-right:4px; }
+.filtro-tipo .btn[aria-pressed="true"],
+.filtro-tipo .btn[aria-pressed="true"]:hover{ background:var(--viridian-dark) !important; border-color:var(--viridian-dark); color:#fff; }
+.filtro-tipo .btn[aria-pressed="true"]::before{
+    content:""; width:14px; height:14px; margin-right:6px; background-color:currentColor;
+    -webkit-mask:var(--i-marcar) center / contain no-repeat; mask:var(--i-marcar) center / contain no-repeat;
+}
+.section .filtro-tipo{ margin-bottom:var(--e4); }
+.panel .filtro-tipo{ padding:0 0 var(--e3); }
+
+/* Arrecadação por recurso, na janela do Painel (2026-11-11). */
+.arrecadacao-linha{ align-items:flex-end; border-top:1px solid var(--line); padding-top:10px; }
+.arrecadacao-linha:first-child{ border-top:none; padding-top:0; }
+.arrecadacao-linha .arrecadacao-nome{ flex:1 1 100%; font-weight:700; margin-bottom:4px; }

@@ -15,23 +15,27 @@ export const GET = rota(async (request) => {
   // As duas listas não dependem uma da outra: buscar juntas poupa uma ida ao banco.
   const [eventos, campanhas] = await Promise.all([
     sql`
-    SELECT id, nome, descricao, recursos_necessarios, to_char(data, 'YYYY-MM-DD') AS data, status,
-           solicitacao_origem_id IS NOT NULL AS externa, criado_por, criado_em,
-           atualizado_por, atualizado_em, encerrado_por, encerrado_em
-    FROM evento ORDER BY (status = 'ativo') DESC, data`,
+    SELECT e.id, e.nome, e.objetivo, e.recursos_necessarios, to_char(e.data, 'YYYY-MM-DD') AS data, e.status,
+           e.solicitacao_origem_id IS NOT NULL AS externa, s.protocolo AS protocolo_origem, e.criado_por, e.criado_em,
+           e.atualizado_por, e.atualizado_em, e.encerrado_por, e.encerrado_em
+    FROM evento e LEFT JOIN solicitacao_externa s ON s.id = e.solicitacao_origem_id
+    ORDER BY (e.status = 'ativo') DESC, e.data`,
     sql`
-    SELECT c.id, c.nome, c.descricao, to_char(c.periodo_inicio, 'YYYY-MM-DD') AS periodo_inicio,
+    SELECT c.id, c.nome, c.objetivo, to_char(c.periodo_inicio, 'YYYY-MM-DD') AS periodo_inicio,
            to_char(c.periodo_fim, 'YYYY-MM-DD') AS periodo_fim, c.meta_valor, c.arrecadado_valor,
            c.arrecadado_por, c.arrecadado_em, c.status, c.solicitacao_origem_id IS NOT NULL AS externa,
            c.criado_por, c.criado_em, c.atualizado_por, c.atualizado_em, c.encerrado_por, c.encerrado_em,
-           COALESCE(json_agg(json_build_object('id', r.id, 'tipo', r.tipo, 'descricao', r.descricao) ORDER BY r.criado_em)
-                    FILTER (WHERE r.id IS NOT NULL), '[]') AS recursos
+           COALESCE(json_agg(json_build_object('id', r.id, 'tipo', r.tipo, 'descricao', r.descricao,
+                      'quantidade', r.quantidade_arrecadada, 'unidade', r.unidade,
+                      'arrecadadoPor', r.arrecadado_por, 'arrecadadoEm', r.arrecadado_em) ORDER BY r.criado_em)
+                    FILTER (WHERE r.id IS NOT NULL), '[]') AS recursos,
+           (SELECT protocolo FROM solicitacao_externa s WHERE s.id = c.solicitacao_origem_id) AS protocolo_origem
     FROM campanha c LEFT JOIN recurso r ON r.campanha_id = c.id AND r.ativo
     GROUP BY c.id ORDER BY (c.status = 'ativo') DESC, c.periodo_fim`,
   ]);
 
   const comum = (x) => ({
-    id: x.id, nome: x.nome, descricao: x.descricao, status: x.status, externa: x.externa,
+    id: x.id, nome: x.nome, objetivo: x.objetivo, status: x.status, externa: x.externa, protocoloOrigem: x.protocolo_origem,
     criadoPor: x.criado_por, criadoEm: x.criado_em, atualizadoPor: x.atualizado_por, atualizadoEm: x.atualizado_em,
     encerradoPor: x.encerrado_por, encerradoEm: x.encerrado_em,
   });
@@ -48,7 +52,7 @@ export const GET = rota(async (request) => {
         meta: c.meta_valor === null ? null : Number(c.meta_valor),
         arrecadado: c.arrecadado_valor === null ? null : Number(c.arrecadado_valor),
         arrecadadoPor: c.arrecadado_por, arrecadadoEm: c.arrecadado_em,
-        recursos: c.recursos,
+        recursos: c.recursos.map((r) => ({ ...r, quantidade: r.quantidade === null ? null : Number(r.quantidade) })),
         vencido: c.status === 'ativo' && c.periodo_fim < hoje,
       })),
     ],

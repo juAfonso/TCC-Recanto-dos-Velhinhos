@@ -191,7 +191,8 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   por cima da tela, quando se clica no botão da seção; fecha no mesmo
   botão, no Esc ou ao clicar fora (ajuste do mesmo dia: a primeira versão
   deixava o painel sempre aberto). O botão da seção da página aberta tem um
-  fio claro. Uma setinha "‹" no topo do painel também o fecha. "Sair" fica
+  fio claro. Uma setinha "‹", num botão redondo no meio da borda direita do painel,
+  também o fecha. "Sair" fica
   no pé do trilho, para não sumir com o painel. O
   comportamento fica no `admin-guard.js`. Seção nova: um botão
   `.menu-grupo` e um `<nav class="admin-nav">` com o mesmo `data-grupo`,

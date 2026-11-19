@@ -1,6 +1,6 @@
 # SAGE — Memória do Projeto
 
-> Última atualização: 2026-11-11
+> Última atualização: 2026-11-19
 > TCC do IFRJ Campus Pinheiral — sistema web para a ILPI "Recanto dos Velhinhos
 > Francisco Gonçalves Barbosa". Repositório: `TCC-Recanto-dos-Velhinhos`
 > (GitHub, usuário juAfonso).
@@ -241,6 +241,16 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
      8 segundos (os outros, em 6), e continua com o botão "Fechar".
   O "Clique aqui" de `campanhas.html` virou uma chamada desenhada, com o
   mesmo destino (`solicitar-evento.html`).
+  **O coração do botão de doar pulsa (2026-11-19)**, em todo `.btn-primary`
+  (duas batidas e uma pausa); parado para quem pede menos movimento no
+  sistema. Na mesma data, o aviso do passo de pagamento da doação deixou o
+  amarelo de alerta e virou um aviso informativo (`.aviso-pix`), com texto
+  mais próximo do doador; o conteúdo é o mesmo (clicar em "Já fiz o Pix",
+  confirmação pela equipe no extrato, espontânea não se acompanha).
+  Também em 2026-11-19: o resultado da consulta por protocolo virou uma
+  lista (rótulo à esquerda, valor à direita, `.status-dados`), porque o selo
+  de situação longo invadia a data; e o "Ir para o login" da criação de
+  senha saiu de dentro do aviso e ficou centralizado embaixo dele.
 - **Favicon é o logo sem os escritos (decidido em 2026-11-11).** Gerado do
   `assets/img/logo-icon.png`: `public/favicon.ico` (16, 32 e 48px),
   `favicon-32.png`, `favicon-192.png` e `apple-touch-icon.png` (fundo
@@ -734,6 +744,9 @@ Passo a passo de comandos e validação em
   este ano, ano passado) fica marcado enquanto as datas forem as dele, e o
   relatório escreve o nome do período ("Novembro de 2026 (até hoje)", "Ano
   de 2025") antes das datas; período qualquer sai só com as datas.
+  **Sem data futura (2026-11-19):** o calendário dos campos "De" e "Até"
+  para em hoje (fuso de Brasília), e data digitada à mão depois de hoje é
+  recusada na tela e na API (`lerFiltros`).
 - **Campanhas: filtro, itens da proposta, arrecadação por recurso e relatório
   (decidido em 2026-11-11, migração 009).** Pedido do grupo; tudo dentro do
   CSU02 e do CSU08, nenhum caso de uso novo. Session 2026-11-11 (2) do spec.md.

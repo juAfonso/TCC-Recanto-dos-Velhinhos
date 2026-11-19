@@ -30,6 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return [`${ano - 1}-01-01`, `${ano - 1}-12-31`];
   }
 
+  // Não deixa escolher data futura (2026-11-19): o calendário para em hoje, e o
+  // "até" não começa antes do "de". O servidor confere de novo.
+  function limitarDatas() {
+    form.de.max = hoje();
+    form.ate.max = hoje();
+    form.ate.min = form.de.value || '';
+  }
+  form.de.addEventListener('input', limitarDatas);
+
   // Preenche o formulário com o que está na URL (ou o mês corrente).
   const url = new URLSearchParams(window.location.search);
   const [deMes, ateMes] = periodo('mes');
@@ -127,6 +136,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function carregar() {
     Utils.clearAllErrors(form);
+    limitarDatas();
+    // Data digitada à mão passa do limite do calendário: avisa aqui mesmo, sem ir ao servidor.
+    const futura = ['de', 'ate'].find((campo) => form[campo].value > hoje());
+    if (futura) {
+      Utils.setFieldError(form[futura].closest('.form-group'), `A data ${futura === 'de' ? 'inicial' : 'final'} não pode ser depois de hoje.`);
+      form[futura].focus();
+      return;
+    }
     const params = new URLSearchParams();
     ['de', 'ate', 'valorMin', 'valorMax', 'tipo', 'situacao', 'ordem'].forEach((campo) => {
       const valor = form[campo].value.trim();

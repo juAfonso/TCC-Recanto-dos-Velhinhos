@@ -29,6 +29,9 @@ export function lerFiltros(params, hoje = hojeBrasilia()) {
   const ate = params.get('ate') || hoje;
   if (!dataValida(de)) erros.de = 'Data inicial inválida.';
   if (!dataValida(ate)) erros.ate = 'Data final inválida.';
+  // Data futura não tem doação nenhuma (2026-11-19): recusa-se, como no campo da tela.
+  if (!erros.de && de > hoje) erros.de = 'A data inicial não pode ser depois de hoje.';
+  if (!erros.ate && ate > hoje) erros.ate = 'A data final não pode ser depois de hoje.';
   if (!erros.de && !erros.ate && de > ate) erros.ate = 'A data final não pode ser antes da inicial.';
 
   const valorMin = lerValor(params.get('valorMin'));

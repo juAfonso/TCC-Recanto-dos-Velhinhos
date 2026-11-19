@@ -644,6 +644,15 @@ button[type="submit"][disabled]::before{
     width:1.05em; height:1.05em;
     background-color:currentColor;
     -webkit-mask:var(--i-coracao) center / contain no-repeat; mask:var(--i-coracao) center / contain no-repeat;
+    animation:pulsar 1.6s ease-in-out infinite;
+}
+/* O coração do botão de doar bate (2026-11-19): duas batidas e uma pausa, como um coração.
+   Quem pede menos movimento no sistema vê o coração parado (regra de reduced-motion acima). */
+@keyframes pulsar{
+    0%, 40%, 100%{ transform:scale(1); }
+    10%{ transform:scale(1.22); }
+    20%{ transform:scale(1); }
+    30%{ transform:scale(1.14); }
 }
 .btn-voltar::before,
 .back-home::before{
@@ -953,6 +962,11 @@ html.noticia-aberta body{ overflow:hidden; }
 .alert > span:first-child:has(+ div){ display:none; }
 .alert > div{ min-width:0; }
 .alert strong{ display:block; margin-bottom:2px; }
+/* Aviso do passo de pagamento da doação (2026-11-19): conversa com o doador, sem cara de erro. */
+.aviso-pix{ text-align:left; margin:20px 0 0; padding:16px 20px; line-height:1.55; }
+.aviso-pix strong{ font-family:var(--font-titulo); font-size:1.02rem; margin-bottom:6px; }
+.aviso-pix p{ margin:0; }
+.aviso-pix p + p{ margin-top:8px; padding-top:8px; border-top:1px solid rgba(0,0,0,.08); }
 
 #toast-container{
     position:fixed;
@@ -1908,6 +1922,28 @@ a.stat-card:hover{ background:var(--bg-soft); }
 }
 .info-field .info-label{ font-size:.86rem; font-weight:700; color:var(--muted); margin-bottom:2px; }
 .info-field .info-value{ font-size:1rem; font-weight:600; color:var(--ink); }
+
+/* Resultado da consulta por protocolo (2026-11-19). Uma linha por dado, rótulo à esquerda
+   e valor à direita; o selo de situação longo quebra linha em vez de invadir a data. */
+.status-resultado h3{ text-align:center; }
+.status-protocolo{ text-align:center; color:var(--muted); margin:6px 0 20px; }
+.status-protocolo span{
+    display:inline-block; margin-left:4px; padding:2px 10px;
+    background:var(--tea-soft); color:var(--viridian-deep); border-radius:var(--radius-sm);
+    font-weight:700; letter-spacing:.06em;
+}
+.status-dados{ margin:0 0 16px; }
+.status-dados > div{
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px 16px;
+    padding:12px 0; border-top:1px solid var(--line, #E3E6E4);
+}
+.status-dados > div:last-child{ border-bottom:1px solid var(--line, #E3E6E4); }
+.status-dados dt{ font-size:.94rem; font-weight:700; color:var(--muted); }
+.status-dados dd{ margin:0; font-weight:600; color:var(--ink); text-align:right; }
+.status-dados .badge{ white-space:normal; text-align:left; }
+
+/* Botão sozinho e centralizado embaixo de um aviso (ex.: "Ir para o login"). */
+.acao-centro{ display:flex; justify-content:center; margin-top:4px; }
 
 /* =========================================================
    CONTATO / FOOTER

@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const r = await Api.post('/api/auth/definir-senha', { token, senha }, { form });
       form.style.display = 'none';
       $('sucesso-texto').textContent = r.mensagem;
-      $('sucesso').style.display = 'flex';
+      $('sucesso').style.display = 'block';
     } catch (erro) {
       if (erro.codigo === 'LINK_INVALIDO_OU_EXPIRADO') linkInvalido(erro.message);
       else if (!erro.campos.length && erro.status !== 429) Utils.toast(erro.message, 'danger');

@@ -33,6 +33,14 @@ test('filtros inválidos voltam com a mensagem de cada campo', () => {
   assert.ok(lerFiltros(p({ valorMin: '100', valorMax: '10' })).erros.valorMax);
 });
 
+test('data futura é recusada; hoje é aceito', () => {
+  const hoje = '2026-11-19';
+  assert.ok(lerFiltros(p({ de: '2026-11-01', ate: '2027-01-31' }), hoje).erros.ate);
+  assert.ok(lerFiltros(p({ de: '2027-01-01', ate: '2027-01-31' }), hoje).erros.de);
+  assert.ok(lerFiltros(p({ de: '2026-11-20' }), hoje).erros.de);
+  assert.deepEqual(lerFiltros(p({ de: '2026-11-19', ate: '2026-11-19' }), hoje).erros, undefined);
+});
+
 test('resumo separa espontânea e associativa, soma em centavos e agrupa por mês de Brasília', () => {
   const resumo = resumir([
     { tipo: 'espontanea', valor: 0.1, declaradaEm: '2026-10-15T15:00:00Z' },

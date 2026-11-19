@@ -644,6 +644,15 @@ button[type="submit"][disabled]::before{
     width:1.05em; height:1.05em;
     background-color:currentColor;
     -webkit-mask:var(--i-coracao) center / contain no-repeat; mask:var(--i-coracao) center / contain no-repeat;
+    animation:pulsar 1.6s ease-in-out infinite;
+}
+/* O coração do botão de doar bate (2026-11-19): duas batidas e uma pausa, como um coração.
+   Quem pede menos movimento no sistema vê o coração parado (regra de reduced-motion acima). */
+@keyframes pulsar{
+    0%, 40%, 100%{ transform:scale(1); }
+    10%{ transform:scale(1.22); }
+    20%{ transform:scale(1); }
+    30%{ transform:scale(1.14); }
 }
 .btn-voltar::before,
 .back-home::before{
@@ -953,6 +962,11 @@ html.noticia-aberta body{ overflow:hidden; }
 .alert > span:first-child:has(+ div){ display:none; }
 .alert > div{ min-width:0; }
 .alert strong{ display:block; margin-bottom:2px; }
+/* Aviso do passo de pagamento da doação (2026-11-19): conversa com o doador, sem cara de erro. */
+.aviso-pix{ text-align:left; margin:20px 0 0; padding:16px 20px; line-height:1.55; }
+.aviso-pix strong{ font-family:var(--font-titulo); font-size:1.02rem; margin-bottom:6px; }
+.aviso-pix p{ margin:0; }
+.aviso-pix p + p{ margin-top:8px; padding-top:8px; border-top:1px solid rgba(0,0,0,.08); }
 
 #toast-container{
     position:fixed;

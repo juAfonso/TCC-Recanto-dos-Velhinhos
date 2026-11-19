@@ -1923,6 +1923,28 @@ a.stat-card:hover{ background:var(--bg-soft); }
 .info-field .info-label{ font-size:.86rem; font-weight:700; color:var(--muted); margin-bottom:2px; }
 .info-field .info-value{ font-size:1rem; font-weight:600; color:var(--ink); }
 
+/* Resultado da consulta por protocolo (2026-11-19). Uma linha por dado, rótulo à esquerda
+   e valor à direita; o selo de situação longo quebra linha em vez de invadir a data. */
+.status-resultado h3{ text-align:center; }
+.status-protocolo{ text-align:center; color:var(--muted); margin:6px 0 20px; }
+.status-protocolo span{
+    display:inline-block; margin-left:4px; padding:2px 10px;
+    background:var(--tea-soft); color:var(--viridian-deep); border-radius:var(--radius-sm);
+    font-weight:700; letter-spacing:.06em;
+}
+.status-dados{ margin:0 0 16px; }
+.status-dados > div{
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:6px 16px;
+    padding:12px 0; border-top:1px solid var(--line, #E3E6E4);
+}
+.status-dados > div:last-child{ border-bottom:1px solid var(--line, #E3E6E4); }
+.status-dados dt{ font-size:.94rem; font-weight:700; color:var(--muted); }
+.status-dados dd{ margin:0; font-weight:600; color:var(--ink); text-align:right; }
+.status-dados .badge{ white-space:normal; text-align:left; }
+
+/* Botão sozinho e centralizado embaixo de um aviso (ex.: "Ir para o login"). */
+.acao-centro{ display:flex; justify-content:center; margin-top:4px; }
+
 /* =========================================================
    CONTATO / FOOTER
    ========================================================= */

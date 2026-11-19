@@ -36,16 +36,14 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const r = await Api.get(`/api/public/status/${encodeURIComponent(protocolo)}`);
       resultado.innerHTML = `
-        <div class="form-shell narrow">
-          <div style="text-align:center;margin-bottom:20px;">
-            <h3>${e(TIPOS[r.tipo] || r.tipo)}</h3>
-            <p class="cell-muted">Protocolo ${e(protocolo)}</p>
-          </div>
-          <div class="info-grid">
-            <div class="info-field"><div class="info-label">Situação atual</div><div class="info-value"><span class="badge ${SELO[r.status] || 'badge-info'}">${e(r.rotuloStatus)}</span></div></div>
-            <div class="info-field"><div class="info-label">Enviado em</div><div class="info-value">${Utils.formatDay(r.data)}</div></div>
-          </div>
-          <p class="form-hint" style="margin-top:14px;">Os detalhes de cada etapa chegam por e-mail. Se o e-mail não chegar, confira a caixa de spam ou fale com a secretaria do Recanto.</p>
+        <div class="form-shell narrow status-resultado">
+          <h3>${e(TIPOS[r.tipo] || r.tipo)}</h3>
+          <p class="status-protocolo">Protocolo <span>${e(protocolo)}</span></p>
+          <dl class="status-dados">
+            <div><dt>Situação atual</dt><dd><span class="badge ${SELO[r.status] || 'badge-info'}">${e(r.rotuloStatus)}</span></dd></div>
+            <div><dt>Enviado em</dt><dd>${Utils.formatDay(r.data)}</dd></div>
+          </dl>
+          <p class="form-hint">Os detalhes de cada etapa chegam por e-mail. Se o e-mail não chegar, confira a caixa de spam ou fale com a secretaria do Recanto.</p>
         </div>`;
     } catch (erro) {
       const texto = erro.status === 404 || erro.status === 429 ? erro.message : 'Não foi possível consultar agora. Tente de novo em alguns minutos.';

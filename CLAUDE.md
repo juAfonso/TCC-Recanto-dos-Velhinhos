@@ -247,6 +247,10 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   amarelo de alerta e virou um aviso informativo (`.aviso-pix`), com texto
   mais próximo do doador; o conteúdo é o mesmo (clicar em "Já fiz o Pix",
   confirmação pela equipe no extrato, espontânea não se acompanha).
+  Também em 2026-11-19: o resultado da consulta por protocolo virou uma
+  lista (rótulo à esquerda, valor à direita, `.status-dados`), porque o selo
+  de situação longo invadia a data; e o "Ir para o login" da criação de
+  senha saiu de dentro do aviso e ficou centralizado embaixo dele.
 - **Favicon é o logo sem os escritos (decidido em 2026-11-11).** Gerado do
   `assets/img/logo-icon.png`: `public/favicon.ico` (16, 32 e 48px),
   `favicon-32.png`, `favicon-192.png` e `apple-touch-icon.png` (fundo

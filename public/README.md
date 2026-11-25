@@ -66,8 +66,10 @@ e um arquivo `page-*.js` ou `admin-*.js` por tela. `assets/vendor/qrcode.js` des
 
 ## Identidade visual
 
-Paleta herdada do modelo MANAS: `--magenta: #8E3B46` · `--cyclamen: #F28CAB` ·
-`--fairy: #F7D6E0` · `--tea: #CDE7BE` · `--viridian: #40826D`. O hero é a fachada real do
+Identidade do SAGE (2026-10-28), que substituiu a do modelo MANAS. As regras de cor, letra e
+ícone estão no topo de `assets/css/style.css`: verde conduz navegação e ações; magenta só no
+botão de doar, na marca da página ativa e no asterisco de obrigatório; fairy e tea são fundos;
+cyclamen nunca em texto. Letras servidas pelo próprio site (Literata e Atkinson Hyperlegible Next). O hero é a fachada real do
 Recanto (`assets/img/newNewHero.jpg`). O vídeo do modelo saiu em 2026-09-05 (peso, dados
 móveis e autoplay atrapalhando leitor de tela).
 

@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <li>${e(c.protocolo)} — ${SUBMISSAO[c.status]} (${c.origem === 'painel' ? 'cadastrado no Painel' : 'enviado pelo site'}, ${Utils.formatDate(c.criadoEm)})
           ${c.menorDeIdade && c.autorizacaoStatus === 'pendente' ? ' <span class="badge badge-warning">Autorização pendente</span>' : ''}
           <button class="btn btn-outline btn-sm" data-imprimir="${c.id}" data-menor="${c.menorDeIdade ? '1' : ''}">Imprimir termo</button></li>`).join('')}</ul>
-        <p class="form-hint">Decisões sobre cadastros pendentes ficam em <a href="triagem-voluntarios.html">Triagem › Voluntários</a>.</p>`);
+        <p class="form-hint">Decisões sobre cadastros pendentes ficam em <a href="triagem-voluntarios.html">Triagem › Gestão de Voluntários</a>.</p>`);
     }
     if (p.candidaturas.length) {
       blocos.push(`<h4 style="margin:20px 0 8px;">Candidaturas a vaga</h4><ul style="margin-left:20px;line-height:1.7;">${p.candidaturas.map((c) =>
@@ -296,7 +296,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cadastroFeito = r;
       $('cadastro-feito-texto').innerHTML = r.status === 'aprovado'
         ? `<div>Voluntário(a) cadastrado(a) e já ativo(a). Protocolo <b>${e(r.protocolo)}</b>. Imprima o termo de adesão para a pessoa assinar.</div>`
-        : `<div>Cadastro registrado como <b>pendente</b> (protocolo <b>${e(r.protocolo)}</b>): é menor de idade. Imprima o termo de adesão: o responsável também o assina. Quando o responsável assinar, marque a autorização como recebida e aprove em <a href="triagem-voluntarios.html">Triagem › Voluntários</a>.</div>`;
+        : `<div>Cadastro registrado como <b>pendente</b> (protocolo <b>${e(r.protocolo)}</b>): é menor de idade. Imprima o termo de adesão: o responsável também o assina. Quando o responsável assinar, marque a autorização como recebida e aprove em <a href="triagem-voluntarios.html">Triagem › Gestão de Voluntários</a>.</div>`;
       formN.hidden = true;
       $('cadastro-feito').hidden = false;
     } catch (erro) {

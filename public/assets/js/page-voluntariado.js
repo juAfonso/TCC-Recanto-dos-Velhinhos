@@ -1,6 +1,6 @@
 /* Cadastro de voluntário (US4, FR-011 a FR-013, FR-012, FR-049).
-   Depois do envio, o protocolo aparece em destaque. Se for menor, os dados vão para a página
-   de autorização pelo sessionStorage do próprio navegador — nunca por uma rota pública (D17). */
+   Depois do envio, o protocolo aparece em destaque. Se for menor, a página avisa que o responsável
+   assina o termo de adesão na sede; o Portal não guarda os dados no navegador (2026-10-17). */
 document.addEventListener('DOMContentLoaded', () => {
   const $ = (id) => document.getElementById(id);
   const form = $('form-voluntario');

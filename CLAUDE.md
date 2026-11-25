@@ -173,6 +173,19 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
      e ligada ao último deploy). Corrigir essa marca pela integração pode
      tirar o site do ar: só com calma e conferindo o site logo depois. Até
      lá, a `main_old` ocupa uma das ~10 vagas do plano gratuito.
+     **A `main` ainda está em fase de teste (registrado em 2026-10-17,
+     confirmado em 2026-11-24).** O grupo testa direto na produção, e tudo o
+     que existe lá hoje é inventado: pessoas, triagens, eventos, doações
+     declaradas, aceites e falhas de e-mail. Ninguém deve tratar esses dados
+     como reais. **Antes de o Recanto começar a operar, a `main` é zerada e
+     recriada**: no SQL Editor da própria `main`,
+     `DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;`, depois
+     `npm run migrate -- --producao` e o seed de produção (sem `--demo`). Não
+     apagar registro por registro: isso esbarra na regra de nunca excluir
+     usuário e deixa sobras na auditoria. Depois de recriar: anotar a senha
+     nova do Painel (mostrada uma vez só), cadastrar a chave Pix, publicar o
+     aviso de privacidade aprovado e conferir os textos institucionais.
+     Daí em diante, teste só na `dev`.
   2. **`npm run dev` no lugar do `vercel dev`.** Um servidor pequeno em
      `scripts/dev.js`, sem dependência, serve `public/` e as funções de
      `api/` como a Vercel. Motivo: o Vercel CLI exige instalação global e
@@ -1051,7 +1064,12 @@ recente do spec.md, não esta lista resumida.
      `specs/001-portal-painel-ilpi/checklists/portoes.md`.
    - **Aviso de privacidade aprovado pela instituição**: enquanto o texto
      publicado for o rascunho do grupo (a tela de LGPD avisa), publicar a
-     versão aprovada pelo Recanto.
+     versão aprovada pelo Recanto. O texto vigente é
+     `docs/aviso-privacidade-revisado.txt` (2026-10-17); a versão anterior
+     (`docs/aviso-privacidade.md`, branch descartada em 2026-11-24) prometia
+     **responder ao titular em até 15 dias** (LGPD art. 19, II), e o texto
+     atual não promete prazo. **O grupo decide se recoloca essa frase** antes
+     de levar o aviso à instituição.
    - **Fotos reais** do Recanto, incluídas pela equipe na tela "Página
      institucional" (até 6, com texto alternativo).
    - **Testar envio de imagem** depois de o store público do Blob estar

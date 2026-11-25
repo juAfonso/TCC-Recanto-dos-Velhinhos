@@ -1,6 +1,6 @@
 # SAGE — Memória do Projeto
 
-> Última atualização: 2026-11-19
+> Última atualização: 2026-11-24
 > TCC do IFRJ Campus Pinheiral — sistema web para a ILPI "Recanto dos Velhinhos
 > Francisco Gonçalves Barbosa". Repositório: `TCC-Recanto-dos-Velhinhos`
 > (GitHub, usuário juAfonso).
@@ -149,6 +149,30 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
      banco como produção já na criação das tabelas**, e o seed recusa `--demo`
      se a `DATABASE_URL` for igual à `DATABASE_URL_PRODUCAO`. **A URL da `main`
      não deve estar no `.env.local` de ninguém como `DATABASE_URL`.**
+     **Branch criada pelo console do Neon nasce com data de validade
+     (registrado em 2026-11-24).** O Neon a apaga sozinho na data, e a
+     connection string passa a dar `password authentication failed` — foi
+     assim que a `dev` e a `teste` antigas "expiraram". Ao criar branch,
+     **desmarcar "Expire branch on"** (ou, depois: menu ⋮ da branch →
+     "Update expiration"). **Nunca criar `dev` ou `teste` a partir da
+     `main`** sem esvaziar em seguida: a cópia leva os dados e a marca de
+     produção, e o `seed --demo` recusa rodar. Para esvaziar, no SQL Editor
+     **da própria branch** (conferir o nome antes):
+     `DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;` e depois
+     `npm run migrate` e `npm run seed -- --demo`.
+     **Incidente de 2026-11-24:** a `dev` e a `teste` foram recriadas a partir
+     da `main` e, no mesmo `.env.local`, a `DATABASE_URL` apontava para a
+     `main`. Como a produção só tinha dados inventados, nada real vazou. A
+     `dev` foi esvaziada e refeita com o seed de demonstração; as duas
+     ficaram sem validade. Para conferir para onde cada variável aponta sem
+     expor a senha, compare o início do servidor (`ep-…`) com a aba
+     "Computes" de cada branch no Neon.
+     **`main_old_2026-10-28…` não se apaga:** o Neon recusa ("vercel
+     production branch"), porque a integração Neon–Vercel ainda a marca como
+     produção desde a recriação da `main` em 28/10. O site usa a `main` (ativa
+     e ligada ao último deploy). Corrigir essa marca pela integração pode
+     tirar o site do ar: só com calma e conferindo o site logo depois. Até
+     lá, a `main_old` ocupa uma das ~10 vagas do plano gratuito.
   2. **`npm run dev` no lugar do `vercel dev`.** Um servidor pequeno em
      `scripts/dev.js`, sem dependência, serve `public/` e as funções de
      `api/` como a Vercel. Motivo: o Vercel CLI exige instalação global e
@@ -377,7 +401,10 @@ Passo a passo de comandos e validação em
   tela fica só no navegador.~~ **Desde a fase 4 (2026-10-06)** a tela grava
   pela API na tabela `chave_pix_institucional`. **A chave real (CNPJ) está
   cadastrada na produção e também no banco `dev` (decidido em 2026-10-06)**:
-  o QR do `npm run dev` é de verdade. **Em teste local, leia o QR mas não
+  o QR do `npm run dev` é de verdade. **[Atualizado em 2026-11-24]** a `dev`
+  foi refeita com o `seed --demo` e voltou a ter a chave fictícia; para
+  testar com a real, recadastrá-la pela tela Chave Pix do Painel local.
+  **Em teste local com a chave real, leia o QR mas não
   pague** — o dinheiro iria para a conta do Recanto. As declarações de teste
   ficam só no banco `dev` e não se misturam à conferência da produção. O
   `seed --demo` continua criando a chave fictícia `.invalid` em bancos novos.

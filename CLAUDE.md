@@ -1,6 +1,6 @@
 # SAGE — Memória do Projeto
 
-> Última atualização: 2026-11-24
+> Última atualização: 2026-11-27
 > TCC do IFRJ Campus Pinheiral — sistema web para a ILPI "Recanto dos Velhinhos
 > Francisco Gonçalves Barbosa". Repositório: `TCC-Recanto-dos-Velhinhos`
 > (GitHub, usuário juAfonso).
@@ -173,19 +173,24 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
      e ligada ao último deploy). Corrigir essa marca pela integração pode
      tirar o site do ar: só com calma e conferindo o site logo depois. Até
      lá, a `main_old` ocupa uma das ~10 vagas do plano gratuito.
-     **A `main` ainda está em fase de teste (registrado em 2026-10-17,
-     confirmado em 2026-11-24).** O grupo testa direto na produção, e tudo o
-     que existe lá hoje é inventado: pessoas, triagens, eventos, doações
-     declaradas, aceites e falhas de e-mail. Ninguém deve tratar esses dados
-     como reais. **Antes de o Recanto começar a operar, a `main` é zerada e
-     recriada**: no SQL Editor da própria `main`,
-     `DROP SCHEMA IF EXISTS public CASCADE; CREATE SCHEMA public;`, depois
-     `npm run migrate -- --producao` e o seed de produção (sem `--demo`). Não
-     apagar registro por registro: isso esbarra na regra de nunca excluir
-     usuário e deixa sobras na auditoria. Depois de recriar: anotar a senha
-     nova do Painel (mostrada uma vez só), cadastrar a chave Pix, publicar o
-     aviso de privacidade aprovado e conferir os textos institucionais.
-     Daí em diante, teste só na `dev`.
+     ~~**A `main` ainda está em fase de teste** (2026-10-17, confirmado em
+     2026-11-24).~~ **A `main` foi limpa em 2026-11-27 e agora só tem dados
+     reais.** Tudo o que o grupo inventou testando na produção saiu: pessoas,
+     triagens, doações, campanhas, eventos, notícias, itens, aceites, falhas
+     de e-mail, auditoria e históricos de alteração. Ficaram só os dados
+     reais, recolocados a partir de uma cópia: a página institucional (as
+     cinco seções e as 3 fotos), o aviso de privacidade `2026-10-v2` (sem o
+     rascunho v1), as configurações, a chave Pix ativa e a conta do Painel,
+     **com a mesma senha de antes**. Foi feito como previsto: zerar o schema
+     e recriar com `migrate --producao`, nunca apagando registro por
+     registro, que esbarraria na regra de nunca excluir usuário e deixaria
+     sobras na auditoria. Zerar o banco não apaga arquivo: os que ficaram sem
+     dono no Blob (2 currículos no store privado e a imagem da notícia de
+     teste no público) são apagados à mão no painel da Vercel.
+     **Daqui em diante, nada de teste na `main`**: o que se cadastrar em
+     `recantodosvelhinhos.vercel.app` é dado real do Recanto. Teste só na
+     `dev`, com `npm run dev`. Se a banca do TCC (02/12) precisar mexer num
+     site, ele tem de ser outro, ligado a outro banco, e nunca a `main`.
   2. **`npm run dev` no lugar do `vercel dev`.** Um servidor pequeno em
      `scripts/dev.js`, sem dependência, serve `public/` e as funções de
      `api/` como a Vercel. Motivo: o Vercel CLI exige instalação global e

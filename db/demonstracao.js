@@ -55,24 +55,30 @@ function senhaEscolhida(variavel) {
 }
 const escolhidaPainel = senhaEscolhida('DEMONSTRACAO_SENHA_PAINEL');
 const escolhidaDoadora = senhaEscolhida('DEMONSTRACAO_SENHA_DOADORA');
+// Usuário do Painel na demonstração (2026-11-27): o grupo pode usar o Gmail de teste, para a
+// banca não ver o e-mail do Recanto como login. Sem a variável, o mesmo do site real.
+const usuarioEscolhido = (process.env.DEMONSTRACAO_USUARIO_PAINEL ?? '').trim().toLowerCase();
+if (usuarioEscolhido && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usuarioEscolhido)) parar('DEMONSTRACAO_USUARIO_PAINEL precisa ser um e-mail.');
 
 // --so-senhas: troca só as duas senhas, sem apagar o cenário.
 if (process.argv.includes('--so-senhas')) {
   const { gerarHash, gerarSenhaAleatoria } = await import('../rotas/_lib/senha.js');
   const { CONTA_INSTITUCIONAL } = await import('./seed.js');
+  const usuario = usuarioEscolhido || CONTA_INSTITUCIONAL;
   const pool = new Pool({ connectionString: destino });
   try {
     const { rows: [marca] } = await pool.query(`SELECT valor FROM configuracao WHERE chave = 'ambiente'`);
     if (marca?.valor !== 'demo') parar('O banco de destino não está marcado como demonstração. Rode antes com --confirmo.');
     const painel = escolhidaPainel ?? gerarSenhaAleatoria();
     const doadora = escolhidaDoadora ?? gerarSenhaAleatoria();
-    await pool.query('UPDATE conta_institucional SET senha_hash = $1 WHERE identificador = $2',
-      [await gerarHash(painel), CONTA_INSTITUCIONAL]);
+    // O banco de demonstração tem uma conta só: ela passa a ter o usuário e a senha escolhidos.
+    await pool.query('UPDATE conta_institucional SET identificador = $2, senha_hash = $1',
+      [await gerarHash(painel), usuario]);
     await pool.query(`UPDATE pessoa SET senha_hash = $1, senha_definida_em = now() WHERE email = 'helena.demo@exemplo.invalid'`,
       [await gerarHash(doadora)]);
     await pool.query('DELETE FROM limite_tentativa'); // libera quem errou a senha antes
     console.log(`Senhas trocadas.
-  Painel   — usuário: ${CONTA_INSTITUCIONAL}
+  Painel   — usuário: ${usuario}
              senha:   ${escolhidaPainel ? '(a de DEMONSTRACAO_SENHA_PAINEL no .env.local)' : painel}
   Doadora  — e-mail:  helena.demo@exemplo.invalid
              senha:   ${escolhidaDoadora ? '(a de DEMONSTRACAO_SENHA_DOADORA no .env.local)' : doadora}`);
@@ -103,6 +109,7 @@ const { sql } = await import('../rotas/_lib/db.js');
 const { gerarHash, gerarSenhaAleatoria } = await import('../rotas/_lib/senha.js');
 const { criarCookie } = await import('../rotas/_lib/sessao.js');
 const { CONTA_INSTITUCIONAL, CONTATO_INICIAL } = await import('./seed.js');
+const usuarioPainel = usuarioEscolhido || CONTA_INSTITUCIONAL;
 const api = await import('../api/index.js');
 
 // ---------- apoio ----------
@@ -181,7 +188,7 @@ console.log(`Conteúdo público do Recanto copiado (${institucional.imagens.leng
 const senhaPainel = escolhidaPainel ?? gerarSenhaAleatoria();
 const [conta] = await sql`
   INSERT INTO conta_institucional (identificador, senha_hash, criado_por)
-  VALUES (${CONTA_INSTITUCIONAL}, ${await gerarHash(senhaPainel)}, 'sistema') RETURNING id`;
+  VALUES (${usuarioPainel}, ${await gerarHash(senhaPainel)}, 'sistema') RETURNING id`;
 const painel = criarCookie({ ctx: 'admin', id: conta.id }).split(';')[0];
 const admin = (caminho, corpo = {}, metodo = 'POST') => chamar(caminho, { metodo, corpo, cookie: painel });
 const consentimento = { avisoVersao: aviso.versao, aceito: true };
@@ -406,7 +413,7 @@ for (const d of doacoes) {
     VALUES (${d.tipo}, ${d.valor}, ${d.pessoa}, ${d.status},
             now() - make_interval(days => ${d.quando}, hours => ${randomInt(0, 10)}),
             ${d.status === 'nao_localizada' ? 'Entrada no extrato foi depósito/TED, não Pix.' : null},
-            ${d.status === 'pendente' ? null : CONTA_INSTITUCIONAL},
+            ${d.status === 'pendente' ? null : usuarioPainel},
             ${d.status === 'pendente' ? null : new Date(Date.now() - Math.max(d.quando - 2, 0) * 86400e3)},
             ${d.pessoa ? 'doador' : 'publico'})`;
 }
@@ -418,7 +425,7 @@ console.log(`
 Pronto. O banco de demonstração está montado e marcado como 'demo'.
 
 Anote agora (não aparecem de novo; para trocar, rode o script outra vez):
-  Painel   — usuário: ${CONTA_INSTITUCIONAL}
+  Painel   — usuário: ${usuarioPainel}
              senha:   ${escolhidaPainel ? "(a de DEMONSTRACAO_SENHA_PAINEL no .env.local)" : senhaPainel}
   Doadora  — e-mail:  ${doadora.email}
              senha:   ${escolhidaDoadora ? "(a de DEMONSTRACAO_SENHA_DOADORA no .env.local)" : senhaDoadora}

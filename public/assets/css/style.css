@@ -155,6 +155,12 @@ button{ cursor:pointer; font-family:inherit; }
     margin:0 auto;
     padding:0 24px;
 }
+/* Dentro de uma .section, que já tem margem própria, o .container somava mais 24 px:
+   no celular o texto começava a 40 px da borda em Doações e Institucional, e a 16 px
+   na página inicial (revisão de 2026-11-27). */
+@media(max-width:640px){
+    .section > .container{ padding-left:0; padding-right:0; }
+}
 
 .sr-only{
     position:absolute;
@@ -287,6 +293,11 @@ footer.site-footer :focus-visible,
     flex-shrink:0;
 }
 
+/* O nome nunca quebra: entre ~1.150 e ~1.400 px ele virava 3 a 6 linhas e a barra
+   crescia por cima da página (revisão de 2026-11-27). No celular (até 480 px) ele
+   continua podendo quebrar em duas linhas, porque não cabe ao lado do Entrar. */
+@media(min-width:481px){ .logo > span{ white-space:nowrap; } }
+
 .logo .logo-sub{
     display:block;
     margin-top:2px;
@@ -381,6 +392,15 @@ footer.site-footer :focus-visible,
     font-size:1.6rem;
     color:var(--viridian-deep);
     min-width:44px; min-height:44px;
+}
+
+/* Notebook (1.181 a 1.439 px, onde estão 1.280 e 1.366): logo, menu e Entrar só cabem
+   numa linha com menos folga entre eles. Acima disso, o tamanho normal. */
+@media(min-width:1181px) and (max-width:1439px){
+    .navbar{ padding:0 24px; gap:20px; }
+    .menu{ gap:18px; }
+    .menu a{ font-size:.9rem; }
+    .logo{ font-size:1.1rem; }
 }
 
 /* O menu completo precisa de ~1.100 px numa linha só. Abaixo disso ele quebrava
@@ -1360,7 +1380,17 @@ select {
     border-bottom-color:var(--magenta);
 }
 @media(max-width:640px){
-    .tabs-nav{ flex-wrap:nowrap; overflow-x:auto; scrollbar-width:thin; }
+    /* Rolagem para o lado com a mesma sombra da tabela: sem ela, a aba cortada na
+       borda ("Apro…") não parecia arrastável (revisão de 2026-11-27). */
+    .tabs-nav{
+        flex-wrap:nowrap; overflow-x:auto; scrollbar-width:thin;
+        background:
+            linear-gradient(90deg, #fff 30%, rgba(255,255,255,0)) left center / 40px 100% no-repeat local,
+            linear-gradient(270deg, #fff 30%, rgba(255,255,255,0)) right center / 40px 100% no-repeat local,
+            radial-gradient(farthest-side at 0 50%, rgba(30,74,60,.32), rgba(30,74,60,0)) left center / 18px 100% no-repeat scroll,
+            radial-gradient(farthest-side at 100% 50%, rgba(30,74,60,.32), rgba(30,74,60,0)) right center / 18px 100% no-repeat scroll,
+            #fff;
+    }
     .tab-btn{ white-space:nowrap; flex-shrink:0; }
 }
 .tab-panel{ display:none; }
@@ -1468,6 +1498,18 @@ td:last-child .btn + .btn{ margin-left:6px; }
         max-width:46vw;
     }
     .table-wrap th:first-child{ background:var(--bg-soft); }
+    /* A linha de "lista vazia" ocupa todas as colunas e não é a primeira coluna:
+       presa nos 46vw acima, a frase aparecia cortada ("Nenhum cadastro…"). A
+       mensagem fica parada na parte visível da tabela, mesmo com a rolagem. */
+    .table-wrap{ container-type:inline-size; }
+    .table-wrap td[colspan]:has(> .empty-state){
+        position:static; min-width:0; max-width:none;
+        box-shadow:none; padding:0; background:transparent;
+    }
+    .table-wrap td[colspan] > .empty-state{
+        position:sticky; left:0;
+        width:100cqi; box-sizing:border-box;
+    }
 }
 .cell-baixa{justify-self:left !important;}
 

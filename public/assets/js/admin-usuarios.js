@@ -42,7 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
             `<span class="badge ${x.status === 'ativo' ? 'badge-info' : 'badge-neutral'}">${PAPEL[x.tipo]}${x.status === 'inativo' ? ' (inativo)' : ''}</span>`).join(' ') || '—'}</td>
           <td><button class="btn btn-outline btn-sm" data-abrir="${p.id}">Abrir</button></td>
         </tr>`).join('')
-        || '<tr><td colspan="6"><div class="empty-state"><p>Ninguém encontrado com essa busca.</p></div></td></tr>';
+        || `<tr><td colspan="6"><div class="empty-state"><p>${
+          // Sem busca nem filtro, a lista vazia é "ninguém cadastrado", não "busca sem resultado".
+          !busca && situacao === 'todos' && !papel
+            ? 'Nenhuma pessoa cadastrada ainda.'
+            : 'Ninguém encontrado com essa busca.'}</p></div></td></tr>`;
     } catch (erro) {
       tbody.innerHTML = `<tr><td colspan="6">${e(erro.message)}</td></tr>`;
     }

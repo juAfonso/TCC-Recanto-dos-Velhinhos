@@ -2,6 +2,10 @@
 //
 //   node --env-file=.env.local db/demonstracao.js             → só confere o destino
 //   node --env-file=.env.local db/demonstracao.js --confirmo  → APAGA o banco de destino e o recria
+//   node --env-file=.env.local db/demonstracao.js --so-senhas → troca só as senhas, sem apagar nada
+//
+// Senhas: DEMONSTRACAO_SENHA_PAINEL e DEMONSTRACAO_SENHA_DOADORA no .env.local, se o grupo
+// quiser senhas fáceis para a apresentação; sem elas, aleatórias.
 //
 // Destino: DATABASE_URL_DEMONSTRACAO (a branch "apresentacao" do Neon). O script recusa se
 // ela for igual à DATABASE_URL_PRODUCAO ou à DATABASE_URL (dev compartilhada), ou se o banco
@@ -15,7 +19,7 @@
 //     notícias e itens. Os cadastros passam pela própria API do sistema (como no site), para
 //     protocolo, consentimento e auditoria saírem iguais ao uso real.
 //   - Chave Pix FICTÍCIA (.invalid): quem ler o QR na banca não paga ninguém.
-//   - Senha do Painel e da doadora de demonstração ALEATÓRIAS, mostradas só no fim.
+//   - Senha do Painel e da doadora: as do .env.local ou aleatórias, mostradas só no fim.
 // O banco fica marcado como 'demo': o site mostra a faixa "Site de demonstração".
 
 import { randomBytes, randomInt } from 'node:crypto';
@@ -39,8 +43,46 @@ if (destino === process.env.DATABASE_URL) parar('DATABASE_URL_DEMONSTRACAO é a 
     console.log(`Destino conferido (marca atual: ${rows[0]?.valor ?? 'sem marca'}).`);
   } finally { await pool.end(); }
 }
+// Senhas escolhidas pelo grupo para a apresentação (2026-11-27): ficam no .env.local, nunca no
+// repositório. Sem elas, o script gera senhas aleatórias. Como o banco só tem dados fictícios,
+// senha fácil não expõe ninguém; o pior caso é alguém mexer no cenário, e rodar o script de
+// novo o restaura.
+function senhaEscolhida(variavel) {
+  const valor = process.env[variavel];
+  if (!valor) return null;
+  if (valor.length < 6) parar(`${variavel} precisa ter pelo menos 6 caracteres.`);
+  return valor;
+}
+const escolhidaPainel = senhaEscolhida('DEMONSTRACAO_SENHA_PAINEL');
+const escolhidaDoadora = senhaEscolhida('DEMONSTRACAO_SENHA_DOADORA');
+
+// --so-senhas: troca só as duas senhas, sem apagar o cenário.
+if (process.argv.includes('--so-senhas')) {
+  const { gerarHash, gerarSenhaAleatoria } = await import('../rotas/_lib/senha.js');
+  const { CONTA_INSTITUCIONAL } = await import('./seed.js');
+  const pool = new Pool({ connectionString: destino });
+  try {
+    const { rows: [marca] } = await pool.query(`SELECT valor FROM configuracao WHERE chave = 'ambiente'`);
+    if (marca?.valor !== 'demo') parar('O banco de destino não está marcado como demonstração. Rode antes com --confirmo.');
+    const painel = escolhidaPainel ?? gerarSenhaAleatoria();
+    const doadora = escolhidaDoadora ?? gerarSenhaAleatoria();
+    await pool.query('UPDATE conta_institucional SET senha_hash = $1 WHERE identificador = $2',
+      [await gerarHash(painel), CONTA_INSTITUCIONAL]);
+    await pool.query(`UPDATE pessoa SET senha_hash = $1, senha_definida_em = now() WHERE email = 'helena.demo@exemplo.invalid'`,
+      [await gerarHash(doadora)]);
+    await pool.query('DELETE FROM limite_tentativa'); // libera quem errou a senha antes
+    console.log(`Senhas trocadas.
+  Painel   — usuário: ${CONTA_INSTITUCIONAL}
+             senha:   ${escolhidaPainel ? '(a de DEMONSTRACAO_SENHA_PAINEL no .env.local)' : painel}
+  Doadora  — e-mail:  helena.demo@exemplo.invalid
+             senha:   ${escolhidaDoadora ? '(a de DEMONSTRACAO_SENHA_DOADORA no .env.local)' : doadora}`);
+  } finally { await pool.end(); }
+  process.exit(0);
+}
+
 if (!process.argv.includes('--confirmo')) {
   console.log('Nada foi apagado. Para recriar o banco de demonstração, rode de novo com --confirmo.');
+  console.log('Para trocar só as senhas, sem apagar nada, use --so-senhas.');
   process.exit(0);
 }
 
@@ -136,7 +178,7 @@ await sql`INSERT INTO chave_pix_institucional (chave, tipo_chave, nome_recebedor
 console.log(`Conteúdo público do Recanto copiado (${institucional.imagens.length} fotos, aviso ${aviso.versao}).`);
 
 // ---------- 3. Conta do Painel ----------
-const senhaPainel = gerarSenhaAleatoria();
+const senhaPainel = escolhidaPainel ?? gerarSenhaAleatoria();
 const [conta] = await sql`
   INSERT INTO conta_institucional (identificador, senha_hash, criado_por)
   VALUES (${CONTA_INSTITUCIONAL}, ${await gerarHash(senhaPainel)}, 'sistema') RETURNING id`;
@@ -328,7 +370,7 @@ await admin(`/api/admin/solicitacoes/${s4}/rejeitar`, { motivo: 'A proposta tem 
 console.log('4 solicitações: 1 pendente, 1 aguardando contato, 1 confirmada (evento publicado), 1 rejeitada.');
 
 // ---------- 10. Doadores associados e doações (últimos 4 meses) ----------
-const senhaDoadora = gerarSenhaAleatoria();
+const senhaDoadora = escolhidaDoadora ?? gerarSenhaAleatoria();
 const doadores = [];
 for (const [nome, email, comSenha] of [
   ['Helena Vasconcelos', 'helena.demo@exemplo.invalid', true],
@@ -377,8 +419,8 @@ Pronto. O banco de demonstração está montado e marcado como 'demo'.
 
 Anote agora (não aparecem de novo; para trocar, rode o script outra vez):
   Painel   — usuário: ${CONTA_INSTITUCIONAL}
-             senha:   ${senhaPainel}
+             senha:   ${escolhidaPainel ? "(a de DEMONSTRACAO_SENHA_PAINEL no .env.local)" : senhaPainel}
   Doadora  — e-mail:  ${doadora.email}
-             senha:   ${senhaDoadora}
+             senha:   ${escolhidaDoadora ? "(a de DEMONSTRACAO_SENHA_DOADORA no .env.local)" : senhaDoadora}
 `);
 process.exit(0);

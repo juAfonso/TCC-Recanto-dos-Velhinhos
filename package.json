@@ -5,7 +5,7 @@
   "description": "SAGE — Portal Público e Painel Administrativo do Recanto dos Velhinhos Francisco Gonçalves Barbosa",
   "type": "module",
   "engines": {
-    "node": ">=24"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "node --env-file-if-exists=.env.local scripts/dev.js",

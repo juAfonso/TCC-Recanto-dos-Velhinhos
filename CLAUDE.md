@@ -134,6 +134,12 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
   (e-mail), `scrypt` do `node:crypto` (senha) e `node:test` (testes).
   **Quem for programar precisa instalar o Node na própria máquina** — não
   basta estar na máquina de uma pessoa.
+  **Produção fixada no Node 24 (decidido em 2026-11-27).** O `engines` do
+  `package.json` dizia `>=24`, e a Vercel segue o `engines` em vez do
+  painel: com `>=`, ela usa a versão mais nova que oferece. O painel passou
+  a avisar que o próximo deploy subiria no Node 26, em que ninguém testou.
+  Agora é `24.x`, igual às máquinas do grupo. Subir de versão é decisão do
+  grupo, registrada aqui e trocada no `engines`, nunca só no painel.
 - **Fluxo de trabalho:** Spec Kit + Claude Code (VS Code), especificando e
   planejando a partir do PRD antes de implementar.
 - **Ambiente de desenvolvimento (decidido em 2026-10-06):**

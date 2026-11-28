@@ -211,7 +211,17 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
      passa os cadastros pela própria API (protocolo, consentimento e
      auditoria iguais ao uso real) e mostra **uma vez** senhas aleatórias do
      Painel e de uma doadora; recusa rodar na `main` e na `dev`. Pode ser
-     rodado de novo na véspera da banca. O projeto da Vercel **não** usa a
+     rodado de novo na véspera da banca. **Senhas fáceis para apresentar
+     são permitidas nesse banco** (decidido em 2026-11-27), porque nada nele
+     é real: ficam em `DEMONSTRACAO_SENHA_PAINEL` e
+     `DEMONSTRACAO_SENHA_DOADORA` no `.env.local`, nunca no repositório, e
+     `npm run demonstracao -- --so-senhas` troca só as senhas sem apagar o
+     cenário. Na `main`, senha fácil continua fora de cogitação. O usuário
+     do Painel da demonstração pode ser outro e-mail
+     (`DEMONSTRACAO_USUARIO_PAINEL`): o grupo usa o Gmail de teste
+     `sage.apresentacao.tcc@gmail.com`, que também é o remetente dos
+     e-mails do site da banca, para a banca não ver o e-mail do Recanto
+     como login. O projeto da Vercel **não** usa a
      integração Neon–Vercel (variáveis cadastradas à mão) e define
      `EMAIL_MODO=console`, para não mandar e-mail pelo Gmail do Recanto.
      **Faixa "Site de demonstração"**: aparece no pé de todas as telas

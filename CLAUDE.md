@@ -197,6 +197,35 @@ correta é o PRD + os 10 CSUs, não o resumo de proposta.
      `recantodosvelhinhos.vercel.app` é dado real do Recanto. Teste só na
      `dev`, com `npm run dev`. Se a banca do TCC (02/12) precisar mexer num
      site, ele tem de ser outro, ligado a outro banco, e nunca a `main`.
+     **Site de demonstração da banca (decidido em 2026-11-27).** É um segundo
+     projeto na Vercel, do mesmo repositório, ligado à branch `apresentacao`
+     do Neon (criada a partir da `dev`, sem validade). Aparece como o site do
+     Recanto: identidade, página institucional, fotos, contato e aviso de
+     privacidade são **reais**, copiados pela API pública do site do Recanto.
+     Todo o resto é **fictício**: pessoas, triagens, doações, campanhas,
+     eventos, notícias e itens, e a chave Pix (`.invalid`, para ninguém da
+     banca pagar de verdade). Motivo: dado pessoal real não pode ser usado
+     para apresentação (LGPD), e o Recanto ainda não tem nenhum. Quem monta
+     o banco é o `npm run demonstracao` (`db/demonstracao.js`, com
+     `DATABASE_URL_DEMONSTRACAO`), que **apaga e recria** a `apresentacao`,
+     passa os cadastros pela própria API (protocolo, consentimento e
+     auditoria iguais ao uso real) e mostra **uma vez** senhas aleatórias do
+     Painel e de uma doadora; recusa rodar na `main` e na `dev`. Pode ser
+     rodado de novo na véspera da banca. O projeto da Vercel **não** usa a
+     integração Neon–Vercel (variáveis cadastradas à mão) e define
+     `EMAIL_MODO=console`, para não mandar e-mail pelo Gmail do Recanto.
+     **Faixa "Site de demonstração"**: aparece no pé de todas as telas
+     quando o banco está marcado `demo` (`GET /api/public/ambiente`, lida em
+     `utils.js`). Vem do banco, não de variável da Vercel, então não tem como
+     aparecer no site do Recanto (marcado `producao`); aparece também na
+     `dev`, de propósito. Depois da banca, apagar o projeto e a branch, ou
+     mantê-los se o grupo quiser seguir mostrando o sistema.
+     **Vender o sistema a outras instituições foi levantado pelo grupo em
+     2026-11-27 e não está decidido.** Fica fora do escopo do TCC (Inegociável:
+     PRD antes); exigiria tirar o Recanto fixo do HTML (logo, termo de adesão,
+     mapa, menu e rodapé), plano pago da Vercel (o Hobby não permite uso
+     comercial) e conversa com o orientador e o IFRJ sobre quem pode
+     comercializar o trabalho.
   2. **`npm run dev` no lugar do `vercel dev`.** Um servidor pequeno em
      `scripts/dev.js`, sem dependência, serve `public/` e as funções de
      `api/` como a Vercel. Motivo: o Vercel CLI exige instalação global e

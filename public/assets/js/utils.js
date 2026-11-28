@@ -180,3 +180,36 @@ const Utils = (() => {
     qs, setFieldError, clearFieldError, clearAllErrors
   };
 })();
+
+/* ---------- Faixa de demonstração (2026-11-27) ----------
+   Num banco de dados fictícios (dev ou o site da banca), uma faixa fixa no pé da tela
+   avisa que nada ali é real. Quem decide é o servidor (/api/public/ambiente), pela
+   marca do banco: no site do Recanto, marcado como produção, ela nunca aparece.
+   A resposta fica guardada na aba, para não perguntar a cada página. */
+(function faixaDemonstracao() {
+  const CHAVE = 'sage-demonstracao';
+  const mostrar = () => {
+    if (document.querySelector('.faixa-demonstracao')) return;
+    const faixa = document.createElement('div');
+    faixa.className = 'faixa-demonstracao';
+    faixa.setAttribute('role', 'note');
+    faixa.textContent = 'Site de demonstração — todos os cadastros, doações e pedidos são fictícios.';
+    document.body.appendChild(faixa);
+    document.body.classList.add('com-faixa-demonstracao');
+  };
+  let guardado = null;
+  try { guardado = sessionStorage.getItem(CHAVE); } catch { /* sem armazenamento: pergunta ao servidor */ }
+  const iniciar = () => {
+    if (guardado === '1') return mostrar();
+    if (guardado === '0') return;
+    fetch('/api/public/ambiente', { credentials: 'same-origin' })
+      .then((r) => (r.ok ? r.json() : { demonstracao: false }))
+      .then(({ demonstracao }) => {
+        try { sessionStorage.setItem(CHAVE, demonstracao ? '1' : '0'); } catch { /* ignora */ }
+        if (demonstracao) mostrar();
+      })
+      .catch(() => { /* sem resposta, sem faixa */ });
+  };
+  if (document.body) iniciar();
+  else document.addEventListener('DOMContentLoaded', iniciar);
+})();
